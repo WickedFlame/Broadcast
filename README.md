@@ -1,0 +1,4 @@
+SimpleMediator
+==============
+
+A simple Mediator
