@@ -48,25 +48,25 @@ namespace Broadcast.Test
 
 
 
-        class Message : INotification
-        {
-            public Message(int id)
-            {
-                ID = id;
-            }
+class Message : INotification
+{
+    public Message(int id)
+    {
+        ID = id;
+    }
 
-            public int ID { get; private set; }
-        }
+    public int ID { get; private set; }
+}
 
-        class NotificationHandler : INotificationTarget<Message>
-        {
-            public void Handle(Message notification)
-            {
-                ID = notification.ID;
-            }
+class NotificationHandler : INotificationTarget<Message>
+{
+    public void Handle(Message notification)
+    {
+        ID = notification.ID;
+    }
 
-            public int ID { get; set; }
-        }
+    public int ID { get; set; }
+}
 
         class DelegateHandler
         {

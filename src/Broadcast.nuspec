@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Broadcast</id>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
     <title>Broadcast</title>
     <authors>Christian Walpen</authors>
     <owners>Christian Walpen</owners>
@@ -14,7 +14,7 @@
     <releaseNotes>
       
     </releaseNotes>
-    <tags>CQRS</tags>
+    <tags>Request, Commands, Notification, Mediator, CQRS</tags>
   </metadata>
   <files>
     <file src="Broadcast\bin\Release\Broadcast.dll" target="lib\net45\Broadcast.dll" />
