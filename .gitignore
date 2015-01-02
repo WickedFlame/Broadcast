@@ -1,0 +1,14 @@
+packages
+bin
+obj
+release
+TestResults
+*.user
+*.jtconfig
+*.suo
+*.snk
+*.snk
+_ReSharper.*
+.JustCode
+.JustCode/PersistanceMap.solution-user.settings.xml
+.JustCode/PersistanceMap.solution-user.settings.xml
