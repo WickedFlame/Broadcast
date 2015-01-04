@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2BB556CC-34C7-4865-BD22-16B3F56A1615}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{210CE9E2-7150-41E1-A712-A9808488ABDA}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Broadcast</RootNamespace>
-    <AssemblyName>Broadcast</AssemblyName>
+    <RootNamespace>Broadcast.Console.Test</RootNamespace>
+    <AssemblyName>Broadcast.Console.Test</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,40 +23,35 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Broadcast.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Broadcaster.cs" />
-    <Compile Include="EventSourcing\BackgroundTask.cs" />
-    <Compile Include="EventSourcing\IProcessorContext.cs" />
-    <Compile Include="EventSourcing\ITaskProcessor.cs" />
-    <Compile Include="EventSourcing\ITaskStore.cs" />
-    <Compile Include="EventSourcing\ProcessorContextFactory.cs" />
-    <Compile Include="EventSourcing\ProcessorMode.cs" />
-    <Compile Include="EventSourcing\TaskProcessor.cs" />
-    <Compile Include="EventSourcing\TaskState.cs" />
-    <Compile Include="EventSourcing\TaskStore.cs" />
-    <Compile Include="EventSourcing\TaskStoreFactory.cs" />
-    <Compile Include="EventSourcing\ProcessorContext.cs" />
-    <Compile Include="IMediator.cs" />
-    <Compile Include="INotification.cs" />
-    <Compile Include="INotificationTarget.cs" />
-    <Compile Include="IRequest.cs" />
-    <Compile Include="IRequestHandler.cs" />
-    <Compile Include="IRequestPublisher.cs" />
-    <Compile Include="RequestPublisher.cs" />
-    <Compile Include="Mediator.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Broadcast\Broadcast.csproj">
+      <Project>{2bb556cc-34c7-4865-bd22-16b3f56a1615}</Project>
+      <Name>Broadcast</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

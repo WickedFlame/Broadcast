@@ -46,9 +46,7 @@ namespace Broadcast.Test
 
             Assert.IsTrue(id == 5);
         }
-
-
-
+        
 
         class Request : IRequest
         {
