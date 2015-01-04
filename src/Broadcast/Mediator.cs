@@ -1,17 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Broadcast.EventSourcing;
+using System;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace Broadcast
 {
     public class Mediator : IMediator
     {
-        private readonly Dictionary<Type, List<Action<INotification>>> _handlers;
+        IProcessorContext _context;
+        public IProcessorContext Context
+        {
+            get
+            {
+                if (_context == null)
+                {
+                    _context = ProcessorContextFactory.GetContext();
+                    _context.Mode = ProcessorMode.Default;
+                }
+                return _context;
+            }
+        }
 
         public Mediator()
         {
-            _handlers = new Dictionary<Type, List<Action<INotification>>>();
         }
 
         public void RegisterHandler<T>(INotificationTarget<T> target) where T : INotification
@@ -21,60 +31,27 @@ namespace Broadcast
 
         public void RegisterHandler<T>(Action<T> target) where T : INotification
         {
-            List<Action<INotification>> handlers;
-
-            if (!_handlers.TryGetValue(typeof(T), out handlers))
+            using (var processor = Context.Open())
             {
-                handlers = new List<Action<INotification>>();
-                _handlers.Add(typeof(T), handlers);
-            }
-
-            handlers.Add(DelegateCaster.CastToBase<INotification, T>(x => target(x)));
-        }
-
-        public void Publish<T>(T notification) where T : INotification
-        {
-            List<Action<INotification>> handlers;
-
-            if (!_handlers.TryGetValue(notification.GetType(), out handlers))
-            {
-                return;
-            }
-
-            foreach (var handler in handlers)
-            {
-                handler(notification);
+                processor.AddHandler(target);
             }
         }
 
-        public async Task PublishAsync<T>(T notification) where T : INotification
+        public void Send<T>(Expression<Func<T>> notification) where T : INotification
         {
-            List<Action<INotification>> handlers;
-
-            if (!_handlers.TryGetValue(notification.GetType(), out handlers))
+            var task = TaskFactory.CreateTask(notification);
+            using (var processor = Context.Open())
             {
-                return;
-            }
-
-            foreach (var handler in handlers)
-            {
-                await Task.Run(() => handler(notification));
+                processor.Process(task);
             }
         }
 
-        public class DelegateCaster
+        public async System.Threading.Tasks.Task SendAsync<T>(Expression<Func<T>> notification) where T : INotification
         {
-            public static Action<TBase> CastToBase<TBase, TImpl>(Expression<Action<TImpl>> source) where TImpl : TBase
+            var task = TaskFactory.CreateTask(notification);
+            using (var processor = Context.Open())
             {
-                if (typeof(TImpl) == typeof(TBase))
-                {
-                    return (Action<TBase>)((Delegate)source.Compile());
-
-                }
-
-                var sourceParameter = Expression.Parameter(typeof(TBase), "source");
-                var result = Expression.Lambda<Action<TBase>>(Expression.Invoke(source, Expression.Convert(sourceParameter, typeof(TImpl))), sourceParameter);
-                return result.Compile();
+                await System.Threading.Tasks.Task.Run(() => processor.Process(task));
             }
         }
     }

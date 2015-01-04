@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Broadcast
@@ -24,7 +25,7 @@ namespace Broadcast
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="notification"></param>
-        void Publish<T>(T notification) where T : INotification;
+        void Send<T>(Expression<Func<T>> notification) where T : INotification;
 
         /// <summary>
         /// Publishes a <see cref="INotification"/> and passes it to the registered NotificationTargets
@@ -32,6 +33,6 @@ namespace Broadcast
         /// <typeparam name="T"></typeparam>
         /// <param name="notification"></param>
         /// <returns></returns>
-        Task PublishAsync<T>(T notification) where T : INotification;
+        Task SendAsync<T>(Expression<Func<T>> notification) where T : INotification;
     }
 }

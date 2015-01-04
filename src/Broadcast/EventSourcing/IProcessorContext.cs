@@ -1,4 +1,5 @@
 ﻿using Broadcast.EventSourcing;
+using System;
 using System.Collections.Generic;
 
 namespace Broadcast
@@ -7,7 +8,7 @@ namespace Broadcast
     {
         ITaskProcessor Open();
 
-        ITaskStore TaskStore { get; set; }
+        ITaskStore Tasks { get; set; }
 
         IEnumerable<BackgroundTask> ProcessedTasks { get; }
 

@@ -31,9 +31,12 @@ namespace Broadcast.Console.Test
                         break;
 
                     case "async":
-                        broadcaster = new Broadcaster(new ProcessorContext(ProcessorMode.Async));
+                        broadcaster = new Broadcaster(ProcessorMode.Async);
                         format = "Test Async {0}";
                         break;
+
+                    case "exit":
+                        return;
 
                     default:
                         System.Console.WriteLine("Possyble commands:");
@@ -45,19 +48,19 @@ namespace Broadcast.Console.Test
 
                 if (!string.IsNullOrEmpty(format))
                 {
-                    for (int i = 0; i < 100; i++)
+                    for (int i = 0; i < 1000; i++)
                     {
                         var value = i.ToString();
                         System.Console.WriteLine(string.Format("Sent {0}", value));
                         broadcaster.Send(() => System.Console.WriteLine(string.Format(format, value)));
                     }
 
-                    System.Console.WriteLine(string.Format("Items in Queue: {0}", broadcaster.Context.TaskStore.CountQueue));
+                    System.Console.WriteLine(string.Format("Items in Queue: {0}", broadcaster.Context.Tasks.CountQueue));
                     System.Console.WriteLine(string.Format("Items porcessed: {0}", broadcaster.Context.ProcessedTasks.Count()));
 
                     System.Threading.Thread.Sleep(TimeSpan.FromSeconds(1));
 
-                    System.Console.WriteLine(string.Format("Items in Queue: {0}", broadcaster.Context.TaskStore.CountQueue));
+                    System.Console.WriteLine(string.Format("Items in Queue: {0}", broadcaster.Context.Tasks.CountQueue));
                     System.Console.WriteLine(string.Format("Items porcessed: {0}", broadcaster.Context.ProcessedTasks.Count()));
                 }
 

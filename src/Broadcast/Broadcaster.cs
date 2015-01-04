@@ -1,10 +1,6 @@
 ﻿using Broadcast.EventSourcing;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Broadcast
 {
@@ -13,6 +9,8 @@ namespace Broadcast
         void Send(Expression<Action> task);
 
         void Send<T>(Expression<Func<T>> task, Expression<Action<T>> callback);
+
+        void Send<T>(Expression<Func<T>> notification) where T : INotification;
 
         IProcessorContext Context { get; }
     }
@@ -30,19 +28,19 @@ namespace Broadcast
 
         public Broadcaster(ITaskStore store)
         {
-            Context.TaskStore = store;
+            Context.Tasks = store;
         }
 
         public Broadcaster(ProcessorMode mode, ITaskStore store)
         {
             Context.Mode = mode;
-            Context.TaskStore = store;
+            Context.Tasks = store;
         }
 
-        public Broadcaster(IProcessorContext context)
-        {
-            _context = context;
-        }
+        //public Broadcaster(IProcessorContext context)
+        //{
+        //    _context = context;
+        //}
 
         IProcessorContext _context;
         public IProcessorContext Context
@@ -50,7 +48,7 @@ namespace Broadcast
             get
             {
                 if (_context == null)
-                    _context = ProcessorContextFactory.ContextFactory();
+                    _context = ProcessorContextFactory.GetContext();
                 return _context;
             }
         }
@@ -58,21 +56,48 @@ namespace Broadcast
 		
         public void Send(Expression<Action> task)
         {
-            var backgroundJob = new BackgroundTask
-            {
-                Task = task,
-                State = TaskState.New
-            };
+            var backgroundTask = TaskFactory.CreateTask(task);
 
             using (var processor = Context.Open())
             {
-                processor.Process(backgroundJob);
+                processor.Process(backgroundTask);
             }
         }
 
         public void Send<T>(Expression<Func<T>> task, Expression<Action<T>> callback)
         {
             throw new NotImplementedException();
+        }
+
+
+
+
+
+
+
+
+        public void Send<T>(Expression<Func<T>> notification) where T : INotification
+        {
+            var backgroundTask = TaskFactory.CreateTask(notification);
+
+            using (var processor = Context.Open())
+            {
+                processor.Process(backgroundTask);
+            }
+        }
+
+
+        public void RegisterHandler<T>(INotificationTarget<T> target) where T : INotification
+        {
+            RegisterHandler<T>(a => target.Handle(a));
+        }
+
+        public void RegisterHandler<T>(Action<T> target) where T : INotification
+        {
+            using (var processor = Context.Open())
+            {
+                processor.AddHandler(target);
+            }
         }
     }
 }

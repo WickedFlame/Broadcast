@@ -20,7 +20,27 @@ namespace Broadcast.Test
             mediator.RegisterHandler<Message>(delegateHandler.Handle);
             mediator.RegisterHandler<Message>(a => expressionHandler = a.ID);
 
-            mediator.Publish(new Message(5));
+            mediator.Send(() => new Message(5));
+
+            Assert.IsTrue(notificationHandler.ID == 5);
+            Assert.IsTrue(delegateHandler.ID == 5);
+            Assert.IsTrue(expressionHandler == 5);
+        }
+
+        [TestMethod]
+        public void NotificationTests()
+        {
+            var mediator = new Broadcaster();
+            var notificationHandler = new NotificationHandler();
+            var delegateHandler = new DelegateHandler();
+            int expressionHandler = 0;
+
+
+            mediator.RegisterHandler(notificationHandler);
+            mediator.RegisterHandler<Message>(delegateHandler.Handle);
+            mediator.RegisterHandler<Message>(a => expressionHandler = a.ID);
+
+            mediator.Send(() => new Message(5));
 
             Assert.IsTrue(notificationHandler.ID == 5);
             Assert.IsTrue(delegateHandler.ID == 5);
@@ -39,7 +59,7 @@ namespace Broadcast.Test
             mediator.RegisterHandler<Message>(delegateHandler.Handle);
             mediator.RegisterHandler<Message>(a => expressionHandler = a.ID);
 
-            await mediator.PublishAsync(new Message(5));
+            await mediator.SendAsync(() => new Message(5));
 
             Assert.IsTrue(notificationHandler.ID == 5);
             Assert.IsTrue(delegateHandler.ID == 5);
@@ -48,25 +68,25 @@ namespace Broadcast.Test
 
 
 
-class Message : INotification
-{
-    public Message(int id)
-    {
-        ID = id;
-    }
+        class Message : INotification
+        {
+            public Message(int id)
+            {
+                ID = id;
+            }
 
-    public int ID { get; private set; }
-}
+            public int ID { get; private set; }
+        }
 
-class NotificationHandler : INotificationTarget<Message>
-{
-    public void Handle(Message notification)
-    {
-        ID = notification.ID;
-    }
+        class NotificationHandler : INotificationTarget<Message>
+        {
+            public void Handle(Message notification)
+            {
+                ID = notification.ID;
+            }
 
-    public int ID { get; set; }
-}
+            public int ID { get; set; }
+        }
 
         class DelegateHandler
         {

@@ -40,8 +40,10 @@
     <Compile Include="EventSourcing\IProcessorContext.cs" />
     <Compile Include="EventSourcing\ITaskProcessor.cs" />
     <Compile Include="EventSourcing\ITaskStore.cs" />
+    <Compile Include="EventSourcing\NotificationHandlerStore.cs" />
     <Compile Include="EventSourcing\ProcessorContextFactory.cs" />
     <Compile Include="EventSourcing\ProcessorMode.cs" />
+    <Compile Include="EventSourcing\TaskFactory.cs" />
     <Compile Include="EventSourcing\TaskProcessor.cs" />
     <Compile Include="EventSourcing\TaskState.cs" />
     <Compile Include="EventSourcing\TaskStore.cs" />

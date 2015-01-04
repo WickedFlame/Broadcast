@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Broadcast.EventSourcing
 {
-    public abstract class TaskProcessorBase : IDisposable
+    public abstract class TaskProcessorBase : ITaskProcessor, IDisposable
     {
         private readonly ITaskStore _store;
         protected ITaskStore Store
@@ -16,18 +16,50 @@ namespace Broadcast.EventSourcing
             }
         }
 
-        public TaskProcessorBase(ITaskStore store)
+        private readonly INotificationHandlerStore _handlers;
+        protected INotificationHandlerStore Handlers
         {
-            _store = store;
+            get
+            {
+                return _handlers;
+            }
         }
 
-        protected virtual void ProcessItem(BackgroundTask job)
+        public TaskProcessorBase(ITaskStore store, INotificationHandlerStore handlers)
         {
-            Store.SetInprocess(job);
+            _store = store;
+            _handlers = handlers;
+        }
 
-            job.Task.Compile().Invoke();
+        public void AddHandler<T>(Action<T> target) where T : INotification
+        {
+            Handlers.AddHandler(target);
+        }
 
-            Store.SetProcessed(job);
+        public abstract void Process(BackgroundTask task);
+
+        protected virtual void ProcessItem(BackgroundTask task)
+        {
+            Store.SetInprocess(task);
+
+            task.Task.Compile().Invoke();
+
+            Store.SetProcessed(task);
+        }
+
+        public void Process<T>(NotificationTask<T> notification) where T : INotification
+        {
+            List<Action<INotification>> handlers;
+
+            if (!Handlers.Handlers.TryGetValue(typeof(T), out handlers))
+            {
+                return;
+            }
+
+            foreach (var handler in handlers)
+            {
+                handler(notification.Task.Compile().Invoke());
+            }
         }
 
         public void Dispose()
@@ -40,16 +72,16 @@ namespace Broadcast.EventSourcing
     /// </summary>
     public class TaskProcessor : TaskProcessorBase, ITaskProcessor
     {
-        public TaskProcessor(ITaskStore store)
-            : base(store)
+        public TaskProcessor(ITaskStore store, INotificationHandlerStore handlers)
+            : base(store, handlers)
         {
         }
 
-        public void Process(BackgroundTask job)
+        public override void Process(BackgroundTask task)
         {
-            Store.Add(job);
+            Store.Add(task);
 
-            ProcessItem(job);
+            ProcessItem(task);
         }
     }
 
@@ -60,15 +92,20 @@ namespace Broadcast.EventSourcing
     {
         private static object ProcessorLock = new object();
 
-        public BackgroundTaskProcessor(ITaskStore store)
-            : base(store)
+        public BackgroundTaskProcessor(ITaskStore store, INotificationHandlerStore handlers)
+            : base(store, handlers)
         {
         }
 
-        public void Process(BackgroundTask task)
+        public override void Process(BackgroundTask task)
         {
             Store.Add(task);
 
+            // check if a thread is allready processing the queue
+            if (_inProcess)
+                return;
+
+            // start new background thread to process all queued tasks
             Task.Run(() => ProcessTasks());
         }
 
@@ -76,11 +113,12 @@ namespace Broadcast.EventSourcing
 
         private void ProcessTasks()
         {
+            // check if a thread is allready processing the queue
+            if (_inProcess)
+                return;
+
             lock (ProcessorLock)
             {
-                if (_inProcess)
-                    return;
-
                 _inProcess = true;
 
                 while (Store.CountQueue > 0)
@@ -104,12 +142,12 @@ namespace Broadcast.EventSourcing
     /// </summary>
     public class AsyncTaskProcessor : TaskProcessorBase, ITaskProcessor
     {
-        public AsyncTaskProcessor(ITaskStore store)
-            : base(store)
+        public AsyncTaskProcessor(ITaskStore store, INotificationHandlerStore handlers)
+            : base(store, handlers)
         {
         }
 
-        public void Process(BackgroundTask task)
+        public override void Process(BackgroundTask task)
         {
             Store.Add(task);
 

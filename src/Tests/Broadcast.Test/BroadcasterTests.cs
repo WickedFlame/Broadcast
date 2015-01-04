@@ -29,7 +29,7 @@ namespace Broadcast.Test
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
 
-            IBroadcaster broadcaster = new Broadcaster(new ProcessorContext());
+            IBroadcaster broadcaster = new Broadcaster();
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
@@ -63,7 +63,7 @@ namespace Broadcast.Test
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
 
-            IBroadcaster broadcaster = new Broadcaster(new ProcessorContext(ProcessorMode.Background));
+            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background);
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
@@ -97,7 +97,7 @@ namespace Broadcast.Test
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
 
-            IBroadcaster broadcaster = new Broadcaster(new ProcessorContext(ProcessorMode.Async));
+            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Async);
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
