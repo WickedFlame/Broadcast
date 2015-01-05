@@ -1,6 +1,7 @@
 ﻿using Broadcast.EventSourcing;
 using System;
 using System.Linq.Expressions;
+using System.Text;
 
 namespace Broadcast
 {
@@ -81,7 +82,12 @@ namespace Broadcast
         public async System.Threading.Tasks.Task SendAsync<T>(Expression<Func<T>> notification) where T : INotification
         {
             if (Context.Mode != ProcessorMode.Default)
-                throw new InvalidOperationException("Async message handling is only alowed when running the broadcast context in Default Mode");
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine("Async message handling is only alowed when running the broadcast context in Default Mode.");
+                sb.AppendLine("Use Send(message) if ProcessorMode is intentialy run in another mode than ProcessorMode.Default");
+                throw new InvalidOperationException(sb.ToString());
+            }
 
             var task = TaskFactory.CreateTask(notification);
             using (var processor = Context.Open())

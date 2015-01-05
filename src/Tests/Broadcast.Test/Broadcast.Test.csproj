@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="BroadcasterTests.cs" />
     <Compile Include="MediatorTests.cs" />
+    <Compile Include="NotificationTests.cs" />
     <Compile Include="ProcessorContextTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestPublisherTests.cs" />

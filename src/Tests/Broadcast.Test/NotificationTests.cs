@@ -1,17 +1,19 @@
 ﻿using System;
-using NUnit;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace Broadcast.Test
 {
     [TestFixture]
-    public class MediatorTests
+    public class NotificationTests
     {
         [Test]
-        public void MediatorNotificationTests()
+        public void DefaultNotificationTests()
         {
-            var mediator = new Mediator();
+            var mediator = new Broadcaster();
             var notificationHandler = new NotificationHandler();
             var delegateHandler = new DelegateHandler();
             int expressionHandler = 0;
@@ -29,12 +31,13 @@ namespace Broadcast.Test
         }
 
         [Test]
-        public async Task MediatorAsyncNotificationTests()
+        public async Task NotificationAsyncTests()
         {
-            var mediator = new Mediator();
+            var mediator = new Broadcaster();
             var notificationHandler = new NotificationHandler();
             var delegateHandler = new DelegateHandler();
             int expressionHandler = 0;
+
 
             mediator.RegisterHandler(notificationHandler);
             mediator.RegisterHandler<Message>(delegateHandler.Handle);
@@ -48,9 +51,9 @@ namespace Broadcast.Test
         }
 
         [Test]
-        public async Task MediatorAsyncWithMultipleHandlersTests()
+        public async Task NotificationAsyncWithMultipleHandlersTests()
         {
-            var mediator = new Mediator();
+            var mediator = new Broadcaster();
             int handlerOne = 0;
             int handlerTwo = 0;
 
@@ -64,11 +67,9 @@ namespace Broadcast.Test
         }
 
         [Test]
-        public async Task MediatorInFalseModeTest()
+        public async Task NotificationAsyncFailTests()
         {
-            var mediator = new Mediator();
-            mediator.Context.Mode = ProcessorMode.Async;
-
+            var mediator = new Broadcaster(ProcessorMode.Async);
             int expressionHandler = 0;
 
             mediator.RegisterHandler<Message>(a => expressionHandler = a.ID);
@@ -84,6 +85,8 @@ namespace Broadcast.Test
 
             Assert.Fail();
         }
+
+
 
         class Message : INotification
         {
