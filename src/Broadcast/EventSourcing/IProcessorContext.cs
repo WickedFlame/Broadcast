@@ -8,7 +8,7 @@ namespace Broadcast
     {
         ITaskProcessor Open();
 
-        ITaskStore Tasks { get; set; }
+        ITaskStore Store { get; set; }
 
         IEnumerable<WorkerTask> ProcessedTasks { get; }
 

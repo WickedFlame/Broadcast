@@ -1,4 +1,5 @@
-﻿using Broadcast.EventSourcing;
+﻿using System.Linq;
+using Broadcast.EventSourcing;
 using System;
 using System.Collections.Generic;
 
@@ -29,7 +30,7 @@ namespace Broadcast
         }
 
         ITaskStore _store;
-        public ITaskStore Tasks
+        public ITaskStore Store
         {
             get
             {
@@ -45,7 +46,7 @@ namespace Broadcast
         {
             get
             {
-                return _store;
+                return _store.Where(s => s.State == TaskState.Processed);
             }
         }
 

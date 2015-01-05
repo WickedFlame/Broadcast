@@ -35,13 +35,13 @@ namespace Broadcast
 
         public Broadcaster(ITaskStore store)
         {
-            Context.Tasks = store;
+            Context.Store = store;
         }
 
         public Broadcaster(ProcessorMode mode, ITaskStore store)
         {
             Context.Mode = mode;
-            Context.Tasks = store;
+            Context.Store = store;
         }
 
         private IProcessorContext _context;

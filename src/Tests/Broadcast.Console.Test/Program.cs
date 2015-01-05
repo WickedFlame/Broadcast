@@ -55,12 +55,12 @@ namespace Broadcast.Console.Test
                         broadcaster.Send(() => System.Console.WriteLine(string.Format(format, value)));
                     }
 
-                    System.Console.WriteLine(string.Format("Items in Queue: {0}", broadcaster.Context.Tasks.CountQueue));
+                    System.Console.WriteLine(string.Format("Items in Queue: {0}", broadcaster.Context.Store.CountQueue));
                     System.Console.WriteLine(string.Format("Items porcessed: {0}", broadcaster.Context.ProcessedTasks.Count()));
 
                     System.Threading.Thread.Sleep(TimeSpan.FromSeconds(1));
 
-                    System.Console.WriteLine(string.Format("Items in Queue: {0}", broadcaster.Context.Tasks.CountQueue));
+                    System.Console.WriteLine(string.Format("Items in Queue: {0}", broadcaster.Context.Store.CountQueue));
                     System.Console.WriteLine(string.Format("Items porcessed: {0}", broadcaster.Context.ProcessedTasks.Count()));
                 }
 

@@ -24,7 +24,7 @@ namespace Broadcast.Test
             var context = new ProcessorContext();
 
             Assert.IsTrue(context.Mode == ProcessorMode.Default);
-            Assert.IsNotNull(context.Tasks);
+            Assert.IsNotNull(context.Store);
         }
 
         [Test]
@@ -35,7 +35,7 @@ namespace Broadcast.Test
             var context = new ProcessorContext();
 
             Assert.IsTrue(context.Mode == ProcessorMode.Async);
-            Assert.IsNotNull(context.Tasks);
+            Assert.IsNotNull(context.Store);
         }
 
         [Test]
@@ -46,7 +46,7 @@ namespace Broadcast.Test
             var context = new ProcessorContext(ProcessorMode.Background);
 
             Assert.IsTrue(context.Mode == ProcessorMode.Background);
-            Assert.IsNotNull(context.Tasks);
+            Assert.IsNotNull(context.Store);
         }
 
         [Test]
