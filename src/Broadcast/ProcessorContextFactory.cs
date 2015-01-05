@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Broadcast.EventSourcing
+namespace Broadcast
 {
     public class ProcessorContextFactory
     {

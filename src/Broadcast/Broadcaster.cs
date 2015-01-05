@@ -2,26 +2,10 @@
 using System;
 using System.Linq.Expressions;
 using System.Text;
+using Task = System.Threading.Tasks.Task;
 
 namespace Broadcast
 {
-    public interface IBroadcaster
-    {
-        IProcessorContext Context { get; }
-
-        void Send(Expression<Action> task);
-
-        //void Send<T>(Expression<Func<T>> task, Expression<Action<T>> callback);
-
-        System.Threading.Tasks.Task SendAsync<T>(Expression<Func<T>> notification) where T : INotification;
-
-        void Send<T>(Expression<Func<T>> notification) where T : INotification;
-
-        void RegisterHandler<T>(INotificationTarget<T> target) where T : INotification;
-
-        void RegisterHandler<T>(Action<T> target) where T : INotification;
-    }
-
     public class Broadcaster : IBroadcaster
     {
         public Broadcaster()
@@ -46,6 +30,9 @@ namespace Broadcast
 
         private IProcessorContext _context;
 
+        /// <summary>
+        /// Gets the ProcessorContext that containes all information create a TaskProcessor
+        /// </summary>
         public IProcessorContext Context
         {
             get
@@ -56,6 +43,10 @@ namespace Broadcast
             }
         }
 
+        /// <summary>
+        /// Send a delegate to the task processor
+        /// </summary>
+        /// <param name="task"></param>
         public void Send(Expression<Action> task)
         {
             var backgroundTask = TaskFactory.CreateTask(task);
@@ -70,6 +61,11 @@ namespace Broadcast
         //    throw new NotImplementedException();
         //}
 
+        /// <summary>
+        /// Sends a INotification to the processor. The INotification will be passed to all registered Handlers of the same type
+        /// </summary>
+        /// <typeparam name="T">The notification type</typeparam>
+        /// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
         public void Send<T>(Expression<Func<T>> notification) where T : INotification
         {
             var backgroundTask = TaskFactory.CreateTask(notification);
@@ -79,7 +75,13 @@ namespace Broadcast
             }
         }
 
-        public async System.Threading.Tasks.Task SendAsync<T>(Expression<Func<T>> notification) where T : INotification
+        /// <summary>
+        /// Sends a INotification async to the processor. The INotification will be passed to all registered Handlers of the same type. Async method calls are only allowed in ProcessorMode.Default
+        /// </summary>
+        /// <typeparam name="T">The notification type</typeparam>
+        /// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
+        /// <returns></returns>
+        public async Task SendAsync<T>(Expression<Func<T>> notification) where T : INotification
         {
             if (Context.Mode != ProcessorMode.Default)
             {
@@ -92,15 +94,25 @@ namespace Broadcast
             var task = TaskFactory.CreateTask(notification);
             using (var processor = Context.Open())
             {
-                await System.Threading.Tasks.Task.Run(() => processor.Process(task));
+                await Task.Run(() => processor.Process(task));
             }
         }
 
+        /// <summary>
+        /// Register a INotificationTarget that gets called when a INotification of the same type is sent
+        /// </summary>
+        /// <typeparam name="T">The notification type</typeparam>
+        /// <param name="target">The INotificationTarget that handles the INotification</param>
         public void RegisterHandler<T>(INotificationTarget<T> target) where T : INotification
         {
             RegisterHandler<T>(a => target.Handle(a));
         }
 
+        /// <summary>
+        /// Register a delegate that gets called when a INotification of the same type is sent
+        /// </summary>
+        /// <typeparam name="T">The notification type</typeparam>
+        /// <param name="target">The delegate that handles the INotification</param>
         public void RegisterHandler<T>(Action<T> target) where T : INotification
         {
             using (var processor = Context.Open())

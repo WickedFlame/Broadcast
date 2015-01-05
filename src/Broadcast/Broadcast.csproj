@@ -37,18 +37,19 @@
   <ItemGroup>
     <Compile Include="Broadcaster.cs" />
     <Compile Include="EventSourcing\WorkerTask.cs" />
-    <Compile Include="EventSourcing\IProcessorContext.cs" />
-    <Compile Include="EventSourcing\ITaskProcessor.cs" />
+    <Compile Include="IBroadcaster.cs" />
+    <Compile Include="IProcessorContext.cs" />
+    <Compile Include="Processing\ITaskProcessor.cs" />
     <Compile Include="EventSourcing\ITaskStore.cs" />
     <Compile Include="EventSourcing\NotificationHandlerStore.cs" />
-    <Compile Include="EventSourcing\ProcessorContextFactory.cs" />
-    <Compile Include="EventSourcing\ProcessorMode.cs" />
+    <Compile Include="ProcessorContextFactory.cs" />
+    <Compile Include="ProcessorMode.cs" />
     <Compile Include="EventSourcing\TaskFactory.cs" />
-    <Compile Include="EventSourcing\TaskProcessor.cs" />
+    <Compile Include="Processing\TaskProcessor.cs" />
     <Compile Include="EventSourcing\TaskState.cs" />
     <Compile Include="EventSourcing\TaskStore.cs" />
     <Compile Include="EventSourcing\TaskStoreFactory.cs" />
-    <Compile Include="EventSourcing\ProcessorContext.cs" />
+    <Compile Include="ProcessorContext.cs" />
     <Compile Include="IMediator.cs" />
     <Compile Include="INotification.cs" />
     <Compile Include="INotificationTarget.cs" />

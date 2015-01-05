@@ -1,6 +1,7 @@
 ﻿using System;
+using Broadcast.EventSourcing;
 
-namespace Broadcast.EventSourcing
+namespace Broadcast.Processing
 {
     public interface ITaskProcessor : IDisposable
     {

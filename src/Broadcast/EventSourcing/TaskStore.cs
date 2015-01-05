@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace Broadcast.EventSourcing
 {
+    /// <summary>
+    /// Represents a store conatining all Tasks
+    /// </summary>
     public class TaskStore : ITaskStore, IEnumerable<WorkerTask>
     {
         static object QueueLock = new object();
@@ -17,6 +20,10 @@ namespace Broadcast.EventSourcing
             _store = new List<WorkerTask>();
         }
 
+        /// <summary>
+        /// Copies all Tasks that have been Queued to ne new List
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<WorkerTask> CopyQueue()
         {
             lock (QueueLock)
@@ -25,6 +32,9 @@ namespace Broadcast.EventSourcing
             }
         }
 
+        /// <summary>
+        /// Counts all unprocessed Tasks that are contained in the Queue
+        /// </summary>
         public int CountQueue
         {
             get
@@ -33,32 +43,44 @@ namespace Broadcast.EventSourcing
             }
         }
 
-        public void Add(WorkerTask job)
+        /// <summary>
+        /// Adds a new Task to the queue to be processed
+        /// </summary>
+        /// <param name="task"></param>
+        public void Add(WorkerTask task)
         {
             lock (QueueLock)
             {
-                _queue.Add(job);
+                _queue.Add(task);
             }
 
-            job.State = TaskState.Queued;
+            task.State = TaskState.Queued;
         }
 
-        public void SetInprocess(WorkerTask job)
+        /// <summary>
+        /// Sets tha task to InProcess mode
+        /// </summary>
+        /// <param name="task"></param>
+        public void SetInprocess(WorkerTask task)
         {
-            job.State = TaskState.InProcess;
+            task.State = TaskState.InProcess;
         }
 
-        public void SetProcessed(WorkerTask job)
+        /// <summary>
+        /// Sets the task to Processed mode and removes it from the process queue
+        /// </summary>
+        /// <param name="task"></param>
+        public void SetProcessed(WorkerTask task)
         {
             lock (QueueLock)
             {
-                if (_queue.Contains(job))
-                    _queue.Remove(job);
+                if (_queue.Contains(task))
+                    _queue.Remove(task);
             }
 
-            _store.Add(job);
+            _store.Add(task);
 
-            job.State = TaskState.Processed;
+            task.State = TaskState.Processed;
         }
 
         public IEnumerator<WorkerTask> GetEnumerator()

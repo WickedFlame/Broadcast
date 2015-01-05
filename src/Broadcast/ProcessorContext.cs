@@ -1,12 +1,19 @@
-﻿using System.Linq;
-using Broadcast.EventSourcing;
+﻿using Broadcast.EventSourcing;
+using Broadcast.Processing;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Broadcast
 {
+    /// <summary>
+    /// Represents the Context that provides all elements needed by the TaskProcessor
+    /// </summary>
     public class ProcessorContext : IProcessorContext
     {
+        readonly INotificationHandlerStore _notificationHandlers;
+        ITaskStore _store;
+
         public ProcessorContext()
             : this(TaskStoreFactory.GetStore(), ProcessorContextFactory.GetMode())
         {
@@ -29,7 +36,9 @@ namespace Broadcast
             _notificationHandlers = new NotificationHandlerStore();
         }
 
-        ITaskStore _store;
+        /// <summary>
+        /// Gets or sets the TaskSore containing all Tasks
+        /// </summary>
         public ITaskStore Store
         {
             get
@@ -42,6 +51,9 @@ namespace Broadcast
             }
         }
 
+        /// <summary>
+        /// Gets all Tasks that have been processed
+        /// </summary>
         public IEnumerable<WorkerTask> ProcessedTasks
         {
             get
@@ -50,7 +62,9 @@ namespace Broadcast
             }
         }
 
-        readonly INotificationHandlerStore _notificationHandlers;
+        /// <summary>
+        /// Gets the sore of the NotificationHandlers
+        /// </summary>
         internal INotificationHandlerStore NotificationHandlers
         {
             get
@@ -59,8 +73,15 @@ namespace Broadcast
             }
         }
 
+        /// <summary>
+        /// Gets or sets the ProcessorMode the Processor runs in
+        /// </summary>
         public ProcessorMode Mode { get; set; }
 
+        /// <summary>
+        /// Creates a new TaskProcessor that can be used to process the given task
+        /// </summary>
+        /// <returns></returns>
         public ITaskProcessor Open()
         {
             switch (Mode)
