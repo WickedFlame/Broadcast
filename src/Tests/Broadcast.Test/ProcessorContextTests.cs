@@ -1,5 +1,5 @@
 ﻿using Broadcast.EventSourcing;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 
 namespace Broadcast.Test
 {
-    [TestClass]
+    [TestFixture]
     public class ProcessorContextTests
     {
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             ProcessorContextFactory.ContextFactory = () => new ProcessorContext();
             ProcessorContextFactory.ModeFactory = null;
         }
 
-        [TestMethod]
+        [Test]
         public void DefaultProcessorContextTest()
         {
             var context = new ProcessorContext();
@@ -27,7 +27,7 @@ namespace Broadcast.Test
             Assert.IsNotNull(context.Tasks);
         }
 
-        [TestMethod]
+        [Test]
         public void ProcessorContextWithCustomModeTest()
         {
             ProcessorContextFactory.ModeFactory = () => ProcessorMode.Async;
@@ -38,7 +38,7 @@ namespace Broadcast.Test
             Assert.IsNotNull(context.Tasks);
         }
 
-        [TestMethod]
+        [Test]
         public void ProcessorContextWithCustomAndDefaultModeTest()
         {
             ProcessorContextFactory.ModeFactory = () => ProcessorMode.Async;
@@ -49,7 +49,7 @@ namespace Broadcast.Test
             Assert.IsNotNull(context.Tasks);
         }
 
-        [TestMethod]
+        [Test]
         public void ProcessorContextFactoryTest()
         {
             var context = new ProcessorContext();
@@ -58,7 +58,7 @@ namespace Broadcast.Test
             Assert.AreSame(context, ProcessorContextFactory.ContextFactory());
         }
 
-        [TestMethod]
+        [Test]
         public void BroadcasterWithCustomProcessorContextFactoryTest()
         {
             var context = new ProcessorContext();

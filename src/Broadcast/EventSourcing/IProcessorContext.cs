@@ -10,7 +10,7 @@ namespace Broadcast
 
         ITaskStore Tasks { get; set; }
 
-        IEnumerable<BackgroundTask> ProcessedTasks { get; }
+        IEnumerable<WorkerTask> ProcessedTasks { get; }
 
         ProcessorMode Mode { get; set; }
     }

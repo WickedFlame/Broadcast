@@ -5,18 +5,18 @@ namespace Broadcast.EventSourcing
 {
     internal static class TaskFactory
     {
-        public static BackgroundTask CreateTask(Expression<Action> task)
+        public static DelegateTask CreateTask(Expression<Action> task)
         {
-            return new BackgroundTask
+            return new DelegateTask
             {
                 Task = task,
                 State = TaskState.New
             };
         }
 
-        internal static NotificationTask<T> CreateTask<T>(Expression<Func<T>> notification)
+        public static DelegateTask<T> CreateTask<T>(Expression<Func<T>> notification)
         {
-            return new NotificationTask<T>
+            return new DelegateTask<T>
             {
                 Task = notification,
                 State = TaskState.New

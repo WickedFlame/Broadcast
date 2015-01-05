@@ -1,14 +1,14 @@
 ﻿using Broadcast.EventSourcing;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System.Diagnostics;
 using System.Linq;
 
 namespace Broadcast.Test
 {
-    [TestClass]
+    [TestFixture]
     public class BroadcasterTests
     {
-        [TestMethod]
+        [Test]
         public void BroadcasterDefaultProcessorTest()
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
@@ -24,7 +24,7 @@ namespace Broadcast.Test
             Assert.IsTrue(broadcaster.Context.ProcessedTasks.Count() == 10);
         }
 
-        [TestMethod]
+        [Test]
         public void BroadcasterDefaultProcessorWithProcessorTest()
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
@@ -40,7 +40,7 @@ namespace Broadcast.Test
             Assert.IsTrue(broadcaster.Context.ProcessedTasks.Count() == 10);
         }
 
-        [TestMethod]
+        [Test]
         public void BroadcasterDefaultProcessorWithModeParameterTest()
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
@@ -56,9 +56,7 @@ namespace Broadcast.Test
             Assert.IsTrue(broadcaster.Context.ProcessedTasks.Count() == 10);
         }
 
-
-
-        [TestMethod]
+        [Test]
         public void BroadcasterBackgroundProcessorTest()
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
@@ -74,7 +72,7 @@ namespace Broadcast.Test
             Assert.IsTrue(broadcaster.Context.ProcessedTasks.Count() == 10);
         }
 
-        [TestMethod]
+        [Test]
         public void BroadcasterBackgroundProcessorWithModeParameterTest()
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
@@ -92,7 +90,7 @@ namespace Broadcast.Test
 
 
 
-        [TestMethod]
+        [Test]
         public void BroadcasterAsyncProcessorTest()
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
@@ -108,7 +106,7 @@ namespace Broadcast.Test
             Assert.IsTrue(broadcaster.Context.ProcessedTasks.Count() == 10);
         }
 
-        [TestMethod]
+        [Test]
         public void BroadcasterAsyncProcessorWithModeParameterTest()
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
@@ -123,12 +121,12 @@ namespace Broadcast.Test
             System.Threading.Thread.Sleep(System.TimeSpan.FromSeconds(1));
             Assert.IsTrue(broadcaster.Context.ProcessedTasks.Count() == 10);
         }
-		
-		[TestMethod]
+
+        [Test]
         public void BroadcasterAsyncWithStoreTest()
         {
             IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Async, new TaskStore());
-			
+
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
@@ -139,7 +137,7 @@ namespace Broadcast.Test
             Assert.IsTrue(broadcaster.Context.ProcessedTasks.Count() == 10);
         }
 
-        [TestMethod]
+        [Test]
         public void BroadcasterBackgroundWithStoreTest()
         {
             IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background, new TaskStore());
@@ -153,6 +151,5 @@ namespace Broadcast.Test
             System.Threading.Thread.Sleep(System.TimeSpan.FromSeconds(1));
             Assert.IsTrue(broadcaster.Context.ProcessedTasks.Count() == 10);
         }
-
     }
 }

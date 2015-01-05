@@ -2,16 +2,16 @@
 
 namespace Broadcast.EventSourcing
 {
-    public interface ITaskStore : IEnumerable<BackgroundTask>
+    public interface ITaskStore : IEnumerable<WorkerTask>
     {
-        IEnumerable<BackgroundTask> CopyQueue();
+        IEnumerable<WorkerTask> CopyQueue();
 
         int CountQueue { get; }
 
-        void Add(BackgroundTask job);
+        void Add(WorkerTask job);
 
-        void SetInprocess(BackgroundTask job);
+        void SetInprocess(WorkerTask job);
 
-        void SetProcessed(BackgroundTask job);
+        void SetProcessed(WorkerTask job);
     }
 }

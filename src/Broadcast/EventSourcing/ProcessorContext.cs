@@ -41,7 +41,7 @@ namespace Broadcast
             }
         }
 
-        public IEnumerable<BackgroundTask> ProcessedTasks
+        public IEnumerable<WorkerTask> ProcessedTasks
         {
             get
             {

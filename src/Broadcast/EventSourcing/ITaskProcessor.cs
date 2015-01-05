@@ -6,8 +6,8 @@ namespace Broadcast.EventSourcing
     {
         void AddHandler<T>(Action<T> target) where T : INotification;
 
-        void Process(BackgroundTask task);
+        void Process(DelegateTask task);
 
-        void Process<T>(NotificationTask<T> notification) where T : INotification;
+        void Process<T>(DelegateTask<T> notification) where T : INotification;
     }
 }

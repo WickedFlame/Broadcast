@@ -1,13 +1,13 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
+using NUnit.Framework;
 
 namespace Broadcast.Test
 {
-    [TestClass]
+    [TestFixture]
     public class RequestPublisherTests
     {
-        [TestMethod]
+        [Test]
         public void RequestHandlerTest()
         {
             var requestHandler = new RequestHandler();
@@ -17,7 +17,7 @@ namespace Broadcast.Test
             Assert.IsTrue(requestHandler.ID == 5);
         }
 
-        [TestMethod]
+        [Test]
         public async Task AsyncRequestHandlerTest()
         {
             var requestHandler = new RequestHandler();
@@ -27,7 +27,7 @@ namespace Broadcast.Test
             Assert.IsTrue(requestHandler.ID == 5);
         }
 
-        [TestMethod]
+        [Test]
         public void RequestHandlerWithResultTest()
         {
             var requestHandler = new ResultRequestHandler();
@@ -37,7 +37,7 @@ namespace Broadcast.Test
             Assert.IsTrue(id == 5);
         }
 
-        [TestMethod]
+        [Test]
         public async Task AsyncRequestHandlerWithResultTest()
         {
             var requestHandler = new ResultRequestHandler();

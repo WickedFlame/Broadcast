@@ -1,13 +1,14 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit;
 using System.Threading.Tasks;
+using NUnit.Framework;
 
 namespace Broadcast.Test
 {
-    [TestClass]
+    [TestFixture]
     public class MediatorTests
     {
-        [TestMethod]
+        [Test]
         public void MediatorNotificationTests()
         {
             var mediator = new Mediator();
@@ -27,7 +28,7 @@ namespace Broadcast.Test
             Assert.IsTrue(expressionHandler == 5);
         }
 
-        [TestMethod]
+        [Test]
         public void NotificationTests()
         {
             var mediator = new Broadcaster();
@@ -47,7 +48,7 @@ namespace Broadcast.Test
             Assert.IsTrue(expressionHandler == 5);
         }
 
-        [TestMethod]
+        [Test]
         public async Task MediatorAsyncNotificationTests()
         {
             var mediator = new Mediator();
@@ -66,11 +67,91 @@ namespace Broadcast.Test
             Assert.IsTrue(expressionHandler == 5);
         }
 
+        [Test]
+        public async Task MediatorAsyncWithMultipleHandlersTests()
+        {
+            var mediator = new Mediator();
+            int handlerOne = 0;
+            int handlerTwo = 0;
 
+            mediator.RegisterHandler<Message>(a => handlerOne = a.ID);
+            mediator.RegisterHandler<MessageTwo>(a => handlerTwo = a.ID);
+
+            await mediator.SendAsync(() => new Message(5));
+
+            Assert.IsTrue(handlerOne == 5);
+            Assert.IsTrue(handlerTwo == 0);
+        }
+
+        [Test]
+        public async Task NotificationAsyncTests()
+        {
+            var mediator = new Broadcaster();
+            var notificationHandler = new NotificationHandler();
+            var delegateHandler = new DelegateHandler();
+            int expressionHandler = 0;
+
+
+            mediator.RegisterHandler(notificationHandler);
+            mediator.RegisterHandler<Message>(delegateHandler.Handle);
+            mediator.RegisterHandler<Message>(a => expressionHandler = a.ID);
+
+            await mediator.SendAsync(() => new Message(5));
+
+            Assert.IsTrue(notificationHandler.ID == 5);
+            Assert.IsTrue(delegateHandler.ID == 5);
+            Assert.IsTrue(expressionHandler == 5);
+        }
+
+        [Test]
+        public async Task NotificationAsyncWithMultipleHandlersTests()
+        {
+            var mediator = new Broadcaster();
+            int handlerOne = 0;
+            int handlerTwo = 0;
+
+            mediator.RegisterHandler<Message>(a => handlerOne = a.ID);
+            mediator.RegisterHandler<MessageTwo>(a => handlerTwo = a.ID);
+
+            await mediator.SendAsync(() => new Message(5));
+
+            Assert.IsTrue(handlerOne == 5);
+            Assert.IsTrue(handlerTwo == 0);
+        }
+
+        [Test]
+        public async Task NotificationAsyncFailTests()
+        {
+            var mediator = new Broadcaster(ProcessorMode.Async);
+            int expressionHandler = 0;
+
+            mediator.RegisterHandler<Message>(a => expressionHandler = a.ID);
+
+            try
+            {
+                await mediator.SendAsync(() => new Message(5));
+            }
+            catch (InvalidOperationException)
+            {
+                return;
+            }
+
+            Assert.Fail();
+        }
 
         class Message : INotification
         {
             public Message(int id)
+            {
+                ID = id;
+            }
+
+            public int ID { get; private set; }
+        }
+
+        class MessageTwo : INotification
+        {
+            public MessageTwo(int id)
             {
                 ID = id;
             }

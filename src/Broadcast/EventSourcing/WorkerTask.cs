@@ -8,17 +8,13 @@ namespace Broadcast.EventSourcing
         public TaskState State { get; set; }
     }
 
-    public class BackgroundTask : WorkerTask
+    public class DelegateTask : WorkerTask
     {
         public Expression<Action> Task { get; set; }
-
-        public TaskState State { get; set; }
     }
 
-    public class NotificationTask<T> : WorkerTask
+    public class DelegateTask<T> : WorkerTask
     {
         public Expression<Func<T>> Task { get; set; }
-
-        public TaskState State { get; set; }
     }
 }

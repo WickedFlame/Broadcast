@@ -4,20 +4,20 @@ using System.Linq;
 
 namespace Broadcast.EventSourcing
 {
-    public class TaskStore : ITaskStore, IEnumerable<BackgroundTask>
+    public class TaskStore : ITaskStore, IEnumerable<WorkerTask>
     {
         static object QueueLock = new object();
 
-        readonly List<BackgroundTask> _queue;
-        readonly List<BackgroundTask> _store;
+        readonly List<WorkerTask> _queue;
+        readonly List<WorkerTask> _store;
 
         public TaskStore()
         {
-            _queue = new List<BackgroundTask>();
-            _store = new List<BackgroundTask>();
+            _queue = new List<WorkerTask>();
+            _store = new List<WorkerTask>();
         }
 
-        public IEnumerable<BackgroundTask> CopyQueue()
+        public IEnumerable<WorkerTask> CopyQueue()
         {
             lock (QueueLock)
             {
@@ -33,7 +33,7 @@ namespace Broadcast.EventSourcing
             }
         }
 
-        public void Add(BackgroundTask job)
+        public void Add(WorkerTask job)
         {
             lock (QueueLock)
             {
@@ -43,12 +43,12 @@ namespace Broadcast.EventSourcing
             job.State = TaskState.Queued;
         }
 
-        public void SetInprocess(BackgroundTask job)
+        public void SetInprocess(WorkerTask job)
         {
             job.State = TaskState.InProcess;
         }
 
-        public void SetProcessed(BackgroundTask job)
+        public void SetProcessed(WorkerTask job)
         {
             lock (QueueLock)
             {
@@ -61,7 +61,7 @@ namespace Broadcast.EventSourcing
             job.State = TaskState.Processed;
         }
 
-        public IEnumerator<BackgroundTask> GetEnumerator()
+        public IEnumerator<WorkerTask> GetEnumerator()
         {
             return _store.GetEnumerator();
         }

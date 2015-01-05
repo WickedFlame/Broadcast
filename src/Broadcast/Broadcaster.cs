@@ -6,13 +6,19 @@ namespace Broadcast
 {
     public interface IBroadcaster
     {
+        IProcessorContext Context { get; }
+
         void Send(Expression<Action> task);
 
-        void Send<T>(Expression<Func<T>> task, Expression<Action<T>> callback);
+        //void Send<T>(Expression<Func<T>> task, Expression<Action<T>> callback);
+
+        System.Threading.Tasks.Task SendAsync<T>(Expression<Func<T>> notification) where T : INotification;
 
         void Send<T>(Expression<Func<T>> notification) where T : INotification;
 
-        IProcessorContext Context { get; }
+        void RegisterHandler<T>(INotificationTarget<T> target) where T : INotification;
+
+        void RegisterHandler<T>(Action<T> target) where T : INotification;
     }
 
     public class Broadcaster : IBroadcaster
@@ -37,12 +43,8 @@ namespace Broadcast
             Context.Tasks = store;
         }
 
-        //public Broadcaster(IProcessorContext context)
-        //{
-        //    _context = context;
-        //}
+        private IProcessorContext _context;
 
-        IProcessorContext _context;
         public IProcessorContext Context
         {
             get
@@ -52,40 +54,41 @@ namespace Broadcast
                 return _context;
             }
         }
-      
-		
+
         public void Send(Expression<Action> task)
         {
             var backgroundTask = TaskFactory.CreateTask(task);
-
             using (var processor = Context.Open())
             {
                 processor.Process(backgroundTask);
             }
         }
 
-        public void Send<T>(Expression<Func<T>> task, Expression<Action<T>> callback)
-        {
-            throw new NotImplementedException();
-        }
-
-
-
-
-
-
-
+        //public void Send<T>(Expression<Func<T>> task, Expression<Action<T>> callback)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public void Send<T>(Expression<Func<T>> notification) where T : INotification
         {
             var backgroundTask = TaskFactory.CreateTask(notification);
-
             using (var processor = Context.Open())
             {
                 processor.Process(backgroundTask);
             }
         }
 
+        public async System.Threading.Tasks.Task SendAsync<T>(Expression<Func<T>> notification) where T : INotification
+        {
+            if (Context.Mode != ProcessorMode.Default)
+                throw new InvalidOperationException("Async message handling is only alowed when running the broadcast context in Default Mode");
+
+            var task = TaskFactory.CreateTask(notification);
+            using (var processor = Context.Open())
+            {
+                await System.Threading.Tasks.Task.Run(() => processor.Process(task));
+            }
+        }
 
         public void RegisterHandler<T>(INotificationTarget<T> target) where T : INotification
         {

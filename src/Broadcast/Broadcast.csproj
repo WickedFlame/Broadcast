@@ -36,7 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Broadcaster.cs" />
-    <Compile Include="EventSourcing\BackgroundTask.cs" />
+    <Compile Include="EventSourcing\WorkerTask.cs" />
     <Compile Include="EventSourcing\IProcessorContext.cs" />
     <Compile Include="EventSourcing\ITaskProcessor.cs" />
     <Compile Include="EventSourcing\ITaskStore.cs" />

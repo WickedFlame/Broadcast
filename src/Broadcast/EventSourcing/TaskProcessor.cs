@@ -36,9 +36,9 @@ namespace Broadcast.EventSourcing
             Handlers.AddHandler(target);
         }
 
-        public abstract void Process(BackgroundTask task);
+        public abstract void Process(DelegateTask task);
 
-        protected virtual void ProcessItem(BackgroundTask task)
+        protected virtual void ProcessItem(DelegateTask task)
         {
             Store.SetInprocess(task);
 
@@ -47,8 +47,12 @@ namespace Broadcast.EventSourcing
             Store.SetProcessed(task);
         }
 
-        public void Process<T>(NotificationTask<T> notification) where T : INotification
+        public void Process<T>(DelegateTask<T> task) where T : INotification
         {
+            Store.Add(task);
+
+            Store.SetInprocess(task);
+
             List<Action<INotification>> handlers;
 
             if (!Handlers.Handlers.TryGetValue(typeof(T), out handlers))
@@ -58,8 +62,10 @@ namespace Broadcast.EventSourcing
 
             foreach (var handler in handlers)
             {
-                handler(notification.Task.Compile().Invoke());
+                handler(task.Task.Compile().Invoke());
             }
+
+            Store.SetProcessed(task);
         }
 
         public void Dispose()
@@ -77,7 +83,7 @@ namespace Broadcast.EventSourcing
         {
         }
 
-        public override void Process(BackgroundTask task)
+        public override void Process(DelegateTask task)
         {
             Store.Add(task);
 
@@ -90,14 +96,16 @@ namespace Broadcast.EventSourcing
     /// </summary>
     public class BackgroundTaskProcessor : TaskProcessorBase, ITaskProcessor
     {
-        private static object ProcessorLock = new object();
+        static object ProcessorLock = new object();
+
+        bool _inProcess = false;
 
         public BackgroundTaskProcessor(ITaskStore store, INotificationHandlerStore handlers)
             : base(store, handlers)
         {
         }
 
-        public override void Process(BackgroundTask task)
+        public override void Process(DelegateTask task)
         {
             Store.Add(task);
 
@@ -108,8 +116,6 @@ namespace Broadcast.EventSourcing
             // start new background thread to process all queued tasks
             Task.Run(() => ProcessTasks());
         }
-
-        bool _inProcess = false;
 
         private void ProcessTasks()
         {
@@ -123,7 +129,7 @@ namespace Broadcast.EventSourcing
 
                 while (Store.CountQueue > 0)
                 {
-                    var queue = new Queue<BackgroundTask>(Store.CopyQueue().Where(t => t.State == TaskState.Queued));
+                    var queue = new Queue<DelegateTask>(Store.CopyQueue().OfType<DelegateTask>().Where(t => t.State == TaskState.Queued));
                     while (queue.Any())
                     {
                         var task = queue.Dequeue();
@@ -147,7 +153,7 @@ namespace Broadcast.EventSourcing
         {
         }
 
-        public override void Process(BackgroundTask task)
+        public override void Process(DelegateTask task)
         {
             Store.Add(task);
 
