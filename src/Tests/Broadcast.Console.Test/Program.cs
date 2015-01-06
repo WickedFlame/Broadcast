@@ -18,6 +18,7 @@ namespace Broadcast.Console.Test
             System.Console.WriteLine("Possyble commands:");
             System.Console.WriteLine("   async");
             System.Console.WriteLine("   background");
+            System.Console.WriteLine("   memory");
 
             var input = System.Console.ReadLine();
 
@@ -38,10 +39,15 @@ namespace Broadcast.Console.Test
                     case "exit":
                         return;
 
+                    case "memory":
+                        DoMemoryTest();
+                        break;
+
                     default:
                         System.Console.WriteLine("Possyble commands:");
                         System.Console.WriteLine("   async");
                         System.Console.WriteLine("   background");
+                        System.Console.WriteLine("   memory");
                         format = null;
                         break;
                 }
@@ -66,6 +72,45 @@ namespace Broadcast.Console.Test
 
                 input = System.Console.ReadLine();
             }
+        }
+
+        private static void DoMemoryTest()
+        {
+            var broadcaster = new Broadcaster(ProcessorMode.Async);
+            for (int i = 0; i < 4; i++)
+            {
+                var tmp = new BroadcasterMemoryUser();
+                broadcaster.Send(() => tmp.useMemory());
+            }
+
+            broadcaster.Send(() => System.Console.WriteLine(" - Done"));
+        }
+
+        public class BroadcasterMemoryUser
+        {
+            public void useMemory()
+            {
+                var broadcaster = new Broadcaster();
+                for (int i = 0; i < 1000; i++)
+                {
+                    var tmp = new MemoryClass();
+                    broadcaster.Send(() => tmp.UseMemory());
+                }
+            }
+        }
+
+        public class MemoryClass
+        {
+            public void UseMemory()
+            {
+                array = new int[100000];
+                for (int i = 0; i < 100000; i++)
+                {
+                    array[i] = 1000000000;
+                }
+            }
+
+            private int[] array;
         }
     }
 }

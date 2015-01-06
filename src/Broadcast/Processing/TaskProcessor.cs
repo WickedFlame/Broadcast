@@ -61,9 +61,11 @@ namespace Broadcast.Processing
                 return;
             }
 
+            var item = task.Task.Compile().Invoke();
+
             foreach (var handler in handlers)
             {
-                handler(task.Task.Compile().Invoke());
+                handler(item);
             }
 
             Store.SetProcessed(task);

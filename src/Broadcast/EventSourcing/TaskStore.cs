@@ -80,6 +80,7 @@ namespace Broadcast.EventSourcing
 
             _store.Add(task);
 
+            task.CloseTask();
             task.State = TaskState.Processed;
         }
 
