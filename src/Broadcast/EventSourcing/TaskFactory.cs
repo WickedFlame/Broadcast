@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace Broadcast.EventSourcing
 {
-    internal static class TaskFactory
+    public static class TaskFactory
     {
         public static DelegateTask CreateTask(Expression<Action> task)
         {
@@ -33,7 +27,7 @@ namespace Broadcast.EventSourcing
             };
         }
 
-        public static DelegateTask<T> CreateTask<T>(Expression<Func<T>> notification)
+        public static DelegateTask<T> CreateTask<T>(Expression<Func<T>> notification) where T : INotification
         {
             if (notification == null)
                 throw new ArgumentNullException("notification");

@@ -2,6 +2,7 @@
 using Broadcast.EventSourcing;
 using System;
 using System.Linq.Expressions;
+using Task = System.Threading.Tasks.Task;
 
 namespace Broadcast
 {
@@ -47,7 +48,7 @@ namespace Broadcast
             }
         }
 
-        public async System.Threading.Tasks.Task SendAsync<T>(Expression<Func<T>> notification) where T : INotification
+        public async Task SendAsync<T>(Expression<Func<T>> notification) where T : INotification
         {
             if (Context.Mode != ProcessorMode.Default)
             {

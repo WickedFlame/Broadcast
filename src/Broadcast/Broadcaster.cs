@@ -46,13 +46,13 @@ namespace Broadcast
         /// <summary>
         /// Send a delegate to the task processor
         /// </summary>
-        /// <param name="task"></param>
-        public void Send(Expression<Action> task)
+        /// <param name="action"></param>
+        public void Send(Expression<Action> action)
         {
-            var backgroundTask = TaskFactory.CreateTask(task);
+            var task = TaskFactory.CreateTask(action);
             using (var processor = Context.Open())
             {
-                processor.Process(backgroundTask);
+                processor.Process(task);
             }
         }
 
@@ -68,10 +68,10 @@ namespace Broadcast
         /// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
         public void Send<T>(Expression<Func<T>> notification) where T : INotification
         {
-            var backgroundTask = TaskFactory.CreateTask(notification);
+            var task = TaskFactory.CreateTask(notification);
             using (var processor = Context.Open())
             {
-                processor.Process(backgroundTask);
+                processor.Process(task);
             }
         }
 

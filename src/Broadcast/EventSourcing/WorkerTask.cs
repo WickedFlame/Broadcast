@@ -9,6 +9,7 @@ namespace Broadcast.EventSourcing
         public TaskState State { get; set; }
 
         public Type Type { get; set; }
+
         public MethodInfo Method { get; set; }
 
         public string[] Arguments { get; set; }
