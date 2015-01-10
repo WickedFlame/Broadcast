@@ -7,24 +7,24 @@ namespace Broadcast.EventSourcing
     /// <summary>
     /// Represents a store conatining all Tasks
     /// </summary>
-    public class TaskStore : ITaskStore, IEnumerable<WorkerTask>
+    public class TaskStore : ITaskStore, IEnumerable<BroadcastTask>
     {
         static object QueueLock = new object();
 
-        readonly List<WorkerTask> _queue;
-        readonly List<WorkerTask> _store;
+        readonly List<BroadcastTask> _queue;
+        readonly List<BroadcastTask> _store;
 
         public TaskStore()
         {
-            _queue = new List<WorkerTask>();
-            _store = new List<WorkerTask>();
+            _queue = new List<BroadcastTask>();
+            _store = new List<BroadcastTask>();
         }
 
         /// <summary>
         /// Copies all Tasks that have been Queued to ne new List
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<WorkerTask> CopyQueue()
+        public IEnumerable<BroadcastTask> CopyQueue()
         {
             lock (QueueLock)
             {
@@ -47,7 +47,7 @@ namespace Broadcast.EventSourcing
         /// Adds a new Task to the queue to be processed
         /// </summary>
         /// <param name="task"></param>
-        public void Add(WorkerTask task)
+        public void Add(BroadcastTask task)
         {
             lock (QueueLock)
             {
@@ -61,7 +61,7 @@ namespace Broadcast.EventSourcing
         /// Sets tha task to InProcess mode
         /// </summary>
         /// <param name="task"></param>
-        public void SetInprocess(WorkerTask task)
+        public void SetInprocess(BroadcastTask task)
         {
             task.State = TaskState.InProcess;
         }
@@ -70,7 +70,7 @@ namespace Broadcast.EventSourcing
         /// Sets the task to Processed mode and removes it from the process queue
         /// </summary>
         /// <param name="task"></param>
-        public void SetProcessed(WorkerTask task)
+        public void SetProcessed(BroadcastTask task)
         {
             lock (QueueLock)
             {
@@ -84,7 +84,7 @@ namespace Broadcast.EventSourcing
             task.State = TaskState.Processed;
         }
 
-        public IEnumerator<WorkerTask> GetEnumerator()
+        public IEnumerator<BroadcastTask> GetEnumerator()
         {
             return _store.GetEnumerator();
         }

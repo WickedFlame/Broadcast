@@ -2,9 +2,16 @@
 
 namespace Broadcast.EventSourcing
 {
-    public class TaskStoreFactory
+    /// <summary>
+    /// Factory class that is used to create the default TaskStore
+    /// </summary>
+    public static class TaskStoreFactory
     {
         static Func<ITaskStore> _storeFactory;
+
+        /// <summary>
+        /// The delegate that creates the default TaskStore
+        /// </summary>
         public static Func<ITaskStore> StoreFactory
         {
             get
@@ -22,6 +29,10 @@ namespace Broadcast.EventSourcing
 
         static ITaskStore _defaultStore;
 
+        /// <summary>
+        /// Gets the default TaskStore
+        /// </summary>
+        /// <returns></returns>
         public static ITaskStore GetStore()
         {
             if (_defaultStore == null)

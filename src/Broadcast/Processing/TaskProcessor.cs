@@ -6,8 +6,17 @@ using Broadcast.EventSourcing;
 
 namespace Broadcast.Processing
 {
+    /// <summary>
+    /// A class that can process different kinds of delegates and notifications
+    /// </summary>
     public abstract class TaskProcessorBase : ITaskProcessor, IDisposable
     {
+        public TaskProcessorBase(ITaskStore store, INotificationHandlerStore handlers)
+        {
+            _store = store;
+            _handlers = handlers;
+        }
+
         private readonly ITaskStore _store;
         protected ITaskStore Store
         {
@@ -26,17 +35,20 @@ namespace Broadcast.Processing
             }
         }
 
-        public TaskProcessorBase(ITaskStore store, INotificationHandlerStore handlers)
-        {
-            _store = store;
-            _handlers = handlers;
-        }
-
+        /// <summary>
+        /// Add a delegate handler to the store
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="target"></param>
         public void AddHandler<T>(Action<T> target) where T : INotification
         {
             Handlers.AddHandler(target);
         }
 
+        /// <summary>
+        /// Process the delegate task
+        /// </summary>
+        /// <param name="task"></param>
         public abstract void Process(DelegateTask task);
 
         protected virtual void ProcessItem(DelegateTask task)
@@ -48,6 +60,11 @@ namespace Broadcast.Processing
             Store.SetProcessed(task);
         }
 
+        /// <summary>
+        /// Process the delegate task
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="notification"></param>
         public void Process<T>(DelegateTask<T> task) where T : INotification
         {
             Store.Add(task);
@@ -86,6 +103,10 @@ namespace Broadcast.Processing
         {
         }
 
+        /// <summary>
+        /// Process the delegate task
+        /// </summary>
+        /// <param name="task"></param>
         public override void Process(DelegateTask task)
         {
             Store.Add(task);
@@ -108,6 +129,10 @@ namespace Broadcast.Processing
         {
         }
 
+        /// <summary>
+        /// Process the delegate task
+        /// </summary>
+        /// <param name="task"></param>
         public override void Process(DelegateTask task)
         {
             Store.Add(task);
@@ -156,6 +181,10 @@ namespace Broadcast.Processing
         {
         }
 
+        /// <summary>
+        /// Process the delegate task
+        /// </summary>
+        /// <param name="task"></param>
         public override void Process(DelegateTask task)
         {
             Store.Add(task);

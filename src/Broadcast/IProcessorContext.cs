@@ -17,7 +17,7 @@ namespace Broadcast
         /// <summary>
         /// Gets all Tasks that have been processed
         /// </summary>
-        IEnumerable<WorkerTask> ProcessedTasks { get; }
+        IEnumerable<BroadcastTask> ProcessedTasks { get; }
 
         /// <summary>
         /// Gets or sets the ProcessorMode the Processor runs in

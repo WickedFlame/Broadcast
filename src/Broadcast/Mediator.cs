@@ -26,11 +26,21 @@ namespace Broadcast
         {
         }
 
+        /// <summary>
+        /// Register a <see cref="INotificationTarget"/> that gets called when the specific <see cref="INotification"/> is published
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="target"></param>
         public void RegisterHandler<T>(INotificationTarget<T> target) where T : INotification
         {
             RegisterHandler<T>(a => target.Handle(a));
         }
 
+        /// <summary>
+        /// Register a delegate that gets called when the specific <see cref="INotification"/> is published
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="target"></param>
         public void RegisterHandler<T>(Action<T> target) where T : INotification
         {
             using (var processor = Context.Open())
@@ -39,6 +49,11 @@ namespace Broadcast
             }
         }
 
+        /// <summary>
+        /// Publishes a <see cref="INotification"/> and passes it to the registered NotificationTargets
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="notification"></param>
         public void Send<T>(Expression<Func<T>> notification) where T : INotification
         {
             var task = TaskFactory.CreateTask(notification);
@@ -48,6 +63,12 @@ namespace Broadcast
             }
         }
 
+        /// <summary>
+        /// Publishes a <see cref="INotification"/> and passes it to the registered NotificationTargets
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="notification"></param>
+        /// <returns></returns>
         public async Task SendAsync<T>(Expression<Func<T>> notification) where T : INotification
         {
             if (Context.Mode != ProcessorMode.Default)

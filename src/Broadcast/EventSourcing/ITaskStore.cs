@@ -5,13 +5,13 @@ namespace Broadcast.EventSourcing
     /// <summary>
     /// Represents a store conatining all Tasks
     /// </summary>
-    public interface ITaskStore : IEnumerable<WorkerTask>
+    public interface ITaskStore : IEnumerable<BroadcastTask>
     {
         /// <summary>
         /// Copies all unprocessed Tasks that are contained in the Queued to ne new List
         /// </summary>
         /// <returns></returns>
-        IEnumerable<WorkerTask> CopyQueue();
+        IEnumerable<BroadcastTask> CopyQueue();
 
         /// <summary>
         /// Counts all unprocessed Tasks that are contained in the Queue
@@ -22,18 +22,18 @@ namespace Broadcast.EventSourcing
         /// Adds a new Task to the queue to be processed
         /// </summary>
         /// <param name="task"></param>
-        void Add(WorkerTask task);
+        void Add(BroadcastTask task);
 
         /// <summary>
         /// Sets tha task to InProcess mode
         /// </summary>
         /// <param name="task"></param>
-        void SetInprocess(WorkerTask task);
+        void SetInprocess(BroadcastTask task);
 
         /// <summary>
         /// Sets the task to Processed mode and removes it from the process queue
         /// </summary>
         /// <param name="task"></param>
-        void SetProcessed(WorkerTask task);
+        void SetProcessed(BroadcastTask task);
     }
 }

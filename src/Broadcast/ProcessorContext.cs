@@ -54,7 +54,7 @@ namespace Broadcast
         /// <summary>
         /// Gets all Tasks that have been processed
         /// </summary>
-        public IEnumerable<WorkerTask> ProcessedTasks
+        public IEnumerable<BroadcastTask> ProcessedTasks
         {
             get
             {

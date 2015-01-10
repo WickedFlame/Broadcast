@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Broadcast.EventSourcing
 {
-    public abstract class WorkerTask
+    public abstract class BroadcastTask
     {
         public TaskState State { get; set; }
 
@@ -17,7 +17,7 @@ namespace Broadcast.EventSourcing
         internal abstract void CloseTask();
     }
 
-    public class DelegateTask : WorkerTask
+    public class DelegateTask : BroadcastTask
     {
         public Expression<Action> Task { get; set; }
 
@@ -27,7 +27,7 @@ namespace Broadcast.EventSourcing
         }
     }
 
-    public class DelegateTask<T> : WorkerTask
+    public class DelegateTask<T> : BroadcastTask
     {
         public Expression<Func<T>> Task { get; set; }
 

@@ -4,16 +4,13 @@ using System.Linq.Expressions;
 
 namespace Broadcast.EventSourcing
 {
-    public interface INotificationHandlerStore
-    {
-        Dictionary<Type, List<Action<INotification>>> Handlers { get; }
-
-        void AddHandler<T>(Action<T> target) where T : INotification;
-    }
-
     public class NotificationHandlerStore : INotificationHandlerStore
     {
         Dictionary<Type, List<Action<INotification>>> _handlers;
+
+        /// <summary>
+        /// Sore of all INotification handlers
+        /// </summary>
         public Dictionary<Type, List<Action<INotification>>> Handlers
         {
             get
@@ -24,6 +21,11 @@ namespace Broadcast.EventSourcing
             }
         }
 
+        /// <summary>
+        /// Add a notification handler to the store
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="target"></param>
         public void AddHandler<T>(Action<T> target) where T : INotification
         {
             List<Action<INotification>> handlers;

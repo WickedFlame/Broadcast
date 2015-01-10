@@ -2,7 +2,7 @@
 
 namespace Broadcast
 {
-    public class ProcessorContextFactory
+    public static class ProcessorContextFactory
     {
         /// <summary>
         /// Factory delegate that returns the default mode that the <see cref="IProcessorContext"/> runs in
