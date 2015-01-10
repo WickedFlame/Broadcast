@@ -1,7 +1,7 @@
 # WickedFlame Broadcast
 ------------------------------
 
-A simple fire and forget request/response and messaging commponent. Supports a basic implementation of synchronous and async request/response (commands/queries) and notifications
+A simple fire and forget request/response and messaging commponent. Supports a basic implementation of synchronous and async tasks/jobs (commands/queries) and notifications processing queue.
 
 ## Installation
 ------------------------------
@@ -11,7 +11,51 @@ Broadcast can be installed from [NuGet](http://docs.nuget.org/docs/start-here/in
 
 # Examples
 ------------------------------
-## Mediator / Notification
+## Broadcaster - Notification and Taskprocessing
+### Fire and forget task processing
+```csharp
+// Broadcaster is usualy resolved through DependencyInjection
+
+// Synchronous task processing
+IBroadcaster broadcaster = new Broadcaster();
+broadcaster.Send(() => Trace.WriteLine("This is a basic synchronous processer"));
+
+// Asynchronous task processing with a background thread
+IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background);
+broadcaster.Send(() => Trace.WriteLine("All tasks are processed in a backgroundthread"));
+
+// Asynchronous task processing for all tasks
+IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Async);
+broadcaster.Send(() => Trace.WriteLine("Each task is processed asynchronously in separate thread"));
+```
+
+### Notification
+```csharp
+// dummy implementation of a Notification (Event)
+class Message : INotification { }
+// dummy implementation of a Notificationhandler (EventHandler)
+class NotificationHandler : INotificationTarget<Message>
+{
+    public void Handle(Message notification)
+    {
+        ...
+    }
+}
+
+// Broadcaster is usualy resolved through DependencyInjection
+IBroadcaster broadcaster = new Broadcaster();
+
+// register different handlers
+broadcaster.RegisterHandler(notificationHandler);
+broadcaster.RegisterHandler<Message>(delegateHandler.Handle);
+broadcaster.RegisterHandler<Message>(a => expressionHandler = a.ID);
+
+// publish a message to the handlers
+broadcaster.Send(new Message(5));
+```
+
+## Mediator - Notification
+If a mediator is all that is needed, the same logic can be executed in a Mediator implementation. Basicaly it is the same as in the Broadcaster, but only containes the Notification implementation.
 ```csharp
 // dummy implementation of a Notification (Event)
 class Message : INotification { }
@@ -33,7 +77,7 @@ mediator.RegisterHandler<Message>(delegateHandler.Handle);
 mediator.RegisterHandler<Message>(a => expressionHandler = a.ID);
 
 // publish a message to the handlers
-mediator.Publish(new Message(5));
+mediator.Send(new Message(5));
 ```
 
 ## Requests
