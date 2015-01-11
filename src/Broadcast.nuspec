@@ -10,7 +10,7 @@
     <projectUrl>http://wicked-flame.blogspot.ch</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A simple request/response and messaging commponent</description>
-    <summary>A simple request/response and messaging commponent. Supports a basic implementation of synchronous and async request/response (commands/queries) and notifications</summary>
+    <summary>A simple fire and forget request/response and messaging commponent. Supports a basic implementation of synchronous and async tasks/jobs (commands/queries) and notifications processing queue.</summary>
     <releaseNotes>
       
     </releaseNotes>
