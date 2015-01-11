@@ -10,11 +10,13 @@
     <projectUrl>http://wicked-flame.blogspot.ch</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A simple request/response and messaging commponent</description>
-    <summary>A simple fire and forget request/response and messaging commponent. Supports a basic implementation of synchronous and async tasks/jobs (commands/queries) and notifications processing queue.</summary>
+    <summary>A simple fire and forget request/response and messaging commponent.  
+Broadcast is a simple implementation for processing queued synchronous and asynchronous tasks and notifications.  
+Broadcast helps implement patterns like Mediator and CQRS (Command- and Queryhandling).</summary>
     <releaseNotes>
       
     </releaseNotes>
-    <tags>Request, Commands, Notification, Mediator, CQRS</tags>
+    <tags>Async Task processing, Request, Commands, Notification, Mediator, CQRS, Fire and forget</tags>
   </metadata>
   <files>
     <file src="Broadcast\bin\Release\Broadcast.dll" target="lib\net45\Broadcast.dll" />
