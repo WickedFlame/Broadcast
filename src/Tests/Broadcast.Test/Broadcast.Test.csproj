@@ -72,12 +72,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="BroadcasterTests.cs" />
-    <Compile Include="MediatorTests.cs" />
-    <Compile Include="NotificationTests.cs" />
+    <Compile Include="Integration\BroadcasterTests.cs" />
+    <Compile Include="Integration\MediatorTests.cs" />
+    <Compile Include="Integration\NotificationTests.cs" />
     <Compile Include="ProcessorContextTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RequestPublisherTests.cs" />
+    <Compile Include="Integration\RequestPublisherTests.cs" />
     <Compile Include="TaskFactoryTests.cs" />
   </ItemGroup>
   <ItemGroup>

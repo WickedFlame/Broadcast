@@ -69,22 +69,31 @@ namespace Broadcast.Processing
         {
             Store.Add(task);
 
+            // mark the task to be in process
             Store.SetInprocess(task);
 
             List<Action<INotification>> handlers;
 
-            if (!Handlers.Handlers.TryGetValue(typeof(T), out handlers))
-            {
-                return;
-            }
-
+            // get the job item from the task
             var item = task.Task.Compile().Invoke();
 
+            // try to find the handlers
+            if (!Handlers.Handlers.TryGetValue(typeof(T), out handlers))
+            {
+                // it could be that T is of a base/inherited type but the handler is of a object type
+                if (!Handlers.Handlers.TryGetValue(item.GetType(), out handlers))
+                {
+                    return;
+                }
+            }
+
+            // run all handlers with the value
             foreach (var handler in handlers)
             {
                 handler(item);
             }
 
+            // set the task to processed state
             Store.SetProcessed(task);
         }
 

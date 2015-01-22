@@ -63,6 +63,19 @@ namespace Broadcast
             }
         }
 
+        //public void Send<T>(T notification) where T : INotification
+        //{
+        //    var task = new DelegateTask<T>
+        //    {
+        //        Task = () => notification,
+        //        State = TaskState.New
+        //    };
+        //    using (var processor = Context.Open())
+        //    {
+        //        processor.Process(task);
+        //    }
+        //}
+
         /// <summary>
         /// Publishes a <see cref="INotification"/> and passes it to the registered NotificationTargets
         /// </summary>
