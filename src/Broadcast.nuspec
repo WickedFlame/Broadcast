@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Broadcast</id>
-    <version>0.2.0-RC05</version>
+    <version>0.2.0-RC06</version>
     <title>Broadcast</title>
     <authors>Christian Walpen</authors>
     <owners>Christian Walpen</owners>
@@ -10,8 +10,8 @@
     <projectUrl>http://wicked-flame.blogspot.ch</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A simple request/response and messaging commponent</description>
-    <summary>A simple fire and forget request/response and messaging commponent.  
-Broadcast is a simple implementation for processing queued synchronous and asynchronous tasks and notifications.  
+    <summary>A simple fire and forget, request/response and messaging commponent.  
+Broadcast is a simple implementation for processing queued, synchronous and asynchronous tasks and notifications.  
 Broadcast helps implement patterns like Mediator and CQRS (Command- and Queryhandling).</summary>
     <releaseNotes>
       

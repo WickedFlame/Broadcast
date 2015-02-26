@@ -56,7 +56,7 @@ namespace Broadcast.Console.Test
                 {
                     for (int i = 0; i < 1000; i++)
                     {
-                        var value = i.ToString();
+                        var value = i;
                         System.Console.WriteLine(string.Format("Sent {0}", value));
                         broadcaster.Send(() => System.Console.WriteLine(string.Format(format, value)));
                     }
