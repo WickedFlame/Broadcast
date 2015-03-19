@@ -1,9 +1,9 @@
 # WickedFlame Broadcast
 ------------------------------
 
-A simple fire and forget request/response and messaging commponent.  
-Broadcast is a simple implementation for processing queued synchronous and asynchronous tasks and notifications.  
-Broadcast helps implement patterns like Mediator and CQRS (Command- and Queryhandling).
+A simple and lightweight in-process fire and forget, request/response and messaging commponent.  
+Broadcast is a simple implementation for processing queued tasks and notifications synchronous and asynchronous.  
+Broadcast helps implement the Mediator and CQRS (Command- and Queryhandling) patterns easily.
 
 ## Installation
 ------------------------------
