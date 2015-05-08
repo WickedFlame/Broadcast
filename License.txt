@@ -1,4 +1,4 @@
-WickedFlame.Broadcast is intended to be used in both open-source and commercial environments.
+Copyright (c) 2014 WickedFlame contributors
 
 Microsoft Public License (Ms-PL)
 --------------------------------
