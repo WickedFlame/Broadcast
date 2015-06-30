@@ -1,7 +1,7 @@
 # WickedFlame Broadcast
 ------------------------------
 
-A simple and lightweight in-process fire and forget, request/response and messaging commponent.  
+A simple and lightweight in-process fire and forget, request/response message queue.  
 Broadcast is a simple implementation for processing queued tasks and notifications synchronous and asynchronous.  
 Broadcast helps implement the Mediator and CQRS (Command- and Queryhandling) patterns easily.
 
@@ -19,7 +19,7 @@ Broadcast can be installed from [NuGet](http://docs.nuget.org/docs/start-here/in
 // Broadcaster is usualy resolved through DependencyInjection
 // Synchronous task processing
 IBroadcaster broadcaster = new Broadcaster();
-broadcaster.Send(() => Trace.WriteLine("This is a basic synchronous processer"));
+broadcaster.Send(() => Trace.WriteLine("This is a basic synchronous processed task"));
 
 // Asynchronous task processing with a background thread
 IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background);
@@ -27,7 +27,7 @@ broadcaster.Send(() => Trace.WriteLine("All tasks are processed in a backgroundt
 
 // Asynchronous task processing for all tasks
 IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Async);
-broadcaster.Send(() => Trace.WriteLine("Each task is processed asynchronously in separate thread"));
+broadcaster.Send(() => Trace.WriteLine("Each task is processed asynchronously in a separate thread"));
 ```
 
 ### Notification
