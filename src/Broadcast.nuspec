@@ -7,7 +7,7 @@
     <authors>Christian Walpen</authors>
     <owners>Christian Walpen</owners>
     <licenseUrl>https://github.com/WickedFlame/Broadcast/raw/master/License.txt</licenseUrl>
-    <projectUrl>http://wicked-flame.blogspot.ch</projectUrl>
+    <projectUrl>http://wickedflame.github.com</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A simple request/response and messaging commponent</description>
     <summary>A simple fire and forget, request/response and messaging commponent.  
