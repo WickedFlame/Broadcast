@@ -18,7 +18,9 @@ namespace Broadcast
         {
             var context = ContextFactory != null ? ContextFactory() : new ProcessorContext();
             if (ModeFactory != null)
+            {
                 context.Mode = ModeFactory();
+            }
 
             return context;
         }

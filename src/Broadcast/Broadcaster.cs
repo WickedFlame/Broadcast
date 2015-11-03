@@ -38,7 +38,10 @@ namespace Broadcast
             get
             {
                 if (_context == null)
+                {
                     _context = ProcessorContextFactory.GetContext();
+                }
+
                 return _context;
             }
         }
