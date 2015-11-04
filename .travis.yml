@@ -11,4 +11,4 @@ install:
 script:
   - xbuild /p:Configuration=Release Broadcast.sln
 #  - nunit-console ./src/Tests/Broadcast.Test/bin/Release/Broadcast.Test.dll
-  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe /src/Tests/Broadcast.Test/bin/Release/Broadcast.Test.dll
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./src/Tests/Broadcast.Test/bin/Release/Broadcast.Test.dll
