@@ -4,8 +4,10 @@ solution: Broadcast.sln
  
 install:
   - sudo apt-get install nunit-console
-  - nuget restore Broadcast.sln
+#  - nuget restore Broadcast.sln
+  - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
  
 script:
   - xbuild /p:Configuration=Release Broadcast.sln
-  - nunit-console ./src/Tests/Broadcast.Test/bin/Release/Broadcast.Test.dll
+#  - nunit-console ./src/Tests/Broadcast.Test/bin/Release/Broadcast.Test.dll
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe /src/Tests/Broadcast.Test/bin/Release/Broadcast.Test.dll
