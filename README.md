@@ -1,5 +1,8 @@
 # WickedFlame Broadcast
 ------------------------------
+[![Build Status](https://travis-ci.org/WickedFlame/Broadcast.svg?branch=master)](https://travis-ci.org/WickedFlame/Broadcast)
+[![Build status](https://ci.appveyor.com/api/projects/status/ybdr1oa8p4x8h9h6/branch/master?svg=true)](https://ci.appveyor.com/project/chriswalpen/broadcast/branch/master)
+
 
 A simple and lightweight in-process fire and forget, request/response message queue.  
 Broadcast is a simple implementation for processing queued tasks and notifications synchronous and asynchronous.  
