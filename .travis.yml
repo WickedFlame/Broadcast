@@ -3,8 +3,9 @@ language: csharp
 solution: Broadcast.sln
  
 install:
-  - sudo apt-get install nunit-console
+#  - sudo apt-get install nunit-console
 #  - nuget restore Broadcast.sln
+  - nuget restore Broadcast.sln
   - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
  
 script:
