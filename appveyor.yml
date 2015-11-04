@@ -1,0 +1,96 @@
+# http://www.appveyor.com/docs/appveyor-yml
+
+
+# version format
+version: 1.0.{build}
+
+# you can use {branch} name in version format too
+# version: 1.0.{build}-{branch}
+
+# branches to build
+branches:
+  # whitelist
+  only:
+    - master
+
+# Do not build on tags (GitHub only)
+skip_tags: true
+
+install:
+#  - sudo apt-get install nunit-console
+#  - nuget restore Broadcast.sln
+ 
+# enable patching of AssemblyInfo.* files
+# assembly_info:
+#   patch: true
+#   file: AssemblyInfo.*
+#   assembly_version: "2.2.{build}"
+#   assembly_file_version: "{version}"
+#   assembly_informational_version: "{version}"
+ 
+# to add several platforms to build matrix:
+#platform:
+#  - x86
+#  - Any CPU
+
+# build Configuration, i.e. Debug, Release, etc.
+configuration: Release
+
+# to add several configurations to build matrix:
+#configuration:
+#  - Debug
+#  - Release
+
+before_build:
+  - nuget restore
+
+build:
+  parallel: true                  # enable MSBuild parallel builds
+  project: Broadcast.sln      # path to Visual Studio solution or project
+#  publish_wap: true               # package Web Application Projects (WAP) for Web Deploy
+#  publish_wap_xcopy: true         # package Web Application Projects (WAP) for XCopy deployment
+#  publish_azure: true             # package Azure Cloud Service projects and push to artifacts
+  publish_nuget: true             # package projects with .nuspec files and push to artifacts
+#  publish_nuget_symbols: true     # generate and publish NuGet symbol packages
+#  include_nuget_references: true  # add -IncludeReferencedProjects option while packaging NuGet artifacts
+
+# MSBuild verbosity level
+# verbosity: quiet|minimal|normal|detailed
+  
+  
+  
+  
+#---------------------------------#
+#       tests configuration       #
+#---------------------------------#
+
+test:
+#  assemblies:
+#    - asm1.dll
+#    - asm2.dll
+
+#  categories:
+#    - UI
+#    - E2E
+
+# to run tests from different categories as separate jobs in parallel
+#test:
+#  categories:
+#    - A            # A category common for all jobs
+#    - [UI]         # 1st job
+#    - [DAL, BL]    # 2nd job
+
+# scripts to run before tests
+before_test:
+#  - echo script1
+#  - ps: Write-Host "script1"
+
+# scripts to run after tests
+after_test:
+
+# to run your custom scripts instead of automatic tests
+test_script:
+#  - echo This is my custom test script
+
+# to disable automatic tests 
+#test: off
