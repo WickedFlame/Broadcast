@@ -55,7 +55,7 @@ namespace Broadcast.Processing
         {
             Store.SetInprocess(task);
 
-            task.Task.Compile().Invoke();
+            task.Task.Invoke();
 
             Store.SetProcessed(task);
         }
@@ -75,7 +75,7 @@ namespace Broadcast.Processing
             List<Action<INotification>> handlers;
 
             // get the job item from the task
-            var item = task.Task.Compile().Invoke();
+            var item = task.Task.Invoke();
 
             // try to find the handlers
             if (!Handlers.Handlers.TryGetValue(typeof(T), out handlers))
@@ -115,7 +115,7 @@ namespace Broadcast.Processing
         /// <summary>
         /// Process the delegate task
         /// </summary>
-        /// <param name="task"></param>
+        /// <param name="task">The task to process</param>
         public override void Process(DelegateTask task)
         {
             Store.Add(task);
@@ -129,9 +129,9 @@ namespace Broadcast.Processing
     /// </summary>
     public class BackgroundTaskProcessor : TaskProcessorBase, ITaskProcessor
     {
-        static object ProcessorLock = new object();
+        private static readonly object ProcessorLock = new object();
 
-        bool _inProcess = false;
+        private bool _inProcess = false;
 
         public BackgroundTaskProcessor(ITaskStore store, INotificationHandlerStore handlers)
             : base(store, handlers)
@@ -141,14 +141,16 @@ namespace Broadcast.Processing
         /// <summary>
         /// Process the delegate task
         /// </summary>
-        /// <param name="task"></param>
+        /// <param name="task">The task to process</param>
         public override void Process(DelegateTask task)
         {
             Store.Add(task);
 
             // check if a thread is allready processing the queue
             if (_inProcess)
+            {
                 return;
+            }
 
             // start new background thread to process all queued tasks
             Task.Run(() => ProcessTasks());
@@ -158,7 +160,9 @@ namespace Broadcast.Processing
         {
             // check if a thread is allready processing the queue
             if (_inProcess)
+            {
                 return;
+            }
 
             lock (ProcessorLock)
             {
@@ -193,7 +197,7 @@ namespace Broadcast.Processing
         /// <summary>
         /// Process the delegate task
         /// </summary>
-        /// <param name="task"></param>
+        /// <param name="task">The task to process</param>
         public override void Process(DelegateTask task)
         {
             Store.Add(task);

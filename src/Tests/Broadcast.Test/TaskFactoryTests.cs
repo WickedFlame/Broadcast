@@ -1,6 +1,7 @@
 ﻿using Broadcast.EventSourcing;
 using Moq;
 using NUnit.Framework;
+
 namespace Broadcast.Test
 {
     [TestFixture]

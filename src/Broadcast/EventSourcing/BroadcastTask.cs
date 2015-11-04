@@ -8,18 +8,18 @@ namespace Broadcast.EventSourcing
     {
         public TaskState State { get; set; }
 
-        public Type Type { get; set; }
+        //public Type Type { get; set; }
 
-        public MethodInfo Method { get; set; }
+        //public MethodInfo Method { get; set; }
 
-        public string[] Arguments { get; set; }
+        //public string[] Arguments { get; set; }
         
         internal abstract void CloseTask();
     }
 
     public class DelegateTask : BroadcastTask
     {
-        public Expression<Action> Task { get; set; }
+        public Action Task { get; set; }
 
         internal override void CloseTask()
         {
@@ -29,7 +29,7 @@ namespace Broadcast.EventSourcing
 
     public class DelegateTask<T> : BroadcastTask
     {
-        public Expression<Func<T>> Task { get; set; }
+        public Func<T> Task { get; set; }
 
         internal override void CloseTask()
         {

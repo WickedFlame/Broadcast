@@ -8,29 +8,46 @@ namespace Broadcast.EventSourcing
     /// </summary>
     public static class TaskFactory
     {
+        ///// <summary>
+        ///// Creates a DelegateTask based on the Action delegate
+        ///// </summary>
+        ///// <param name="task"></param>
+        ///// <returns></returns>
+        //public static DelegateTask CreateTask(Expression<Action> task)
+        //{
+        //    if (task == null)
+        //        throw new ArgumentNullException("task");
+
+        //    // extract the method passed to the delegate
+        //    var callExpression = task.Body as MethodCallExpression;
+        //    if (callExpression == null)
+        //    {
+        //        throw new NotSupportedException("Expression body should be of type `MethodCallExpression`");
+        //    }
+
+        //    return new DelegateTask
+        //    {
+        //        Type = callExpression.Method.DeclaringType,
+        //        Method = callExpression.Method,
+        //        Arguments = GetArguments(callExpression),
+
+        //        Task = task.Compile(),
+        //        State = TaskState.New
+        //    };
+        //}
+
         /// <summary>
         /// Creates a DelegateTask based on the Action delegate
         /// </summary>
         /// <param name="task"></param>
         /// <returns></returns>
-        public static DelegateTask CreateTask(Expression<Action> task)
+        public static DelegateTask CreateTask(Action task)
         {
             if (task == null)
                 throw new ArgumentNullException("task");
 
-            // extract the method passed to the delegate
-            var callExpression = task.Body as MethodCallExpression;
-            if (callExpression == null)
-            {
-                throw new NotSupportedException("Expression body should be of type `MethodCallExpression`");
-            }
-
             return new DelegateTask
             {
-                Type = callExpression.Method.DeclaringType,
-                Method = callExpression.Method,
-                Arguments = GetArguments(callExpression),
-
                 Task = task,
                 State = TaskState.New
             };
@@ -42,7 +59,7 @@ namespace Broadcast.EventSourcing
         /// <typeparam name="T"></typeparam>
         /// <param name="notification"></param>
         /// <returns></returns>
-        public static DelegateTask<T> CreateTask<T>(Expression<Func<T>> notification) where T : INotification
+        public static DelegateTask<T> CreateTask<T>(Func<T> notification) where T : INotification
         {
             if (notification == null)
                 throw new ArgumentNullException("notification");

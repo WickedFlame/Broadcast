@@ -1,4 +1,5 @@
-﻿using Broadcast.EventSourcing;
+﻿using System.Threading.Tasks;
+using Broadcast.EventSourcing;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -202,6 +203,32 @@ namespace Broadcast.Test
                 Assert.IsTrue(v != value);
                 v++;
             }
+        }
+
+        [Test]
+        public void BroadcasterSendExpressionBodyTest()
+        {
+            int index = 0;
+
+            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background);
+            broadcaster.Send(() =>
+            {
+                index = 2;
+            });
+        }
+
+        [Test]
+        public async Task BroadcasterSendExpressionBodyAsyncTest()
+        {
+            int index = 0;
+
+            IBroadcaster broadcaster = new Broadcaster();
+            await broadcaster.SendAsync(() =>
+            {
+                index = 2;
+            });
+
+            Assert.IsTrue(index == 2);
         }
     }
 }

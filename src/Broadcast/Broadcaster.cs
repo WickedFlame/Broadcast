@@ -8,6 +8,8 @@ namespace Broadcast
 {
     public class Broadcaster : IBroadcaster
     {
+        private IProcessorContext _context;
+
         public Broadcaster()
         {
         }
@@ -28,8 +30,6 @@ namespace Broadcast
             Context.Store = store;
         }
 
-        private IProcessorContext _context;
-
         /// <summary>
         /// Gets the ProcessorContext that containes all information create a TaskProcessor
         /// </summary>
@@ -49,8 +49,8 @@ namespace Broadcast
         /// <summary>
         /// Send a delegate to the task processor
         /// </summary>
-        /// <param name="action"></param>
-        public void Send(Expression<Action> action)
+        /// <param name="action">The Task to process</param>
+        public void Send(Action action)
         {
             var task = TaskFactory.CreateTask(action);
             using (var processor = Context.Open())
@@ -59,17 +59,28 @@ namespace Broadcast
             }
         }
 
-        //public void Send<T>(Expression<Func<T>> task, Expression<Action<T>> callback)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        /// <summary>
+        /// Processes a task Asynchronously. ContextMode has to be Default for Async Processing
+        /// </summary>
+        /// <param name="action">The Task to process</param>
+        /// <returns>Task thread</returns>
+        public async Task SendAsync(Action action)
+        {
+            EnsureContextModeForAsync();
+
+            var task = TaskFactory.CreateTask(action);
+            using (var processor = Context.Open())
+            {
+                await Task.Run(() => processor.Process(task));
+            }
+        }
 
         /// <summary>
         /// Sends a INotification to the processor. The INotification will be passed to all registered Handlers of the same type
         /// </summary>
         /// <typeparam name="T">The notification type</typeparam>
         /// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
-        public void Send<T>(Expression<Func<T>> notification) where T : INotification
+        public void Send<T>(Func<T> notification) where T : INotification
         {
             var task = TaskFactory.CreateTask(notification);
             using (var processor = Context.Open())
@@ -83,16 +94,10 @@ namespace Broadcast
         /// </summary>
         /// <typeparam name="T">The notification type</typeparam>
         /// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
-        /// <returns></returns>
-        public async Task SendAsync<T>(Expression<Func<T>> notification) where T : INotification
+        /// <returns>Task thread</returns>
+        public async Task SendAsync<T>(Func<T> notification) where T : INotification
         {
-            if (Context.Mode != ProcessorMode.Default)
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("Async message handling is only alowed when running the broadcast context in Default Mode.");
-                sb.AppendLine("Use Send(message) if ProcessorMode is intentialy run in another mode than ProcessorMode.Default");
-                throw new InvalidOperationException(sb.ToString());
-            }
+            EnsureContextModeForAsync();
 
             var task = TaskFactory.CreateTask(notification);
             using (var processor = Context.Open())
@@ -122,6 +127,20 @@ namespace Broadcast
             {
                 processor.AddHandler(target);
             }
+        }
+
+        private void EnsureContextModeForAsync()
+        {
+            if (Context.Mode == ProcessorMode.Default)
+            {
+                return;
+            }
+
+            var sb = new StringBuilder();
+            sb.AppendLine("Async message handling is only alowed when running the broadcast context in Default Mode.");
+            sb.AppendLine("Use Send(message) if ProcessorMode is intentialy run in another mode than ProcessorMode.Default");
+
+            throw new InvalidOperationException(sb.ToString());
         }
     }
 }

@@ -11,21 +11,21 @@ namespace Broadcast.Processing
         /// <summary>
         /// Add a delegate handler to the store
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="target"></param>
+        /// <typeparam name="T">Type of handler</typeparam>
+        /// <param name="target">Task to process</param>
         void AddHandler<T>(Action<T> target) where T : INotification;
 
         /// <summary>
         /// Process the delegate task
         /// </summary>
-        /// <param name="task"></param>
+        /// <param name="task">The task to process</param>
         void Process(DelegateTask task);
 
         /// <summary>
         /// Process the delegate task
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="notification"></param>
+        /// <typeparam name="T">Type of notification</typeparam>
+        /// <param name="notification">The task to process</param>
         void Process<T>(DelegateTask<T> notification) where T : INotification;
     }
 }

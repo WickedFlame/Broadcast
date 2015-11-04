@@ -2,12 +2,12 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Broadcast</id>
-    <version>0.2.0-RC06</version>
+    <version>0.2.1-RC01</version>
     <title>Broadcast</title>
     <authors>Christian Walpen</authors>
     <owners>Christian Walpen</owners>
     <licenseUrl>https://github.com/WickedFlame/Broadcast/raw/master/License.txt</licenseUrl>
-    <projectUrl>http://wicked-flame.blogspot.ch</projectUrl>
+    <projectUrl>http://wickedflame.github.com</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A simple request/response and messaging commponent</description>
     <summary>A simple fire and forget, request/response and messaging commponent.  
