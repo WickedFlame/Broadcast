@@ -1,7 +1,15 @@
 sudo: false
 language: csharp
 solution: Broadcast.sln
- 
+
+notifications:
+  email:
+#    recipients:
+#      - one@example.com
+#      - other@example.com
+    on_success: never #[always|never|change] # default: change
+    on_failure: always #[always|never|change] # default: always
+    
 install:
 #  - sudo apt-get install nunit-console
 #  - nuget restore Broadcast.sln
