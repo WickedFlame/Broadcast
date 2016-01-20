@@ -16,7 +16,9 @@ branches:
 # Do not build on tags (GitHub only)
 skip_tags: true
 
+os: Visual Studio 2015
 install:
+  - set PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
 #  - sudo apt-get install nunit-console
 #  - nuget restore Broadcast.sln
  
@@ -65,9 +67,9 @@ build:
 #---------------------------------#
 
 test:
-#  assemblies:
-#    - asm1.dll
-#    - asm2.dll
+  # assemblies to test - optional
+  assemblies:
+    - '**\Broadcast.Test.dll'
 
 #  categories:
 #    - UI
