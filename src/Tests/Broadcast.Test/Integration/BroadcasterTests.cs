@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System;
 
 namespace Broadcast.Test
 {
@@ -187,7 +188,6 @@ namespace Broadcast.Test
             broadcaster.Send(() => Trace.WriteLine("Just for warmup"));
 
             var taskValues = new List<int>();
-
             for (int i = 1; i <= 100; i++)
             {
                 // i is not passed to a local variable and therefor is not threadsafe
@@ -195,8 +195,7 @@ namespace Broadcast.Test
                 broadcaster.Send(() => taskValues.Add(i));
             }
 
-            System.Threading.Thread.Sleep(System.TimeSpan.FromSeconds(1));
-
+            Thread.Sleep(TimeSpan.FromSeconds(3));
             Assert.IsTrue(broadcaster.Context.ProcessedTasks.Count() > 0);
 
             int v = 1;
