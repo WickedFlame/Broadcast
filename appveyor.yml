@@ -2,7 +2,7 @@
 
 
 # version format
-version: 1.0.{build}
+version: 0.3.1.{build}
 
 # you can use {branch} name in version format too
 # version: 1.0.{build}-{branch}
@@ -23,12 +23,12 @@ install:
 #  - nuget restore Broadcast.sln
  
 # enable patching of AssemblyInfo.* files
-# assembly_info:
-#   patch: true
-#   file: AssemblyInfo.*
-#   assembly_version: "2.2.{build}"
-#   assembly_file_version: "{version}"
-#   assembly_informational_version: "{version}"
+assembly_info:
+  patch: true
+  file: AssemblyInfo.*
+  assembly_version: "{version}"
+  assembly_file_version: "{version}"
+  assembly_informational_version: "{version}"
  
 # to add several platforms to build matrix:
 #platform:
@@ -89,10 +89,22 @@ before_test:
 
 # scripts to run after tests
 after_test:
-
+  - ps: .\pack.ps1   # Run a script to create the nuget package
+  
 # to run your custom scripts instead of automatic tests
 test_script:
 #  - echo This is my custom test script
 
 # to disable automatic tests 
 #test: off
+
+#---------------------------------#
+#      artifacts configuration    #
+#---------------------------------#
+
+artifacts:
+  - path: src\Broadcast\bin\Release\Broadcast.dll
+    name: Broadcast.dll
+
+  # pushing all *.nupkg files in directory
+  - path: '.\*.nupkg'

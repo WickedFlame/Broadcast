@@ -10,7 +10,7 @@ namespace Broadcast.Test
         [Test]
         public void TaskFactoryNotificationWithNewObjectExpressionTest()
         {
-            var task = TaskFactory.CreateTask(() => new Notification());
+            var task = TaskFactory.CreateNotifiableTask(() => new Notification());
             Assert.IsNotNull(task);
         }
 
@@ -18,14 +18,14 @@ namespace Broadcast.Test
         public void TaskFactoryNotificationWithObjectReferenceExpressionTest()
         {
             var message = new Notification();
-            var task = TaskFactory.CreateTask(() => message);
+            var task = TaskFactory.CreateNotifiableTask(() => message);
             Assert.IsNotNull(task);
         }
 
         [Test]
         public void TaskFactoryNotificationWithMethodReferenceExpressionTest()
         {
-            var task = TaskFactory.CreateTask(() => CreateNotification());
+            var task = TaskFactory.CreateNotifiableTask(() => CreateNotification());
             Assert.IsNotNull(task);
         }
 
@@ -42,7 +42,7 @@ namespace Broadcast.Test
         public void TaskFactoryNotificationWithMethodInObjectExpressionTest()
         {
             var messageMock = new Mock<IMessage>();
-            var task = TaskFactory.CreateTask(() => messageMock.Object.ReturnNotification("", "", ""));
+            var task = TaskFactory.CreateNotifiableTask(() => messageMock.Object.ReturnNotification("", "", ""));
 
             Assert.IsNotNull(task);
         }

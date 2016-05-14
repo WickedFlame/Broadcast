@@ -85,9 +85,7 @@ namespace Broadcast.Test
 
             Assert.Fail();
         }
-
-
-
+        
         class Message : INotification
         {
             public Message(int id)

@@ -39,6 +39,14 @@ namespace Broadcast
         Task SendAsync<T>(Func<T> notification) where T : INotification;
 
         /// <summary>
+        /// Processes a task async
+        /// </summary>
+        /// <typeparam name="T">The return type of the process</typeparam>
+        /// <param name="process">The function to execute</param>
+        /// <returns>The value of the function</returns>
+        Task<T> ProcessAsync<T>(Func<T> process);
+
+        /// <summary>
         /// Register a INotificationTarget that gets called when a INotification of the same type is sent
         /// </summary>
         /// <typeparam name="T">The notification type</typeparam>

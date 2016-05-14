@@ -52,7 +52,7 @@ namespace Broadcast
         /// <param name="notification">The Notification</param>
         public void Send<T>(Func<T> notification) where T : INotification
         {
-            var task = TaskFactory.CreateTask(notification);
+            var task = TaskFactory.CreateNotifiableTask(notification);
             using (var processor = Context.Open())
             {
                 processor.Process(task);
@@ -75,7 +75,7 @@ namespace Broadcast
                 throw new InvalidOperationException(sb.ToString());
             }
 
-            var task = TaskFactory.CreateTask(notification);
+            var task = TaskFactory.CreateNotifiableTask(notification);
             using (var processor = Context.Open())
             {
                 await System.Threading.Tasks.Task.Run(() => processor.Process(task));

@@ -82,7 +82,7 @@ namespace Broadcast
         /// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
         public void Send<T>(Func<T> notification) where T : INotification
         {
-            var task = TaskFactory.CreateTask(notification);
+            var task = TaskFactory.CreateNotifiableTask(notification);
             using (var processor = Context.Open())
             {
                 processor.Process(task);
@@ -95,14 +95,31 @@ namespace Broadcast
         /// <typeparam name="T">The notification type</typeparam>
         /// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
         /// <returns>Task thread</returns>
-        public async Task SendAsync<T>(Func<T> notification) where T : INotification
+        public Task SendAsync<T>(Func<T> notification) where T : INotification
         {
             EnsureContextModeForAsync();
 
-            var task = TaskFactory.CreateTask(notification);
+            var task = TaskFactory.CreateNotifiableTask(notification);
             using (var processor = Context.Open())
             {
-                await Task.Run(() => processor.Process(task));
+                return Task.Run(() => processor.Process(task));
+            }
+        }
+
+        /// <summary>
+        /// Processes a task async
+        /// </summary>
+        /// <typeparam name="T">The return type of the process</typeparam>
+        /// <param name="process">The function to execute</param>
+        /// <returns>The value of the function</returns>
+        public System.Threading.Tasks.Task<T> ProcessAsync<T>(Func<T> process)
+        {
+            EnsureContextModeForAsync();
+
+            var task = TaskFactory.CreateTask(process);
+            using (var processor = Context.Open())
+            {
+                return Task.Factory.StartNew(() => processor.ProcessUnhandled(task));
             }
         }
 

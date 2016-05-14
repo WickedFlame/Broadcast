@@ -97,6 +97,28 @@ namespace Broadcast.Processing
             Store.SetProcessed(task);
         }
 
+        /// <summary>
+        /// Processes a task without sending it to the notification handlers
+        /// </summary>
+        /// <typeparam name="T">The return type</typeparam>
+        /// <param name="task">The task</param>
+        /// <returns>The result of the task</returns>
+        public T ProcessUnhandled<T>(DelegateTask<T> task)
+        {
+            Store.Add(task);
+
+            // mark the task to be in process
+            Store.SetInprocess(task);
+            
+            // get the job item from the task
+            var item = task.Task.Invoke();
+            
+            // set the task to processed state
+            Store.SetProcessed(task);
+
+            return item;
+        }
+
         public void Dispose()
         {
         }

@@ -238,5 +238,26 @@ namespace Broadcast.Test
 
             Assert.IsTrue(index == 2);
         }
+
+        [Test]
+        public async Task Broadcaster_ProcessAsync_WithReturn()
+        {
+            var returner = new AsyncReturner();
+
+            var broadcaster = new Broadcaster();
+            var number = await broadcaster.ProcessAsync<int>(() => returner.GetValue(1));
+
+            Assert.That(number == 1);
+        }
+
+        private class AsyncReturner
+        {
+            public int GetValue(int index)
+            {
+                int i = index;
+                Thread.Sleep(TimeSpan.FromSeconds(1));
+                return i;
+            }
+        }
     }
 }

@@ -27,5 +27,13 @@ namespace Broadcast.Processing
         /// <typeparam name="T">Type of notification</typeparam>
         /// <param name="notification">The task to process</param>
         void Process<T>(DelegateTask<T> notification) where T : INotification;
+
+        /// <summary>
+        /// Processes a task without sending it to the notification handlers
+        /// </summary>
+        /// <typeparam name="T">The return type</typeparam>
+        /// <param name="task">The task</param>
+        /// <returns>The result of the task</returns>
+        T ProcessUnhandled<T>(DelegateTask<T> task);
     }
 }
