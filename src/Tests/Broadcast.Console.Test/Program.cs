@@ -48,8 +48,8 @@ namespace Broadcast.Console.Test
                     case "schedule":
                         using (var scheduler = new Broadcaster(ProcessorMode.Async))
                         {
-                            scheduler.Send(() => System.Console.WriteLine("Direct"));
-                            scheduler.Schedule(() => System.Console.WriteLine("Scheduled"), TimeSpan.FromSeconds(10));
+                            scheduler.Send(() => System.Console.WriteLine("Direct message"));
+                            scheduler.Schedule(() => System.Console.WriteLine("   Scheduled message"), TimeSpan.FromSeconds(5));
 
                             System.Console.ReadLine();
                         }
@@ -58,8 +58,8 @@ namespace Broadcast.Console.Test
                     case "recurring":
                         using (var scheduler = new Broadcaster(ProcessorMode.Async))
                         {
-                            scheduler.Send(() => System.Console.WriteLine("Direct"));
-                            scheduler.Recurring(() => System.Console.WriteLine("Recurring"), TimeSpan.FromSeconds(10));
+                            scheduler.Send(() => System.Console.WriteLine("Direct message"));
+                            scheduler.Recurring(() => System.Console.WriteLine("   Recurring message"), TimeSpan.FromSeconds(5));
 
                             System.Console.ReadLine();
                         }
