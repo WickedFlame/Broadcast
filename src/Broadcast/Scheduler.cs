@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +12,12 @@ namespace Broadcast
     public interface IScheduler : IDisposable
     {
         void Enqueue(Action task, TimeSpan time);
+
+        void Dequeue(SchedulerTask task);
+
+        TimeSpan Elapsed { get; }
+
+        IEnumerable<SchedulerTask> Queue { get; }
     }
 
     public class Scheduler : IScheduler
@@ -29,7 +36,7 @@ namespace Broadcast
             _timer = new Stopwatch();
             _timer.Start();
 
-            _schedulerThread = new Thread(_ => Execute(_scheduleQueue, _timer, _lockHandle));
+            _schedulerThread = new Thread(_ => Execute(this));
             if (!_schedulerThread.IsAlive)
             {
                 _schedulerCount++;
@@ -41,40 +48,47 @@ namespace Broadcast
 
         public static int SchedulerCount => _schedulerCount;
 
+        public TimeSpan Elapsed => _timer.Elapsed;
+
+        public IEnumerable<SchedulerTask> Queue => _scheduleQueue.ToList();
+
         public void Enqueue(Action task, TimeSpan time)
         {
             lock (_lockHandle)
             {
-                _scheduleQueue.Add(new SchedulerTask(task, _timer.Elapsed + time));
+                _scheduleQueue.Add(new SchedulerTask(task, Elapsed + time));
             }
         }
 
-        private void Execute(List<SchedulerTask> scheduleQueue, Stopwatch timer, object lockHandle)
+        public void Dequeue(SchedulerTask task)
+        {
+            lock (_lockHandle)
+            {
+                _scheduleQueue.Remove(task);
+            }
+        }
+
+        private void Execute(IScheduler scheduler)
         {
             while (true)
             {
                 // create a copy of the list
                 IEnumerable<SchedulerTask> tasks = null;
                 TimeSpan time;
-                lock (lockHandle)
-                {
-                    tasks = scheduleQueue.ToList();
-                    time = timer.Elapsed;
-                }
 
-                foreach(var task in tasks)
+                tasks = scheduler.Queue;
+                time = scheduler.Elapsed;
+
+                foreach (var task in tasks)
                 {
-                    if(time > task.Time)
+                    if (time > task.Time)
                     {
                         // execute task
-                        task.Task();
+                        task.Task.Invoke();
 
                         // remove task
-                        lock (lockHandle)
-                        {
-                            scheduleQueue.Remove(task);
-                        }
-                    }   
+                        scheduler.Dequeue(task);
+                    }
                 }
 
                 Thread.Sleep(TimeSpan.FromSeconds(1));
