@@ -19,6 +19,8 @@ namespace Broadcast.Console.Test
             System.Console.WriteLine("   async");
             System.Console.WriteLine("   background");
             System.Console.WriteLine("   memory");
+            System.Console.WriteLine("   schedule");
+            System.Console.WriteLine("   recurring");
 
             var input = System.Console.ReadLine();
 
@@ -43,11 +45,33 @@ namespace Broadcast.Console.Test
                         DoMemoryTest();
                         break;
 
+                    case "schedule":
+                        using (var scheduler = new Broadcaster(ProcessorMode.Async))
+                        {
+                            scheduler.Send(() => System.Console.WriteLine("Direct"));
+                            scheduler.Schedule(() => System.Console.WriteLine("Scheduled"), TimeSpan.FromSeconds(10));
+
+                            System.Console.ReadLine();
+                        }
+                        break;
+
+                    case "recurring":
+                        using (var scheduler = new Broadcaster(ProcessorMode.Async))
+                        {
+                            scheduler.Send(() => System.Console.WriteLine("Direct"));
+                            scheduler.Recurring(() => System.Console.WriteLine("Recurring"), TimeSpan.FromSeconds(10));
+
+                            System.Console.ReadLine();
+                        }
+                        break;
+
                     default:
                         System.Console.WriteLine("Possyble commands:");
                         System.Console.WriteLine("   async");
                         System.Console.WriteLine("   background");
                         System.Console.WriteLine("   memory");
+                        System.Console.WriteLine("   schedule");
+                        System.Console.WriteLine("   recurring");
                         format = null;
                         break;
                 }
@@ -72,6 +96,11 @@ namespace Broadcast.Console.Test
 
                 input = System.Console.ReadLine();
             }
+        }
+
+        private static void Schedule()
+        {
+            throw new NotImplementedException();
         }
 
         private static void DoMemoryTest()

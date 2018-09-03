@@ -12,3 +12,4 @@ _ReSharper.*
 .JustCode
 .JustCode/PersistanceMap.solution-user.settings.xml
 .JustCode/PersistanceMap.solution-user.settings.xml
+.vs

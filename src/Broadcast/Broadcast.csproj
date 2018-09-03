@@ -43,6 +43,7 @@
     <Compile Include="Processing\ITaskProcessor.cs" />
     <Compile Include="EventSourcing\ITaskStore.cs" />
     <Compile Include="EventSourcing\NotificationHandlerStore.cs" />
+    <Compile Include="Scheduler.cs" />
     <Compile Include="ProcessorContextFactory.cs" />
     <Compile Include="ProcessorMode.cs" />
     <Compile Include="EventSourcing\TaskFactory.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="RequestPublisher.cs" />
     <Compile Include="Mediator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SchedulerTask.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

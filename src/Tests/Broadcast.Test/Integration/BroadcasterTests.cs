@@ -223,6 +223,10 @@ namespace Broadcast.Test
             {
                 index = 2;
             });
+
+            Thread.Sleep(TimeSpan.FromSeconds(1));
+
+            Assert.That(index == 2);
         }
 
         [Test]
@@ -248,6 +252,20 @@ namespace Broadcast.Test
             var number = await broadcaster.ProcessAsync<int>(() => returner.GetValue(1));
 
             Assert.That(number == 1);
+        }
+
+        [Test]
+        public void Broadcaster_Schedule()
+        {
+            var broadcaster = new Broadcaster();
+            broadcaster.Schedule(() => Console.WriteLine("test"), TimeSpan.FromMinutes(1));
+        }
+
+        [Test]
+        public void Broadcaster_Recurring()
+        {
+            var broadcaster = new Broadcaster();
+            broadcaster.Recurring(() => Console.WriteLine("test"), TimeSpan.FromMinutes(1));
         }
 
         private class AsyncReturner

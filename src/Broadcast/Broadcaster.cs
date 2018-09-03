@@ -9,6 +9,7 @@ namespace Broadcast
     public class Broadcaster : IBroadcaster
     {
         private IProcessorContext _context;
+        private IScheduler _scheduler;
 
         public Broadcaster()
         {
@@ -43,6 +44,22 @@ namespace Broadcast
                 }
 
                 return _context;
+            }
+        }
+
+        /// <summary>
+        /// The scheduler for timing tasks
+        /// </summary>
+        public IScheduler Scheduler
+        {
+            get
+            {
+                if (_scheduler == null)
+                {
+                    _scheduler = new Scheduler();
+                }
+
+                return _scheduler;
             }
         }
 
@@ -146,6 +163,33 @@ namespace Broadcast
             }
         }
 
+        /// <summary>
+        /// Schedules a new task. The task will be executed at the time passed
+        /// </summary>
+        /// <param name="task">The task to execute</param>
+        /// <param name="time">The time to execute the task at</param>
+        public void Schedule(Action task, TimeSpan time)
+        {
+            Scheduler.Enqueue(task, time);
+        }
+
+        /// <summary>
+        /// Creates and schedules a new task that will recurr at the given interval
+        /// </summary>
+        /// <param name="task">The task to execute</param>
+        /// <param name="time">The interval time to execute the task at</param>
+        public void Recurring(Action task, TimeSpan time)
+        {
+            Scheduler.Enqueue(() => 
+            {
+                // execute the task
+                Send(task);
+
+                // reschedule the task
+                Recurring(task, time);
+            }, time);
+        }
+
         private void EnsureContextModeForAsync()
         {
             if (Context.Mode == ProcessorMode.Default)
@@ -158,6 +202,26 @@ namespace Broadcast
             sb.AppendLine("Use Send(message) if ProcessorMode is intentialy run in another mode than ProcessorMode.Default");
 
             throw new InvalidOperationException(sb.ToString());
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing)
+            {
+                return;
+            }
+
+            if (_scheduler != null)
+            {
+                _scheduler.Dispose();
+                _scheduler = null;
+            }
         }
     }
 }
