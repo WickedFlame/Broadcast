@@ -40,6 +40,7 @@
     <Compile Include="EventSourcing\INotificationHandlerStore.cs" />
     <Compile Include="IBroadcaster.cs" />
     <Compile Include="IProcessorContext.cs" />
+    <Compile Include="IScheduledBroadcast.cs" />
     <Compile Include="Processing\ITaskProcessor.cs" />
     <Compile Include="EventSourcing\ITaskStore.cs" />
     <Compile Include="EventSourcing\NotificationHandlerStore.cs" />

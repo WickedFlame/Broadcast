@@ -60,19 +60,5 @@ namespace Broadcast
         /// <typeparam name="T">The notification type</typeparam>
         /// <param name="target">The delegate that handles the INotification</param>
         void RegisterHandler<T>(Action<T> target) where T : INotification;
-
-        /// <summary>
-        /// Schedules a new task. The task will be executed at the time passed
-        /// </summary>
-        /// <param name="task">The task to execute</param>
-        /// <param name="time">The time to execute the task at</param>
-        void Schedule(Action task, TimeSpan time);
-
-        /// <summary>
-        /// Creates and schedules a new task that will recurr at the given interval
-        /// </summary>
-        /// <param name="task">The task to execute</param>
-        /// <param name="time">The interval time to execute the task at</param>
-        void Recurring(Action task, TimeSpan time);
     }
 }

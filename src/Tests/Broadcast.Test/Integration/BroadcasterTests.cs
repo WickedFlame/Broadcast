@@ -268,6 +268,38 @@ namespace Broadcast.Test
             broadcaster.Recurring(() => Console.WriteLine("test"), TimeSpan.FromMinutes(1));
         }
 
+        [Test]
+        public void Broadcaster_Scheduler_Simple()
+        {
+            TaskStoreFactory.StoreFactory = () => new TaskStore();
+            var store = TaskStoreFactory.GetStore();
+
+            var broadcaster = new Broadcaster();
+            broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
+            broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
+            broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
+
+            Thread.Sleep(TimeSpan.FromSeconds(1));
+
+            Assert.IsTrue(store.Count(t => t.State == TaskState.Processed) == 3);
+        }
+
+        //[Test]
+        //public void Broadcaster_Scheduler_Delegate()
+        //{
+        //    TaskStoreFactory.StoreFactory = () => new TaskStore();
+        //    var store = TaskStoreFactory.GetStore();
+
+        //    var broadcaster = new Broadcaster();
+        //    broadcaster.Schedule(SomeDelegateMethod, TimeSpan.FromSeconds(0.005));
+        //    broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
+        //    broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
+
+        //    Thread.Sleep(TimeSpan.FromSeconds(1));
+
+        //    Assert.IsTrue(store.Count(t => t.State == TaskState.Processed) == 3);
+        //}
+
         private class AsyncReturner
         {
             public int GetValue(int index)

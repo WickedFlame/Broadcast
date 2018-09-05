@@ -6,7 +6,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Broadcast
 {
-    public class Broadcaster : IBroadcaster
+    public class Broadcaster : IBroadcaster, IScheduledBroadcast
     {
         private IProcessorContext _context;
         private IScheduler _scheduler;
@@ -170,7 +170,7 @@ namespace Broadcast
         /// <param name="time">The time to execute the task at</param>
         public void Schedule(Action task, TimeSpan time)
         {
-            Scheduler.Enqueue(task, time);
+            Scheduler.Enqueue(() => Send(task), time);
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace Broadcast
         /// <param name="time">The interval time to execute the task at</param>
         public void Recurring(Action task, TimeSpan time)
         {
-            Scheduler.Enqueue(() => 
+            Scheduler.Enqueue(() =>
             {
                 // execute the task
                 Send(task);
@@ -189,6 +189,41 @@ namespace Broadcast
                 Recurring(task, time);
             }, time);
         }
+
+        /// <summary>
+        /// Schedules a INotification that is sent to the processor. The INotification will be passed to all registered Handlers of the same type
+        /// </summary>
+        /// <typeparam name="T">The notification type</typeparam>
+        /// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
+        /// <param name="time">The interval time to execute the task at</param>
+        public void Schedule<T>(Func<T> notification, TimeSpan time) where T : INotification
+        {
+            Scheduler.Enqueue(notification, time);
+        }
+
+        /// <summary>
+        /// Schedules a recurring INotification task that is sent to the processor. The INotification will be passed to all registered Handlers of the same type
+        /// </summary>
+        /// <typeparam name="T">The notification type</typeparam>
+        /// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
+        /// <param name="time">The interval time to execute the task at</param>
+        public void Recurring<T>(Func<T> notification, TimeSpan time) where T : INotification
+        {
+            Scheduler.Enqueue(() =>
+            {
+                // execute the task
+                Send(notification);
+
+                // reschedule the task
+                Recurring(notification, time);
+            }, time);
+        }
+
+
+
+
+
+
 
         private void EnsureContextModeForAsync()
         {

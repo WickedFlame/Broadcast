@@ -13,6 +13,8 @@ namespace Broadcast
     {
         void Enqueue(Action task, TimeSpan time);
 
+        void Enqueue<T>(Func<T> task, TimeSpan time) where T : INotification;
+
         void Dequeue(SchedulerTask task);
 
         TimeSpan Elapsed { get; }
@@ -60,6 +62,11 @@ namespace Broadcast
             }
         }
 
+        public void Enqueue<T>(Func<T> task, TimeSpan time) where T : INotification
+        {
+            throw new NotImplementedException();
+        }
+
         public void Dequeue(SchedulerTask task)
         {
             lock (_lockHandle)
@@ -91,7 +98,8 @@ namespace Broadcast
                     }
                 }
 
-                Thread.Sleep(TimeSpan.FromSeconds(1));
+                //Thread.Sleep(TimeSpan.FromSeconds(1));
+                //resetEvent.WaitOne();
             }
         }
 

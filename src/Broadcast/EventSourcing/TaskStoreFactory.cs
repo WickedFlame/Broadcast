@@ -17,7 +17,10 @@ namespace Broadcast.EventSourcing
             get
             {
                 if (_storeFactory == null)
+                {
                     _storeFactory = () => new TaskStore();
+                }
+
                 return _storeFactory;
             }
             set
@@ -36,7 +39,9 @@ namespace Broadcast.EventSourcing
         public static ITaskStore GetStore()
         {
             if (_defaultStore == null)
+            {
                 _defaultStore = StoreFactory();
+            }
 
             return _defaultStore;
         }
