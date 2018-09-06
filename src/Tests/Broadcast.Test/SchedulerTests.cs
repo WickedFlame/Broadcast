@@ -62,16 +62,16 @@ namespace Broadcast.Test
         [Test]
         public void Broadcast_Scheduler_TaskCount()
         {
-            //int cnt = 0;
-            //var scheduler = new Scheduler();
-            //scheduler.Enqueue(() => { cnt++; }, TimeSpan.FromSeconds(0.5));
-            //scheduler.Enqueue(() => cnt++, TimeSpan.FromSeconds(0.5));
-            //scheduler.Enqueue(() => cnt++, TimeSpan.FromSeconds(0.5));
+            int cnt = 0;
+            var scheduler = new Scheduler();
+            scheduler.Enqueue(() => { cnt++; }, TimeSpan.FromSeconds(0.01));
+            scheduler.Enqueue(() => { cnt++; }, TimeSpan.FromSeconds(0.01));
+            scheduler.Enqueue(() => { cnt++; }, TimeSpan.FromSeconds(0.01));
             //Assert.That(cnt == 0);
 
-            //Thread.Sleep(TimeSpan.FromSeconds(1));
+            Thread.Sleep(TimeSpan.FromSeconds(1));
 
-            //Assert.That(cnt == 3);
+            Assert.That(cnt == 3);
         }
     }
 }

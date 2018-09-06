@@ -55,7 +55,17 @@ namespace Broadcast.Processing
         {
             Store.SetInprocess(task);
 
-            task.Task.Invoke();
+            try
+            {
+                task.Task.Invoke();
+            }
+            catch (Exception ex)
+            {
+                //TODO: set taskt to faulted
+                //TODO: log exception
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+            }
 
             Store.SetProcessed(task);
         }

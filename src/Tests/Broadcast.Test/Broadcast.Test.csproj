@@ -73,12 +73,14 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="FaultIngTests.cs" />
     <Compile Include="Integration\BroadcasterTests.cs" />
     <Compile Include="Integration\MediatorTests.cs" />
     <Compile Include="Integration\NotificationTests.cs" />
     <Compile Include="ProcessorContextTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Integration\RequestPublisherTests.cs" />
+    <Compile Include="RecurringTests.cs" />
     <Compile Include="SchedulerTests.cs" />
     <Compile Include="TaskFactoryTests.cs" />
   </ItemGroup>
