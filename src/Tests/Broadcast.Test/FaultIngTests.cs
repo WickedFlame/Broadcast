@@ -67,19 +67,19 @@ namespace Broadcast.Test
 
         public class GenericEvent : INotification
         {
-            public GenericEvent(Expression<Action> action)
+            public GenericEvent(Action action)
             {
                 Action = action;
             }
 
-            public Expression<Action> Action { get; }
+            public Action Action { get; }
         }
 
         public class GenericEventHandler : INotificationTarget<GenericEvent>
         {
             public void Handle(GenericEvent notification)
             {
-                notification.Action.Compile().Invoke();
+                notification.Action.Invoke();
             }
         }
 
