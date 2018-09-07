@@ -71,7 +71,7 @@ namespace Broadcast.Test
 
             Thread.Sleep(TimeSpan.FromSeconds(1));
 
-            Assert.That(cnt == 3);
+            Assert.That(cnt == 3, $"Effective Count: {cnt}");
         }
     }
 }

@@ -11,29 +11,18 @@ namespace Broadcast.Processing
     /// </summary>
     public abstract class TaskProcessorBase : ITaskProcessor, IDisposable
     {
+        private readonly ITaskStore _store;
+        private readonly INotificationHandlerStore _handlers;
+
         public TaskProcessorBase(ITaskStore store, INotificationHandlerStore handlers)
         {
             _store = store;
             _handlers = handlers;
         }
 
-        private readonly ITaskStore _store;
-        protected ITaskStore Store
-        {
-            get
-            {
-                return _store;
-            }
-        }
+        protected ITaskStore Store => _store;
 
-        private readonly INotificationHandlerStore _handlers;
-        protected INotificationHandlerStore Handlers
-        {
-            get
-            {
-                return _handlers;
-            }
-        }
+        protected INotificationHandlerStore Handlers => _handlers;
 
         /// <summary>
         /// Add a delegate handler to the store
@@ -84,23 +73,33 @@ namespace Broadcast.Processing
 
             List<Action<INotification>> handlers;
 
-            // get the job item from the task
-            var item = task.Task.Invoke();
-
-            // try to find the handlers
-            if (!Handlers.Handlers.TryGetValue(typeof(T), out handlers))
+            try
             {
-                // it could be that T is of a base/inherited type but the handler is of a object type
-                if (!Handlers.Handlers.TryGetValue(item.GetType(), out handlers))
+                // get the job item from the task
+                var item = task.Task.Invoke();
+
+                // try to find the handlers
+                if (!Handlers.Handlers.TryGetValue(typeof(T), out handlers))
                 {
-                    return;
+                    // it could be that T is of a base/inherited type but the handler is of a object type
+                    if (!Handlers.Handlers.TryGetValue(item.GetType(), out handlers))
+                    {
+                        return;
+                    }
+                }
+
+                // run all handlers with the value
+                foreach (var handler in handlers)
+                {
+                    handler(item);
                 }
             }
-
-            // run all handlers with the value
-            foreach (var handler in handlers)
+            catch (Exception ex)
             {
-                handler(item);
+                //TODO: set taskt to faulted
+                //TODO: log exception
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
             }
 
             // set the task to processed state

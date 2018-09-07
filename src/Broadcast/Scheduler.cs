@@ -11,15 +11,28 @@ namespace Broadcast
 {
     public interface IScheduler : IDisposable
     {
-        void Enqueue(Action task, TimeSpan time);
-
-        void Enqueue<T>(Func<T> task, TimeSpan time) where T : INotification;
-
-        void Dequeue(SchedulerTask task);
-
+        /// <summary>
+        /// Gets the elapsed time since the Scheduler has been started
+        /// </summary>
         TimeSpan Elapsed { get; }
 
+        /// <summary>
+        /// Gets the Queue of scheduled tasks
+        /// </summary>
         IEnumerable<SchedulerTask> Queue { get; }
+
+        /// <summary>
+        /// Enqueues and schedules a new task
+        /// </summary>
+        /// <param name="task">The task to schedule</param>
+        /// <param name="time">The time to execute the task at</param>
+        void Enqueue(Action task, TimeSpan time);
+
+        /// <summary>
+        /// Removes the task from the schedule queue
+        /// </summary>
+        /// <param name="task">The task to remove</param>
+        void Dequeue(SchedulerTask task);
     }
 
     public class Scheduler : IScheduler
@@ -48,12 +61,26 @@ namespace Broadcast
             }
         }
 
+        /// <summary>
+        /// Gets the total count of Schedulers that are alive
+        /// </summary>
         public static int SchedulerCount => _schedulerCount;
 
+        /// <summary>
+        /// Gets the elapsed time since the Scheduler has been started
+        /// </summary>
         public TimeSpan Elapsed => _timer.Elapsed;
 
+        /// <summary>
+        /// Gets the Queue of scheduled tasks
+        /// </summary>
         public IEnumerable<SchedulerTask> Queue => _scheduleQueue.ToList();
 
+        /// <summary>
+        /// Enqueues and schedules a new task
+        /// </summary>
+        /// <param name="task">The task to schedule</param>
+        /// <param name="time">The time to execute the task at</param>
         public void Enqueue(Action task, TimeSpan time)
         {
             lock (_lockHandle)
@@ -62,11 +89,10 @@ namespace Broadcast
             }
         }
 
-        public void Enqueue<T>(Func<T> task, TimeSpan time) where T : INotification
-        {
-            throw new NotImplementedException();
-        }
-
+        /// <summary>
+        /// Removes the task from the schedule queue
+        /// </summary>
+        /// <param name="task">The task to remove</param>
         public void Dequeue(SchedulerTask task)
         {
             lock (_lockHandle)
@@ -103,6 +129,9 @@ namespace Broadcast
             }
         }
 
+        /// <summary>
+        /// Dispose the Scheduler. This stops the scheduler thread associated with this scheduler
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);

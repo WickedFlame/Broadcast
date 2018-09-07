@@ -194,11 +194,12 @@ namespace Broadcast
         /// Schedules a INotification that is sent to the processor. The INotification will be passed to all registered Handlers of the same type
         /// </summary>
         /// <typeparam name="T">The notification type</typeparam>
-        /// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
+        /// <param name="task">The delegate returning the notification that will be processed and passed to the handlers</param>
         /// <param name="time">The interval time to execute the task at</param>
-        public void Schedule<T>(Func<T> notification, TimeSpan time) where T : INotification
+        public void Schedule<T>(Func<T> task, TimeSpan time) where T : INotification
         {
-            Scheduler.Enqueue(notification, time);
+            //Scheduler.Enqueue(notification, time);
+            Scheduler.Enqueue(() => Send(task), time);
         }
 
         /// <summary>

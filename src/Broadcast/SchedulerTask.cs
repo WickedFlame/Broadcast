@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq.Expressions;
 
 namespace Broadcast
 {
@@ -11,8 +10,14 @@ namespace Broadcast
             Time = time;
         }
 
+        /// <summary>
+        /// Gets the Task to execute at the scheduled time
+        /// </summary>
         public Action Task { get; }
 
+        /// <summary>
+        /// Gets the time that the Task has to be executed at
+        /// </summary>
         public TimeSpan Time { get; }
     }
 }
