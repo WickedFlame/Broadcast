@@ -13,11 +13,11 @@ namespace Broadcast.Test
     public class BroadcasterTests
     {
         [Test]
-        public void BroadcasterDefaultProcessorTest()
+        public void BroadcasterDefaultProcessorTest_Prallel()
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
 
-            IBroadcaster broadcaster = new Broadcaster();
+            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Parallel);
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
@@ -33,7 +33,7 @@ namespace Broadcast.Test
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
 
-            IBroadcaster broadcaster = new Broadcaster();
+            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Parallel);
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
@@ -49,7 +49,7 @@ namespace Broadcast.Test
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
 
-            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Default);
+            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Parallel);
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();

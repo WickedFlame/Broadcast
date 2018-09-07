@@ -63,15 +63,9 @@ namespace Broadcast
         }
 
         /// <summary>
-        /// Gets the sore of the NotificationHandlers
+        /// Gets the store of the NotificationHandlers
         /// </summary>
-        internal INotificationHandlerStore NotificationHandlers
-        {
-            get
-            {
-                return _notificationHandlers;
-            }
-        }
+        public INotificationHandlerStore NotificationHandlers => _notificationHandlers;
 
         /// <summary>
         /// Gets or sets the ProcessorMode the Processor runs in
@@ -86,7 +80,7 @@ namespace Broadcast
         {
             switch (Mode)
             {
-                case ProcessorMode.Default:
+                case ProcessorMode.Parallel:
                     return new TaskProcessor(_store, _notificationHandlers);
 
                 case ProcessorMode.Background:

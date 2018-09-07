@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using Broadcast.EventSourcing;
+using Broadcast.Processing;
 using Task = System.Threading.Tasks.Task;
 
 namespace Broadcast
@@ -16,7 +17,7 @@ namespace Broadcast
                 if (_context == null)
                 {
                     _context = ProcessorContextFactory.GetContext();
-                    _context.Mode = ProcessorMode.Default;
+                    _context.Mode = ProcessorMode.Parallel;
                 }
                 return _context;
             }
@@ -67,18 +68,11 @@ namespace Broadcast
         /// <returns>Async Task</returns>
         public async Task SendAsync<T>(Func<T> notification) where T : INotification
         {
-            if (Context.Mode != ProcessorMode.Default)
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("Async message handling is only alowed when running the broadcast context in Default Mode.");
-                sb.AppendLine("Use Send(message) if ProcessorMode is intentialy run in another mode than ProcessorMode.Default");
-                throw new InvalidOperationException(sb.ToString());
-            }
-
+            // async 
             var task = TaskFactory.CreateNotifiableTask(notification);
-            using (var processor = Context.Open())
+            using (var processor = new AsyncTaskProcessor(Context.Store, Context.NotificationHandlers))
             {
-                await System.Threading.Tasks.Task.Run(() => processor.Process(task));
+                await processor.ProcessAsync(task);
             }
         }
     }

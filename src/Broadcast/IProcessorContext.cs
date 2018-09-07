@@ -20,6 +20,11 @@ namespace Broadcast
         IEnumerable<BroadcastTask> ProcessedTasks { get; }
 
         /// <summary>
+        /// Gets the store of the NotificationHandlers
+        /// </summary>
+        INotificationHandlerStore NotificationHandlers { get; }
+
+        /// <summary>
         /// Gets or sets the ProcessorMode the Processor runs in
         /// </summary>
         ProcessorMode Mode { get; set; }

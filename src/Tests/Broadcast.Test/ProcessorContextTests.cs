@@ -23,25 +23,25 @@ namespace Broadcast.Test
         {
             var context = new ProcessorContext();
 
-            Assert.IsTrue(context.Mode == ProcessorMode.Default);
+            Assert.IsTrue(context.Mode == ProcessorMode.Async);
             Assert.IsNotNull(context.Store);
         }
 
         [Test]
         public void ProcessorContextWithCustomModeTest()
         {
-            ProcessorContextFactory.ModeFactory = () => ProcessorMode.Async;
+            ProcessorContextFactory.ModeFactory = () => ProcessorMode.Parallel;
 
             var context = new ProcessorContext();
 
-            Assert.IsTrue(context.Mode == ProcessorMode.Async);
+            Assert.IsTrue(context.Mode == ProcessorMode.Parallel);
             Assert.IsNotNull(context.Store);
         }
 
         [Test]
         public void ProcessorContextWithCustomAndDefaultModeTest()
         {
-            ProcessorContextFactory.ModeFactory = () => ProcessorMode.Async;
+            ProcessorContextFactory.ModeFactory = () => ProcessorMode.Parallel;
 
             var context = new ProcessorContext(ProcessorMode.Background);
 

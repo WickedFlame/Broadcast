@@ -64,7 +64,7 @@ namespace Broadcast.Processing
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="notification"></param>
-        public void Process<T>(DelegateTask<T> task) where T : INotification
+        public virtual void Process<T>(DelegateTask<T> task) where T : INotification
         {
             Store.Add(task);
 
@@ -118,10 +118,21 @@ namespace Broadcast.Processing
 
             // mark the task to be in process
             Store.SetInprocess(task);
-            
-            // get the job item from the task
-            var item = task.Task.Invoke();
-            
+            T item = default(T);
+
+            try
+            {
+                // get the job item from the task
+                item = task.Task.Invoke();
+            }
+            catch (Exception ex)
+            {
+                //TODO: set taskt to faulted
+                //TODO: log exception
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+            }
+
             // set the task to processed state
             Store.SetProcessed(task);
 
@@ -231,9 +242,45 @@ namespace Broadcast.Processing
         /// <param name="task">The task to process</param>
         public override void Process(DelegateTask task)
         {
+            ProcessAsync(task);
+        }
+
+        public override void Process<T>(DelegateTask<T> task)
+        {
+            ProcessAsync(task);
+        }
+        
+        /// <summary>
+        /// Process the delegate task on a new Thread
+        /// </summary>
+        /// <param name="task">The task to process</param>
+        public Task ProcessAsync(DelegateTask task)
+        {
             Store.Add(task);
 
-            Task.Run(() => ProcessItem(task));
+            return Task.Factory.StartNew(() => ProcessItem(task));
+        }
+
+        /// <summary>
+        /// Process the delegate task on a new Thread
+        /// </summary>
+        /// <param name="task">The task to process</param>
+        public Task ProcessAsync<T>(DelegateTask<T> task) where T : INotification
+        {
+            //Store.Add(task);
+
+            return Task.Factory.StartNew(() => base.Process(task));
+        }
+
+        /// <summary>
+        /// Processes a task without sending it to the notification handlers
+        /// </summary>
+        /// <typeparam name="T">The return type</typeparam>
+        /// <param name="task">The task</param>
+        /// <returns>The result of the task</returns>
+        public Task<T> ProcessUnhandledAsync<T>(DelegateTask<T> task)
+        {
+            return Task.Factory.StartNew<T>(() => base.ProcessUnhandled(task));
         }
     }
 }

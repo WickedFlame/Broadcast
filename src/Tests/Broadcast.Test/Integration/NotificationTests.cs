@@ -13,7 +13,7 @@ namespace Broadcast.Test
         [Test]
         public void DefaultNotificationTests()
         {
-            var mediator = new Broadcaster();
+            var mediator = new Broadcaster(ProcessorMode.Parallel);
             var notificationHandler = new NotificationHandler();
             var delegateHandler = new DelegateHandler();
             int expressionHandler = 0;
@@ -53,7 +53,7 @@ namespace Broadcast.Test
         [Test]
         public async Task NotificationAsyncWithMultipleHandlersTests()
         {
-            var mediator = new Broadcaster();
+            var mediator = new Broadcaster(ProcessorMode.Parallel);
             int handlerOne = 0;
             int handlerTwo = 0;
 
@@ -65,27 +65,7 @@ namespace Broadcast.Test
             Assert.IsTrue(handlerOne == 5);
             Assert.IsTrue(handlerTwo == 0);
         }
-
-        [Test]
-        public async Task NotificationAsyncFailTests()
-        {
-            var mediator = new Broadcaster(ProcessorMode.Async);
-            int expressionHandler = 0;
-
-            mediator.RegisterHandler<Message>(a => expressionHandler = a.ID);
-
-            try
-            {
-                await mediator.SendAsync(() => new Message(5));
-            }
-            catch (InvalidOperationException)
-            {
-                return;
-            }
-
-            Assert.Fail();
-        }
-        
+                
         class Message : INotification
         {
             public Message(int id)

@@ -1,4 +1,5 @@
 ﻿using Broadcast.EventSourcing;
+using Broadcast.Processing;
 using System;
 using System.Linq.Expressions;
 using System.Text;
@@ -83,12 +84,10 @@ namespace Broadcast
         /// <returns>Task thread</returns>
         public async Task SendAsync(Action action)
         {
-            EnsureContextModeForAsync();
-
             var task = TaskFactory.CreateTask(action);
-            using (var processor = Context.Open())
+            using (var processor = new AsyncTaskProcessor(Context.Store, Context.NotificationHandlers))
             {
-                await Task.Run(() => processor.Process(task));
+                await processor.ProcessAsync(task);
             }
         }
 
@@ -114,12 +113,10 @@ namespace Broadcast
         /// <returns>Task thread</returns>
         public Task SendAsync<T>(Func<T> notification) where T : INotification
         {
-            EnsureContextModeForAsync();
-
             var task = TaskFactory.CreateNotifiableTask(notification);
-            using (var processor = Context.Open())
+            using (var processor = new AsyncTaskProcessor(Context.Store, Context.NotificationHandlers))
             {
-                return Task.Run(() => processor.Process(task));
+                return processor.ProcessAsync(task);
             }
         }
 
@@ -131,12 +128,10 @@ namespace Broadcast
         /// <returns>The value of the function</returns>
         public System.Threading.Tasks.Task<T> ProcessAsync<T>(Func<T> process)
         {
-            EnsureContextModeForAsync();
-
             var task = TaskFactory.CreateTask(process);
-            using (var processor = Context.Open())
+            using (var processor = new AsyncTaskProcessor(Context.Store, Context.NotificationHandlers))
             {
-                return Task.Factory.StartNew(() => processor.ProcessUnhandled(task));
+                return processor.ProcessUnhandledAsync(task);
             }
         }
 
@@ -218,26 +213,6 @@ namespace Broadcast
                 // reschedule the task
                 Recurring(notification, time);
             }, time);
-        }
-
-
-
-
-
-
-
-        private void EnsureContextModeForAsync()
-        {
-            if (Context.Mode == ProcessorMode.Default)
-            {
-                return;
-            }
-
-            var sb = new StringBuilder();
-            sb.AppendLine("Async message handling is only alowed when running the broadcast context in Default Mode.");
-            sb.AppendLine("Use Send(message) if ProcessorMode is intentialy run in another mode than ProcessorMode.Default");
-
-            throw new InvalidOperationException(sb.ToString());
         }
 
         public void Dispose()

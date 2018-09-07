@@ -15,6 +15,16 @@ Broadcast can be installed from [NuGet](http://docs.nuget.org/docs/start-here/in
 
     PM > Install-Package Broadcast
 
+Current stable Version is 0.3.1
+
+### Changelog for the next version:
+* Added: Task scheduling - Execute tasks at a certain time instead of directly
+* Added: Recurring task execution - Execute tasks multiple times at a desired interval
+* Breaking change: The default PorcessorMode is set to Async. If a Parallel Mode is desired, the Broadcaster has to be initialized with the ProcessorMode set to Parallel. 
+```csharp
+var broadcaster = new Broadcaster(ProcessorMode.Parallel);
+```
+
 # Examples
 ------------------------------
 ## Broadcaster - Notification and Taskprocessing

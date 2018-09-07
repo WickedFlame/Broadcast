@@ -27,7 +27,7 @@ namespace Broadcast
 
         internal static ProcessorMode GetMode()
         {
-            return ModeFactory != null ? ModeFactory() : ProcessorMode.Default;
+            return ModeFactory != null ? ModeFactory() : ProcessorMode.Async; //ProcessorMode.Default;
         }
     }
 }

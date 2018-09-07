@@ -64,25 +64,16 @@ namespace Broadcast.Test
         }
 
         [Test]
-        public async Task MediatorInFalseModeTest()
+        public async Task MediatorInInvalidModeTest()
         {
             var mediator = new Mediator();
-            mediator.Context.Mode = ProcessorMode.Async;
+            mediator.Context.Mode = ProcessorMode.Parallel;
 
             int expressionHandler = 0;
 
             mediator.RegisterHandler<Message>(a => expressionHandler = a.ID);
 
-            try
-            {
-                await mediator.SendAsync(() => new Message(5));
-            }
-            catch (InvalidOperationException)
-            {
-                return;
-            }
-
-            Assert.Fail();
+            await mediator.SendAsync(() => new Message(5));
         }
 
         class Message : INotification
