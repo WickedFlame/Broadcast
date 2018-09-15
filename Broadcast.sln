@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.travis.yml = .travis.yml
 		appveyor.yml = appveyor.yml
 		src\Broadcast.nuspec = src\Broadcast.nuspec
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Broadcast.Console.Test", "src\Tests\Broadcast.Console.Test\Broadcast.Console.Test.csproj", "{210CE9E2-7150-41E1-A712-A9808488ABDA}"
@@ -43,5 +44,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{31C290E7-C82E-42C4-94A0-DF040F61B259} = {4081F6CA-5A71-4973-A52F-AA66EF8A1080}
 		{210CE9E2-7150-41E1-A712-A9808488ABDA} = {4081F6CA-5A71-4973-A52F-AA66EF8A1080}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {697A3AD3-51A2-4A97-B2C1-85C73770379F}
 	EndGlobalSection
 EndGlobal
