@@ -18,6 +18,7 @@ Broadcast can be installed from [NuGet](http://docs.nuget.org/docs/start-here/in
 Current stable Version is 0.3.1
 
 ### Changelog for the next version:
+* Updated the Project to a .NetStandard Library
 * Added: Task scheduling - Execute tasks at a certain time instead of directly
 * Added: Recurring task execution - Execute tasks multiple times at a desired interval
 * Breaking change: The default PorcessorMode is set to Async. If a Parallel Mode is desired, the Broadcaster has to be initialized with the ProcessorMode set to Parallel. 

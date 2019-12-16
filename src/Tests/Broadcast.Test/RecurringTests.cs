@@ -19,7 +19,7 @@ namespace Broadcast.Test
             var store = TaskStoreFactory.GetStore();
 
             var broadcaster = new Broadcaster();
-            broadcaster.Recurring(() => System.Diagnostics.Debug.WriteLine("Recurring"), TimeSpan.FromSeconds(0.01));
+            broadcaster.Recurring(() => System.Diagnostics.Trace.WriteLine("Recurring"), TimeSpan.FromSeconds(0.01));
 
             Thread.Sleep(TimeSpan.FromSeconds(0.5));
 

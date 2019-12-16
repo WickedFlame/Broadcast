@@ -25,7 +25,7 @@ namespace Broadcast.Test
 
             Thread.Sleep(TimeSpan.FromSeconds(1));
 
-            Assert.IsTrue(store.Count(t => t.State == TaskState.Processed) == 2);
+            Assert.IsTrue(store.Count(t => t.State == TaskState.Processed) == 2, $"Store Count is {store.Count()}, processed Count is {store.Count(t => t.State == TaskState.Processed)}");
         }
 
         [Test]
