@@ -1,75 +1,29 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2BB556CC-34C7-4865-BD22-16B3F56A1615}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Broadcast</RootNamespace>
-    <AssemblyName>Broadcast</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Company>WickedFlame</Company>
+    <Authors>Christian Walpen</Authors>
+    <Copyright>@WickedFlame 2019</Copyright>
+    <Title>Broadcast</Title>
+    <Summary>A simple fire and forget, message broker.  
+Broadcast is a simple implementation for processing queued, synchronous and asynchronous tasks and notifications.  
+Broadcast helps implement patterns like Mediator and CQRS (Command- and Queryhandling)</Summary>
+    <Description>A .NET Event Pipeline</Description>
+    <PackageProjectUrl>http://wickedflame.github.io/</PackageProjectUrl>
+    <PackageTags>Async Task processing, Request, Commands, Notification, Mediator, CQRS, Fire and forget</PackageTags>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <PackageLicenseFile>License.txt</PackageLicenseFile>
+    <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Broadcast.XML</DocumentationFile>
-  </PropertyGroup>
+  
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <None Include="..\..\License.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Broadcaster.cs" />
-    <Compile Include="EventSourcing\BroadcastTask.cs" />
-    <Compile Include="EventSourcing\INotificationHandlerStore.cs" />
-    <Compile Include="IBroadcaster.cs" />
-    <Compile Include="IProcessorContext.cs" />
-    <Compile Include="IScheduledBroadcast.cs" />
-    <Compile Include="Processing\ITaskProcessor.cs" />
-    <Compile Include="EventSourcing\ITaskStore.cs" />
-    <Compile Include="EventSourcing\NotificationHandlerStore.cs" />
-    <Compile Include="Scheduler.cs" />
-    <Compile Include="ProcessorContextFactory.cs" />
-    <Compile Include="ProcessorMode.cs" />
-    <Compile Include="EventSourcing\TaskFactory.cs" />
-    <Compile Include="Processing\TaskProcessor.cs" />
-    <Compile Include="EventSourcing\TaskState.cs" />
-    <Compile Include="EventSourcing\TaskStore.cs" />
-    <Compile Include="EventSourcing\TaskStoreFactory.cs" />
-    <Compile Include="ProcessorContext.cs" />
-    <Compile Include="IMediator.cs" />
-    <Compile Include="INotification.cs" />
-    <Compile Include="INotificationTarget.cs" />
-    <Compile Include="IRequest.cs" />
-    <Compile Include="IRequestHandler.cs" />
-    <Compile Include="IRequestPublisher.cs" />
-    <Compile Include="RequestPublisher.cs" />
-    <Compile Include="Mediator.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SchedulerTask.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

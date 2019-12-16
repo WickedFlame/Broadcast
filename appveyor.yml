@@ -4,7 +4,7 @@ image:
 - Visual Studio 2017
 
 # version format
-version: 0.4.0.{build}
+version: 0.5.0.{build}
 
 # you can use {branch} name in version format too
 # version: 1.0.{build}-{branch}
@@ -18,19 +18,18 @@ branches:
 # Do not build on tags (GitHub only)
 skip_tags: true
 
-os: Visual Studio 2015
+os: Visual Studio 2019
 install:
-  - set PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
-#  - sudo apt-get install nunit-console
-#  - nuget restore Broadcast.sln
+  - set PATH=C:\Program Files (x86)\MSBuild\16.0\Bin;%PATH%
  
-# enable patching of AssemblyInfo.* files
-assembly_info:
+dotnet_csproj:
   patch: true
-  file: AssemblyInfo.*
-  assembly_version: "{version}"
-  assembly_file_version: "{version}"
-  assembly_informational_version: "{version}"
+  file: '**\*.csproj'
+  version: '{version}'
+  package_version: '{version}'
+  assembly_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
  
 # to add several platforms to build matrix:
 #platform:
@@ -91,7 +90,6 @@ before_test:
 
 # scripts to run after tests
 after_test:
-  - ps: .\pack.ps1   # Run a script to create the nuget package
   
 # to run your custom scripts instead of automatic tests
 test_script:
@@ -105,7 +103,7 @@ test_script:
 #---------------------------------#
 
 artifacts:
-  - path: src\Broadcast\bin\Release\Broadcast.dll
+  - path: src\Broadcast\bin\Release\netstandard2.0\Broadcast.dll
     name: Broadcast.dll
 
   # pushing all *.nupkg files in directory

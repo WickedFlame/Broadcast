@@ -43,6 +43,7 @@ namespace Broadcast
 
         private readonly Thread _schedulerThread = null;
         private readonly Stopwatch _timer;
+        private bool _isRunning = false;
 
         private readonly List<SchedulerTask> _scheduleQueue = new List<SchedulerTask>();
 
@@ -50,6 +51,8 @@ namespace Broadcast
         {
             _timer = new Stopwatch();
             _timer.Start();
+
+            _isRunning = true;
 
             _schedulerThread = new Thread(_ => Execute(this));
             if (!_schedulerThread.IsAlive)
@@ -103,7 +106,7 @@ namespace Broadcast
 
         private void Execute(IScheduler scheduler)
         {
-            while (true)
+            while (_isRunning)
             {
                 // create a copy of the list
                 IEnumerable<SchedulerTask> tasks = null;
@@ -147,7 +150,8 @@ namespace Broadcast
 
             if (_schedulerThread != null)
             {
-                _schedulerThread.Abort();
+                //_schedulerThread.Abort();
+                _isRunning = false;
                 _schedulerCount--;
             }
         }

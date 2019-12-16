@@ -1,10 +1,5 @@
-﻿using Broadcast.EventSourcing;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Broadcast.Console.Test
 {

@@ -1,23 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29509.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Broadcast", "src\Broadcast\Broadcast.csproj", "{2BB556CC-34C7-4865-BD22-16B3F56A1615}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast", "src\Broadcast\Broadcast.csproj", "{88E7BB4F-B2BD-4BB9-99D2-66CDDD7095DA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4081F6CA-5A71-4973-A52F-AA66EF8A1080}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Broadcast.Test", "src\Tests\Broadcast.Test\Broadcast.Test.csproj", "{31C290E7-C82E-42C4-94A0-DF040F61B259}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EF083BFC-B422-49E6-A20D-04882A08593B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{53B44314-11C7-4CC3-9362-FB57518135E6}"
 	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
 		.travis.yml = .travis.yml
 		appveyor.yml = appveyor.yml
-		src\Broadcast.nuspec = src\Broadcast.nuspec
+		License.txt = License.txt
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Broadcast.Console.Test", "src\Tests\Broadcast.Console.Test\Broadcast.Console.Test.csproj", "{210CE9E2-7150-41E1-A712-A9808488ABDA}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7B8E8745-88B2-4319-884D-556F587570DC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.Console.Test", "src\Tests\Broadcast.Console.Test\Broadcast.Console.Test.csproj", "{D8F923B8-220A-41C1-9E5E-BDDEC71EA0BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Broadcast.Test", "src\Tests\Broadcast.Test\Broadcast.Test.csproj", "{5F4A862D-AD7C-4C5B-83FA-A920ACB8479A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,27 +27,27 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2BB556CC-34C7-4865-BD22-16B3F56A1615}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2BB556CC-34C7-4865-BD22-16B3F56A1615}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2BB556CC-34C7-4865-BD22-16B3F56A1615}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2BB556CC-34C7-4865-BD22-16B3F56A1615}.Release|Any CPU.Build.0 = Release|Any CPU
-		{31C290E7-C82E-42C4-94A0-DF040F61B259}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{31C290E7-C82E-42C4-94A0-DF040F61B259}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{31C290E7-C82E-42C4-94A0-DF040F61B259}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{31C290E7-C82E-42C4-94A0-DF040F61B259}.Release|Any CPU.Build.0 = Release|Any CPU
-		{210CE9E2-7150-41E1-A712-A9808488ABDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{210CE9E2-7150-41E1-A712-A9808488ABDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{210CE9E2-7150-41E1-A712-A9808488ABDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{210CE9E2-7150-41E1-A712-A9808488ABDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88E7BB4F-B2BD-4BB9-99D2-66CDDD7095DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88E7BB4F-B2BD-4BB9-99D2-66CDDD7095DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88E7BB4F-B2BD-4BB9-99D2-66CDDD7095DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88E7BB4F-B2BD-4BB9-99D2-66CDDD7095DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8F923B8-220A-41C1-9E5E-BDDEC71EA0BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8F923B8-220A-41C1-9E5E-BDDEC71EA0BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8F923B8-220A-41C1-9E5E-BDDEC71EA0BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8F923B8-220A-41C1-9E5E-BDDEC71EA0BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F4A862D-AD7C-4C5B-83FA-A920ACB8479A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F4A862D-AD7C-4C5B-83FA-A920ACB8479A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F4A862D-AD7C-4C5B-83FA-A920ACB8479A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F4A862D-AD7C-4C5B-83FA-A920ACB8479A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{31C290E7-C82E-42C4-94A0-DF040F61B259} = {4081F6CA-5A71-4973-A52F-AA66EF8A1080}
-		{210CE9E2-7150-41E1-A712-A9808488ABDA} = {4081F6CA-5A71-4973-A52F-AA66EF8A1080}
+		{D8F923B8-220A-41C1-9E5E-BDDEC71EA0BF} = {7B8E8745-88B2-4319-884D-556F587570DC}
+		{5F4A862D-AD7C-4C5B-83FA-A920ACB8479A} = {7B8E8745-88B2-4319-884D-556F587570DC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {697A3AD3-51A2-4A97-B2C1-85C73770379F}
+		SolutionGuid = {D51F4967-993D-46CE-9ABE-2E6FBFF95E80}
 	EndGlobalSection
 EndGlobal

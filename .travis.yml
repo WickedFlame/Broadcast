@@ -1,6 +1,8 @@
 sudo: false
 language: csharp
 solution: Broadcast.sln
+mono: none
+dotnet: 3.0.100
 
 notifications:
   email:
@@ -11,12 +13,9 @@ notifications:
     on_failure: always #[always|never|change] # default: always
     
 install:
-#  - sudo apt-get install nunit-console
-#  - nuget restore Broadcast.sln
-  - nuget restore Broadcast.sln
-  - nuget install NUnit.Runners -Version 3.0.1 -OutputDirectory testrunner
- 
+  - sudo apt-get install -qq dotnet-sdk-2.0.0
+  - dotnet restore
+
 script:
-  - xbuild /p:Configuration=Release Broadcast.sln
-#  - nunit-console ./src/Tests/Broadcast.Test/bin/Release/Broadcast.Test.dll
-  - mono ./testrunner/NUnit.Console.3.0.1/tools/nunit3-console.exe ./src/Tests/Broadcast.Test/bin/Release/Broadcast.Test.dll
+  - dotnet build
+  - dotnet test
