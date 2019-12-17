@@ -63,7 +63,7 @@ namespace Broadcast.Processing
         /// Process the delegate task
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="notification"></param>
+        /// <param name="task"></param>
         public virtual void Process<T>(DelegateTask<T> task) where T : INotification
         {
             Store.Add(task);
@@ -71,15 +71,13 @@ namespace Broadcast.Processing
             // mark the task to be in process
             Store.SetInprocess(task);
 
-            List<Action<INotification>> handlers;
-
             try
             {
                 // get the job item from the task
                 var item = task.Task.Invoke();
 
                 // try to find the handlers
-                if (!Handlers.Handlers.TryGetValue(typeof(T), out handlers))
+                if (!Handlers.Handlers.TryGetValue(typeof(T), out var handlers))
                 {
                     // it could be that T is of a base/inherited type but the handler is of a object type
                     if (!Handlers.Handlers.TryGetValue(item.GetType(), out handlers))
@@ -163,124 +161,6 @@ namespace Broadcast.Processing
             Store.Add(task);
 
             ProcessItem(task);
-        }
-    }
-
-    /// <summary>
-    /// Runs all jobs in a backgroundthread
-    /// </summary>
-    public class BackgroundTaskProcessor : TaskProcessorBase, ITaskProcessor
-    {
-        private static readonly object ProcessorLock = new object();
-
-        private bool _inProcess = false;
-
-        public BackgroundTaskProcessor(ITaskStore store, INotificationHandlerStore handlers)
-            : base(store, handlers)
-        {
-        }
-
-        /// <summary>
-        /// Process the delegate task
-        /// </summary>
-        /// <param name="task">The task to process</param>
-        public override void Process(DelegateTask task)
-        {
-            Store.Add(task);
-
-            // check if a thread is allready processing the queue
-            if (_inProcess)
-            {
-                return;
-            }
-
-            // start new background thread to process all queued tasks
-            Task.Run(() => ProcessTasks());
-        }
-
-        private void ProcessTasks()
-        {
-            // check if a thread is allready processing the queue
-            if (_inProcess)
-            {
-                return;
-            }
-
-            lock (ProcessorLock)
-            {
-                _inProcess = true;
-
-                while (Store.CountQueue > 0)
-                {
-                    var queue = new Queue<DelegateTask>(Store.CopyQueue().OfType<DelegateTask>().Where(t => t.State == TaskState.Queued));
-                    while (queue.Any())
-                    {
-                        var task = queue.Dequeue();
-
-                        ProcessItem(task);
-                    }
-                }
-
-                _inProcess = false;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Runs every job in a own thread
-    /// </summary>
-    public class AsyncTaskProcessor : TaskProcessorBase, ITaskProcessor
-    {
-        public AsyncTaskProcessor(ITaskStore store, INotificationHandlerStore handlers)
-            : base(store, handlers)
-        {
-        }
-
-        /// <summary>
-        /// Process the delegate task
-        /// </summary>
-        /// <param name="task">The task to process</param>
-        public override void Process(DelegateTask task)
-        {
-            ProcessAsync(task);
-        }
-
-        public override void Process<T>(DelegateTask<T> task)
-        {
-            ProcessAsync(task);
-        }
-        
-        /// <summary>
-        /// Process the delegate task on a new Thread
-        /// </summary>
-        /// <param name="task">The task to process</param>
-        public Task ProcessAsync(DelegateTask task)
-        {
-            Store.Add(task);
-
-            return Task.Factory.StartNew(() => ProcessItem(task));
-        }
-
-        /// <summary>
-        /// Process the delegate task on a new Thread
-        /// </summary>
-        /// <param name="task">The task to process</param>
-        public Task ProcessAsync<T>(DelegateTask<T> task) where T : INotification
-        {
-            //Store.Add(task);
-
-            return Task.Factory.StartNew(() => base.Process(task));
-        }
-
-        /// <summary>
-        /// Processes a task without sending it to the notification handlers
-        /// </summary>
-        /// <typeparam name="T">The return type</typeparam>
-        /// <param name="task">The task</param>
-        /// <returns>The result of the task</returns>
-        public Task<T> ProcessUnhandledAsync<T>(DelegateTask<T> task)
-        {
-            return Task.Factory.StartNew<T>(() => base.ProcessUnhandled(task));
         }
     }
 }

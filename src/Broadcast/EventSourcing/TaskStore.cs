@@ -75,7 +75,9 @@ namespace Broadcast.EventSourcing
             lock (QueueLock)
             {
                 if (_queue.Contains(task))
+                {
                     _queue.Remove(task);
+                }
             }
 
             _store.Add(task);

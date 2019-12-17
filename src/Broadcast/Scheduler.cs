@@ -126,9 +126,6 @@ namespace Broadcast
                         scheduler.Dequeue(task);
                     }
                 }
-
-                //Thread.Sleep(TimeSpan.FromSeconds(1));
-                //resetEvent.WaitOne();
             }
         }
 

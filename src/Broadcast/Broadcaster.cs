@@ -193,7 +193,6 @@ namespace Broadcast
         /// <param name="time">The interval time to execute the task at</param>
         public void Schedule<T>(Func<T> task, TimeSpan time) where T : INotification
         {
-            //Scheduler.Enqueue(notification, time);
             Scheduler.Enqueue(() => Send(task), time);
         }
 
