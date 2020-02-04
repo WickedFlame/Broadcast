@@ -1,5 +1,5 @@
 
-# Broadcast Scheduler
+## Scheduler
 Using the scheduler a task can be executed at a scheduled time
 ```csharp
 var broadcaster = new Broadcaster();
