@@ -9,6 +9,8 @@ A simple and lightweight in-process fire and forget, request/response message qu
 Broadcast is a simple implementation for processing queued tasks and notifications synchronous and asynchronous.  
 Broadcast helps implement the Mediator and CQRS (Command- and Queryhandling) patterns easily.
 
+Visit [https://wickedflame.github.io/Broadcast/](https://wickedflame.github.io/Broadcast/) for the full documentation.
+
 ## Installation
 ------------------------------
 Broadcast can be installed from [NuGet](http://docs.nuget.org/docs/start-here/installing-nuget) through the package manager console:  
