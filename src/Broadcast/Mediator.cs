@@ -17,7 +17,7 @@ namespace Broadcast
                 if (_context == null)
                 {
                     _context = ProcessorContextFactory.GetContext();
-                    _context.Mode = ProcessorMode.Parallel;
+                    _context.Mode = ProcessorMode.Serial;
                 }
                 return _context;
             }

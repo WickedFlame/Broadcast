@@ -3,7 +3,7 @@ namespace Broadcast
 {
     public enum ProcessorMode
     {
-        Parallel,
+        Serial,
         Background,
         Async,
     }

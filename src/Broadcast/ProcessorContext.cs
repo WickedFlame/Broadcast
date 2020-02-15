@@ -69,7 +69,7 @@ namespace Broadcast
         {
             switch (Mode)
             {
-                case ProcessorMode.Parallel:
+                case ProcessorMode.Serial:
                     return new TaskProcessor(Store, _notificationHandlers);
 
                 case ProcessorMode.Background:

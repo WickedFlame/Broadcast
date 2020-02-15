@@ -67,7 +67,7 @@ namespace Broadcast.Test
         public async Task MediatorInInvalidModeTest()
         {
             var mediator = new Mediator();
-            mediator.Context.Mode = ProcessorMode.Parallel;
+            mediator.Context.Mode = ProcessorMode.Serial;
 
             int expressionHandler = 0;
 

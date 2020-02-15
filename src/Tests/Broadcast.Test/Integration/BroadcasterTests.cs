@@ -17,7 +17,7 @@ namespace Broadcast.Test
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
 
-            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Parallel);
+            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Serial);
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
@@ -33,7 +33,7 @@ namespace Broadcast.Test
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
 
-            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Parallel);
+            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Serial);
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
@@ -49,7 +49,7 @@ namespace Broadcast.Test
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
 
-            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Parallel);
+            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Serial);
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();

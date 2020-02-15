@@ -30,18 +30,18 @@ namespace Broadcast.Test
         [Test]
         public void ProcessorContextWithCustomModeTest()
         {
-            ProcessorContextFactory.ModeFactory = () => ProcessorMode.Parallel;
+            ProcessorContextFactory.ModeFactory = () => ProcessorMode.Serial;
 
             var context = new ProcessorContext();
 
-            Assert.IsTrue(context.Mode == ProcessorMode.Parallel);
+            Assert.IsTrue(context.Mode == ProcessorMode.Serial);
             Assert.IsNotNull(context.Store);
         }
 
         [Test]
         public void ProcessorContextWithCustomAndDefaultModeTest()
         {
-            ProcessorContextFactory.ModeFactory = () => ProcessorMode.Parallel;
+            ProcessorContextFactory.ModeFactory = () => ProcessorMode.Serial;
 
             var context = new ProcessorContext(ProcessorMode.Background);
 

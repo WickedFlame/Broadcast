@@ -13,7 +13,7 @@ namespace Broadcast.Test
         [Test]
         public void DefaultNotificationTests()
         {
-            var mediator = new Broadcaster(ProcessorMode.Parallel);
+            var mediator = new Broadcaster(ProcessorMode.Serial);
             var notificationHandler = new NotificationHandler();
             var delegateHandler = new DelegateHandler();
             int expressionHandler = 0;
@@ -53,7 +53,7 @@ namespace Broadcast.Test
         [Test]
         public async Task NotificationAsyncWithMultipleHandlersTests()
         {
-            var mediator = new Broadcaster(ProcessorMode.Parallel);
+            var mediator = new Broadcaster(ProcessorMode.Serial);
             int handlerOne = 0;
             int handlerTwo = 0;
 
