@@ -77,7 +77,16 @@ namespace Broadcast
         /// <summary>
         /// Gets the Queue of scheduled tasks
         /// </summary>
-        public IEnumerable<SchedulerTask> Queue => _scheduleQueue.ToList();
+        public IEnumerable<SchedulerTask> Queue
+        {
+            get
+            {
+                lock (_lockHandle)
+                {
+                    return _scheduleQueue.ToList();
+                }
+            }
+        }
 
         /// <summary>
         /// Enqueues and schedules a new task
@@ -109,11 +118,9 @@ namespace Broadcast
             while (_isRunning)
             {
                 // create a copy of the list
-                IEnumerable<SchedulerTask> tasks = null;
-                TimeSpan time;
-
-                tasks = scheduler.Queue;
-                time = scheduler.Elapsed;
+                IEnumerable<SchedulerTask> tasks = scheduler.Queue;
+                var time = scheduler.Elapsed;
+                
 
                 foreach (var task in tasks)
                 {
