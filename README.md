@@ -5,7 +5,7 @@
 [![NuGet Version](https://img.shields.io/nuget/v/broadcast.svg?style=flat)](https://www.nuget.org/packages/broadcast/)
 
 
-A simple and lightweight in-process fire and forget, request/response message queue.  
+Background task processing and message queue for .NET.
 Broadcast is a simple implementation for processing queued tasks and notifications synchronous and asynchronous.  
 Broadcast helps implement the Mediator and CQRS (Command- and Queryhandling) patterns easily.
 

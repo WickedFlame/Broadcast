@@ -3,10 +3,39 @@ layout: "default"
 ---
 # Broadcast
 
-A simple and lightweight in-process fire and forget, request/response message queue. 
+Background task processing and message queue for .NET
 
-- [GitHub](https://github.com/WickedFlame/Broadcast)
-- [Changelog](changelog)
+## Background Task processing
+```csharp
+var broadcaster = new Broadcaster();
+broadcaster.Send(() => Trace.WriteLine("This is a basic task"));
+```
 
-## Contents
-- [Scheduler](scheduler)
+## Scheduleed Tasks
+```csharp
+var broadcaster = new Broadcaster();
+broadcaster.Schedule(() => Console.WriteLine("test"), TimeSpan.FromMinutes(1));
+```
+
+## Message Queue
+### Notification
+```csharp
+class Message : INotification { }
+
+class NotificationHandler : INotificationTarget<Message>
+{
+    public void Handle(Message notification)
+    {
+        ...
+    }
+}
+
+var broadcaster = new Broadcaster();
+
+broadcaster.RegisterHandler(notificationHandler);
+
+broadcaster.Send(new Message(5));
+```
+
+
+[Changelog](changelog)
