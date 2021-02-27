@@ -13,7 +13,7 @@ namespace Broadcast.EventSourcing
         /// </summary>
         /// <param name="task"></param>
         /// <returns></returns>
-        public static DelegateTask CreateTask(Action task)
+        public static DelegateTask CreateTask(Expression<Action> task)
         {
             if (task == null)
             {

@@ -68,7 +68,7 @@ namespace Broadcast
         /// Send a delegate to the task processor
         /// </summary>
         /// <param name="action">The Task to process</param>
-        public void Send(Action action)
+        public void Send(Expression<Action> action)
         {
             var task = TaskFactory.CreateTask(action);
             using (var processor = Context.Open())
@@ -77,12 +77,12 @@ namespace Broadcast
             }
         }
 
-        /// <summary>
-        /// Processes a task Asynchronously. ContextMode has to be Default for Async Processing
-        /// </summary>
-        /// <param name="action">The Task to process</param>
-        /// <returns>Task thread</returns>
-        public async Task SendAsync(Action action)
+		/// <summary>
+		/// Processes a task Asynchronously. ContextMode has to be Default for Async Processing
+		/// </summary>
+		/// <param name="action">The Task to process</param>
+		/// <returns>Task thread</returns>
+		public async Task SendAsync(Expression<Action> action)
         {
             var task = TaskFactory.CreateTask(action);
             using (var processor = new AsyncTaskProcessor(Context.Store, Context.NotificationHandlers))
@@ -91,12 +91,12 @@ namespace Broadcast
             }
         }
 
-        /// <summary>
-        /// Sends a INotification to the processor. The INotification will be passed to all registered Handlers of the same type
-        /// </summary>
-        /// <typeparam name="T">The notification type</typeparam>
-        /// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
-        public void Send<T>(Func<T> notification) where T : INotification
+		/// <summary>
+		/// Sends a INotification to the processor. The INotification will be passed to all registered Handlers of the same type
+		/// </summary>
+		/// <typeparam name="T">The notification type</typeparam>
+		/// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
+		public void Send<T>(Func<T> notification) where T : INotification
         {
             var task = TaskFactory.CreateNotifiableTask(notification);
             using (var processor = Context.Open())
@@ -163,7 +163,7 @@ namespace Broadcast
         /// </summary>
         /// <param name="task">The task to execute</param>
         /// <param name="time">The time to execute the task at</param>
-        public void Schedule(Action task, TimeSpan time)
+        public void Schedule(Expression<Action> task, TimeSpan time)
         {
             Scheduler.Enqueue(() => Send(task), time);
         }
@@ -173,7 +173,7 @@ namespace Broadcast
         /// </summary>
         /// <param name="task">The task to execute</param>
         /// <param name="time">The interval time to execute the task at</param>
-        public void Recurring(Action task, TimeSpan time)
+        public void Recurring(Expression<Action> task, TimeSpan time)
         {
             Scheduler.Enqueue(() =>
             {

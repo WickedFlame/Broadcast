@@ -19,7 +19,7 @@ namespace Broadcast.EventSourcing
 
     public class DelegateTask : BroadcastTask
     {
-        public Action Task { get; set; }
+        public Expression<Action> Task { get; set; }
 
         internal override void CloseTask()
         {

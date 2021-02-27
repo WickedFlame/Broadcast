@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System;
+using System.Linq.Expressions;
 
 namespace Broadcast.Test
 {
@@ -219,10 +220,13 @@ namespace Broadcast.Test
             int index = 0;
 
             IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background);
-            broadcaster.Send(() =>
+
+            //TODO: Refactore
+			Action action = () =>
             {
-                index = 2;
-            });
+	            index = 2;
+            };
+			broadcaster.Send(() => action.Invoke());
 
             Thread.Sleep(TimeSpan.FromSeconds(1));
 
@@ -235,10 +239,13 @@ namespace Broadcast.Test
             int index = 0;
 
             IBroadcaster broadcaster = new Broadcaster();
-            await broadcaster.SendAsync(() =>
+
+            //TODO: Refactore
+			Action action = () =>
             {
-                index = 2;
-            });
+	            index = 2;
+            };
+            await broadcaster.SendAsync(() => action());
 
             Assert.IsTrue(index == 2);
         }

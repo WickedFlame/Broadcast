@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,14 +14,14 @@ namespace Broadcast
         /// </summary>
         /// <param name="task">The task to execute</param>
         /// <param name="time">The time to execute the task at</param>
-        void Schedule(Action task, TimeSpan time);
+        void Schedule(Expression<Action> task, TimeSpan time);
 
         /// <summary>
         /// Creates and schedules a new task that will recurr at the given interval
         /// </summary>
         /// <param name="task">The task to execute</param>
         /// <param name="time">The interval time to execute the task at</param>
-        void Recurring(Action task, TimeSpan time);
+        void Recurring(Expression<Action> task, TimeSpan time);
 
         /// <summary>
         /// Schedules a INotification that is sent to the processor. The INotification will be passed to all registered Handlers of the same type

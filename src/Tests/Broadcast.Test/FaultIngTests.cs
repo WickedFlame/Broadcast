@@ -20,7 +20,10 @@ namespace Broadcast.Test
             var store = TaskStoreFactory.GetStore();
 
             var broadcaster = new Broadcaster();
-            broadcaster.Schedule(() => { throw new NotImplementedException(); }, TimeSpan.FromSeconds(0.01));
+
+			//TODO: Refactore
+			Action action = () => throw new NotImplementedException();
+            broadcaster.Schedule(() => action.Invoke(), TimeSpan.FromSeconds(0.01));
             broadcaster.Schedule(() => System.Diagnostics.Debug.WriteLine("Test"), TimeSpan.FromSeconds(0.02));
 
             Thread.Sleep(TimeSpan.FromSeconds(1));
@@ -53,7 +56,9 @@ namespace Broadcast.Test
             var store = TaskStoreFactory.GetStore();
 
             var broadcaster = new Broadcaster();
-            broadcaster.Schedule(() => { throw new NotImplementedException(); }, TimeSpan.FromSeconds(0.01));
+            //TODO: Refactore
+			Action action = () => throw new NotImplementedException();
+			broadcaster.Schedule(() => action.Invoke(), TimeSpan.FromSeconds(0.01));
 
             Thread.Sleep(TimeSpan.FromSeconds(1));
 

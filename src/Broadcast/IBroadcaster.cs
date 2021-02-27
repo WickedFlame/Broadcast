@@ -15,21 +15,21 @@ namespace Broadcast
         /// Send a delegate to the task processor
         /// </summary>
         /// <param name="task">The Task to process</param>
-        void Send(Action task);
-        
+        void Send(Expression<Action> task);
+
         /// <summary>
         /// Processes a task Asynchronously. ContextMode has to be Default for Async Processing
         /// </summary>
         /// <param name="task">The Task to process</param>
         /// <returns>Task thread</returns>
-        Task SendAsync(Action task);
+        Task SendAsync(Expression<Action> task);
 
-        /// <summary>
-        /// Sends a INotification to the processor. The INotification will be passed to all registered Handlers of the same type
-        /// </summary>
-        /// <typeparam name="T">The notification type</typeparam>
-        /// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
-        void Send<T>(Func<T> notification) where T : INotification;
+		/// <summary>
+		/// Sends a INotification to the processor. The INotification will be passed to all registered Handlers of the same type
+		/// </summary>
+		/// <typeparam name="T">The notification type</typeparam>
+		/// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
+		void Send<T>(Func<T> notification) where T : INotification;
 
         /// <summary>
         /// Sends a INotification async to the processor. The INotification will be passed to all registered Handlers of the same type. Async method calls are only allowed in ProcessorMode.Default
