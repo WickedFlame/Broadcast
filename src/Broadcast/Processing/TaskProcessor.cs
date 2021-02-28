@@ -46,7 +46,10 @@ namespace Broadcast.Processing
 
             try
             {
-                task.Task.Compile().Invoke();
+                //task.Task.Compile().Invoke();
+
+                var invocation = new TaskInvocation();
+                invocation.InvokeTask(task);
             }
             catch (Exception ex)
             {

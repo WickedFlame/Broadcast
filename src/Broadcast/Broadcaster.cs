@@ -3,6 +3,7 @@ using Broadcast.Processing;
 using System;
 using System.Linq.Expressions;
 using System.Text;
+using Broadcast.Composition;
 using Task = System.Threading.Tasks.Task;
 
 namespace Broadcast
