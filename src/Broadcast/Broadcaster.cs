@@ -97,7 +97,7 @@ namespace Broadcast
 		/// </summary>
 		/// <typeparam name="T">The notification type</typeparam>
 		/// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
-		public void Send<T>(Func<T> notification) where T : INotification
+		public void Send<T>(Expression<Func<T>> notification) where T : INotification
         {
             var task = TaskFactory.CreateNotifiableTask(notification);
             using (var processor = Context.Open())
@@ -112,7 +112,7 @@ namespace Broadcast
         /// <typeparam name="T">The notification type</typeparam>
         /// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
         /// <returns>Task thread</returns>
-        public Task SendAsync<T>(Func<T> notification) where T : INotification
+        public Task SendAsync<T>(Expression<Func<T>> notification) where T : INotification
         {
             var task = TaskFactory.CreateNotifiableTask(notification);
             using (var processor = new AsyncTaskProcessor(Context.Store, Context.NotificationHandlers))
@@ -121,20 +121,20 @@ namespace Broadcast
             }
         }
 
-        /// <summary>
-        /// Processes a task async
-        /// </summary>
-        /// <typeparam name="T">The return type of the process</typeparam>
-        /// <param name="process">The function to execute</param>
-        /// <returns>The value of the function</returns>
-        public System.Threading.Tasks.Task<T> ProcessAsync<T>(Func<T> process)
-        {
-            var task = TaskFactory.CreateTask(process);
-            using (var processor = new AsyncTaskProcessor(Context.Store, Context.NotificationHandlers))
-            {
-                return processor.ProcessUnhandledAsync(task);
-            }
-        }
+        ///// <summary>
+        ///// Processes a task async
+        ///// </summary>
+        ///// <typeparam name="T">The return type of the process</typeparam>
+        ///// <param name="process">The function to execute</param>
+        ///// <returns>The value of the function</returns>
+        //public System.Threading.Tasks.Task<T> ProcessAsync<T>(Func<T> process)
+        //{
+        //    var task = TaskFactory.CreateTask(process);
+        //    using (var processor = new AsyncTaskProcessor(Context.Store, Context.NotificationHandlers))
+        //    {
+        //        return processor.ProcessUnhandledAsync(task);
+        //    }
+        //}
 
         /// <summary>
         /// Register a INotificationTarget that gets called when a INotification of the same type is sent
@@ -192,7 +192,7 @@ namespace Broadcast
         /// <typeparam name="T">The notification type</typeparam>
         /// <param name="task">The delegate returning the notification that will be processed and passed to the handlers</param>
         /// <param name="time">The interval time to execute the task at</param>
-        public void Schedule<T>(Func<T> task, TimeSpan time) where T : INotification
+        public void Schedule<T>(Expression<Func<T>> task, TimeSpan time) where T : INotification
         {
             Scheduler.Enqueue(() => Send(task), time);
         }
@@ -203,7 +203,7 @@ namespace Broadcast
         /// <typeparam name="T">The notification type</typeparam>
         /// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
         /// <param name="time">The interval time to execute the task at</param>
-        public void Recurring<T>(Func<T> notification, TimeSpan time) where T : INotification
+        public void Recurring<T>(Expression<Func<T>> notification, TimeSpan time) where T : INotification
         {
             Scheduler.Enqueue(() =>
             {

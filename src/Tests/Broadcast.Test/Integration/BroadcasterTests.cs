@@ -101,13 +101,14 @@ namespace Broadcast.Test
             TaskStoreFactory.StoreFactory = () => new TaskStore();
 
             IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Async);
-            for (int i = 1; i <= 10; i++)
-            {
-                var value = i.ToString();
-                broadcaster.Send(() => Trace.WriteLine(string.Format("Test Async {0}", value)));
-            }
 
-            System.Threading.Thread.Sleep(System.TimeSpan.FromSeconds(1));
+			for (int i = 1; i <= 10; i++)
+			{
+				var value = i.ToString();
+				broadcaster.Send(() => Trace.WriteLine(string.Format("Test Async {0}", value)));
+			}
+
+			System.Threading.Thread.Sleep(System.TimeSpan.FromSeconds(1));
             Assert.IsTrue(broadcaster.Context.ProcessedTasks.Count() == 10);
         }
 
@@ -213,52 +214,17 @@ namespace Broadcast.Test
             //    v++;
             //}
         }
-
+		
         [Test]
-        public void BroadcasterSendExpressionBodyTest()
+		[Ignore("deprecated?")]
+        public void Broadcaster_ProcessAsync_WithReturn()
         {
-            int index = 0;
+            //var returner = new AsyncReturner();
 
-            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background);
+            //var broadcaster = new Broadcaster();
+            //var number = await broadcaster.ProcessAsync<int>(() => returner.GetValue(1));
 
-            //TODO: Refactore
-			Action action = () =>
-            {
-	            index = 2;
-            };
-			broadcaster.Send(() => action.Invoke());
-
-            Thread.Sleep(TimeSpan.FromSeconds(1));
-
-            Assert.That(index == 2);
-        }
-
-        [Test]
-        public async Task BroadcasterSendExpressionBodyAsyncTest()
-        {
-            int index = 0;
-
-            IBroadcaster broadcaster = new Broadcaster();
-
-            //TODO: Refactore
-			Action action = () =>
-            {
-	            index = 2;
-            };
-            await broadcaster.SendAsync(() => action());
-
-            Assert.IsTrue(index == 2);
-        }
-
-        [Test]
-        public async Task Broadcaster_ProcessAsync_WithReturn()
-        {
-            var returner = new AsyncReturner();
-
-            var broadcaster = new Broadcaster();
-            var number = await broadcaster.ProcessAsync<int>(() => returner.GetValue(1));
-
-            Assert.That(number == 1);
+            //Assert.That(number == 1);
         }
 
         [Test]

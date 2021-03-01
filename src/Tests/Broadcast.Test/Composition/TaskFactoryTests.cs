@@ -9,10 +9,10 @@ namespace Broadcast.Test.Composition
 	public class TaskFactoryTests
 	{
 		[Test]
-		public void TaskFactory_()
+		public void TaskFactory_CreateTask_Args_VerifyGenericMethod()
 		{
 			var task = TaskFactory.CreateTask(() => GenericMethod<int>(5));
-
+			Assert.AreEqual(task.Args[0], 5);
 		}
 
 

@@ -1,4 +1,5 @@
-﻿using Broadcast.EventSourcing;
+﻿using Broadcast.Composition;
+using Broadcast.EventSourcing;
 using Moq;
 using NUnit.Framework;
 
@@ -26,15 +27,6 @@ namespace Broadcast.Test
         public void TaskFactoryNotificationWithMethodReferenceExpressionTest()
         {
             var task = TaskFactory.CreateNotifiableTask(() => CreateNotification());
-            Assert.IsNotNull(task);
-        }
-
-        [Test]
-        public void TaskFactoryWithMethodReferenceExpressionTest()
-        {
-            var messageMock = new Mock<IMessage>();
-            var task = TaskFactory.CreateTask(() => messageMock.Object.DoSomething("", "", ""));
-
             Assert.IsNotNull(task);
         }
 

@@ -76,11 +76,13 @@ namespace Broadcast.Processing
 
             try
             {
-                // get the job item from the task
-                var item = task.Task.Invoke();
+				// get the job item from the task
+				var item = task.Task.Compile().Invoke();
+				//var invocation = new TaskInvocation();
+				//var item = (T)invocation.InvokeTask(task);
 
-                // try to find the handlers
-                if (!Handlers.Handlers.TryGetValue(typeof(T), out var handlers))
+				// try to find the handlers
+				if (!Handlers.Handlers.TryGetValue(typeof(T), out var handlers))
                 {
                     // it could be that T is of a base/inherited type but the handler is of a object type
                     if (!Handlers.Handlers.TryGetValue(item.GetType(), out handlers))
@@ -106,40 +108,7 @@ namespace Broadcast.Processing
             // set the task to processed state
             Store.SetProcessed(task);
         }
-
-        /// <summary>
-        /// Processes a task without sending it to the notification handlers
-        /// </summary>
-        /// <typeparam name="T">The return type</typeparam>
-        /// <param name="task">The task</param>
-        /// <returns>The result of the task</returns>
-        public T ProcessUnhandled<T>(DelegateTask<T> task)
-        {
-            Store.Add(task);
-
-            // mark the task to be in process
-            Store.SetInprocess(task);
-            T item = default(T);
-
-            try
-            {
-                // get the job item from the task
-                item = task.Task.Invoke();
-            }
-            catch (Exception ex)
-            {
-                //TODO: set taskt to faulted
-                //TODO: log exception
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
-            }
-
-            // set the task to processed state
-            Store.SetProcessed(task);
-
-            return item;
-        }
-
+		
         public void Dispose()
         {
         }

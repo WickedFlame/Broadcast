@@ -8,71 +8,15 @@ namespace Broadcast.EventSourcing
 {
     public abstract class BroadcastTask
     {
-        public TaskState State { get; set; }
+		public TaskState State { get; set; }
 
-        //public Type Type { get; set; }
+		
 
-        //public MethodInfo Method { get; set; }
+		internal abstract void CloseTask();
 
-        //public string[] Arguments { get; set; }
-        
-        internal abstract void CloseTask();
-    }
+		
 
-    public class DelegateTask<T> : BroadcastTask
-    {
-        public Func<T> Task { get; set; }
-
-        internal override void CloseTask()
-        {
-            Task = null;
-        }
-    }
-
-    public class DelegateTask : BroadcastTask
-    {
-	    public DelegateTask(Type type, MethodInfo method, params object[] args)
-	    {
-		    if (type == null)
-		    {
-			    throw new ArgumentNullException(nameof(type));
-		    }
-
-		    if (method == null)
-		    {
-			    throw new ArgumentNullException(nameof(method));
-		    }
-
-		    if (args == null)
-		    {
-			    throw new ArgumentNullException(nameof(args));
-		    }
-
-		    Validate(type, nameof(type), method, nameof(method), args.Length, nameof(args));
-
-		    Type = type;
-		    Method = method;
-		    Args = args;
-	    }
-
-	    public Type Type { get; }
-
-	    public MethodInfo Method { get; }
-
-	    public IReadOnlyList<object> Args { get; }
-
-	    public override string ToString()
-	    {
-		    return $"{Type}.{Method.Name}";
-	    }
-
-	    internal override void CloseTask()
-	    {
-		    //throw new NotImplementedException();
-	    }
-
-
-		private static void Validate(Type type, string typeParameterName, MethodInfo method, string methodParameterName, int argumentCount, string argumentParameterName)
+		protected static void Validate(Type type, string typeParameterName, MethodInfo method, string methodParameterName, int argumentCount, string argumentParameterName)
 		{
 			if (!method.IsPublic)
 			{
@@ -126,5 +70,58 @@ namespace Broadcast.EventSourcing
 				}
 			}
 		}
+	}
+
+    public class DelegateTask<T> : BroadcastTask
+    {
+	    public Expression<Func<T>> Task { get; set; }
+
+		internal override void CloseTask()
+        {
+            //Task = null;
+        }
+    }
+
+    public class DelegateTask : BroadcastTask
+    {
+	    public DelegateTask(Type type, MethodInfo method, params object[] args)
+	    {
+		    if (type == null)
+		    {
+			    throw new ArgumentNullException(nameof(type));
+		    }
+
+		    if (method == null)
+		    {
+			    throw new ArgumentNullException(nameof(method));
+		    }
+
+		    if (args == null)
+		    {
+			    throw new ArgumentNullException(nameof(args));
+		    }
+
+		    Validate(type, nameof(type), method, nameof(method), args.Length, nameof(args));
+
+		    Type = type;
+		    Method = method;
+		    Args = args;
+		}
+
+	    public Type Type { get; }
+
+	    public MethodInfo Method { get; }
+
+	    public IReadOnlyList<object> Args { get; }
+
+		public override string ToString()
+	    {
+		    return $"{Type}.{Method.Name}";
+	    }
+
+	    internal override void CloseTask()
+	    {
+		    //throw new NotImplementedException();
+	    }
     }
 }

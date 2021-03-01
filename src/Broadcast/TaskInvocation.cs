@@ -17,7 +17,7 @@ namespace Broadcast
 			_activationContext = new ActivationContext();
 		}
 
-		public void InvokeTask(DelegateTask task)
+		public object InvokeTask(DelegateTask task)
 		{
 			object instance = null;
 			if(!task.Method.IsStatic)
@@ -30,7 +30,7 @@ namespace Broadcast
 			}
 
 			var arguments = BuildArguments(task);
-			InvokeMethod(task, instance, arguments);
+			return InvokeMethod(task, instance, arguments);
 		}
 
 		private object[] BuildArguments(DelegateTask task)
@@ -45,7 +45,8 @@ namespace Broadcast
 
 			for (var i = 0; i < parameters.Length; i++)
 			{
-				var parameter = parameters[i];
+				//TODO: Refactor this
+				//var parameter = parameters[i];
 				var argument = task.Args[i];
 
 				//TODO: Refactor this
@@ -75,7 +76,7 @@ namespace Broadcast
 
 				//if (returnType.IsTaskLike(out var getTaskFunc))
 				//{
-						return InvokeOnTaskScheduler(task, tuple);
+						return InvokeOnTaskScheduler(tuple);
 				//}
 
 				//return InvokeSynchronously(tuple);
@@ -88,7 +89,7 @@ namespace Broadcast
 			}
 		}
 
-		private object InvokeOnTaskScheduler(DelegateTask task, Tuple<MethodInfo, object, object[]> tuple)
+		private object InvokeOnTaskScheduler(Tuple<MethodInfo, object, object[]> tuple)
 		{
 			//TODO: Create own TaskScheduler and store in options
 			var _taskScheduler = TaskScheduler.Default;

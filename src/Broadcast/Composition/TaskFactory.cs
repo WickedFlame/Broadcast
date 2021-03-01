@@ -39,43 +39,41 @@ namespace Broadcast.Composition
 		/// <typeparam name="T"></typeparam>
 		/// <param name="notification"></param>
 		/// <returns></returns>
-		public static DelegateTask<T> CreateNotifiableTask<T>(Func<T> notification) where T : INotification
+		public static DelegateTask<T> CreateNotifiableTask<T>(Expression<Func<T>> notification) where T : INotification
 		{
 			if (notification == null)
 			{
 				throw new ArgumentNullException(nameof(notification));
 			}
 
-			//var callExpression = notification.Body as MethodCallExpression;
-			//if (callExpression == null)
+			//var task = CreateTaskFromExpression(notification);
+
+			//return new DelegateTask<T>(task.Type, task.Method, task.Args)
 			//{
-			//    throw new NotSupportedException("Expression body should be of type `MethodCallExpression`");
-			//}
+			//	//Task = notification,
+			//	State = TaskState.New
+			//};
 
 			return new DelegateTask<T>
 			{
-				//Type = typeof(T),
-				//Method = callExpression.Method,
-				//Arguments = GetArguments(callExpression),
-
 				Task = notification,
 				State = TaskState.New
 			};
 		}
 
-		public static DelegateTask<T> CreateTask<T>(Func<T> process)
-		{
-			if (process == null)
-			{
-				throw new ArgumentNullException(nameof(process));
-			}
+		//public static DelegateTask<T> CreateTask<T>(Func<T> process)
+		//{
+		//	if (process == null)
+		//	{
+		//		throw new ArgumentNullException(nameof(process));
+		//	}
 
-			return new DelegateTask<T>
-			{
-				Task = process,
-				State = TaskState.New
-			};
-		}
+		//	return new DelegateTask<T>
+		//	{
+		//		Task = process,
+		//		State = TaskState.New
+		//	};
+		//}
 
 
 

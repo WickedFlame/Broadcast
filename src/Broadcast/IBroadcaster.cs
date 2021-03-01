@@ -29,7 +29,7 @@ namespace Broadcast
 		/// </summary>
 		/// <typeparam name="T">The notification type</typeparam>
 		/// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
-		void Send<T>(Func<T> notification) where T : INotification;
+		void Send<T>(Expression<Func<T>> notification) where T : INotification;
 
         /// <summary>
         /// Sends a INotification async to the processor. The INotification will be passed to all registered Handlers of the same type. Async method calls are only allowed in ProcessorMode.Default
@@ -37,15 +37,7 @@ namespace Broadcast
         /// <typeparam name="T">The notification type</typeparam>
         /// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
         /// <returns>Task thread</returns>
-        Task SendAsync<T>(Func<T> notification) where T : INotification;
-
-        /// <summary>
-        /// Processes a task async
-        /// </summary>
-        /// <typeparam name="T">The return type of the process</typeparam>
-        /// <param name="process">The function to execute</param>
-        /// <returns>The value of the function</returns>
-        Task<T> ProcessAsync<T>(Func<T> process);
+        Task SendAsync<T>(Expression<Func<T>> notification) where T : INotification;
 
         /// <summary>
         /// Register a INotificationTarget that gets called when a INotification of the same type is sent

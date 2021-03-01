@@ -40,8 +40,8 @@ namespace Broadcast.Test
             var broadcaster = new Broadcaster();
             broadcaster.RegisterHandler(new GenericEventHandler());
 
-            broadcaster.Schedule(() => new GenericEvent(() => ThrowException()), TimeSpan.FromSeconds(0.01));
-            broadcaster.Schedule(() => new GenericEvent(() => System.Diagnostics.Debug.WriteLine("Test")), TimeSpan.FromSeconds(0.02));
+            broadcaster.Schedule(() => new GenericEvent(), TimeSpan.FromSeconds(0.01));
+            broadcaster.Schedule(() => new GenericEvent(), TimeSpan.FromSeconds(0.02));
 
             Thread.Sleep(TimeSpan.FromSeconds(1));
 
@@ -64,27 +64,21 @@ namespace Broadcast.Test
 
             //Assert.IsTrue(store.All(t => t.State == TaskState.Faulted));
         }
-
-        private void ThrowException()
-        {
-            throw new Exception();
-        }
-
+		
         public class GenericEvent : INotification
         {
-            public GenericEvent(Action action)
+            public GenericEvent()
             {
-                Action = action;
             }
 
-            public Action Action { get; }
+            //public Action Action { get; }
         }
 
         public class GenericEventHandler : INotificationTarget<GenericEvent>
         {
             public void Handle(GenericEvent notification)
             {
-                notification.Action.Invoke();
+                //notification.Action.Invoke();
             }
         }
 

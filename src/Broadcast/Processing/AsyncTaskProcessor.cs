@@ -48,16 +48,5 @@ namespace Broadcast.Processing
 
             return Task.Factory.StartNew(() => base.Process(task));
         }
-
-        /// <summary>
-        /// Processes a task without sending it to the notification handlers
-        /// </summary>
-        /// <typeparam name="T">The return type</typeparam>
-        /// <param name="task">The task</param>
-        /// <returns>The result of the task</returns>
-        public Task<T> ProcessUnhandledAsync<T>(DelegateTask<T> task)
-        {
-            return Task.Factory.StartNew<T>(() => base.ProcessUnhandled(task));
-        }
     }
 }
