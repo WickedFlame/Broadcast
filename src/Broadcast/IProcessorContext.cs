@@ -17,7 +17,7 @@ namespace Broadcast
         /// <summary>
         /// Gets all Tasks that have been processed
         /// </summary>
-        IEnumerable<BroadcastTask> ProcessedTasks { get; }
+        IEnumerable<ITask> ProcessedTasks { get; }
 
         /// <summary>
         /// Gets the store of the NotificationHandlers

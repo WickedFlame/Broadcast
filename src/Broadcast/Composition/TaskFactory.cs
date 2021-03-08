@@ -17,20 +17,34 @@ namespace Broadcast.Composition
 		/// </summary>
 		/// <param name="task"></param>
 		/// <returns></returns>
-		public static DelegateTask CreateTask(Expression<Action> task)
+		public static ITask CreateTask(Action task)
 		{
 			if (task == null)
 			{
 				throw new ArgumentNullException(nameof(task));
 			}
 
-			//return new DelegateTask
-			//{
-			//    Task = task,
-			//    State = TaskState.New
-			//};
+			return new ActionTask
+			{
+				Task = task,
+				State = TaskState.New
+			};
 
-			return CreateTaskFromExpression(task);
+			//return CreateTaskFromExpression(task);
+		}
+
+		public static ITask CreateTask<T>(Func<T> task)
+		{
+			if (task == null)
+			{
+				throw new ArgumentNullException(nameof(task));
+			}
+
+			return new DelegateTask<T>
+			{
+				Task = task,
+				State = TaskState.New
+			};
 		}
 
 		/// <summary>
@@ -39,11 +53,11 @@ namespace Broadcast.Composition
 		/// <typeparam name="T"></typeparam>
 		/// <param name="notification"></param>
 		/// <returns></returns>
-		public static DelegateTask<T> CreateNotifiableTask<T>(Expression<Func<T>> notification) where T : INotification
+		public static ExpressionTask<T> CreateNotifiableTask<T>(Expression<Func<T>> task) where T : INotification
 		{
-			if (notification == null)
+			if (task == null)
 			{
-				throw new ArgumentNullException(nameof(notification));
+				throw new ArgumentNullException(nameof(task));
 			}
 
 			//var task = CreateTaskFromExpression(notification);
@@ -54,9 +68,9 @@ namespace Broadcast.Composition
 			//	State = TaskState.New
 			//};
 
-			return new DelegateTask<T>
+			return new ExpressionTask<T>
 			{
-				Task = notification,
+				Task = task,
 				State = TaskState.New
 			};
 		}
@@ -86,7 +100,7 @@ namespace Broadcast.Composition
 
 
 
-		private static DelegateTask CreateTaskFromExpression(LambdaExpression methodCall)
+		public static ITask CreateTask(LambdaExpression methodCall)
 		{
 			if (methodCall == null)
 			{
@@ -122,7 +136,7 @@ namespace Broadcast.Composition
 					callExpression.Method.GetParameters().Select(x => x.ParameterType).ToArray());
 			}
 
-			return new DelegateTask(type, method, GetExpressionValues(callExpression.Arguments));
+			return new ExpressionTask(type, method, GetExpressionValues(callExpression.Arguments));
 		}
 
 		private static object[] GetExpressionValues(IEnumerable<Expression> expressions)

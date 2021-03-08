@@ -14,7 +14,7 @@ namespace Broadcast
         readonly INotificationHandlerStore _notificationHandlers;
 
         public ProcessorContext()
-            : this(TaskStoreFactory.GetStore(), ProcessorContextFactory.GetMode())
+            : this(TaskStoreFactory.GetStore(), ProcessorMode.Background)
         {
         }
 
@@ -24,7 +24,7 @@ namespace Broadcast
         }
 
         public ProcessorContext(ITaskStore store)
-            : this(store, ProcessorContextFactory.GetMode())
+            : this(store, ProcessorMode.Background)
         {
         }
 
@@ -43,7 +43,7 @@ namespace Broadcast
         /// <summary>
         /// Gets all Tasks that have been processed
         /// </summary>
-        public IEnumerable<BroadcastTask> ProcessedTasks
+        public IEnumerable<ITask> ProcessedTasks
         {
             get
             {
@@ -69,14 +69,14 @@ namespace Broadcast
         {
             switch (Mode)
             {
-                case ProcessorMode.Serial:
-                    return new TaskProcessor(Store, _notificationHandlers);
+                //case ProcessorMode.Serial:
+                //    return new TaskProcessor(Store, _notificationHandlers);
 
                 case ProcessorMode.Background:
                     return new BackgroundTaskProcessor(Store, _notificationHandlers);
 
-                case ProcessorMode.Async:
-                    return new AsyncTaskProcessor(Store, _notificationHandlers);
+                //case ProcessorMode.Async:
+                //    return new AsyncTaskProcessor(Store, _notificationHandlers);
 
                 default:
                     throw new InvalidOperationException($"The specified Processor mode {Mode} is not supported");

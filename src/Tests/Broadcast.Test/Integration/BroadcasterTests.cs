@@ -18,7 +18,7 @@ namespace Broadcast.Test
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
 
-            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Serial);
+            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background);
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
@@ -34,7 +34,7 @@ namespace Broadcast.Test
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
 
-            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Serial);
+            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background);
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
@@ -50,7 +50,7 @@ namespace Broadcast.Test
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
 
-            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Serial);
+            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background);
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
@@ -100,7 +100,7 @@ namespace Broadcast.Test
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
 
-            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Async);
+            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background);
 
 			for (int i = 1; i <= 10; i++)
 			{
@@ -117,7 +117,7 @@ namespace Broadcast.Test
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
 
-            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Async);
+            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background);
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
@@ -131,7 +131,7 @@ namespace Broadcast.Test
         [Test]
         public void BroadcasterAsyncWithStoreTest()
         {
-            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Async, new TaskStore());
+            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background, new TaskStore());
 
             for (int i = 1; i <= 10; i++)
             {

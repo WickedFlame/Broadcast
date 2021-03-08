@@ -19,13 +19,13 @@ namespace Broadcast.Processing
         /// Process the delegate task
         /// </summary>
         /// <param name="task">The task to process</param>
-        void Process(DelegateTask task);
+        void Process(ITask task);
 
         /// <summary>
         /// Process the delegate task
         /// </summary>
         /// <typeparam name="T">Type of notification</typeparam>
         /// <param name="notification">The task to process</param>
-        void Process<T>(DelegateTask<T> notification) where T : INotification;
+        void Process<T>(ITask<T> notification) where T : INotification;
     }
 }

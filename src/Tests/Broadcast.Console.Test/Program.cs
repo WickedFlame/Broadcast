@@ -29,10 +29,10 @@ namespace Broadcast.Console.Test
                         format = "Test Background {0}";
                         break;
 
-                    case "async":
-                        broadcaster = new Broadcaster(ProcessorMode.Async);
-                        format = "Test Async {0}";
-                        break;
+                    //case "async":
+                    //    broadcaster = new Broadcaster(ProcessorMode.Async);
+                    //    format = "Test Async {0}";
+                    //    break;
 
                     case "exit":
                         return;
@@ -42,7 +42,7 @@ namespace Broadcast.Console.Test
                         break;
 
                     case "schedule":
-                        using (var scheduler = new Broadcaster(ProcessorMode.Async))
+                        using (var scheduler = new Broadcaster(ProcessorMode.Background))
                         {
                             scheduler.Schedule(() => System.Console.WriteLine("   Scheduled message 5 sec"), TimeSpan.FromSeconds(5));
                             scheduler.Schedule(() => System.Console.WriteLine("   Scheduled message 3 sec"), TimeSpan.FromSeconds(3));
@@ -55,7 +55,7 @@ namespace Broadcast.Console.Test
                         break;
 
                     case "recurring":
-                        using (var scheduler = new Broadcaster(ProcessorMode.Async))
+                        using (var scheduler = new Broadcaster(ProcessorMode.Background))
                         {
                             scheduler.Recurring(() => System.Console.WriteLine("   Recurring message 5 sec"), TimeSpan.FromSeconds(5));
                             scheduler.Recurring(() => System.Console.WriteLine("   Recurring message 3 sec"), TimeSpan.FromSeconds(3));
@@ -68,7 +68,7 @@ namespace Broadcast.Console.Test
                         break;
 
                     case "multy":
-                        using (var scheduler = new Broadcaster(ProcessorMode.Async))
+                        using (var scheduler = new Broadcaster(ProcessorMode.Background))
                         {
                             scheduler.Recurring(() => System.Console.WriteLine("   Recurring message 5 sec"), TimeSpan.FromSeconds(5));
                             scheduler.Recurring(() => System.Console.WriteLine("   Recurring message 3 sec"), TimeSpan.FromSeconds(3));
@@ -76,7 +76,7 @@ namespace Broadcast.Console.Test
                             System.Console.WriteLine($"Starting recurring with {Scheduler.SchedulerCount} schedulers");
                             scheduler.Send(() => System.Console.WriteLine("Direct message"));
 
-                            using (var scheduler2 = new Broadcaster(ProcessorMode.Async))
+                            using (var scheduler2 = new Broadcaster(ProcessorMode.Background))
                             {
                                 scheduler2.Recurring(() => System.Console.WriteLine("   Recurring message 2 5 sec"), TimeSpan.FromSeconds(5));
                                 scheduler2.Recurring(() => System.Console.WriteLine("   Recurring message 2 3 sec"), TimeSpan.FromSeconds(3));
@@ -130,7 +130,7 @@ namespace Broadcast.Console.Test
 
         private static void DoMemoryTest()
         {
-            var broadcaster = new Broadcaster(ProcessorMode.Async);
+            var broadcaster = new Broadcaster(ProcessorMode.Background);
             for (int i = 0; i < 4; i++)
             {
                 var tmp = new BroadcasterMemoryUser();

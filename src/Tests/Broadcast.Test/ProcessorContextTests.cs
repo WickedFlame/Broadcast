@@ -15,7 +15,7 @@ namespace Broadcast.Test
         public void Setup()
         {
             ProcessorContextFactory.ContextFactory = () => new ProcessorContext();
-            ProcessorContextFactory.ModeFactory = null;
+            //ProcessorContextFactory.ModeFactory = null;
         }
 
         [Test]
@@ -23,25 +23,25 @@ namespace Broadcast.Test
         {
             var context = new ProcessorContext();
 
-            Assert.IsTrue(context.Mode == ProcessorMode.Async);
+            Assert.IsTrue(context.Mode == ProcessorMode.Background);
             Assert.IsNotNull(context.Store);
         }
 
         [Test]
         public void ProcessorContextWithCustomModeTest()
         {
-            ProcessorContextFactory.ModeFactory = () => ProcessorMode.Serial;
+            //ProcessorContextFactory.ModeFactory = () => ProcessorMode.Serial;
 
             var context = new ProcessorContext();
 
-            Assert.IsTrue(context.Mode == ProcessorMode.Serial);
+            Assert.IsTrue(context.Mode == ProcessorMode.Background);
             Assert.IsNotNull(context.Store);
         }
 
         [Test]
         public void ProcessorContextWithCustomAndDefaultModeTest()
         {
-            ProcessorContextFactory.ModeFactory = () => ProcessorMode.Serial;
+            //ProcessorContextFactory.ModeFactory = () => ProcessorMode.Serial;
 
             var context = new ProcessorContext(ProcessorMode.Background);
 

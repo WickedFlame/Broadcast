@@ -38,9 +38,9 @@ namespace Broadcast.Processing
         /// Process the delegate task
         /// </summary>
         /// <param name="task"></param>
-        public abstract void Process(DelegateTask task);
+        public abstract void Process(ITask task);
 
-        protected virtual void ProcessItem(DelegateTask task)
+        protected virtual void ProcessItem(ITask task)
         {
             Store.SetInprocess(task);
 
@@ -48,9 +48,19 @@ namespace Broadcast.Processing
             {
                 //task.Task.Compile().Invoke();
 
-                var invocation = new TaskInvocation();
-                invocation.InvokeTask(task);
-            }
+                //var invocation = new TaskInvocation();
+                //invocation.InvokeTask(task);
+
+                if (task is ExpressionTask expression)
+                {
+	                var invocation = new TaskInvocation();
+	                invocation.InvokeTask(expression);
+				}
+                else if (task is ActionTask action)
+                {
+	                action.Task.Invoke();
+                }
+			}
             catch (Exception ex)
             {
                 //TODO: set taskt to faulted
@@ -67,7 +77,7 @@ namespace Broadcast.Processing
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="task"></param>
-        public virtual void Process<T>(DelegateTask<T> task) where T : INotification
+        public virtual void Process<T>(ITask<T> task) where T : INotification
         {
             Store.Add(task);
 
@@ -76,10 +86,18 @@ namespace Broadcast.Processing
 
             try
             {
+				T item = default;
+
 				// get the job item from the task
-				var item = task.Task.Compile().Invoke();
-				//var invocation = new TaskInvocation();
-				//var item = (T)invocation.InvokeTask(task);
+				if(task is ExpressionTask<T> expression)
+				{
+					item = expression.Task.Compile().Invoke();
+				}
+				else if (task is DelegateTask<T> deleg)
+				{
+					item = deleg.Task.Invoke();
+				}
+
 
 				// try to find the handlers
 				if (!Handlers.Handlers.TryGetValue(typeof(T), out var handlers))
@@ -111,28 +129,6 @@ namespace Broadcast.Processing
 		
         public void Dispose()
         {
-        }
-    }
-
-    /// <summary>
-    /// Runs all jobs in the main thread
-    /// </summary>
-    public class TaskProcessor : TaskProcessorBase, ITaskProcessor
-    {
-        public TaskProcessor(ITaskStore store, INotificationHandlerStore handlers)
-            : base(store, handlers)
-        {
-        }
-
-        /// <summary>
-        /// Process the delegate task
-        /// </summary>
-        /// <param name="task">The task to process</param>
-        public override void Process(DelegateTask task)
-        {
-            Store.Add(task);
-
-            ProcessItem(task);
         }
     }
 }

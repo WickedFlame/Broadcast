@@ -23,7 +23,7 @@ namespace Broadcast.Processing
         /// Process the delegate task
         /// </summary>
         /// <param name="task">The task to process</param>
-        public override void Process(DelegateTask task)
+        public override void Process(ITask task)
         {
             Store.Add(task);
 
@@ -51,7 +51,7 @@ namespace Broadcast.Processing
 
                 while (Store.CountQueue > 0)
                 {
-                    var queue = new Queue<DelegateTask>(Store.CopyQueue().OfType<DelegateTask>().Where(t => t.State == TaskState.Queued));
+                    var queue = new Queue<ExpressionTask>(Store.CopyQueue().OfType<ExpressionTask>().Where(t => t.State == TaskState.Queued));
                     while (queue.Any())
                     {
                         var task = queue.Dequeue();

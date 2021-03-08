@@ -10,7 +10,18 @@ namespace Broadcast
 {
     public class Broadcaster : IBroadcaster, IScheduledBroadcast
     {
-        private IProcessorContext _context;
+		static IBroadcaster _server;
+
+		static Broadcaster()
+		{
+			// setup the default server
+			// this is created even if it is not used
+			_server = new Broadcaster();
+		}
+
+		public static IBroadcaster Server => _server;
+
+		private IProcessorContext _context;
         private IScheduler _scheduler;
 
         public Broadcaster()
@@ -65,77 +76,58 @@ namespace Broadcast
             }
         }
 
-        /// <summary>
-        /// Send a delegate to the task processor
-        /// </summary>
-        /// <param name="action">The Task to process</param>
-        public void Send(Expression<Action> action)
+        public void Process(ITask task)
         {
-            var task = TaskFactory.CreateTask(action);
-            using (var processor = Context.Open())
-            {
-                processor.Process(task);
-            }
-        }
+	        using (var processor = Context.Open())
+	        {
+		        processor.Process(task);
+	        }
+		}
 
-		/// <summary>
-		/// Processes a task Asynchronously. ContextMode has to be Default for Async Processing
-		/// </summary>
-		/// <param name="action">The Task to process</param>
-		/// <returns>Task thread</returns>
-		public async Task SendAsync(Expression<Action> action)
-        {
-            var task = TaskFactory.CreateTask(action);
-            using (var processor = new AsyncTaskProcessor(Context.Store, Context.NotificationHandlers))
-            {
-                await processor.ProcessAsync(task);
-            }
-        }
-
-		/// <summary>
-		/// Sends a INotification to the processor. The INotification will be passed to all registered Handlers of the same type
-		/// </summary>
-		/// <typeparam name="T">The notification type</typeparam>
-		/// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
-		public void Send<T>(Expression<Func<T>> notification) where T : INotification
-        {
-            var task = TaskFactory.CreateNotifiableTask(notification);
-            using (var processor = Context.Open())
-            {
-                processor.Process(task);
-            }
-        }
-
-        /// <summary>
-        /// Sends a INotification async to the processor. The INotification will be passed to all registered Handlers of the same type. Async method calls are only allowed in ProcessorMode.Default
-        /// </summary>
-        /// <typeparam name="T">The notification type</typeparam>
-        /// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
-        /// <returns>Task thread</returns>
-        public Task SendAsync<T>(Expression<Func<T>> notification) where T : INotification
-        {
-            var task = TaskFactory.CreateNotifiableTask(notification);
-            using (var processor = new AsyncTaskProcessor(Context.Store, Context.NotificationHandlers))
-            {
-                return processor.ProcessAsync(task);
-            }
-        }
+  //      /// <summary>
+  //      /// Send a delegate to the task processor
+  //      /// </summary>
+  //      /// <param name="action">The Task to process</param>
+  //      public void Send(Expression<Action> action)
+  //      {
+  //          var task = TaskFactory.CreateTask(action);
+  //          Process(task);
+  //          //using (var processor = Context.Open())
+  //          //{
+  //          //    processor.Process(task);
+  //          //}
+  //      }
+		
+		///// <summary>
+		///// Sends a INotification to the processor. The INotification will be passed to all registered Handlers of the same type
+		///// </summary>
+		///// <typeparam name="T">The notification type</typeparam>
+		///// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
+		//public void Send<T>(Expression<Func<T>> notification) where T : INotification
+  //      {
+  //          var task = TaskFactory.CreateNotifiableTask(notification);
+  //          Process(task);
+  //          //using (var processor = Context.Open())
+  //          //{
+  //          //    processor.Process(task);
+  //          //}
+  //      }
 
         ///// <summary>
-        ///// Processes a task async
+        ///// Sends a INotification async to the processor. The INotification will be passed to all registered Handlers of the same type. Async method calls are only allowed in ProcessorMode.Default
         ///// </summary>
-        ///// <typeparam name="T">The return type of the process</typeparam>
-        ///// <param name="process">The function to execute</param>
-        ///// <returns>The value of the function</returns>
-        //public System.Threading.Tasks.Task<T> ProcessAsync<T>(Func<T> process)
+        ///// <typeparam name="T">The notification type</typeparam>
+        ///// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
+        ///// <returns>Task thread</returns>
+        //public Task SendAsync<T>(Expression<Func<T>> notification) where T : INotification
         //{
-        //    var task = TaskFactory.CreateTask(process);
+        //    var task = TaskFactory.CreateNotifiableTask(notification);
         //    using (var processor = new AsyncTaskProcessor(Context.Store, Context.NotificationHandlers))
         //    {
-        //        return processor.ProcessUnhandledAsync(task);
+        //        return processor.ProcessAsync(task);
         //    }
         //}
-
+		
         /// <summary>
         /// Register a INotificationTarget that gets called when a INotification of the same type is sent
         /// </summary>
@@ -166,7 +158,7 @@ namespace Broadcast
         /// <param name="time">The time to execute the task at</param>
         public void Schedule(Expression<Action> task, TimeSpan time)
         {
-            Scheduler.Enqueue(() => Send(task), time);
+            Scheduler.Enqueue(() => this.Send(task), time);
         }
 
         /// <summary>
@@ -178,8 +170,8 @@ namespace Broadcast
         {
             Scheduler.Enqueue(() =>
             {
-                // execute the task
-                Send(task);
+				// execute the task
+				this.Send(task);
 
                 // reschedule the task
                 Recurring(task, time);
@@ -194,7 +186,7 @@ namespace Broadcast
         /// <param name="time">The interval time to execute the task at</param>
         public void Schedule<T>(Expression<Func<T>> task, TimeSpan time) where T : INotification
         {
-            Scheduler.Enqueue(() => Send(task), time);
+            Scheduler.Enqueue(() => this.Send(task), time);
         }
 
         /// <summary>
@@ -207,8 +199,8 @@ namespace Broadcast
         {
             Scheduler.Enqueue(() =>
             {
-                // execute the task
-                Send(notification);
+				// execute the task
+				this.Send(notification);
 
                 // reschedule the task
                 Recurring(notification, time);

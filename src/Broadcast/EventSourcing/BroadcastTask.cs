@@ -6,13 +6,25 @@ using System.Runtime.CompilerServices;
 
 namespace Broadcast.EventSourcing
 {
-    public abstract class BroadcastTask
+	public interface ITask
+	{
+		TaskState State { get; set; }
+
+		void CloseTask();
+	}
+
+	public interface ITask<T> : ITask
+	{
+
+	}
+
+    public abstract class BroadcastTask : ITask
     {
 		public TaskState State { get; set; }
 
 		
 
-		internal abstract void CloseTask();
+		public abstract void CloseTask();
 
 		
 
@@ -72,19 +84,39 @@ namespace Broadcast.EventSourcing
 		}
 	}
 
-    public class DelegateTask<T> : BroadcastTask
+    public class ActionTask : BroadcastTask
+    {
+		public Action Task { get; set; }
+
+	    public override void CloseTask()
+	    {
+			Task = null;
+	    }
+    }
+
+    public class DelegateTask<T> : BroadcastTask, ITask<T>
+    {
+	    public Func<T> Task { get; set; }
+
+	    public override void CloseTask()
+	    {
+		    //Task = null;
+	    }
+    }
+
+	public class ExpressionTask<T> : BroadcastTask, ITask<T>
     {
 	    public Expression<Func<T>> Task { get; set; }
 
-		internal override void CloseTask()
+	    public override void CloseTask()
         {
             //Task = null;
         }
     }
 
-    public class DelegateTask : BroadcastTask
+    public class ExpressionTask : BroadcastTask
     {
-	    public DelegateTask(Type type, MethodInfo method, params object[] args)
+	    public ExpressionTask(Type type, MethodInfo method, params object[] args)
 	    {
 		    if (type == null)
 		    {
@@ -119,7 +151,7 @@ namespace Broadcast.EventSourcing
 		    return $"{Type}.{Method.Name}";
 	    }
 
-	    internal override void CloseTask()
+		public override void CloseTask()
 	    {
 		    //throw new NotImplementedException();
 	    }
