@@ -13,20 +13,65 @@ namespace Broadcast.Test
     [TestFixture]
     public class BroadcasterTests
     {
-        [Test]
+	    [Test]
+	    public void Broadcaster_Process()
+	    {
+		    var called = false;
+		    var task = Broadcast.Composition.TaskFactory.CreateTask(() =>
+		    {
+			    called = true;
+		    });
+			
+		    var broadcaster = new Broadcaster();
+		    broadcaster.Process(task);
+		    broadcaster.WaitAll();
+
+		    Thread.Sleep(500);
+
+		    Assert.IsTrue(called);
+	    }
+
+	    [Test]
+	    public void Broadcaster_Process_Func()
+	    {
+		    var called = false;
+		    var task = Broadcast.Composition.TaskFactory.CreateTask(() => called = true);
+
+		    var broadcaster = new Broadcaster();
+		    broadcaster.Process(task);
+		    broadcaster.WaitAll();
+
+		    Thread.Sleep(500);
+
+			Assert.IsTrue(called);
+	    }
+
+
+
+
+
+
+
+
+
+
+		[Test]
         public void BroadcasterDefaultProcessorTest_Prallel()
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
 
-            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background);
+            IBroadcaster broadcaster = new Broadcaster();
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
                 broadcaster.Send(() => Trace.WriteLine(string.Format("Test default {0}", value)));
-                Assert.IsTrue(broadcaster.Context.ProcessedTasks.Last().State == TaskState.Processed);
+                //Assert.IsTrue(broadcaster.Context.ProcessedTasks.Last().State == TaskState.Processed);
             }
 
-            Assert.IsTrue(broadcaster.Context.ProcessedTasks.Count() == 10);
+            broadcaster.WaitAll();
+            //TODO: has to work without sleep!
+            System.Threading.Thread.Sleep(System.TimeSpan.FromSeconds(1));
+			Assert.AreEqual(broadcaster.Context.ProcessedTasks.Count(), 10);
         }
 
         [Test]
@@ -34,15 +79,16 @@ namespace Broadcast.Test
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
 
-            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background);
+            IBroadcaster broadcaster = new Broadcaster();
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
                 broadcaster.Send(() => Trace.WriteLine(string.Format("Test default {0}", value)));
-                Assert.IsTrue(broadcaster.Context.ProcessedTasks.Last().State == TaskState.Processed);
+                //Assert.IsTrue(broadcaster.Context.ProcessedTasks.Last().State == TaskState.Processed);
             }
 
-            Assert.IsTrue(broadcaster.Context.ProcessedTasks.Count() == 10);
+            broadcaster.WaitAll();
+			Assert.AreEqual(broadcaster.Context.ProcessedTasks.Count(), 10);
         }
 
         [Test]
@@ -50,15 +96,18 @@ namespace Broadcast.Test
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
 
-            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background);
+            IBroadcaster broadcaster = new Broadcaster();
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
                 broadcaster.Send(() => Trace.WriteLine(string.Format("Test default {0}", value)));
-                Assert.IsTrue(broadcaster.Context.ProcessedTasks.Last().State == TaskState.Processed);
+                //Assert.IsTrue(broadcaster.Context.ProcessedTasks.Last().State == TaskState.Processed);
             }
 
-            Assert.IsTrue(broadcaster.Context.ProcessedTasks.Count() == 10);
+            broadcaster.WaitAll();
+			//TODO: has to work without sleep!
+            System.Threading.Thread.Sleep(System.TimeSpan.FromSeconds(1));
+			Assert.AreEqual(broadcaster.Context.ProcessedTasks.Count(), 10);
         }
 
         [Test]
@@ -66,15 +115,17 @@ namespace Broadcast.Test
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
 
-            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background);
+            IBroadcaster broadcaster = new Broadcaster();
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
                 broadcaster.Send(() => Trace.WriteLine(string.Format("Test Background {0}", value)));
             }
 
+            broadcaster.WaitAll();
+            //TODO: has to work without sleep!
             System.Threading.Thread.Sleep(System.TimeSpan.FromSeconds(1));
-            Assert.IsTrue(broadcaster.Context.ProcessedTasks.Count() == 10);
+			Assert.AreEqual(broadcaster.Context.ProcessedTasks.Count(), 10);
         }
 
         [Test]
@@ -82,15 +133,17 @@ namespace Broadcast.Test
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
 
-            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background);
+            IBroadcaster broadcaster = new Broadcaster();
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
                 broadcaster.Send(() => Trace.WriteLine(string.Format("Test Background {0}", value)));
             }
 
+            broadcaster.WaitAll();
+            //TODO: has to work without sleep!
             System.Threading.Thread.Sleep(System.TimeSpan.FromSeconds(1));
-            Assert.IsTrue(broadcaster.Context.ProcessedTasks.Count() == 10);
+			Assert.AreEqual(broadcaster.Context.ProcessedTasks.Count(), 10);
         }
 
 
@@ -100,7 +153,7 @@ namespace Broadcast.Test
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
 
-            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background);
+            IBroadcaster broadcaster = new Broadcaster();
 
 			for (int i = 1; i <= 10; i++)
 			{
@@ -108,8 +161,8 @@ namespace Broadcast.Test
 				broadcaster.Send(() => Trace.WriteLine(string.Format("Test Async {0}", value)));
 			}
 
-			System.Threading.Thread.Sleep(System.TimeSpan.FromSeconds(1));
-            Assert.IsTrue(broadcaster.Context.ProcessedTasks.Count() == 10);
+			broadcaster.WaitAll();
+			Assert.IsTrue(broadcaster.Context.ProcessedTasks.Count() == 10);
         }
 
         [Test]
@@ -117,7 +170,7 @@ namespace Broadcast.Test
         {
             TaskStoreFactory.StoreFactory = () => new TaskStore();
 
-            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background);
+            IBroadcaster broadcaster = new Broadcaster();
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
@@ -131,7 +184,7 @@ namespace Broadcast.Test
         [Test]
         public void BroadcasterAsyncWithStoreTest()
         {
-            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background, new TaskStore());
+            IBroadcaster broadcaster = new Broadcaster();
 
             for (int i = 1; i <= 10; i++)
             {
@@ -146,7 +199,7 @@ namespace Broadcast.Test
         [Test]
         public void BroadcasterBackgroundWithStoreTest()
         {
-            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background, new TaskStore());
+            IBroadcaster broadcaster = new Broadcaster();
 
             for (int i = 1; i <= 10; i++)
             {
@@ -161,7 +214,7 @@ namespace Broadcast.Test
         [Test]
         public void BroadcasterAsyncTestInLoop()
         {
-            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background, new TaskStore());
+            IBroadcaster broadcaster = new Broadcaster();
             var taskValues = new List<int>();
 
             for (int i = 1; i <= 100; i++)
@@ -187,7 +240,7 @@ namespace Broadcast.Test
         [Ignore("Fails when NUnit runs second time")]
         public void BroadcasterAsyncTestInLoopFail()
         {
-            IBroadcaster broadcaster = new Broadcaster(ProcessorMode.Background, new TaskStore());
+            IBroadcaster broadcaster = new Broadcaster();
             broadcaster.Send(() => Trace.WriteLine("Just for warmup"));
 
             var taskValues = new List<int>();

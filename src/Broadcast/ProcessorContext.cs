@@ -12,26 +12,16 @@ namespace Broadcast
     public class ProcessorContext : IProcessorContext
     {
         readonly INotificationHandlerStore _notificationHandlers;
+		private ITaskProcessor _processor;
 
-        public ProcessorContext()
-            : this(TaskStoreFactory.GetStore(), ProcessorMode.Background)
-        {
-        }
-
-        public ProcessorContext(ProcessorMode mode)
-            : this(TaskStoreFactory.GetStore(), mode)
+		public ProcessorContext()
+            : this(TaskStoreFactory.GetStore())
         {
         }
 
         public ProcessorContext(ITaskStore store)
-            : this(store, ProcessorMode.Background)
-        {
-        }
-
-        public ProcessorContext(ITaskStore store, ProcessorMode mode)
         {
             Store = store;
-            Mode = mode;
             _notificationHandlers = new NotificationHandlerStore();
         }
 
@@ -57,30 +47,17 @@ namespace Broadcast
         public INotificationHandlerStore NotificationHandlers => _notificationHandlers;
 
         /// <summary>
-        /// Gets or sets the ProcessorMode the Processor runs in
-        /// </summary>
-        public ProcessorMode Mode { get; set; }
-
-        /// <summary>
         /// Creates a new TaskProcessor that can be used to process the given task
         /// </summary>
         /// <returns></returns>
         public ITaskProcessor Open()
         {
-            switch (Mode)
-            {
-                //case ProcessorMode.Serial:
-                //    return new TaskProcessor(Store, _notificationHandlers);
+	        if (_processor == null)
+	        {
+		        _processor = new TaskProcessor(Store, _notificationHandlers);
+	        }
 
-                case ProcessorMode.Background:
-                    return new BackgroundTaskProcessor(Store, _notificationHandlers);
-
-                //case ProcessorMode.Async:
-                //    return new AsyncTaskProcessor(Store, _notificationHandlers);
-
-                default:
-                    throw new InvalidOperationException($"The specified Processor mode {Mode} is not supported");
-            }
+	        return _processor;
         }
     }
 }

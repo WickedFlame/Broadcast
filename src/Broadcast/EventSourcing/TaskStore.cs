@@ -11,27 +11,15 @@ namespace Broadcast.EventSourcing
     {
         static object QueueLock = new object();
 
-        readonly List<ITask> _queue;
+        readonly TaskQueue _queue;
         readonly List<ITask> _store;
 
         public TaskStore()
         {
-            _queue = new List<ITask>();
+            _queue = new TaskQueue();
             _store = new List<ITask>();
         }
-
-        /// <summary>
-        /// Copies all Tasks that have been Queued to ne new List
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<ITask> CopyQueue()
-        {
-            lock (QueueLock)
-            {
-                return _queue.ToList();
-            }
-        }
-
+		
         /// <summary>
         /// Counts all unprocessed Tasks that are contained in the Queue
         /// </summary>
@@ -51,10 +39,16 @@ namespace Broadcast.EventSourcing
         {
             lock (QueueLock)
             {
-                _queue.Add(task);
+	            _store.Add(task);
+	            _queue.Enqueue(task);
             }
 
             task.State = TaskState.Queued;
+        }
+
+        public bool TryDequeue(out ITask task)
+        {
+	        return _queue.TryDequeue(out task);
         }
 
         /// <summary>
@@ -72,15 +66,15 @@ namespace Broadcast.EventSourcing
         /// <param name="task"></param>
         public void SetProcessed(ITask task)
         {
-            lock (QueueLock)
-            {
-                if (_queue.Contains(task))
-                {
-                    _queue.Remove(task);
-                }
-            }
+            //lock (QueueLock)
+            //{
+            //    if (_queue.Contains(task))
+            //    {
+            //        _queue.Remove(task);
+            //    }
+            //}
 
-            _store.Add(task);
+            //_store.Add(task);
 
             task.CloseTask();
             task.State = TaskState.Processed;

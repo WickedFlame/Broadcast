@@ -13,7 +13,7 @@ namespace Broadcast.Test
         [Test]
         public void DefaultNotificationTests()
         {
-            var mediator = new Broadcaster(ProcessorMode.Background);
+            var mediator = new Broadcaster();
             var notificationHandler = new NotificationHandler();
             var delegateHandler = new DelegateHandler();
             int expressionHandler = 0;

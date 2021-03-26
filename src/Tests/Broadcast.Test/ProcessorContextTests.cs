@@ -23,7 +23,6 @@ namespace Broadcast.Test
         {
             var context = new ProcessorContext();
 
-            Assert.IsTrue(context.Mode == ProcessorMode.Background);
             Assert.IsNotNull(context.Store);
         }
 
@@ -34,7 +33,6 @@ namespace Broadcast.Test
 
             var context = new ProcessorContext();
 
-            Assert.IsTrue(context.Mode == ProcessorMode.Background);
             Assert.IsNotNull(context.Store);
         }
 
@@ -43,9 +41,8 @@ namespace Broadcast.Test
         {
             //ProcessorContextFactory.ModeFactory = () => ProcessorMode.Serial;
 
-            var context = new ProcessorContext(ProcessorMode.Background);
+            var context = new ProcessorContext();
 
-            Assert.IsTrue(context.Mode == ProcessorMode.Background);
             Assert.IsNotNull(context.Store);
         }
 

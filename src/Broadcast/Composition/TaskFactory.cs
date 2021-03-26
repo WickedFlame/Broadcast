@@ -51,7 +51,7 @@ namespace Broadcast.Composition
 		/// Creates a Notification Task based on the Func delegate
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <param name="notification"></param>
+		/// <param name="task"></param>
 		/// <returns></returns>
 		public static ExpressionTask<T> CreateNotifiableTask<T>(Expression<Func<T>> task) where T : INotification
 		{
@@ -94,7 +94,10 @@ namespace Broadcast.Composition
 
 
 
-
+		public static ITask CreateTaskFromExpression(Expression<Action> expression)
+		{
+			return CreateTask(expression);
+		}
 
 
 

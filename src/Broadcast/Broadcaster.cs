@@ -4,6 +4,7 @@ using System;
 using System.Linq.Expressions;
 using System.Text;
 using Broadcast.Composition;
+using Broadcast.Configuration;
 using Task = System.Threading.Tasks.Task;
 
 namespace Broadcast
@@ -23,25 +24,15 @@ namespace Broadcast
 
 		private IProcessorContext _context;
         private IScheduler _scheduler;
-
-        public Broadcaster()
+        private Options _options;
+		
+        public Broadcaster() : this(Options.Default)
         {
         }
 
-        public Broadcaster(ProcessorMode mode)
+        public Broadcaster(Options options)
         {
-            Context.Mode = mode;
-        }
-
-        public Broadcaster(ITaskStore store)
-        {
-            Context.Store = store;
-        }
-
-        public Broadcaster(ProcessorMode mode, ITaskStore store)
-        {
-            Context.Mode = mode;
-            Context.Store = store;
+			_options = options;
         }
 
         /// <summary>
@@ -78,62 +69,27 @@ namespace Broadcast
 
         public void Process(ITask task)
         {
+	        //Context.Store.Add(task);
+			using (var processor = Context.Open())
+			{
+				processor.Process(task);
+			}
+		}
+
+        public void WaitAll()
+        {
 	        using (var processor = Context.Open())
 	        {
-		        processor.Process(task);
+		        processor.WaitAll();
 	        }
 		}
 
-  //      /// <summary>
-  //      /// Send a delegate to the task processor
-  //      /// </summary>
-  //      /// <param name="action">The Task to process</param>
-  //      public void Send(Expression<Action> action)
-  //      {
-  //          var task = TaskFactory.CreateTask(action);
-  //          Process(task);
-  //          //using (var processor = Context.Open())
-  //          //{
-  //          //    processor.Process(task);
-  //          //}
-  //      }
-		
-		///// <summary>
-		///// Sends a INotification to the processor. The INotification will be passed to all registered Handlers of the same type
-		///// </summary>
-		///// <typeparam name="T">The notification type</typeparam>
-		///// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
-		//public void Send<T>(Expression<Func<T>> notification) where T : INotification
-  //      {
-  //          var task = TaskFactory.CreateNotifiableTask(notification);
-  //          Process(task);
-  //          //using (var processor = Context.Open())
-  //          //{
-  //          //    processor.Process(task);
-  //          //}
-  //      }
-
-        ///// <summary>
-        ///// Sends a INotification async to the processor. The INotification will be passed to all registered Handlers of the same type. Async method calls are only allowed in ProcessorMode.Default
-        ///// </summary>
-        ///// <typeparam name="T">The notification type</typeparam>
-        ///// <param name="notification">The delegate returning the notification that will be processed and passed to the handlers</param>
-        ///// <returns>Task thread</returns>
-        //public Task SendAsync<T>(Expression<Func<T>> notification) where T : INotification
-        //{
-        //    var task = TaskFactory.CreateNotifiableTask(notification);
-        //    using (var processor = new AsyncTaskProcessor(Context.Store, Context.NotificationHandlers))
-        //    {
-        //        return processor.ProcessAsync(task);
-        //    }
-        //}
-		
-        /// <summary>
-        /// Register a INotificationTarget that gets called when a INotification of the same type is sent
-        /// </summary>
-        /// <typeparam name="T">The notification type</typeparam>
-        /// <param name="target">The INotificationTarget that handles the INotification</param>
-        public void RegisterHandler<T>(INotificationTarget<T> target) where T : INotification
+		/// <summary>
+		/// Register a INotificationTarget that gets called when a INotification of the same type is sent
+		/// </summary>
+		/// <typeparam name="T">The notification type</typeparam>
+		/// <param name="target">The INotificationTarget that handles the INotification</param>
+		public void RegisterHandler<T>(INotificationTarget<T> target) where T : INotification
         {
             RegisterHandler<T>(a => target.Handle(a));
         }

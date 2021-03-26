@@ -8,12 +8,6 @@ namespace Broadcast.EventSourcing
     public interface ITaskStore : IEnumerable<ITask>
     {
         /// <summary>
-        /// Copies all unprocessed Tasks that are contained in the Queued to ne new List
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<ITask> CopyQueue();
-
-        /// <summary>
         /// Counts all unprocessed Tasks that are contained in the Queue
         /// </summary>
         int CountQueue { get; }
@@ -24,11 +18,13 @@ namespace Broadcast.EventSourcing
         /// <param name="task"></param>
         void Add(ITask task);
 
-        /// <summary>
-        /// Sets tha task to InProcess mode
-        /// </summary>
-        /// <param name="task"></param>
-        void SetInprocess(ITask task);
+        bool TryDequeue(out ITask task);
+
+		/// <summary>
+		/// Sets tha task to InProcess mode
+		/// </summary>
+		/// <param name="task"></param>
+		void SetInprocess(ITask task);
 
         /// <summary>
         /// Sets the task to Processed mode and removes it from the process queue

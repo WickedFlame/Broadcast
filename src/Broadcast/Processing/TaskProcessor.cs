@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Broadcast.EventSourcing;
 
@@ -9,12 +11,16 @@ namespace Broadcast.Processing
     /// <summary>
     /// A class that can process different kinds of delegates and notifications
     /// </summary>
-    public abstract class TaskProcessorBase : ITaskProcessor, IDisposable
+    public class TaskProcessor : ITaskProcessor, IDisposable
     {
-        private readonly ITaskStore _store;
-        private readonly INotificationHandlerStore _handlers;
+	    private static readonly object ProcessorLock = new object();
+	    private bool _inProcess = false;
 
-        public TaskProcessorBase(ITaskStore store, INotificationHandlerStore handlers)
+		private readonly ITaskStore _store;
+        private readonly INotificationHandlerStore _handlers;
+        private readonly TaskList _taskList = new TaskList();
+
+        public TaskProcessor(ITaskStore store, INotificationHandlerStore handlers)
         {
             _store = store;
             _handlers = handlers;
@@ -34,33 +40,89 @@ namespace Broadcast.Processing
             Handlers.AddHandler(target);
         }
 
-        /// <summary>
-        /// Process the delegate task
-        /// </summary>
-        /// <param name="task"></param>
-        public abstract void Process(ITask task);
+        public void WaitAll()
+        {
+	        _taskList.WaitAll();
+        }
 
-        protected virtual void ProcessItem(ITask task)
+		/// <summary>
+		/// Process the delegate task
+		/// </summary>
+		/// <param name="task">The task to process</param>
+		public void Process(ITask task)
+        {
+	        Store.Add(task);
+
+	        // check if a thread is allready processing the queue
+	        if (_inProcess)
+	        {
+		        return;
+	        }
+
+			// start new background thread to process all queued tasks
+			var thread = Task.Run(() => ProcessTasks());
+			_taskList.Add(thread);
+		}
+
+
+
+
+
+        private void ProcessTasks()
+        {
+	        // check if a thread is allready processing the queue
+	        if (_inProcess)
+	        {
+		        return;
+	        }
+
+	        lock (ProcessorLock)
+	        {
+		        _inProcess = true;
+
+		        while (Store.TryDequeue(out var task))
+		        {
+			        try
+			        {
+				        //TODO: Create own TaskScheduler and store in options
+				        var _taskScheduler = TaskScheduler.Default;
+				        var thread = Task.Factory.StartNew(() => ProcessItem(task), CancellationToken.None, TaskCreationOptions.None, _taskScheduler);
+				        _taskList.Add(thread);
+					}
+			        catch (Exception e)
+			        {
+				        //_logger.Write($"Error processing eveng{Environment.NewLine}EventId: {@event.Id}{Environment.NewLine}Pipeline: {PipelineId}{Environment.NewLine}{e.Message}", Category.Log, LogLevel.Error, "EventBus");
+			        }
+		        }
+
+				_inProcess = false;
+	        }
+        }
+
+		protected virtual string ProcessItem(ITask task)
         {
             Store.SetInprocess(task);
 
             try
             {
-                //task.Task.Compile().Invoke();
+				//task.Task.Compile().Invoke();
 
-                //var invocation = new TaskInvocation();
-                //invocation.InvokeTask(task);
+				//var invocation = new TaskInvocation();
+				//invocation.InvokeTask(task);
 
-                if (task is ExpressionTask expression)
-                {
-	                var invocation = new TaskInvocation();
-	                invocation.InvokeTask(expression);
-				}
-                else if (task is ActionTask action)
-                {
-	                action.Task.Invoke();
-                }
-			}
+				var invocation = new TaskInvocation();
+				task.Invoke(invocation);
+
+				//            if (task is ExpressionTask expression)
+				//            {
+				//             var invocation = new TaskInvocation();
+				//             invocation.InvokeTask(expression);
+				//}
+				//            else if (task is ActionTask action)
+				//            {
+				//             action.Task.Invoke();
+				//            }
+            }
             catch (Exception ex)
             {
                 //TODO: set taskt to faulted
@@ -70,6 +132,7 @@ namespace Broadcast.Processing
             }
 
             Store.SetProcessed(task);
+            return task.Id;
         }
 
         /// <summary>
@@ -86,17 +149,20 @@ namespace Broadcast.Processing
 
             try
             {
-				T item = default;
+				//T item = default;
 
-				// get the job item from the task
-				if(task is ExpressionTask<T> expression)
-				{
-					item = expression.Task.Compile().Invoke();
-				}
-				else if (task is DelegateTask<T> deleg)
-				{
-					item = deleg.Task.Invoke();
-				}
+				//// get the job item from the task
+				//if(task is ExpressionTask<T> expression)
+				//{
+				//	item = expression.Task.Compile().Invoke();
+				//}
+				//else if (task is DelegateTask<T> deleg)
+				//{
+				//	item = deleg.Task.Invoke();
+				//}
+
+				var invocation = new TaskInvocation();
+				var item = task.Invoke(invocation) as INotification;
 
 
 				// try to find the handlers

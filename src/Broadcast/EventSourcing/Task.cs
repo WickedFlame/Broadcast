@@ -8,7 +8,11 @@ namespace Broadcast.EventSourcing
 {
 	public interface ITask
 	{
+		string Id { get; }
+
 		TaskState State { get; set; }
+
+		object Invoke(TaskInvocation invocation);
 
 		void CloseTask();
 	}
@@ -20,13 +24,18 @@ namespace Broadcast.EventSourcing
 
     public abstract class BroadcastTask : ITask
     {
+	    public BroadcastTask()
+	    {
+		    Id = Guid.NewGuid().ToString();
+	    }
+
+	    public string Id { get; }
+
 		public TaskState State { get; set; }
 
-		
+		public abstract object Invoke(TaskInvocation invocation);
 
 		public abstract void CloseTask();
-
-		
 
 		protected static void Validate(Type type, string typeParameterName, MethodInfo method, string methodParameterName, int argumentCount, string argumentParameterName)
 		{
@@ -88,7 +97,14 @@ namespace Broadcast.EventSourcing
     {
 		public Action Task { get; set; }
 
-	    public override void CloseTask()
+		public override object Invoke(TaskInvocation invocation)
+		{
+			Task.Invoke();
+
+			return Id;
+		}
+
+		public override void CloseTask()
 	    {
 			Task = null;
 	    }
@@ -96,9 +112,14 @@ namespace Broadcast.EventSourcing
 
     public class DelegateTask<T> : BroadcastTask, ITask<T>
     {
-	    public Func<T> Task { get; set; }
+		public Func<T> Task { get; set; }
 
-	    public override void CloseTask()
+		public override object Invoke(TaskInvocation invocation)
+		{
+			return Task.Invoke();
+		}
+
+		public override void CloseTask()
 	    {
 		    //Task = null;
 	    }
@@ -106,9 +127,14 @@ namespace Broadcast.EventSourcing
 
 	public class ExpressionTask<T> : BroadcastTask, ITask<T>
     {
-	    public Expression<Func<T>> Task { get; set; }
+		public Expression<Func<T>> Task { get; set; }
 
-	    public override void CloseTask()
+		public override object Invoke(TaskInvocation invocation)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void CloseTask()
         {
             //Task = null;
         }
@@ -150,6 +176,11 @@ namespace Broadcast.EventSourcing
 	    {
 		    return $"{Type}.{Method.Name}";
 	    }
+
+		public override object Invoke(TaskInvocation invocation)
+		{
+			return invocation.InvokeTask(this);
+		}
 
 		public override void CloseTask()
 	    {

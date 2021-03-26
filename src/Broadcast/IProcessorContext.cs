@@ -23,12 +23,7 @@ namespace Broadcast
         /// Gets the store of the NotificationHandlers
         /// </summary>
         INotificationHandlerStore NotificationHandlers { get; }
-
-        /// <summary>
-        /// Gets or sets the ProcessorMode the Processor runs in
-        /// </summary>
-        ProcessorMode Mode { get; set; }
-
+		
         /// <summary>
         /// Creates a new TaskProcessor that can be used to process the given task
         /// </summary>

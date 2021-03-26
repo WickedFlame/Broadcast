@@ -14,11 +14,13 @@ namespace Broadcast.Processing
         /// <typeparam name="T">Type of handler</typeparam>
         /// <param name="target">Task to process</param>
         void AddHandler<T>(Action<T> target) where T : INotification;
+		
+        void WaitAll();
 
-        /// <summary>
-        /// Process the delegate task
-        /// </summary>
-        /// <param name="task">The task to process</param>
+		/// <summary>
+		/// Process the delegate task
+		/// </summary>
+		/// <param name="task">The task to process</param>
         void Process(ITask task);
 
         /// <summary>
@@ -27,5 +29,7 @@ namespace Broadcast.Processing
         /// <typeparam name="T">Type of notification</typeparam>
         /// <param name="notification">The task to process</param>
         void Process<T>(ITask<T> notification) where T : INotification;
+
+        
     }
 }

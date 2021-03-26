@@ -72,14 +72,14 @@ namespace Broadcast
 			{
 				var methodInfo = task.Method;
 				var tuple = Tuple.Create(methodInfo, instance, arguments);
-				var returnType = methodInfo.ReturnType;
+				//var returnType = methodInfo.ReturnType;
 
 				//if (returnType.IsTaskLike(out var getTaskFunc))
 				//{
-						return InvokeOnTaskScheduler(tuple);
+				//		return InvokeOnTaskScheduler(tuple);
 				//}
 
-				//return InvokeSynchronously(tuple);
+				return InvokeSynchronously(tuple);
 			}
 			catch (Exception ex)
 			{
