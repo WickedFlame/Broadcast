@@ -16,9 +16,6 @@ namespace Broadcast.Test
         [Test]
         public void FailingTask()
         {
-            TaskStoreFactory.StoreFactory = () => new TaskStore();
-            var store = TaskStoreFactory.GetStore();
-
             var broadcaster = new Broadcaster();
 
 			//TODO: Refactore
@@ -28,15 +25,13 @@ namespace Broadcast.Test
 
             Thread.Sleep(TimeSpan.FromSeconds(1));
 
+            var store = broadcaster.GetStore();
             Assert.IsTrue(store.Count(t => t.State == TaskState.Processed) == 2, $"Store Count is {store.Count()}, processed Count is {store.Count(t => t.State == TaskState.Processed)}");
         }
 
         [Test]
         public void FailingEvent()
         {
-            TaskStoreFactory.StoreFactory = () => new TaskStore();
-            var store = TaskStoreFactory.GetStore();
-
             var broadcaster = new Broadcaster();
             broadcaster.RegisterHandler(new GenericEventHandler());
 
@@ -45,16 +40,13 @@ namespace Broadcast.Test
 
             Thread.Sleep(TimeSpan.FromSeconds(1));
 
-            Assert.IsTrue(store.Count(t => t.State == TaskState.Processed) == 2);
+            Assert.IsTrue(broadcaster.GetStore().Count(t => t.State == TaskState.Processed) == 2);
         }
 
         [Test]
         [Ignore("Implementation not finished")]
         public void FailingTask_CheckState()
         {
-            TaskStoreFactory.StoreFactory = () => new TaskStore();
-            var store = TaskStoreFactory.GetStore();
-
             var broadcaster = new Broadcaster();
             //TODO: Refactore
 			Action action = () => throw new NotImplementedException();
@@ -62,7 +54,7 @@ namespace Broadcast.Test
 
             Thread.Sleep(TimeSpan.FromSeconds(1));
 
-            //Assert.IsTrue(store.All(t => t.State == TaskState.Faulted));
+            //Assert.IsTrue(broadcaster.GetStore().All(t => t.State == TaskState.Faulted));
         }
 		
         public class GenericEvent : INotification

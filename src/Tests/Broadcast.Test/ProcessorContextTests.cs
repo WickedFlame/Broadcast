@@ -14,8 +14,6 @@ namespace Broadcast.Test
         [SetUp]
         public void Setup()
         {
-            ProcessorContextFactory.ContextFactory = () => new ProcessorContext();
-            //ProcessorContextFactory.ModeFactory = null;
         }
 
         [Test]
@@ -29,8 +27,6 @@ namespace Broadcast.Test
         [Test]
         public void ProcessorContextWithCustomModeTest()
         {
-            //ProcessorContextFactory.ModeFactory = () => ProcessorMode.Serial;
-
             var context = new ProcessorContext();
 
             Assert.IsNotNull(context.Store);
@@ -39,31 +35,20 @@ namespace Broadcast.Test
         [Test]
         public void ProcessorContextWithCustomAndDefaultModeTest()
         {
-            //ProcessorContextFactory.ModeFactory = () => ProcessorMode.Serial;
-
             var context = new ProcessorContext();
 
             Assert.IsNotNull(context.Store);
         }
-
+		
         [Test]
-        public void ProcessorContextFactoryTest()
+        public void BroadcasterCustom_TaskStore_InBroadcaster()
         {
-            var context = new ProcessorContext();
-            ProcessorContextFactory.ContextFactory = () => context;
+	        var broadcaster = new Broadcaster
+	        {
+		        Context = new ProcessorContext(new TaskStore())
+	        };
 
-            Assert.AreSame(context, ProcessorContextFactory.ContextFactory());
-        }
-
-        [Test]
-        public void BroadcasterWithCustomProcessorContextFactoryTest()
-        {
-            var context = new ProcessorContext();
-            ProcessorContextFactory.ContextFactory = () => context;
-
-            var broadcaster = new Broadcaster();
-
-            Assert.AreSame(context, broadcaster.Context);
+            Assert.AreSame(broadcaster.GetStore(), broadcaster.Context.Store);
         }
     }
 }

@@ -14,10 +14,15 @@ namespace Broadcast.Processing
 
 		public void Add(Task task)
 		{
+			if (task == null)
+			{
+				throw new Exception();
+			}
+
 			_taskList.Add(task);
 			task.ContinueWith(t => Remove(t));
 
-			if (task.Status != TaskStatus.Running)
+			if (task.IsCompleted || task.IsFaulted || task.IsCanceled)
 			{
 				Remove(task);
 			}
@@ -36,8 +41,9 @@ namespace Broadcast.Processing
 
 		public void WaitAll()
 		{
+			Trace.WriteLine($"Task count before waitall: {_taskList.Count}");
 			Task.WaitAll(_taskList.ToArray());
-			Trace.WriteLine($"Task count: {_taskList.Count}");
+			Trace.WriteLine($"Task count after waitall: {_taskList.Count}");
 			Trace.WriteLine($"Active Tasks: {_taskList.Count(t => t.Status == TaskStatus.Running)}");
 		}
 	}

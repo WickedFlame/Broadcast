@@ -24,8 +24,6 @@ namespace Broadcast.Test
         [Test]
         public void Broadcast_Scheduler_ExecutionCheck()
         {
-            TaskStoreFactory.StoreFactory = () => new TaskStore();
-
             var scheduler = new Scheduler();
             scheduler.Enqueue(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
             scheduler.Enqueue(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));

@@ -44,11 +44,12 @@ namespace Broadcast
             {
                 if (_context == null)
                 {
-                    _context = ProcessorContextFactory.GetContext();
+                    _context = new ProcessorContext();
                 }
 
                 return _context;
-            }
+			}
+			set => _context = value;
         }
 
         /// <summary>
@@ -83,6 +84,18 @@ namespace Broadcast
 		        processor.WaitAll();
 	        }
 		}
+
+        public ITaskStore GetStore()
+        {
+	        return Context.Store;
+        }
+
+
+
+
+
+
+
 
 		/// <summary>
 		/// Register a INotificationTarget that gets called when a INotification of the same type is sent

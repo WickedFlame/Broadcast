@@ -13,17 +13,19 @@ namespace Broadcast.Test
         [Test]
         public void DefaultNotificationTests()
         {
-            var mediator = new Broadcaster();
+            var broadcaster = new Broadcaster();
             var notificationHandler = new NotificationHandler();
             var delegateHandler = new DelegateHandler();
             int expressionHandler = 0;
 
 
-            mediator.RegisterHandler(notificationHandler);
-            mediator.RegisterHandler<Message>(delegateHandler.Handle);
-            mediator.RegisterHandler<Message>(a => expressionHandler = a.ID);
+            broadcaster.RegisterHandler(notificationHandler);
+            broadcaster.RegisterHandler<Message>(delegateHandler.Handle);
+            broadcaster.RegisterHandler<Message>(a => expressionHandler = a.ID);
 
-            mediator.Send(() => new Message(5));
+            broadcaster.Send(() => new Message(5));
+
+            broadcaster.WaitAll();
 
             Assert.IsTrue(notificationHandler.ID == 5);
             Assert.IsTrue(delegateHandler.ID == 5);
@@ -33,17 +35,17 @@ namespace Broadcast.Test
         //[Test]
         //public async Task NotificationAsyncTests()
         //{
-        //    var mediator = new Broadcaster();
+        //    var broadcaster = new Broadcaster();
         //    var notificationHandler = new NotificationHandler();
         //    var delegateHandler = new DelegateHandler();
         //    int expressionHandler = 0;
 
 
-        //    mediator.RegisterHandler(notificationHandler);
-        //    mediator.RegisterHandler<Message>(delegateHandler.Handle);
-        //    mediator.RegisterHandler<Message>(a => expressionHandler = a.ID);
+        //    broadcaster.RegisterHandler(notificationHandler);
+        //    broadcaster.RegisterHandler<Message>(delegateHandler.Handle);
+        //    broadcaster.RegisterHandler<Message>(a => expressionHandler = a.ID);
 
-        //    await mediator.SendAsync(() => new Message(5));
+        //    await broadcaster.SendAsync(() => new Message(5));
 
         //    Assert.IsTrue(notificationHandler.ID == 5);
         //    Assert.IsTrue(delegateHandler.ID == 5);
@@ -53,14 +55,14 @@ namespace Broadcast.Test
         //[Test]
         //public async Task NotificationAsyncWithMultipleHandlersTests()
         //{
-        //    var mediator = new Broadcaster(ProcessorMode.Serial);
+        //    var broadcaster = new Broadcaster(ProcessorMode.Serial);
         //    int handlerOne = 0;
         //    int handlerTwo = 0;
 
-        //    mediator.RegisterHandler<Message>(a => handlerOne = a.ID);
-        //    mediator.RegisterHandler<MessageTwo>(a => handlerTwo = a.ID);
+        //    broadcaster.RegisterHandler<Message>(a => handlerOne = a.ID);
+        //    broadcaster.RegisterHandler<MessageTwo>(a => handlerTwo = a.ID);
 
-        //    await mediator.SendAsync(() => new Message(5));
+        //    await broadcaster.SendAsync(() => new Message(5));
 
         //    Assert.IsTrue(handlerOne == 5);
         //    Assert.IsTrue(handlerTwo == 0);

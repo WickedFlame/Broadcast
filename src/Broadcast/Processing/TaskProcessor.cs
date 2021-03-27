@@ -105,23 +105,8 @@ namespace Broadcast.Processing
 
             try
             {
-				//task.Task.Compile().Invoke();
-
-				//var invocation = new TaskInvocation();
-				//invocation.InvokeTask(task);
-
 				var invocation = new TaskInvocation();
 				task.Invoke(invocation);
-
-				//            if (task is ExpressionTask expression)
-				//            {
-				//             var invocation = new TaskInvocation();
-				//             invocation.InvokeTask(expression);
-				//}
-				//            else if (task is ActionTask action)
-				//            {
-				//             action.Task.Invoke();
-				//            }
             }
             catch (Exception ex)
             {

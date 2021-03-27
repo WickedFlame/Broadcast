@@ -15,7 +15,7 @@ namespace Broadcast
 		private ITaskProcessor _processor;
 
 		public ProcessorContext()
-            : this(TaskStoreFactory.GetStore())
+            : this(new TaskStore())
         {
         }
 

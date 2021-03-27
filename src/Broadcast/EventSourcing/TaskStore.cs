@@ -66,16 +66,6 @@ namespace Broadcast.EventSourcing
         /// <param name="task"></param>
         public void SetProcessed(ITask task)
         {
-            //lock (QueueLock)
-            //{
-            //    if (_queue.Contains(task))
-            //    {
-            //        _queue.Remove(task);
-            //    }
-            //}
-
-            //_store.Add(task);
-
             task.CloseTask();
             task.State = TaskState.Processed;
         }
