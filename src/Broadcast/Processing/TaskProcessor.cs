@@ -85,8 +85,8 @@ namespace Broadcast.Processing
 			        try
 			        {
 				        //TODO: Create own TaskScheduler and store in options
-				        var _taskScheduler = TaskScheduler.Default;
-				        var thread = Task.Factory.StartNew(() => ProcessItem(task), CancellationToken.None, TaskCreationOptions.None, _taskScheduler);
+				        var taskScheduler = TaskScheduler.Default;
+				        var thread = Task.Factory.StartNew(() => ProcessItem(task), CancellationToken.None, TaskCreationOptions.None, taskScheduler);
 				        _taskList.Add(thread);
 					}
 			        catch (Exception e)
@@ -105,9 +105,26 @@ namespace Broadcast.Processing
 
             try
             {
+				//TODO: INotification is bad design. any object should be useable
 				var invocation = new TaskInvocation();
-				task.Invoke(invocation);
-            }
+				var output = task.Invoke(invocation) as INotification;
+
+				// try to find the handlers
+				if (output != null && Handlers.Handlers.TryGetValue(output.GetType(), out var handlers))
+				{
+					//// it could be that T is of a base/inherited type but the handler is of a object type
+					//if (!Handlers.Handlers.TryGetValue(output.GetType(), out handlers))
+					//{
+					//	return;
+					//}
+
+					// run all handlers with the value
+					foreach (var handler in handlers)
+					{
+						handler(output);
+					}
+				}
+			}
             catch (Exception ex)
             {
                 //TODO: set taskt to faulted
@@ -118,64 +135,6 @@ namespace Broadcast.Processing
 
             Store.SetProcessed(task);
             return task.Id;
-        }
-
-        /// <summary>
-        /// Process the delegate task
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="task"></param>
-        public virtual void Process<T>(ITask<T> task) where T : INotification
-        {
-            Store.Add(task);
-
-            // mark the task to be in process
-            Store.SetInprocess(task);
-
-            try
-            {
-				//T item = default;
-
-				//// get the job item from the task
-				//if(task is ExpressionTask<T> expression)
-				//{
-				//	item = expression.Task.Compile().Invoke();
-				//}
-				//else if (task is DelegateTask<T> deleg)
-				//{
-				//	item = deleg.Task.Invoke();
-				//}
-
-				var invocation = new TaskInvocation();
-				var item = task.Invoke(invocation) as INotification;
-
-
-				// try to find the handlers
-				if (!Handlers.Handlers.TryGetValue(typeof(T), out var handlers))
-                {
-                    // it could be that T is of a base/inherited type but the handler is of a object type
-                    if (!Handlers.Handlers.TryGetValue(item.GetType(), out handlers))
-                    {
-                        return;
-                    }
-                }
-
-                // run all handlers with the value
-                foreach (var handler in handlers)
-                {
-                    handler(item);
-                }
-            }
-            catch (Exception ex)
-            {
-                //TODO: set taskt to faulted
-                //TODO: log exception
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
-            }
-
-            // set the task to processed state
-            Store.SetProcessed(task);
         }
 		
         public void Dispose()

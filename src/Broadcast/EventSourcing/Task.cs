@@ -131,7 +131,7 @@ namespace Broadcast.EventSourcing
 
 		public override object Invoke(TaskInvocation invocation)
 		{
-			throw new NotImplementedException();
+			return Task.Compile().Invoke();
 		}
 
 		public override void CloseTask()

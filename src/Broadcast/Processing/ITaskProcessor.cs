@@ -22,14 +22,5 @@ namespace Broadcast.Processing
 		/// </summary>
 		/// <param name="task">The task to process</param>
         void Process(ITask task);
-
-        /// <summary>
-        /// Process the delegate task
-        /// </summary>
-        /// <typeparam name="T">Type of notification</typeparam>
-        /// <param name="notification">The task to process</param>
-        void Process<T>(ITask<T> notification) where T : INotification;
-
-        
     }
 }

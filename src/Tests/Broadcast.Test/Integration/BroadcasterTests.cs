@@ -163,7 +163,7 @@ namespace Broadcast.Test
 			
             broadcaster.WaitAll();
 
-            Assert.IsTrue(broadcaster.Context.ProcessedTasks.Count() == 10);
+            Assert.AreEqual(10, broadcaster.Context.ProcessedTasks.Count());
         }
 
         [Test]

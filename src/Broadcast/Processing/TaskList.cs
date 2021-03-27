@@ -19,8 +19,11 @@ namespace Broadcast.Processing
 				throw new Exception();
 			}
 
-			_taskList.Add(task);
-			task.ContinueWith(t => Remove(t));
+			lock(_taskList)
+			{
+				_taskList.Add(task);
+				task.ContinueWith(t => Remove(t));
+			}
 
 			if (task.IsCompleted || task.IsFaulted || task.IsCanceled)
 			{
@@ -41,10 +44,30 @@ namespace Broadcast.Processing
 
 		public void WaitAll()
 		{
-			Trace.WriteLine($"Task count before waitall: {_taskList.Count}");
-			Task.WaitAll(_taskList.ToArray());
-			Trace.WriteLine($"Task count after waitall: {_taskList.Count}");
-			Trace.WriteLine($"Active Tasks: {_taskList.Count(t => t.Status == TaskStatus.Running)}");
+			while(Count() > 0)
+			{
+				Trace.WriteLine($"Task count before waitall: {Count()}");
+
+				Task.WaitAll(GetTaskArray());
+
+				Trace.WriteLine($"Task count after waitall: {Count()}");
+			}
+		}
+
+		private Task[] GetTaskArray()
+		{
+			lock (_taskList)
+			{
+				return _taskList.ToArray();
+			}
+		}
+
+		private int Count()
+		{
+			lock (_taskList)
+			{
+				return _taskList.Count;
+			}
 		}
 	}
 }
