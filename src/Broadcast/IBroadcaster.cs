@@ -12,6 +12,8 @@ namespace Broadcast
         /// </summary>
         IProcessorContext Context { get; }
 
+		IScheduler Scheduler { get; }
+
         void Process(ITask task);
 
         void WaitAll();

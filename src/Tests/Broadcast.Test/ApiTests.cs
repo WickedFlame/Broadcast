@@ -169,14 +169,16 @@ namespace Broadcast.Test
 
 	public class TaskServerClient
 	{
-		public static void Recurring(Expression<Action> task, TimeSpan fromSeconds)
+		public static void Recurring(Expression<Action> expression, TimeSpan time)
 		{
-			throw new NotImplementedException();
+			var task = TaskFactory.CreateTask(expression);
+			Broadcaster.Server.Recurring(task, time);
 		}
 
-		public static void Schedule(Expression<Action> task, TimeSpan fromSeconds)
+		public static void Schedule(Expression<Action> expression, TimeSpan time)
 		{
-			throw new NotImplementedException();
+			var task = TaskFactory.CreateTask(expression);
+			Broadcaster.Server.Schedule(task, time);
 		}
 
 		public static void Send(Expression<Action> expression)
@@ -188,14 +190,16 @@ namespace Broadcast.Test
 
 
 
-		public static void Recurring<T>(Expression<Func<T>> task, TimeSpan fromSeconds)
+		public static void Recurring<T>(Expression<Func<T>> expression, TimeSpan time) where T : INotification
 		{
-			throw new NotImplementedException();
+			var task = TaskFactory.CreateNotifiableTask(expression);
+			Broadcaster.Server.Recurring(task, time);
 		}
 
-		public static void Schedule<T>(Expression<Func<T>> task, TimeSpan fromSeconds)
+		public static void Schedule<T>(Expression<Func<T>> expression, TimeSpan time)
 		{
-			throw new NotImplementedException();
+			var task = TaskFactory.CreateTask(expression);
+			Broadcaster.Server.Schedule(task, time);
 		}
 
 		public static void Send<T>(Expression<Func<T>> expression)
@@ -209,14 +213,16 @@ namespace Broadcast.Test
 	{
 		// local jobs need a local server running
 
-		public static void Recurring(Action action, TimeSpan timeSpan)
+		public static void Recurring(Action expression, TimeSpan time)
 		{
-			throw new NotImplementedException();
+			var task = TaskFactory.CreateTask(expression);
+			Broadcaster.Server.Recurring(task, time);
 		}
 
-		public static void Schedule(Action task, TimeSpan fromSeconds)
+		public static void Schedule(Action expression, TimeSpan time)
 		{
-			throw new NotImplementedException();
+			var task = TaskFactory.CreateTask(expression);
+			Broadcaster.Server.Schedule(task, time);
 		}
 
 		public static void Send(Action expression)
@@ -227,14 +233,16 @@ namespace Broadcast.Test
 
 
 
-		public static void Recurring<T>(Func<T> task, TimeSpan fromSeconds)
+		public static void Recurring<T>(Func<T> expression, TimeSpan time) where T : INotification
 		{
-			throw new NotImplementedException();
+			var task = TaskFactory.CreateTask(expression);
+			Broadcaster.Server.Recurring(task, time);
 		}
 
-		public static void Schedule<T>(Func<T> task, TimeSpan fromSeconds)
+		public static void Schedule<T>(Func<T> expression, TimeSpan time)
 		{
-			throw new NotImplementedException();
+			var task = TaskFactory.CreateTask(expression);
+			Broadcaster.Server.Schedule(task, time);
 		}
 
 		public static void Send<T>(Func<T> expression)

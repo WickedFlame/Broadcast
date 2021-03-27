@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Broadcast.EventSourcing;
 using NUnit.Framework;
 
@@ -11,9 +12,9 @@ namespace Broadcast.Test.Api
 	public class BroadcasterApiTests
 	{
 		[Test]
-		public void TaskServerClient_Api_Send_StaticTrace()
+		public void Broadcaster_Api_Send_StaticTrace()
 		{
-			var broadcaster = new Broadcaster {Context = new ProcessorContext(new TaskStore())};
+			var broadcaster = new Broadcaster ();
 
 			// execute a static method
 			// serializeable
@@ -24,9 +25,9 @@ namespace Broadcast.Test.Api
 		}
 
 		[Test]
-		public void TaskServerClient_Api_Send_Method()
+		public void Broadcaster_Api_Send_Method()
 		{
-			var broadcaster = new Broadcaster {Context = new ProcessorContext(new TaskStore())};
+			var broadcaster = new Broadcaster ();
 
 			// execute a local method
 			// serializeable
@@ -37,9 +38,9 @@ namespace Broadcast.Test.Api
 		}
 
 		[Test]
-		public void TaskServerClient_Api_Send_GenericMethod()
+		public void Broadcaster_Api_Send_GenericMethod()
 		{
-			var broadcaster = new Broadcaster {Context = new ProcessorContext(new TaskStore())};
+			var broadcaster = new Broadcaster ();
 
 			// execute a generic method
 			// serializeable
@@ -50,7 +51,7 @@ namespace Broadcast.Test.Api
 		}
 
 		[Test]
-		public void TaskServerClient_Api_Send_Notification_Class()
+		public void Broadcaster_Api_Send_Notification_Class()
 		{
 			var broadcaster = new Broadcaster {Context = new ProcessorContext(new TaskStore()) };
 
@@ -63,9 +64,9 @@ namespace Broadcast.Test.Api
 		}
 
 		[Test]
-		public void TaskServerClient_Api_Send_Notification_Method()
+		public void Broadcaster_Api_Send_Notification_Method()
 		{
-			var broadcaster = new Broadcaster {Context = new ProcessorContext(new TaskStore())};
+			var broadcaster = new Broadcaster ();
 
 			// send a event to a handler
 			// serializeable Func<TestClass>
@@ -78,9 +79,9 @@ namespace Broadcast.Test.Api
 
 
 		[Test]
-		public void TaskServerClient_Api_Schedule_StaticTrace()
+		public void Broadcaster_Api_Schedule_StaticTrace()
 		{
-			var broadcaster = new Broadcaster {Context = new ProcessorContext(new TaskStore())};
+			var broadcaster = new Broadcaster ();
 
 			// execute a static method
 			// serializeable
@@ -91,9 +92,9 @@ namespace Broadcast.Test.Api
 		}
 
 		[Test]
-		public void TaskServerClient_Api_Schedule_Method()
+		public void Broadcaster_Api_Schedule_Method()
 		{
-			var broadcaster = new Broadcaster {Context = new ProcessorContext(new TaskStore())};
+			var broadcaster = new Broadcaster();
 
 			// execute a local method
 			// serializeable
@@ -104,9 +105,9 @@ namespace Broadcast.Test.Api
 		}
 
 		[Test]
-		public void TaskServerClient_Api_Schedule_GenericMethod()
+		public void Broadcaster_Api_Schedule_GenericMethod()
 		{
-			var broadcaster = new Broadcaster {Context = new ProcessorContext(new TaskStore())};
+			var broadcaster = new Broadcaster ();
 
 			// execute a generic method
 			// serializeable
@@ -117,9 +118,9 @@ namespace Broadcast.Test.Api
 		}
 
 		[Test]
-		public void TaskServerClient_Api_Schedule_Notification_Class()
+		public void Broadcaster_Api_Schedule_Notification_Class()
 		{
-			var broadcaster = new Broadcaster {Context = new ProcessorContext(new TaskStore())};
+			var broadcaster = new Broadcaster ();
 
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>
@@ -130,9 +131,9 @@ namespace Broadcast.Test.Api
 		}
 
 		[Test]
-		public void TaskServerClient_Api_Schedule_Notification_Method()
+		public void Broadcaster_Api_Schedule_Notification_Method()
 		{
-			var broadcaster = new Broadcaster {Context = new ProcessorContext(new TaskStore())};
+			var broadcaster = new Broadcaster ();
 
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>
@@ -150,68 +151,78 @@ namespace Broadcast.Test.Api
 
 
 		[Test]
-		public void TaskServerClient_Api_Recurring_StaticTrace()
+		public void Broadcaster_Api_Recurring_StaticTrace()
 		{
-			var broadcaster = new Broadcaster {Context = new ProcessorContext(new TaskStore())};
+			var broadcaster = new Broadcaster ();
 
 			// execute a static method
 			// serializeable
 			broadcaster.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(1));
 
+			Thread.Sleep(TimeSpan.FromSeconds(2));
+
 			broadcaster.WaitAll();
-			Assert.AreEqual(1, broadcaster.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(2, broadcaster.Context.ProcessedTasks.Count());
 		}
 
 		[Test]
-		public void TaskServerClient_Api_Recurring_Method()
+		public void Broadcaster_Api_Recurring_Method()
 		{
-			var broadcaster = new Broadcaster {Context = new ProcessorContext(new TaskStore())};
+			var broadcaster = new Broadcaster ();
 
 			// execute a local method
 			// serializeable
 			broadcaster.Recurring(() => TestMethod(1), TimeSpan.FromSeconds(1));
 
+			Thread.Sleep(TimeSpan.FromSeconds(2));
+
 			broadcaster.WaitAll();
-			Assert.AreEqual(1, broadcaster.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(2, broadcaster.Context.ProcessedTasks.Count());
 		}
 
 		[Test]
-		public void TaskServerClient_Api_Recurring_GenericMethod()
+		public void Broadcaster_Api_Recurring_GenericMethod()
 		{
-			var broadcaster = new Broadcaster {Context = new ProcessorContext(new TaskStore())};
+			var broadcaster = new Broadcaster ();
 
 			// execute a generic method
 			// serializeable
 			broadcaster.Recurring(() => GenericMethod(1), TimeSpan.FromSeconds(1));
 
+			Thread.Sleep(TimeSpan.FromSeconds(2));
+
 			broadcaster.WaitAll();
-			Assert.AreEqual(1, broadcaster.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(2, broadcaster.Context.ProcessedTasks.Count());
 		}
 
 		[Test]
-		public void TaskServerClient_Api_Recurring_Notification_Class()
+		public void Broadcaster_Api_Recurring_Notification_Class()
 		{
-			var broadcaster = new Broadcaster {Context = new ProcessorContext(new TaskStore())};
+			var broadcaster = new Broadcaster ();
 
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>
 			broadcaster.Recurring<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(1));
 
+			Thread.Sleep(TimeSpan.FromSeconds(2));
+
 			broadcaster.WaitAll();
-			Assert.AreEqual(1, broadcaster.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(2, broadcaster.Context.ProcessedTasks.Count());
 		}
 
 		[Test]
-		public void TaskServerClient_Api_Recurring_Notification_Method()
+		public void Broadcaster_Api_Recurring_Notification_Method()
 		{
-			var broadcaster = new Broadcaster {Context = new ProcessorContext(new TaskStore())};
+			var broadcaster = new Broadcaster ();
 
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>
 			broadcaster.Recurring<TestClass>(() => Returnable(1), TimeSpan.FromSeconds(1));
 
+			Thread.Sleep(TimeSpan.FromSeconds(2));
+
 			broadcaster.WaitAll();
-			Assert.AreEqual(1, broadcaster.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(2, broadcaster.Context.ProcessedTasks.Count());
 		}
 
 
