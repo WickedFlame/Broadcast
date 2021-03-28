@@ -18,6 +18,8 @@ namespace Broadcast
 
         void WaitAll();
 
+        ITaskStore GetStore();
+
 		/// <summary>
 		/// Register a INotificationTarget that gets called when a INotification of the same type is sent
 		/// </summary>

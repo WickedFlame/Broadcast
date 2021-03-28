@@ -18,6 +18,7 @@ namespace Broadcast.Test.Api
 			// execute a static method
 			// serializeable
 			TaskServerClient.Send(() => Trace.WriteLine("test"));
+
 			Broadcaster.Server.WaitAll();
 			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());
 		}
@@ -47,35 +48,7 @@ namespace Broadcast.Test.Api
 			Broadcaster.Server.WaitAll();
 			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());
 		}
-
-		[Test]
-		public void TaskServerClient_Api_Send_Notification_Class()
-		{
-			Broadcaster.Setup(s => { });
-
-			// send a event to a handler
-			// serializeable Func<TestClass>
-			TaskServerClient.Send<TestClass>(() => new TestClass(1));
-
-			Broadcaster.Server.WaitAll();
-			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());
-		}
-
-		[Test]
-		public void TaskServerClient_Api_Send_Notification_Method()
-		{
-			Broadcaster.Setup(s => { });
-
-			// send a event to a handler
-			// serializeable Func<TestClass>
-			TaskServerClient.Send<TestClass>(() => Returnable(1));
-
-			Broadcaster.Server.WaitAll();
-			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());
-		}
-
-
-
+		
 
 
 
@@ -93,7 +66,7 @@ namespace Broadcast.Test.Api
 			// serializeable
 			TaskServerClient.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(1));
 
-			Thread.Sleep(TimeSpan.FromSeconds(1));
+			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
 			Broadcaster.Server.WaitAll();
 			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());
@@ -108,7 +81,7 @@ namespace Broadcast.Test.Api
 			// serializeable
 			TaskServerClient.Schedule(() => TestMethod(1), TimeSpan.FromSeconds(1));
 
-			Thread.Sleep(TimeSpan.FromSeconds(1));
+			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
 			Broadcaster.Server.WaitAll();
 			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());
@@ -123,43 +96,12 @@ namespace Broadcast.Test.Api
 			// serializeable
 			TaskServerClient.Schedule(() => GenericMethod(1), TimeSpan.FromSeconds(1));
 
-			Thread.Sleep(TimeSpan.FromSeconds(1));
+			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
 			Broadcaster.Server.WaitAll();
 			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());
 		}
-
-		[Test]
-		public void TaskServerClient_Api_Schedule_Notification_Class()
-		{
-			Broadcaster.Setup(s => { });
-
-			// send a event to a handler
-			// Nonserializeable Func<TestClass>
-			TaskServerClient.Schedule<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(1));
-
-			Thread.Sleep(TimeSpan.FromSeconds(1));
-
-			Broadcaster.Server.WaitAll();
-			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());
-		}
-
-		[Test]
-		public void TaskServerClient_Api_Schedule_Notification_Method()
-		{
-			Broadcaster.Setup(s => { });
-
-			// send a event to a handler
-			// Nonserializeable Func<TestClass>
-			TaskServerClient.Schedule<TestClass>(() => Returnable(1), TimeSpan.FromSeconds(1));
-
-			Thread.Sleep(TimeSpan.FromSeconds(1));
-
-			Broadcaster.Server.WaitAll();
-			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());
-		}
-
-
+		
 
 
 		[Test]
@@ -207,35 +149,6 @@ namespace Broadcast.Test.Api
 			Assert.GreaterOrEqual(2, Broadcaster.Server.Context.ProcessedTasks.Count());
 		}
 
-		[Test]
-		public void TaskServerClient_Api_Recurring_Notification_Class()
-		{
-			Broadcaster.Setup(s => { });
-
-			// send a event to a handler
-			// Nonserializeable Func<TestClass>
-			TaskServerClient.Recurring<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(1));
-
-			Thread.Sleep(TimeSpan.FromSeconds(2));
-
-			Broadcaster.Server.WaitAll();
-			Assert.GreaterOrEqual(2, Broadcaster.Server.Context.ProcessedTasks.Count());
-		}
-
-		[Test]
-		public void TaskServerClient_Api_Recurring_Notification_Method()
-		{
-			Broadcaster.Setup(s => { });
-
-			// send a event to a handler
-			// Nonserializeable Func<TestClass>
-			TaskServerClient.Recurring<TestClass>(() => Returnable(1), TimeSpan.FromSeconds(1));
-
-			Thread.Sleep(TimeSpan.FromSeconds(2));
-
-			Broadcaster.Server.WaitAll();
-			Assert.GreaterOrEqual(2, Broadcaster.Server.Context.ProcessedTasks.Count());
-		}
 
 
 

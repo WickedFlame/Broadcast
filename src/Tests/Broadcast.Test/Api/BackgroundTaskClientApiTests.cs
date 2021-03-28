@@ -107,7 +107,7 @@ namespace Broadcast.Test.Api
 			// serializeable
 			BackgroundTaskClient.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(1));
 
-			Thread.Sleep(TimeSpan.FromSeconds(1));
+			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
 			Broadcaster.Server.WaitAll();
 			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());
@@ -122,7 +122,7 @@ namespace Broadcast.Test.Api
 			// serializeable
 			BackgroundTaskClient.Schedule(() => TestMethod(1), TimeSpan.FromSeconds(1));
 
-			Thread.Sleep(TimeSpan.FromSeconds(1));
+			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
 			Broadcaster.Server.WaitAll();
 			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());
@@ -137,7 +137,7 @@ namespace Broadcast.Test.Api
 			// serializeable
 			BackgroundTaskClient.Schedule(() => GenericMethod(1), TimeSpan.FromSeconds(1));
 
-			Thread.Sleep(TimeSpan.FromSeconds(1));
+			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
 			Broadcaster.Server.WaitAll();
 			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());
@@ -152,7 +152,7 @@ namespace Broadcast.Test.Api
 			// Nonserializeable Func<TestClass>
 			BackgroundTaskClient.Schedule<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(1));
 
-			Thread.Sleep(TimeSpan.FromSeconds(1));
+			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
 			Broadcaster.Server.WaitAll();
 			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());
@@ -167,7 +167,7 @@ namespace Broadcast.Test.Api
 			// Nonserializeable Func<TestClass>
 			BackgroundTaskClient.Schedule<TestClass>(() => Returnable(1), TimeSpan.FromSeconds(1));
 
-			Thread.Sleep(TimeSpan.FromSeconds(1));
+			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
 			Broadcaster.Server.WaitAll();
 			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());
@@ -185,7 +185,7 @@ namespace Broadcast.Test.Api
 				Trace.WriteLine("test");
 			}, TimeSpan.FromSeconds(1));
 
-			Thread.Sleep(TimeSpan.FromSeconds(1));
+			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
 			Broadcaster.Server.WaitAll();
 			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());

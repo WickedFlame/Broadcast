@@ -87,6 +87,8 @@ namespace Broadcast.Test.Api
 			// serializeable
 			broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(1));
 
+			Thread.Sleep(TimeSpan.FromSeconds(1.5));
+
 			broadcaster.WaitAll();
 			Assert.AreEqual(1, broadcaster.Context.ProcessedTasks.Count());
 		}
@@ -99,6 +101,8 @@ namespace Broadcast.Test.Api
 			// execute a local method
 			// serializeable
 			broadcaster.Schedule(() => TestMethod(1), TimeSpan.FromSeconds(1));
+
+			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
 			broadcaster.WaitAll();
 			Assert.AreEqual(1, broadcaster.Context.ProcessedTasks.Count());
@@ -113,6 +117,8 @@ namespace Broadcast.Test.Api
 			// serializeable
 			broadcaster.Schedule(() => GenericMethod(1), TimeSpan.FromSeconds(1));
 
+			Thread.Sleep(TimeSpan.FromSeconds(1.5));
+
 			broadcaster.WaitAll();
 			Assert.AreEqual(1, broadcaster.Context.ProcessedTasks.Count());
 		}
@@ -126,6 +132,8 @@ namespace Broadcast.Test.Api
 			// Nonserializeable Func<TestClass>
 			broadcaster.Schedule<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(1));
 
+			Thread.Sleep(TimeSpan.FromSeconds(1.5));
+
 			broadcaster.WaitAll();
 			Assert.AreEqual(1, broadcaster.Context.ProcessedTasks.Count());
 		}
@@ -138,6 +146,8 @@ namespace Broadcast.Test.Api
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>
 			broadcaster.Schedule<TestClass>(() => Returnable(1), TimeSpan.FromSeconds(1));
+
+			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
 			broadcaster.WaitAll();
 			Assert.AreEqual(1, broadcaster.Context.ProcessedTasks.Count());
