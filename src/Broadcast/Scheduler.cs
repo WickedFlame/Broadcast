@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace Broadcast
 {
+	/// <summary>
+	/// Interface for the scheduler
+	/// </summary>
     public interface IScheduler : IDisposable
     {
         /// <summary>
@@ -35,34 +38,38 @@ namespace Broadcast
         void Dequeue(SchedulerTask task);
     }
 
+	/// <summary>
+	/// The scheduler for scheduled tasks
+	/// </summary>
     public class Scheduler : IScheduler
     {
         private static int _schedulerCount;
 
-        private object _lockHandle = new object();
+        private readonly object _lockHandle = new object();
 
-        private readonly Thread _schedulerThread = null;
         private readonly Stopwatch _timer;
-        private bool _isRunning = false;
+        private readonly CancellationToken _token = new CancellationToken();
+		private bool _isRunning = false;
 
         private readonly List<SchedulerTask> _scheduleQueue = new List<SchedulerTask>();
 
+		/// <summary>
+		/// Creates a new scheduler for the broadcaster
+		/// </summary>
         public Scheduler()
         {
-            _timer = new Stopwatch();
+	        _timer = new Stopwatch();
             _timer.Start();
 
             _isRunning = true;
 
-            _schedulerThread = new Thread(_ => Execute(this));
-            if (!_schedulerThread.IsAlive)
-            {
-                _schedulerCount++;
-                _schedulerThread.Name = $"Scheduler {_schedulerCount}";
-
-                _schedulerThread.Start();
-            }
-        }
+            var schedulerTask = Task.Factory.StartNew(() => Execute(this), _token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+            //schedulerTask.ContinueWith(t =>
+            //{
+	           // _schedulerCount--;
+            //});
+            _schedulerCount++;
+		}
 
         /// <summary>
         /// Gets the total count of Schedulers that are alive
@@ -115,7 +122,7 @@ namespace Broadcast
 
         private void Execute(IScheduler scheduler)
         {
-            while (_isRunning)
+            while (_isRunning && !_token.IsCancellationRequested)
             {
                 // create a copy of the list
                 IEnumerable<SchedulerTask> tasks = scheduler.Queue;
@@ -145,6 +152,10 @@ namespace Broadcast
             GC.SuppressFinalize(this);
         }
 
+		/// <summary>
+		/// Dispose the scheduler
+		/// </summary>
+		/// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposing)
@@ -152,12 +163,8 @@ namespace Broadcast
                 return;
             }
 
-            if (_schedulerThread != null)
-            {
-                //_schedulerThread.Abort();
-                _isRunning = false;
-                _schedulerCount--;
-            }
-        }
+            _isRunning = false;
+            _schedulerCount--;
+		}
     }
 }

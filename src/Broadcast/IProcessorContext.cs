@@ -14,6 +14,11 @@ namespace Broadcast
         /// </summary>
         ITaskStore Store { get; set; }
 
+		/// <summary>
+		/// Gets the TaskQueue
+		/// </summary>
+		ITaskQueue Queue { get; }
+
         /// <summary>
         /// Gets all Tasks that have been processed
         /// </summary>

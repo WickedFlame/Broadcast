@@ -9,46 +9,30 @@ namespace Broadcast.EventSourcing
     /// </summary>
     public class TaskStore : ITaskStore, IEnumerable<ITask>
     {
-        static object QueueLock = new object();
+        private object _lockHandle = new object();
 
-        readonly TaskQueue _queue;
         readonly List<ITask> _store;
 
+		/// <summary>
+		/// Creates a new TaskStore
+		/// </summary>
         public TaskStore()
         {
-            _queue = new TaskQueue();
             _store = new List<ITask>();
         }
 		
-        /// <summary>
-        /// Counts all unprocessed Tasks that are contained in the Queue
-        /// </summary>
-        public int CountQueue
-        {
-            get
-            {
-                return _queue.Count;
-            }
-        }
-
         /// <summary>
         /// Adds a new Task to the queue to be processed
         /// </summary>
         /// <param name="task"></param>
         public void Add(ITask task)
         {
-            lock (QueueLock)
+            lock (_lockHandle)
             {
 	            _store.Add(task);
-	            _queue.Enqueue(task);
             }
 
             task.State = TaskState.Queued;
-        }
-
-        public bool TryDequeue(out ITask task)
-        {
-	        return _queue.TryDequeue(out task);
         }
 
         /// <summary>

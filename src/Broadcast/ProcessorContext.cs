@@ -14,11 +14,18 @@ namespace Broadcast
         readonly INotificationHandlerStore _notificationHandlers;
 		private ITaskProcessor _processor;
 
+		/// <summary>
+		/// Creates a new instance of the ProcessorContext
+		/// </summary>
 		public ProcessorContext()
             : this(new TaskStore())
         {
         }
 
+		/// <summary>
+		/// Creates a new instance of the ProcessorContext
+		/// </summary>
+		/// <param name="store"></param>
         public ProcessorContext(ITaskStore store)
         {
             Store = store;
@@ -29,6 +36,11 @@ namespace Broadcast
         /// Gets or sets the TaskSore containing all Tasks
         /// </summary>
         public ITaskStore Store { get; set; }
+
+		/// <summary>
+		/// Gets the TaskQueue
+		/// </summary>
+		public ITaskQueue Queue => Open().Queue;
 
         /// <summary>
         /// Gets all Tasks that have been processed

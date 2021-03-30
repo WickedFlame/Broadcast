@@ -7,11 +7,18 @@ using System.Threading.Tasks;
 
 namespace Broadcast.Processing
 {
-	public class TaskList
+	/// <summary>
+	/// A list of running threads
+	/// </summary>
+	public class ThreadList
 	{
 
 		private readonly List<Task> _taskList = new List<Task>();
 
+		/// <summary>
+		/// Add a task to the threadlist
+		/// </summary>
+		/// <param name="task"></param>
 		public void Add(Task task)
 		{
 			if (task == null)
@@ -31,6 +38,10 @@ namespace Broadcast.Processing
 			}
 		}
 
+		/// <summary>
+		/// Remove a task from the threadlist
+		/// </summary>
+		/// <param name="task"></param>
 		public void Remove(Task task)
 		{
 			lock(_taskList)
@@ -42,6 +53,9 @@ namespace Broadcast.Processing
 			}
 		}
 
+		/// <summary>
+		/// Wait for all threads to end
+		/// </summary>
 		public void WaitAll()
 		{
 			while(Count() > 0)

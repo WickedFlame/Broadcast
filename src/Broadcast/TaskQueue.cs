@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Broadcast.EventSourcing;
 
 namespace Broadcast
 {
-	public class TaskQueue
+	/// <summary>
+	/// Queue for ITasks
+	/// </summary>
+	public class TaskQueue : ITaskQueue
 	{
 		private readonly object _syncRoot = new object();
 		private readonly Queue<ITask> _queue;

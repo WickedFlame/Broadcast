@@ -48,7 +48,7 @@ namespace Broadcast.Test
             Assert.IsTrue(Scheduler.SchedulerCount == activeSchedulers + 3, $"3 {Scheduler.SchedulerCount}");
 
             scheduler1.Dispose();
-            Assert.IsTrue(Scheduler.SchedulerCount == activeSchedulers + 2, "2");
+            Assert.AreEqual(Scheduler.SchedulerCount, activeSchedulers + 2, "2");
 
             scheduler2.Dispose();
             Assert.IsTrue(Scheduler.SchedulerCount == activeSchedulers + 1, "1");

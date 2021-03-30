@@ -9,6 +9,7 @@ using NUnit.Framework;
 
 namespace Broadcast.Test.Api
 {
+	[SingleThreaded]
 	public class BroadcasterApiTests
 	{
 		[Test]
@@ -214,7 +215,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void Broadcaster_Api_Recurring_Notification_Method()
 		{
-			var broadcaster = new Broadcaster ();
+			var broadcaster = new Broadcaster();
 
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>

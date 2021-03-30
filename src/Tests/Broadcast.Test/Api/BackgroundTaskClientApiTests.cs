@@ -8,6 +8,7 @@ using NUnit.Framework;
 
 namespace Broadcast.Test.Api
 {
+	[SingleThreaded]
 	public class BackgroundTaskClientApiTests
 	{
 		[Test]

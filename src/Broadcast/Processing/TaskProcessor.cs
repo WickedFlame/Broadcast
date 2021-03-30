@@ -16,19 +16,38 @@ namespace Broadcast.Processing
 	    private static readonly object ProcessorLock = new object();
 	    private bool _inProcess = false;
 
+		private readonly ITaskQueue _queue;
 		private readonly ITaskStore _store;
         private readonly INotificationHandlerStore _handlers;
-        private readonly TaskList _taskList = new TaskList();
+        private readonly ThreadList _threadList = new ThreadList();
 
+		/// <summary>
+		/// Creates a new TaskProcessor
+		/// </summary>
+		/// <param name="store"></param>
+		/// <param name="handlers"></param>
         public TaskProcessor(ITaskStore store, INotificationHandlerStore handlers)
         {
             _store = store;
             _handlers = handlers;
+
+            _queue = new TaskQueue();
         }
 
-        protected ITaskStore Store => _store;
+		/// <summary>
+		/// Gets the TaskStore
+		/// </summary>
+        public ITaskStore Store => _store;
 
-        protected INotificationHandlerStore Handlers => _handlers;
+		/// <summary>
+		/// Gets the TaskQueue
+		/// </summary>
+		public ITaskQueue Queue => _queue;
+
+		/// <summary>
+		/// Gets the NotificationHandlers
+		/// </summary>
+		protected INotificationHandlerStore Handlers => _handlers;
 
         /// <summary>
         /// Add a delegate handler to the store
@@ -40,9 +59,12 @@ namespace Broadcast.Processing
             Handlers.AddHandler(target);
         }
 
+		/// <summary>
+		/// Wait for all threads in the taskprocessor to end
+		/// </summary>
         public void WaitAll()
         {
-	        _taskList.WaitAll();
+	        _threadList.WaitAll();
         }
 
 		/// <summary>
@@ -51,7 +73,7 @@ namespace Broadcast.Processing
 		/// <param name="task">The task to process</param>
 		public void Process(ITask task)
         {
-	        Store.Add(task);
+	        _queue.Enqueue(task);
 
 	        // check if a thread is allready processing the queue
 	        if (_inProcess)
@@ -61,7 +83,7 @@ namespace Broadcast.Processing
 
 			// start new background thread to process all queued tasks
 			var thread = Task.Run(() => ProcessTasks());
-			_taskList.Add(thread);
+			_threadList.Add(thread);
 		}
 
 
@@ -80,14 +102,14 @@ namespace Broadcast.Processing
 	        {
 		        _inProcess = true;
 
-		        while (Store.TryDequeue(out var task))
+		        while (_queue.TryDequeue(out var task))
 		        {
 			        try
 			        {
 				        //TODO: Create own TaskScheduler and store in options
 				        var taskScheduler = TaskScheduler.Default;
 				        var thread = Task.Factory.StartNew(() => ProcessItem(task), CancellationToken.None, TaskCreationOptions.None, taskScheduler);
-				        _taskList.Add(thread);
+				        _threadList.Add(thread);
 					}
 			        catch (Exception e)
 			        {
@@ -99,7 +121,7 @@ namespace Broadcast.Processing
 	        }
         }
 
-		protected virtual string ProcessItem(ITask task)
+		private string ProcessItem(ITask task)
         {
             Store.SetInprocess(task);
 
@@ -137,6 +159,9 @@ namespace Broadcast.Processing
             return task.Id;
         }
 		
+		/// <summary>
+		/// Dispose the TaskProcessor
+		/// </summary>
         public void Dispose()
         {
         }

@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 using Broadcast.EventSourcing;
 
 namespace Broadcast
 {
+	/// <summary>
+	/// Interface for the Broadcaster
+	/// </summary>
     public interface IBroadcaster : IDisposable
     {
         /// <summary>
@@ -12,12 +13,26 @@ namespace Broadcast
         /// </summary>
         IProcessorContext Context { get; }
 
+		/// <summary>
+		/// Gets the Scheduler
+		/// </summary>
 		IScheduler Scheduler { get; }
 
+		/// <summary>
+		/// Process the task
+		/// </summary>
+		/// <param name="task"></param>
         void Process(ITask task);
 
+        /// <summary>
+		/// Wait for all threads to end
+		/// </summary>
         void WaitAll();
 
+		/// <summary>
+		/// Get the TaskStore
+		/// </summary>
+		/// <returns></returns>
         ITaskStore GetStore();
 
 		/// <summary>

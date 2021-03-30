@@ -9,6 +9,9 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Broadcast
 {
+	/// <summary>
+	/// 
+	/// </summary>
     public class Broadcaster : IBroadcaster
     {
 		static IBroadcaster _server;
@@ -20,8 +23,15 @@ namespace Broadcast
 			Setup(s => { });
 		}
 
+		/// <summary>
+		/// Gets the BroadcasterServer
+		/// </summary>
 		public static IBroadcaster Server => _server;
 
+		/// <summary>
+		/// Setup a BroadcasterServer
+		/// </summary>
+		/// <param name="setup"></param>
 		public static void Setup(Action<IBroadcaster> setup)
 		{
 			var server = new Broadcaster();
@@ -33,11 +43,18 @@ namespace Broadcast
         private IScheduler _scheduler;
         private Options _options;
 		
+		/// <summary>
+		/// Creates a new Broadcaster
+		/// </summary>
         public Broadcaster() : this(Options.Default)
         {
         }
 
-        public Broadcaster(Options options)
+		/// <summary>
+		/// Creates a new Broadcaster
+		/// </summary>
+		/// <param name="options"></param>
+		public Broadcaster(Options options)
         {
 			_options = options;
         }
@@ -75,15 +92,23 @@ namespace Broadcast
             }
         }
 
+		/// <summary>
+		/// Process the task
+		/// </summary>
+		/// <param name="task"></param>
         public void Process(ITask task)
         {
-	        //Context.Store.Add(task);
+	        Context.Store.Add(task);
+
 			using (var processor = Context.Open())
 			{
 				processor.Process(task);
 			}
 		}
 
+		/// <summary>
+		/// Wait for all threads to end
+		/// </summary>
         public void WaitAll()
         {
 	        using (var processor = Context.Open())
@@ -92,6 +117,10 @@ namespace Broadcast
 	        }
 		}
 
+		/// <summary>
+		/// Gets the TaskStore
+		/// </summary>
+		/// <returns></returns>
         public ITaskStore GetStore()
         {
 	        return Context.Store;
@@ -128,14 +157,20 @@ namespace Broadcast
         }
 
         
-
+		/// <summary>
+		/// Dispose the Broadcaster
+		/// </summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+		/// <summary>
+		/// Dispose the Broadcaster
+		/// </summary>
+		/// <param name="disposing"></param>
+		protected virtual void Dispose(bool disposing)
         {
             if (!disposing)
             {
