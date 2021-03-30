@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace Broadcast.Integration.Test.Api
@@ -69,7 +70,7 @@ namespace Broadcast.Integration.Test.Api
 			// serializeable
 			TaskServerClient.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(1));
 
-			Thread.Sleep(TimeSpan.FromSeconds(1.5));
+			Task.Delay(1500).Wait();
 
 			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 1);
 		}
@@ -83,7 +84,7 @@ namespace Broadcast.Integration.Test.Api
 			// serializeable
 			TaskServerClient.Schedule(() => TestMethod(1), TimeSpan.FromSeconds(1));
 
-			Thread.Sleep(TimeSpan.FromSeconds(1.5));
+			Task.Delay(1500).Wait();
 
 			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 1);
 		}
@@ -97,7 +98,7 @@ namespace Broadcast.Integration.Test.Api
 			// serializeable
 			TaskServerClient.Schedule(() => GenericMethod(1), TimeSpan.FromSeconds(1));
 
-			Thread.Sleep(TimeSpan.FromSeconds(1.5));
+			Task.Delay(1500).Wait();
 
 			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 1);
 		}
@@ -113,7 +114,7 @@ namespace Broadcast.Integration.Test.Api
 			// serializeable
 			TaskServerClient.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
 
-			Thread.Sleep(TimeSpan.FromSeconds(2));
+			Task.Delay(2000).Wait();
 
 			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 2);
 		}
@@ -127,7 +128,7 @@ namespace Broadcast.Integration.Test.Api
 			// serializeable
 			TaskServerClient.Recurring(() => TestMethod(1), TimeSpan.FromSeconds(0.5));
 
-			Thread.Sleep(TimeSpan.FromSeconds(2));
+			Task.Delay(2000).Wait();
 
 			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 2);
 		}
@@ -141,7 +142,7 @@ namespace Broadcast.Integration.Test.Api
 			// serializeable
 			TaskServerClient.Recurring(() => GenericMethod(1), TimeSpan.FromSeconds(0.5));
 
-			Thread.Sleep(TimeSpan.FromSeconds(2));
+			Task.Delay(2000).Wait();
 
 			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 2);
 		}

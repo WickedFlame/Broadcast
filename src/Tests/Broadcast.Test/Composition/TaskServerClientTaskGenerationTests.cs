@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Broadcast.EventSourcing;
 using NUnit.Framework;
 
@@ -32,7 +33,8 @@ namespace Broadcast.Test.Composition
 			// serializeable
 			TaskServerClient.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
 
-			Thread.Sleep(TimeSpan.FromSeconds(1));
+			//Thread.Sleep(TimeSpan.FromSeconds(1));
+			Task.Delay(1000).Wait();
 
 			Assert.IsAssignableFrom<ExpressionTask>(Broadcaster.Server.GetStore().Single());
 		}
@@ -46,7 +48,8 @@ namespace Broadcast.Test.Composition
 			// serializeable
 			TaskServerClient.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
 
-			Thread.Sleep(TimeSpan.FromSeconds(1));
+			//Thread.Sleep(TimeSpan.FromSeconds(1));
+			Task.Delay(1000).Wait();
 
 			Assert.IsAssignableFrom<ExpressionTask>(Broadcaster.Server.GetStore().First());
 		}

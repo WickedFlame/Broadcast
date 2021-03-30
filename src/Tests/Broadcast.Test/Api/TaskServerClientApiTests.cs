@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Broadcast.EventSourcing;
 using Broadcast.Processing;
 using Moq;
@@ -117,7 +118,7 @@ namespace Broadcast.Test.Api
 			// serializeable
 			TaskServerClient.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
 
-			Thread.Sleep(TimeSpan.FromSeconds(2));
+			Task.Delay(2000).Wait();
 
 			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 2);
 		}

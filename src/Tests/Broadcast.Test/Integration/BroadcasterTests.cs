@@ -26,7 +26,7 @@ namespace Broadcast.Test
 		    broadcaster.Process(task);
 		    broadcaster.WaitAll();
 
-		    Thread.Sleep(500);
+		    Task.Delay(1000).Wait();
 
 		    Assert.IsTrue(called);
 	    }
@@ -41,7 +41,7 @@ namespace Broadcast.Test
 		    broadcaster.Process(task);
 		    broadcaster.WaitAll();
 
-		    Thread.Sleep(500);
+		    Task.Delay(1000).Wait();
 
 			Assert.IsTrue(called);
 	    }
@@ -68,7 +68,7 @@ namespace Broadcast.Test
 
             broadcaster.WaitAll();
             //TODO: has to work without sleep!
-            System.Threading.Thread.Sleep(System.TimeSpan.FromSeconds(1));
+            Task.Delay(1000).Wait();
 			Assert.AreEqual(broadcaster.Context.ProcessedTasks.Count(), 10);
         }
 
@@ -130,7 +130,7 @@ namespace Broadcast.Test
 
             broadcaster.WaitAll();
             //TODO: has to work without sleep!
-            System.Threading.Thread.Sleep(System.TimeSpan.FromSeconds(1));
+            Task.Delay(1000).Wait();
 			Assert.AreEqual(broadcaster.Context.ProcessedTasks.Count(), 10);
         }
 
@@ -288,7 +288,7 @@ namespace Broadcast.Test
             broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
             broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
 
-            Thread.Sleep(TimeSpan.FromSeconds(1));
+            Task.Delay(1000).Wait();
 
             Assert.IsTrue(broadcaster.GetStore().Count(t => t.State == TaskState.Processed) == 3);
         }
@@ -304,7 +304,7 @@ namespace Broadcast.Test
         //    broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
         //    broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
 
-        //    Thread.Sleep(TimeSpan.FromSeconds(1));
+        //    Task.Delay(1000).Wait();
 
         //    Assert.IsTrue(store.Count(t => t.State == TaskState.Processed) == 3);
         //}
@@ -314,7 +314,7 @@ namespace Broadcast.Test
             public int GetValue(int index)
             {
                 int i = index;
-                Thread.Sleep(TimeSpan.FromSeconds(1));
+                Task.Delay(1000).Wait();
                 return i;
             }
         }

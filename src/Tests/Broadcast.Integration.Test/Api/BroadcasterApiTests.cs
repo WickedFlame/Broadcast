@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Broadcast.EventSourcing;
 using NUnit.Framework;
 
@@ -90,7 +91,7 @@ namespace Broadcast.Integration.Test.Api
 			// serializeable
 			broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
 
-			Thread.Sleep(TimeSpan.FromSeconds(1.5));
+			Task.Delay(1500).Wait();
 
 			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 1);
 		}
@@ -104,7 +105,7 @@ namespace Broadcast.Integration.Test.Api
 			// serializeable
 			broadcaster.Schedule(() => TestMethod(1), TimeSpan.FromSeconds(0.5));
 
-			Thread.Sleep(TimeSpan.FromSeconds(1.5));
+			Task.Delay(1500).Wait();
 
 			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 1);
 		}
@@ -118,7 +119,7 @@ namespace Broadcast.Integration.Test.Api
 			// serializeable
 			broadcaster.Schedule(() => GenericMethod(1), TimeSpan.FromSeconds(0.5));
 
-			Thread.Sleep(TimeSpan.FromSeconds(1.5));
+			Task.Delay(1500).Wait();
 
 			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 1);
 		}
@@ -132,7 +133,7 @@ namespace Broadcast.Integration.Test.Api
 			// Nonserializeable Func<TestClass>
 			broadcaster.Schedule<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(0.5));
 
-			Thread.Sleep(TimeSpan.FromSeconds(1.5));
+			Task.Delay(1500).Wait();
 
 			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 1);
 		}
@@ -146,7 +147,7 @@ namespace Broadcast.Integration.Test.Api
 			// Nonserializeable Func<TestClass>
 			broadcaster.Schedule<TestClass>(() => Returnable(1), TimeSpan.FromSeconds(0.5));
 
-			Thread.Sleep(TimeSpan.FromSeconds(1.5));
+			Task.Delay(1500).Wait();
 
 			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 1);
 		}
@@ -167,7 +168,7 @@ namespace Broadcast.Integration.Test.Api
 			// serializeable
 			broadcaster.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
 
-			Thread.Sleep(TimeSpan.FromSeconds(2));
+			Task.Delay(2000).Wait();
 
 			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 2);
 		}
@@ -181,7 +182,7 @@ namespace Broadcast.Integration.Test.Api
 			// serializeable
 			broadcaster.Recurring(() => TestMethod(1), TimeSpan.FromSeconds(0.5));
 
-			Thread.Sleep(TimeSpan.FromSeconds(2));
+			Task.Delay(2000).Wait();
 
 			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 2);
 		}
@@ -195,7 +196,7 @@ namespace Broadcast.Integration.Test.Api
 			// serializeable
 			broadcaster.Recurring(() => GenericMethod(1), TimeSpan.FromSeconds(0.5));
 
-			Thread.Sleep(TimeSpan.FromSeconds(2));
+			Task.Delay(2000).Wait();
 
 			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 2);
 		}
@@ -209,7 +210,7 @@ namespace Broadcast.Integration.Test.Api
 			// Nonserializeable Func<TestClass>
 			broadcaster.Recurring<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(0.5));
 
-			Thread.Sleep(TimeSpan.FromSeconds(2));
+			Task.Delay(2000).Wait();
 
 			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 2);
 		}
@@ -223,7 +224,7 @@ namespace Broadcast.Integration.Test.Api
 			// Nonserializeable Func<TestClass>
 			broadcaster.Recurring<TestClass>(() => Returnable(1), TimeSpan.FromSeconds(0.5));
 
-			Thread.Sleep(TimeSpan.FromSeconds(2));
+			Task.Delay(2000).Wait();
 
 			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 2);
 		}

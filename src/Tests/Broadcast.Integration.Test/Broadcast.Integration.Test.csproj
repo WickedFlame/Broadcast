@@ -16,4 +16,8 @@
     <ProjectReference Include="..\..\Broadcast\Broadcast.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Composition\" />
+  </ItemGroup>
+
 </Project>

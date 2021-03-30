@@ -29,7 +29,7 @@ namespace Broadcast.Test
             scheduler.Enqueue(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
             scheduler.Enqueue(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
 
-            Thread.Sleep(TimeSpan.FromSeconds(1));
+            Task.Delay(1000).Wait();
 
             Assert.IsFalse(scheduler.Queue.Any());
         }
@@ -67,7 +67,7 @@ namespace Broadcast.Test
             scheduler.Enqueue(() => { cnt++; }, TimeSpan.FromSeconds(0.01));
             //Assert.That(cnt == 0);
 
-            Thread.Sleep(TimeSpan.FromSeconds(1));
+            Task.Delay(1000).Wait();
 
             Assert.That(cnt == 3, $"Effective Count: {cnt}");
         }

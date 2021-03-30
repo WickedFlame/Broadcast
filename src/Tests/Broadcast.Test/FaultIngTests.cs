@@ -23,7 +23,7 @@ namespace Broadcast.Test
             broadcaster.Schedule(() => action.Invoke(), TimeSpan.FromSeconds(0.01));
             broadcaster.Schedule(() => System.Diagnostics.Trace.WriteLine("Test"), TimeSpan.FromSeconds(0.02));
 
-            Thread.Sleep(TimeSpan.FromSeconds(1));
+            Task.Delay(1000).Wait();
 
             var store = broadcaster.GetStore();
             Assert.IsTrue(store.Count(t => t.State == TaskState.Processed) == 2, $"Store Count is {store.Count()}, processed Count is {store.Count(t => t.State == TaskState.Processed)}");
@@ -38,7 +38,7 @@ namespace Broadcast.Test
             broadcaster.Schedule(() => new GenericEvent(), TimeSpan.FromSeconds(0.01));
             broadcaster.Schedule(() => new GenericEvent(), TimeSpan.FromSeconds(0.02));
 
-            Thread.Sleep(TimeSpan.FromSeconds(1));
+            Task.Delay(1000).Wait();
 
             Assert.IsTrue(broadcaster.GetStore().Count(t => t.State == TaskState.Processed) == 2);
         }
@@ -52,7 +52,7 @@ namespace Broadcast.Test
 			Action action = () => throw new NotImplementedException();
 			broadcaster.Schedule(() => action.Invoke(), TimeSpan.FromSeconds(0.01));
 
-            Thread.Sleep(TimeSpan.FromSeconds(1));
+            Task.Delay(1000).Wait();
 
             //Assert.IsTrue(broadcaster.GetStore().All(t => t.State == TaskState.Faulted));
         }
