@@ -10,7 +10,7 @@ using NUnit.Framework;
 namespace Broadcast.Integration.Test.Api
 {
 	[SingleThreaded]
-	[Explicit]
+	//[Explicit]
 	[Category("Integration")]
 	public class BackgroundTaskClientApiTests
 	{
