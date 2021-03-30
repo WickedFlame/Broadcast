@@ -18,7 +18,7 @@ namespace Broadcast.Test
             var broadcaster = new Broadcaster();
             broadcaster.Recurring(() => System.Diagnostics.Trace.WriteLine("Recurring"), TimeSpan.FromSeconds(0.01));
 
-            Thread.Sleep(TimeSpan.FromSeconds(0.5));
+            Thread.Sleep(TimeSpan.FromSeconds(1));
 
             Assert.IsTrue(broadcaster.GetStore().Count() > 10);
         }

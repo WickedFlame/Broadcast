@@ -68,8 +68,7 @@ namespace Broadcast.Test.Api
 
 			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
-			Broadcaster.Server.WaitAll();
-			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 1);
 		}
 
 		[Test]
@@ -83,8 +82,7 @@ namespace Broadcast.Test.Api
 
 			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
-			Broadcaster.Server.WaitAll();
-			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 1);
 		}
 
 		[Test]
@@ -98,8 +96,7 @@ namespace Broadcast.Test.Api
 
 			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
-			Broadcaster.Server.WaitAll();
-			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 1);
 		}
 		
 
@@ -111,12 +108,11 @@ namespace Broadcast.Test.Api
 
 			// execute a static method
 			// serializeable
-			TaskServerClient.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(1));
+			TaskServerClient.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
 
 			Thread.Sleep(TimeSpan.FromSeconds(2));
 
-			Broadcaster.Server.WaitAll();
-			Assert.GreaterOrEqual(2, Broadcaster.Server.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 2);
 		}
 
 		[Test]
@@ -126,12 +122,11 @@ namespace Broadcast.Test.Api
 
 			// execute a local method
 			// serializeable
-			TaskServerClient.Recurring(() => TestMethod(1), TimeSpan.FromSeconds(1));
+			TaskServerClient.Recurring(() => TestMethod(1), TimeSpan.FromSeconds(0.5));
 
 			Thread.Sleep(TimeSpan.FromSeconds(2));
 
-			Broadcaster.Server.WaitAll();
-			Assert.GreaterOrEqual(2, Broadcaster.Server.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 2);
 		}
 
 		[Test]
@@ -141,13 +136,13 @@ namespace Broadcast.Test.Api
 
 			// execute a generic method
 			// serializeable
-			TaskServerClient.Recurring(() => GenericMethod(1), TimeSpan.FromSeconds(1));
+			TaskServerClient.Recurring(() => GenericMethod(1), TimeSpan.FromSeconds(0.5));
 
 			Thread.Sleep(TimeSpan.FromSeconds(2));
 
-			Broadcaster.Server.WaitAll();
-			Assert.GreaterOrEqual(2, Broadcaster.Server.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 2);
 		}
+
 
 
 

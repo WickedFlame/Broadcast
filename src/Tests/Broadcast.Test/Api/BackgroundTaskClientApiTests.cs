@@ -82,10 +82,6 @@ namespace Broadcast.Test.Api
 
 			// send a local action
 			// Nonserializeable
-			//broadcaster.Send(() =>
-			//{
-			//	Trace.WriteLine("test");
-			//});
 			BackgroundTaskClient.Send(() =>
 			{
 				Trace.WriteLine("test");
@@ -109,8 +105,7 @@ namespace Broadcast.Test.Api
 
 			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
-			Broadcaster.Server.WaitAll();
-			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 1);
 		}
 
 		[Test]
@@ -124,8 +119,7 @@ namespace Broadcast.Test.Api
 
 			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
-			Broadcaster.Server.WaitAll();
-			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 1);
 		}
 
 		[Test]
@@ -139,8 +133,7 @@ namespace Broadcast.Test.Api
 
 			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
-			Broadcaster.Server.WaitAll();
-			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 1);
 		}
 
 		[Test]
@@ -154,8 +147,7 @@ namespace Broadcast.Test.Api
 
 			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
-			Broadcaster.Server.WaitAll();
-			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 1);
 		}
 
 		[Test]
@@ -169,8 +161,7 @@ namespace Broadcast.Test.Api
 
 			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
-			Broadcaster.Server.WaitAll();
-			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 1);
 		}
 
 		[Test]
@@ -187,8 +178,7 @@ namespace Broadcast.Test.Api
 
 			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
-			Broadcaster.Server.WaitAll();
-			Assert.AreEqual(1, Broadcaster.Server.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 1);
 		}
 
 
@@ -201,12 +191,11 @@ namespace Broadcast.Test.Api
 
 			// execute a static method
 			// serializeable
-			BackgroundTaskClient.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(1));
+			BackgroundTaskClient.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
 
 			Thread.Sleep(TimeSpan.FromSeconds(2));
 
-			Broadcaster.Server.WaitAll();
-			Assert.GreaterOrEqual(2, Broadcaster.Server.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 2);
 		}
 
 		[Test]
@@ -216,12 +205,11 @@ namespace Broadcast.Test.Api
 
 			// execute a local method
 			// serializeable
-			BackgroundTaskClient.Recurring(() => TestMethod(1), TimeSpan.FromSeconds(1));
+			BackgroundTaskClient.Recurring(() => TestMethod(1), TimeSpan.FromSeconds(0.5));
 
 			Thread.Sleep(TimeSpan.FromSeconds(2));
 
-			Broadcaster.Server.WaitAll();
-			Assert.GreaterOrEqual(2, Broadcaster.Server.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 2);
 		}
 
 		[Test]
@@ -231,12 +219,11 @@ namespace Broadcast.Test.Api
 
 			// execute a generic method
 			// serializeable
-			BackgroundTaskClient.Recurring(() => GenericMethod(1), TimeSpan.FromSeconds(1));
+			BackgroundTaskClient.Recurring(() => GenericMethod(1), TimeSpan.FromSeconds(0.5));
 
 			Thread.Sleep(TimeSpan.FromSeconds(2));
 
-			Broadcaster.Server.WaitAll();
-			Assert.GreaterOrEqual(2, Broadcaster.Server.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 2);
 		}
 
 		[Test]
@@ -246,12 +233,11 @@ namespace Broadcast.Test.Api
 
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>
-			BackgroundTaskClient.Recurring<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(1));
+			BackgroundTaskClient.Recurring<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(0.5));
 
 			Thread.Sleep(TimeSpan.FromSeconds(2));
 
-			Broadcaster.Server.WaitAll();
-			Assert.GreaterOrEqual(2, Broadcaster.Server.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 2);
 		}
 
 		[Test]
@@ -261,12 +247,11 @@ namespace Broadcast.Test.Api
 
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>
-			BackgroundTaskClient.Recurring<TestClass>(() => Returnable(1), TimeSpan.FromSeconds(1));
+			BackgroundTaskClient.Recurring<TestClass>(() => Returnable(1), TimeSpan.FromSeconds(0.5));
 
 			Thread.Sleep(TimeSpan.FromSeconds(2));
 
-			Broadcaster.Server.WaitAll();
-			Assert.GreaterOrEqual(2, Broadcaster.Server.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 2);
 		}
 
 		[Test]
@@ -279,12 +264,11 @@ namespace Broadcast.Test.Api
 			BackgroundTaskClient.Recurring(() =>
 			{
 				Trace.WriteLine("test");
-			}, TimeSpan.FromSeconds(1));
+			}, TimeSpan.FromSeconds(0.5));
 
 			Thread.Sleep(TimeSpan.FromSeconds(2));
 
-			Broadcaster.Server.WaitAll();
-			Assert.GreaterOrEqual(2, Broadcaster.Server.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 2);
 		}
 
 

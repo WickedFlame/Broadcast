@@ -85,12 +85,11 @@ namespace Broadcast.Test.Api
 
 			// execute a static method
 			// serializeable
-			broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(1));
+			broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
 
 			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
-			broadcaster.WaitAll();
-			Assert.AreEqual(1, broadcaster.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 1);
 		}
 
 		[Test]
@@ -100,12 +99,11 @@ namespace Broadcast.Test.Api
 
 			// execute a local method
 			// serializeable
-			broadcaster.Schedule(() => TestMethod(1), TimeSpan.FromSeconds(1));
+			broadcaster.Schedule(() => TestMethod(1), TimeSpan.FromSeconds(0.5));
 
 			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
-			broadcaster.WaitAll();
-			Assert.AreEqual(1, broadcaster.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 1);
 		}
 
 		[Test]
@@ -115,12 +113,11 @@ namespace Broadcast.Test.Api
 
 			// execute a generic method
 			// serializeable
-			broadcaster.Schedule(() => GenericMethod(1), TimeSpan.FromSeconds(1));
+			broadcaster.Schedule(() => GenericMethod(1), TimeSpan.FromSeconds(0.5));
 
 			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
-			broadcaster.WaitAll();
-			Assert.AreEqual(1, broadcaster.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 1);
 		}
 
 		[Test]
@@ -130,12 +127,11 @@ namespace Broadcast.Test.Api
 
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>
-			broadcaster.Schedule<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(1));
+			broadcaster.Schedule<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(0.5));
 
 			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
-			broadcaster.WaitAll();
-			Assert.AreEqual(1, broadcaster.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 1);
 		}
 
 		[Test]
@@ -145,12 +141,11 @@ namespace Broadcast.Test.Api
 
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>
-			broadcaster.Schedule<TestClass>(() => Returnable(1), TimeSpan.FromSeconds(1));
+			broadcaster.Schedule<TestClass>(() => Returnable(1), TimeSpan.FromSeconds(0.5));
 
 			Thread.Sleep(TimeSpan.FromSeconds(1.5));
 
-			broadcaster.WaitAll();
-			Assert.AreEqual(1, broadcaster.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 1);
 		}
 
 
@@ -167,12 +162,11 @@ namespace Broadcast.Test.Api
 
 			// execute a static method
 			// serializeable
-			broadcaster.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(1));
+			broadcaster.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
 
 			Thread.Sleep(TimeSpan.FromSeconds(2));
 
-			broadcaster.WaitAll();
-			Assert.GreaterOrEqual(2, broadcaster.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 2);
 		}
 
 		[Test]
@@ -182,12 +176,11 @@ namespace Broadcast.Test.Api
 
 			// execute a local method
 			// serializeable
-			broadcaster.Recurring(() => TestMethod(1), TimeSpan.FromSeconds(1));
+			broadcaster.Recurring(() => TestMethod(1), TimeSpan.FromSeconds(0.5));
 
 			Thread.Sleep(TimeSpan.FromSeconds(2));
 
-			broadcaster.WaitAll();
-			Assert.GreaterOrEqual(2, broadcaster.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 2);
 		}
 
 		[Test]
@@ -197,12 +190,11 @@ namespace Broadcast.Test.Api
 
 			// execute a generic method
 			// serializeable
-			broadcaster.Recurring(() => GenericMethod(1), TimeSpan.FromSeconds(1));
+			broadcaster.Recurring(() => GenericMethod(1), TimeSpan.FromSeconds(0.5));
 
 			Thread.Sleep(TimeSpan.FromSeconds(2));
 
-			broadcaster.WaitAll();
-			Assert.GreaterOrEqual(2, broadcaster.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 2);
 		}
 
 		[Test]
@@ -212,12 +204,11 @@ namespace Broadcast.Test.Api
 
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>
-			broadcaster.Recurring<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(1));
+			broadcaster.Recurring<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(0.5));
 
 			Thread.Sleep(TimeSpan.FromSeconds(2));
 
-			broadcaster.WaitAll();
-			Assert.GreaterOrEqual(2, broadcaster.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 2);
 		}
 
 		[Test]
@@ -227,12 +218,11 @@ namespace Broadcast.Test.Api
 
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>
-			broadcaster.Recurring<TestClass>(() => Returnable(1), TimeSpan.FromSeconds(1));
+			broadcaster.Recurring<TestClass>(() => Returnable(1), TimeSpan.FromSeconds(0.5));
 
 			Thread.Sleep(TimeSpan.FromSeconds(2));
 
-			broadcaster.WaitAll();
-			Assert.GreaterOrEqual(2, broadcaster.Context.ProcessedTasks.Count());
+			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 2);
 		}
 
 
