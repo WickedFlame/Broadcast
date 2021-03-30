@@ -71,7 +71,7 @@ build:
 test:
   # assemblies to test - optional
   assemblies:
-    - '**\Broadcast.Test.dll'
+    - '**\*.Test.dll'
 
 #  categories:
 #    - UI

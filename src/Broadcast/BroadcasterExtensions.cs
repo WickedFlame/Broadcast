@@ -7,6 +7,9 @@ using Broadcast.EventSourcing;
 
 namespace Broadcast
 {
+	/// <summary>
+	/// Extensions for Broadcaster
+	/// </summary>
 	public static class BroadcasterExtensions
 	{
 		/// <summary>
@@ -32,6 +35,12 @@ namespace Broadcast
 			broadcaster.Process(task);
 		}
 
+		/// <summary>
+		/// Schedules a task
+		/// </summary>
+		/// <param name="broadcaster"></param>
+		/// <param name="task"></param>
+		/// <param name="time"></param>
 		public static void Schedule(this IBroadcaster broadcaster, ITask task, TimeSpan time)
 		{
 			broadcaster.Scheduler.Enqueue(() => broadcaster.Process(task), time);
@@ -65,7 +74,12 @@ namespace Broadcast
 
 
 
-
+		/// <summary>
+		/// Create a recurring task
+		/// </summary>
+		/// <param name="broadcaster"></param>
+		/// <param name="task"></param>
+		/// <param name="time"></param>
 		public static void Recurring(this IBroadcaster broadcaster, ITask task, TimeSpan time)
 		{
 			broadcaster.Scheduler.Enqueue(() =>
@@ -82,9 +96,10 @@ namespace Broadcast
 
 
 		/// <summary>
-		/// Creates and schedules a new task that will recurr at the given interval
+		/// Create a recurring task
 		/// </summary>
-		/// <param name="task">The task to execute</param>
+		/// <param name="broadcaster"></param>
+		/// <param name="expression">The task to execute</param>
 		/// <param name="time">The interval time to execute the task at</param>
 		public static void Recurring(this IBroadcaster broadcaster, Expression<Action> expression, TimeSpan time)
 		{
@@ -98,6 +113,7 @@ namespace Broadcast
 		/// Schedules a recurring INotification task that is sent to the processor. The INotification will be passed to all registered Handlers of the same type
 		/// </summary>
 		/// <typeparam name="T">The notification type</typeparam>
+		/// <param name="broadcaster"></param>
 		/// <param name="expression">The delegate returning the notification that will be processed and passed to the handlers</param>
 		/// <param name="time">The interval time to execute the task at</param>
 		public static void Recurring<T>(this IBroadcaster broadcaster, Expression<Func<T>> expression, TimeSpan time) where T : INotification
