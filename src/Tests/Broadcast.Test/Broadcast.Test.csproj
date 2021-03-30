@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -15,6 +15,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Broadcast\Broadcast.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Processing\" />
   </ItemGroup>
 
 </Project>

@@ -50,5 +50,19 @@ namespace Broadcast.Test
 
             Assert.AreSame(broadcaster.GetStore(), broadcaster.Context.Store);
         }
-    }
+
+        [Test]
+        public void BroadcasterCustom_Open_Multiple()
+        {
+	        var context = new ProcessorContext();
+
+	        Assert.AreSame(context.Open(), context.Open());
+        }
+
+        [Test]
+        public void BroadcasterCustom_Open_DifferentContext()
+        {
+	        Assert.AreNotSame(new ProcessorContext().Open(), new ProcessorContext().Open());
+        }
+	}
 }

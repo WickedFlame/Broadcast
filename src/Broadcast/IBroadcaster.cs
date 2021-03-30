@@ -11,12 +11,12 @@ namespace Broadcast
         /// <summary>
         /// Gets the ProcessorContext that containes all information create a TaskProcessor
         /// </summary>
-        IProcessorContext Context { get; }
+        IProcessorContext Context { get; set; }
 
 		/// <summary>
 		/// Gets the Scheduler
 		/// </summary>
-		IScheduler Scheduler { get; }
+		IScheduler Scheduler { get; set; }
 
 		/// <summary>
 		/// Process the task

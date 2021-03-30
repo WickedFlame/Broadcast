@@ -89,7 +89,8 @@ namespace Broadcast
                 }
 
                 return _scheduler;
-            }
+			}
+			set => _scheduler = value;
         }
 
 		/// <summary>
