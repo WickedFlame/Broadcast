@@ -13,7 +13,7 @@ namespace Broadcast.Composition
 	public static class TaskFactory
 	{
 		/// <summary>
-		/// Creates a DelegateTask based on the Action delegate
+		/// Creates a task from an action
 		/// </summary>
 		/// <param name="task"></param>
 		/// <returns></returns>
@@ -29,10 +29,14 @@ namespace Broadcast.Composition
 				Task = task,
 				State = TaskState.New
 			};
-
-			//return CreateTaskFromExpression(task);
 		}
 
+		/// <summary>
+		/// Creates a task from a func
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="task"></param>
+		/// <returns></returns>
 		public static ITask CreateTask<T>(Func<T> task)
 		{
 			if (task == null)
@@ -60,14 +64,6 @@ namespace Broadcast.Composition
 				throw new ArgumentNullException(nameof(task));
 			}
 
-			//var task = CreateTaskFromExpression(notification);
-
-			//return new DelegateTask<T>(task.Type, task.Method, task.Args)
-			//{
-			//	//Task = notification,
-			//	State = TaskState.New
-			//};
-
 			return new ExpressionTask<T>
 			{
 				Task = task,
@@ -75,34 +71,11 @@ namespace Broadcast.Composition
 			};
 		}
 
-		//public static DelegateTask<T> CreateTask<T>(Func<T> process)
-		//{
-		//	if (process == null)
-		//	{
-		//		throw new ArgumentNullException(nameof(process));
-		//	}
-
-		//	return new DelegateTask<T>
-		//	{
-		//		Task = process,
-		//		State = TaskState.New
-		//	};
-		//}
-
-
-
-
-
-
-		public static ITask CreateTaskFromExpression(Expression<Action> expression)
-		{
-			return CreateTask(expression);
-		}
-
-
-
-
-
+		/// <summary>
+		/// Create a task from a labdaexpression
+		/// </summary>
+		/// <param name="methodCall"></param>
+		/// <returns></returns>
 		public static ITask CreateTask(LambdaExpression methodCall)
 		{
 			if (methodCall == null)
