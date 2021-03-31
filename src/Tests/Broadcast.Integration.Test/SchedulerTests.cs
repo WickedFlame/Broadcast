@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Broadcast.Integration.Test
 {
 	[SingleThreaded]
-	//[Explicit]
+	[Explicit]
 	[Category("Integration")]
 	public class SchedulerTests
     {

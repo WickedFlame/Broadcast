@@ -255,18 +255,6 @@ namespace Broadcast.Test
         }
 		
         [Test]
-		[Ignore("deprecated?")]
-        public void Broadcaster_ProcessAsync_WithReturn()
-        {
-            //var returner = new AsyncReturner();
-
-            //var broadcaster = new Broadcaster();
-            //var number = await broadcaster.ProcessAsync<int>(() => returner.GetValue(1));
-
-            //Assert.That(number == 1);
-        }
-
-        [Test]
         public void Broadcaster_Schedule()
         {
             var broadcaster = new Broadcaster();

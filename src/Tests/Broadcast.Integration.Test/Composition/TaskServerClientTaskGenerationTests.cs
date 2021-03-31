@@ -11,7 +11,7 @@ using NUnit.Framework;
 namespace Broadcast.Integration.Test.Composition
 {
 	[SingleThreaded]
-	//[Explicit]
+	[Explicit]
 	[Category("Integration")]
 	public class TaskServerClientTaskGenerationTests
 	{
