@@ -8,8 +8,11 @@ using System.Threading.Tasks;
 using Broadcast.EventSourcing;
 using NUnit.Framework;
 
-namespace Broadcast.Test.Composition
+namespace Broadcast.Integration.Test.Composition
 {
+	[SingleThreaded]
+	//[Explicit]
+	[Category("Integration")]
 	public class TaskServerClientTaskGenerationTests
 	{
 		[Test]
