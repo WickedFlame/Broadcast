@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Broadcast.Test
+namespace Broadcast.Integration.Test
 {
     [TestFixture]
     public class RecurringTests
