@@ -74,6 +74,7 @@ namespace Broadcast.Processing
 		public void Process(ITask task)
         {
 	        _queue.Enqueue(task);
+	        _store.SetState(task, TaskState.Queued);
 
 	        // check if a thread is allready processing the queue
 	        if (_inProcess)
@@ -104,6 +105,8 @@ namespace Broadcast.Processing
 
 		        while (_queue.TryDequeue(out var task))
 		        {
+			        _store.SetState(task, TaskState.Dequeued);
+
 			        try
 			        {
 				        //TODO: Create own TaskScheduler and store in options

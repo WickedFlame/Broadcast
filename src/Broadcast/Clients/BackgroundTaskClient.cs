@@ -4,7 +4,7 @@ using System;
 namespace Broadcast
 {
 	/// <summary>
-	/// Executes Tasks as backgroundtasks
+	/// Executes Tasks as backgroundtasks. These are only executed on the local server instance and are not shared on the cluster for execution
 	/// </summary>
 	public class BackgroundTaskClient
 	{

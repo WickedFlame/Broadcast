@@ -9,7 +9,7 @@ namespace Broadcast.EventSourcing
     /// </summary>
     public class TaskStore : ITaskStore, IEnumerable<ITask>
     {
-        private object _lockHandle = new object();
+        private readonly object _lockHandle = new object();
 
         readonly List<ITask> _store;
 
@@ -31,29 +31,22 @@ namespace Broadcast.EventSourcing
             {
 	            _store.Add(task);
             }
-
-            task.State = TaskState.Queued;
         }
 
         /// <summary>
-        /// Sets tha task to InProcess mode
+        /// Set the state of the task
         /// </summary>
         /// <param name="task"></param>
-        public void SetInprocess(ITask task)
+        /// <param name="state"></param>
+        public void SetState(ITask task, TaskState state)
         {
-            task.State = TaskState.InProcess;
+	        task.State = state;
         }
 
-        /// <summary>
-        /// Sets the task to Processed mode and removes it from the process queue
-        /// </summary>
-        /// <param name="task"></param>
-        public void SetProcessed(ITask task)
-        {
-            task.CloseTask();
-            task.State = TaskState.Processed;
-        }
-
+		/// <summary>
+		/// Gets the enumerator
+		/// </summary>
+		/// <returns></returns>
         public IEnumerator<ITask> GetEnumerator()
         {
             return _store.GetEnumerator();

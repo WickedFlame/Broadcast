@@ -14,15 +14,10 @@ namespace Broadcast.EventSourcing
         void Add(ITask task);
 
 		/// <summary>
-		/// Sets tha task to InProcess mode
+		/// Set the state of the task
 		/// </summary>
 		/// <param name="task"></param>
-		void SetInprocess(ITask task);
-
-        /// <summary>
-        /// Sets the task to Processed mode and removes it from the process queue
-        /// </summary>
-        /// <param name="task"></param>
-        void SetProcessed(ITask task);
+		/// <param name="state"></param>
+        void SetState(ITask task, TaskState state);
     }
 }

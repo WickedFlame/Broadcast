@@ -5,7 +5,8 @@ namespace Broadcast.EventSourcing
     {
         New,
         Queued,
+        Dequeued,
         InProcess,
-        Processed,
+        Processed
     }
 }
