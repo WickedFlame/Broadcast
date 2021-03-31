@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Broadcast.Processing
@@ -21,11 +22,6 @@ namespace Broadcast.Processing
 		/// <param name="task"></param>
 		public void Add(Task task)
 		{
-			if (task == null)
-			{
-				throw new Exception();
-			}
-
 			lock(_taskList)
 			{
 				_taskList.Add(task);
@@ -62,7 +58,7 @@ namespace Broadcast.Processing
 			{
 				Trace.WriteLine($"Task count before waitall: {Count()}");
 
-				Task.WaitAll(GetTaskArray());
+				Task.WaitAll(GetTaskArray(), -1, CancellationToken.None);
 
 				Trace.WriteLine($"Task count after waitall: {Count()}");
 			}
