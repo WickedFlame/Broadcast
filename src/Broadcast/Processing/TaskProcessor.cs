@@ -17,27 +17,19 @@ namespace Broadcast.Processing
 	    private bool _inProcess = false;
 
 		private readonly ITaskQueue _queue;
-		private readonly ITaskStore _store;
         private readonly INotificationHandlerStore _handlers;
         private readonly ThreadList _threadList = new ThreadList();
 
 		/// <summary>
 		/// Creates a new TaskProcessor
 		/// </summary>
-		/// <param name="store"></param>
 		/// <param name="handlers"></param>
-        public TaskProcessor(ITaskStore store, INotificationHandlerStore handlers)
+        public TaskProcessor(INotificationHandlerStore handlers)
         {
-            _store = store;
             _handlers = handlers;
 
             _queue = new TaskQueue();
         }
-
-		/// <summary>
-		/// Gets the TaskStore
-		/// </summary>
-        public ITaskStore Store => _store;
 
 		/// <summary>
 		/// Gets the TaskQueue
@@ -74,7 +66,7 @@ namespace Broadcast.Processing
 		public void Process(ITask task)
         {
 	        _queue.Enqueue(task);
-	        _store.SetState(task, TaskState.Queued);
+	        task.SetState(TaskState.Queued);
 
 	        // check if a thread is allready processing the queue
 	        if (_inProcess)
@@ -86,10 +78,6 @@ namespace Broadcast.Processing
 			var thread = Task.Run(() => ProcessTasks());
 			_threadList.Add(thread);
 		}
-
-
-
-
 
         private void ProcessTasks()
         {
@@ -105,7 +93,7 @@ namespace Broadcast.Processing
 
 		        while (_queue.TryDequeue(out var task))
 		        {
-			        _store.SetState(task, TaskState.Dequeued);
+			        task.SetState(TaskState.Dequeued);
 
 			        try
 			        {
@@ -126,7 +114,7 @@ namespace Broadcast.Processing
 
 		private string ProcessItem(ITask task)
         {
-            Store.SetInprocess(task);
+	        task.SetInprocess();
 
             try
             {
@@ -158,7 +146,7 @@ namespace Broadcast.Processing
                 System.Diagnostics.Debug.WriteLine(ex.StackTrace);
             }
 
-            Store.SetProcessed(task);
+            task.SetProcessed();
             return task.Id;
         }
 		
