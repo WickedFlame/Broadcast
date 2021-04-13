@@ -11,14 +11,14 @@ namespace Broadcast.EventSourcing
     {
         private readonly object _lockHandle = new object();
 
-        readonly List<ITask> _store;
+        readonly ITaskStore _store;
 
 		/// <summary>
 		/// Creates a new TaskStore
 		/// </summary>
         public TaskStore()
         {
-            _store = new List<ITask>();
+            _store = new InmemoryStorage();
         }
 		
         /// <summary>
@@ -31,16 +31,6 @@ namespace Broadcast.EventSourcing
             {
 	            _store.Add(task);
             }
-        }
-
-        /// <summary>
-        /// Set the state of the task
-        /// </summary>
-        /// <param name="task"></param>
-        /// <param name="state"></param>
-        public void SetState(ITask task, TaskState state)
-        {
-	        task.State = state;
         }
 
 		/// <summary>

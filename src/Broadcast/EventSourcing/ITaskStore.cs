@@ -13,11 +13,11 @@ namespace Broadcast.EventSourcing
         /// <param name="task"></param>
         void Add(ITask task);
 
-		/// <summary>
-		/// Set the state of the task
-		/// </summary>
-		/// <param name="task"></param>
-		/// <param name="state"></param>
-        void SetState(ITask task, TaskState state);
+		///// <summary>
+		///// Set the state of the task
+		///// </summary>
+		///// <param name="task"></param>
+		///// <param name="state"></param>
+  //      void SetState(ITask task, TaskState state);
     }
 }
