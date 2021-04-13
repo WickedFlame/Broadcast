@@ -21,7 +21,6 @@ namespace Broadcast.EventSourcing
 		/// <param name="task"></param>
 		public static void SetProcessed(this ITask task)
 		{
-			task.CloseTask();
 			task.SetState(TaskState.Processed);
 		}
 

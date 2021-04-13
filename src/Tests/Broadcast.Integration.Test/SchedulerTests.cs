@@ -32,7 +32,7 @@ namespace Broadcast.Integration.Test
 
             Task.Delay(1000).Wait();
 
-            Assert.IsFalse(scheduler.Queue.Any());
+            Assert.IsFalse(scheduler.GetActiveTasks().Any());
         }
 
         [Test]

@@ -99,8 +99,6 @@ namespace Broadcast
 		/// <param name="task"></param>
         public void Process(ITask task)
         {
-	        Context.Store.Add(task);
-
 			using (var processor = Context.Open())
 			{
 				processor.Process(task);

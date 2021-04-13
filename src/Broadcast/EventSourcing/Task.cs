@@ -14,7 +14,7 @@ namespace Broadcast.EventSourcing
 
 		object Invoke(TaskInvocation invocation);
 
-		void CloseTask();
+		ITask Clone();
 	}
 
 	public interface ITask<T> : ITask
@@ -24,7 +24,7 @@ namespace Broadcast.EventSourcing
 
     public abstract class BroadcastTask : ITask
     {
-	    public BroadcastTask()
+	    protected BroadcastTask()
 	    {
 		    Id = Guid.NewGuid().ToString();
 	    }
@@ -35,7 +35,7 @@ namespace Broadcast.EventSourcing
 
 		public abstract object Invoke(TaskInvocation invocation);
 
-		public abstract void CloseTask();
+		public abstract ITask Clone();
 
 		protected static void Validate(Type type, string typeParameterName, MethodInfo method, string methodParameterName, int argumentCount, string argumentParameterName)
 		{
@@ -104,11 +104,15 @@ namespace Broadcast.EventSourcing
 			return Id;
 		}
 
-		public override void CloseTask()
-	    {
-			Task = null;
-	    }
-    }
+		public override ITask Clone()
+		{
+			return new ActionTask
+			{
+				State = TaskState.New,
+				Task = Task
+			};
+		}
+	}
 
     public class DelegateTask<T> : BroadcastTask, ITask<T>
     {
@@ -119,11 +123,15 @@ namespace Broadcast.EventSourcing
 			return Task.Invoke();
 		}
 
-		public override void CloseTask()
-	    {
-		    //Task = null;
-	    }
-    }
+		public override ITask Clone()
+		{
+			return new DelegateTask<T>
+			{
+				State = TaskState.New,
+				Task = Task
+			};
+		}
+	}
 
 	public class ExpressionTask<T> : BroadcastTask, ITask<T>
     {
@@ -134,11 +142,15 @@ namespace Broadcast.EventSourcing
 			return Task.Compile().Invoke();
 		}
 
-		public override void CloseTask()
-        {
-            //Task = null;
-        }
-    }
+		public override ITask Clone()
+		{
+			return new ExpressionTask<T>
+			{
+				State = TaskState.New,
+				Task = Task
+			};
+		}
+	}
 
     public class ExpressionTask : BroadcastTask
     {
@@ -182,9 +194,12 @@ namespace Broadcast.EventSourcing
 			return invocation.InvokeTask(this);
 		}
 
-		public override void CloseTask()
-	    {
-		    //throw new NotImplementedException();
-	    }
-    }
+		public override ITask Clone()
+		{
+			return new ExpressionTask(Type, Method, Args)
+			{
+				State = TaskState.New
+			};
+		}
+	}
 }

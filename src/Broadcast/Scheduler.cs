@@ -22,7 +22,7 @@ namespace Broadcast
         /// <summary>
         /// Gets the Queue of scheduled tasks
         /// </summary>
-        IEnumerable<SchedulerTask> Queue { get; }
+        IEnumerable<SchedulerTask> GetActiveTasks();
 
         /// <summary>
         /// Enqueues and schedules a new task
@@ -84,16 +84,13 @@ namespace Broadcast
         /// <summary>
         /// Gets the Queue of scheduled tasks
         /// </summary>
-        public IEnumerable<SchedulerTask> Queue
-        {
-            get
-            {
-                lock (_lockHandle)
-                {
-                    return _scheduleQueue.ToList();
-                }
-            }
-        }
+        public IEnumerable<SchedulerTask> GetActiveTasks()
+		{
+			lock (_lockHandle)
+			{
+				return _scheduleQueue.ToList();
+			}
+		}
 
         /// <summary>
         /// Enqueues and schedules a new task
@@ -124,20 +121,17 @@ namespace Broadcast
         {
             while (_isRunning && !_token.IsCancellationRequested)
             {
-                // create a copy of the list
-                IEnumerable<SchedulerTask> tasks = scheduler.Queue;
                 var time = scheduler.Elapsed;
-                
 
-                foreach (var task in tasks)
+                foreach (var task in scheduler.GetActiveTasks())
                 {
                     if (time > task.Time)
                     {
-                        // execute task
-                        task.Task.Invoke();
+	                    // remove task
+	                    scheduler.Dequeue(task);
 
-                        // remove task
-                        scheduler.Dequeue(task);
+						// execute task
+						task.Task.Invoke();
                     }
                 }
             }

@@ -66,7 +66,7 @@ namespace Broadcast
         {
 	        if (_processor == null)
 	        {
-		        _processor = new TaskProcessor(Store, _notificationHandlers);
+		        _processor = new TaskProcessor(_notificationHandlers);
 	        }
 
 	        return _processor;

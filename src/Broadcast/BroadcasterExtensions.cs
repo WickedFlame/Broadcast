@@ -12,6 +12,12 @@ namespace Broadcast
 	/// </summary>
 	public static class BroadcasterExtensions
 	{
+		public static void Send(this IBroadcaster broadcaster, ITask task)
+		{
+			broadcaster.GetStore().Add(task);
+			broadcaster.Process(task);
+		}
+
 		/// <summary>
 		/// Send a delegate to the task processor
 		/// </summary>
@@ -20,7 +26,7 @@ namespace Broadcast
 		public static void Send(this IBroadcaster broadcaster, Expression<Action> action)
 		{
 			var task = TaskFactory.CreateTask(action);
-			broadcaster.Process(task);
+			broadcaster.Send(task);
 		}
 
 		/// <summary>
@@ -32,7 +38,7 @@ namespace Broadcast
 		public static void Send<T>(this IBroadcaster broadcaster, Expression<Func<T>> notification) where T : INotification
 		{
 			var task = TaskFactory.CreateNotifiableTask(notification);
-			broadcaster.Process(task);
+			broadcaster.Send(task);
 		}
 
 		/// <summary>
@@ -43,12 +49,36 @@ namespace Broadcast
 		/// <param name="time"></param>
 		public static void Schedule(this IBroadcaster broadcaster, ITask task, TimeSpan time)
 		{
+			broadcaster.GetStore().Add(task);
 			broadcaster.Scheduler.Enqueue(() => broadcaster.Process(task), time);
 		}
 
 		/// <summary>
+		/// Create a recurring task
+		/// </summary>
+		/// <param name="broadcaster"></param>
+		/// <param name="task"></param>
+		/// <param name="time"></param>
+		public static void Recurring(this IBroadcaster broadcaster, ITask task, TimeSpan time)
+		{
+			broadcaster.GetStore().Add(task);
+			broadcaster.Scheduler.Enqueue(() =>
+			{
+				// execute the task
+				broadcaster.Process(task);
+
+				// reschedule the task
+				broadcaster.Recurring(task.Clone(), time);
+			}, time);
+		}
+
+
+
+
+		/// <summary>
 		/// Schedules a new task. The task will be executed at the time passed
 		/// </summary>
+		/// <param name="broadcaster"></param>
 		/// <param name="expression">The task to execute</param>
 		/// <param name="time">The time to execute the task at</param>
 		public static void Schedule(this IBroadcaster broadcaster, Expression<Action> expression, TimeSpan time)
@@ -68,31 +98,6 @@ namespace Broadcast
 			var task = TaskFactory.CreateNotifiableTask(expression);
 			broadcaster.Schedule(task, time);
 		}
-
-
-
-
-
-
-		/// <summary>
-		/// Create a recurring task
-		/// </summary>
-		/// <param name="broadcaster"></param>
-		/// <param name="task"></param>
-		/// <param name="time"></param>
-		public static void Recurring(this IBroadcaster broadcaster, ITask task, TimeSpan time)
-		{
-			broadcaster.Scheduler.Enqueue(() =>
-			{
-				// execute the task
-				broadcaster.Process(task);
-
-				// reschedule the task
-				broadcaster.Recurring(task, time);
-			}, time);
-		}
-
-
 
 
 		/// <summary>

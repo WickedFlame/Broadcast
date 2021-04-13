@@ -46,7 +46,7 @@ namespace Broadcast
 		public static string Send(Action expression)
 		{
 			var task = TaskFactory.CreateTask(expression);
-			Broadcaster.Server.Process(task);
+			Broadcaster.Server.Send(task);
 
 			return task.Id;
 		}
@@ -91,7 +91,7 @@ namespace Broadcast
 		public static string Send<T>(Func<T> expression)
 		{
 			var task = TaskFactory.CreateTask(expression);
-			Broadcaster.Server.Process(task);
+			Broadcaster.Server.Send(task);
 
 			return task.Id;
 		}
