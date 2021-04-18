@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -196,7 +197,7 @@ namespace Broadcast.EventSourcing
 
 		public override ITask Clone()
 		{
-			return new ExpressionTask(Type, Method, Args)
+			return new ExpressionTask(Type, Method, Args.ToArray())
 			{
 				State = TaskState.New
 			};

@@ -75,7 +75,7 @@ namespace Broadcast.Processing
 	        }
 
 			// start new background thread to process all queued tasks
-			var thread = Task.Run(() => ProcessTasks());
+			var thread = Task.Factory.StartNew(() => ProcessTasks(), CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
 			_threadList.Add(thread);
 		}
 
