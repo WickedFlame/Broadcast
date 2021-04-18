@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Broadcast.Composition;
 
 namespace Broadcast.Console.Test
 {
@@ -16,7 +17,8 @@ namespace Broadcast.Console.Test
             System.Console.WriteLine("   memory");
             System.Console.WriteLine("   schedule");
             System.Console.WriteLine("   recurring");
-            System.Console.WriteLine("   multy");
+            System.Console.WriteLine("   recurring2");
+			System.Console.WriteLine("   multy");
 
             var input = System.Console.ReadLine();
 
@@ -57,8 +59,8 @@ namespace Broadcast.Console.Test
                     case "recurring":
                         using (var scheduler = new Broadcaster())
                         {
-                            scheduler.Recurring(() => System.Console.WriteLine("   Recurring message 5 sec"), TimeSpan.FromSeconds(5));
-                            scheduler.Recurring(() => System.Console.WriteLine("   Recurring message 3 sec"), TimeSpan.FromSeconds(3));
+                            scheduler.Recurring(() => System.Console.WriteLine("   Recurring Expression 5 sec"), TimeSpan.FromSeconds(5));
+                            scheduler.Recurring(() => System.Console.WriteLine("   Recurring Expression 3 sec"), TimeSpan.FromSeconds(3));
 
                             System.Console.WriteLine($"Starting recurring with {Scheduler.SchedulerCount} schedulers");
                             scheduler.Send(() => System.Console.WriteLine("Direct message"));
@@ -66,8 +68,19 @@ namespace Broadcast.Console.Test
                             System.Console.ReadLine();
                         }
                         break;
+                    case "recurring2":
+	                    using (var scheduler = new Broadcaster())
+	                    {
+							scheduler.Recurring(TaskFactory.CreateTask(() => System.Console.WriteLine("   Recurring Action 5 sec")), TimeSpan.FromSeconds(5));
+							scheduler.Recurring(TaskFactory.CreateTask(() => System.Console.WriteLine("   Recurring Action 3 sec")), TimeSpan.FromSeconds(3));
 
-                    case "multy":
+							System.Console.WriteLine($"Starting recurring with {Scheduler.SchedulerCount} schedulers");
+
+		                    System.Console.ReadLine();
+	                    }
+	                    break;
+
+					case "multy":
                         using (var scheduler = new Broadcaster())
                         {
                             scheduler.Recurring(() => System.Console.WriteLine("   Recurring message 5 sec"), TimeSpan.FromSeconds(5));
