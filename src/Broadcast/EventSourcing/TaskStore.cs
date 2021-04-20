@@ -1,23 +1,28 @@
-﻿using System.Collections;
+﻿using Broadcast.Configuration;
+using Broadcast.Storage;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Broadcast.EventSourcing
 {
-    /// <summary>
-    /// Represents a store conatining all Tasks
-    /// </summary>
-    public class TaskStore : ITaskStore, IEnumerable<ITask>
+	/// <summary>
+	/// Represents a store conatining all Tasks
+	/// </summary>
+	public class TaskStore : ITaskStore, IEnumerable<ITask>
     {
         private readonly object _lockHandle = new object();
 
-        readonly ITaskStore _store;
+        private readonly IStorage _store;
+        private readonly Options _options;
 
-		/// <summary>
+        /// <summary>
 		/// Creates a new TaskStore
 		/// </summary>
-        public TaskStore()
+		/// <param name="options"></param>
+        public TaskStore(Options options)
         {
+			_options = options;
+
             _store = new InmemoryStorage();
         }
 		
@@ -29,7 +34,7 @@ namespace Broadcast.EventSourcing
         {
             lock (_lockHandle)
             {
-	            _store.Add(task);
+	            _store.AddToList(new StorageKey("task", _options.ServerName), task);
             }
         }
 
@@ -39,12 +44,15 @@ namespace Broadcast.EventSourcing
 		/// <returns></returns>
         public IEnumerator<ITask> GetEnumerator()
         {
-            return _store.GetEnumerator();
+			lock(_lockHandle)
+			{
+				return _store.GetList<ITask>(new StorageKey("task", _options.ServerName)).GetEnumerator();
+			}
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return _store.GetEnumerator();
+            return GetEnumerator();
         }
     }
 }

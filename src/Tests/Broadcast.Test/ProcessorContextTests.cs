@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Broadcast.Configuration;
 
 namespace Broadcast.Test
 {
@@ -19,7 +20,7 @@ namespace Broadcast.Test
         [Test]
         public void DefaultProcessorContextTest()
         {
-            var context = new ProcessorContext();
+            var context = new ProcessorContext(new TaskStore(new Options()));
 
             Assert.IsNotNull(context.Store);
         }
@@ -27,7 +28,7 @@ namespace Broadcast.Test
         [Test]
         public void ProcessorContextWithCustomModeTest()
         {
-            var context = new ProcessorContext();
+            var context = new ProcessorContext(new TaskStore(new Options()));
 
             Assert.IsNotNull(context.Store);
         }
@@ -35,7 +36,7 @@ namespace Broadcast.Test
         [Test]
         public void ProcessorContextWithCustomAndDefaultModeTest()
         {
-            var context = new ProcessorContext();
+            var context = new ProcessorContext(new TaskStore(new Options()));
 
             Assert.IsNotNull(context.Store);
         }
@@ -45,7 +46,7 @@ namespace Broadcast.Test
         {
 	        var broadcaster = new Broadcaster
 	        {
-		        Context = new ProcessorContext(new TaskStore())
+		        Context = new ProcessorContext(new TaskStore(new Options()))
 	        };
 
             Assert.AreSame(broadcaster.GetStore(), broadcaster.Context.Store);
@@ -54,7 +55,7 @@ namespace Broadcast.Test
         [Test]
         public void BroadcasterCustom_Open_Multiple()
         {
-	        var context = new ProcessorContext();
+	        var context = new ProcessorContext(new TaskStore(new Options()));
 
 	        Assert.AreSame(context.Open(), context.Open());
         }
@@ -62,7 +63,7 @@ namespace Broadcast.Test
         [Test]
         public void BroadcasterCustom_Open_DifferentContext()
         {
-	        Assert.AreNotSame(new ProcessorContext().Open(), new ProcessorContext().Open());
+	        Assert.AreNotSame(new ProcessorContext(new TaskStore(new Options())).Open(), new ProcessorContext(new TaskStore(new Options())).Open());
         }
 	}
 }

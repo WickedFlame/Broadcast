@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Broadcast.Configuration;
 using Broadcast.EventSourcing;
 using NUnit.Framework;
 
@@ -57,7 +58,7 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void Broadcaster_Api_Send_Notification_Class()
 		{
-			var broadcaster = new Broadcaster {Context = new ProcessorContext(new TaskStore()) };
+			var broadcaster = new Broadcaster {Context = new ProcessorContext(new TaskStore(new Options())) };
 
 			// send a event to a handler
 			// serializeable Func<TestClass>

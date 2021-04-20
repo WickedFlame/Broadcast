@@ -68,7 +68,7 @@ namespace Broadcast
             {
                 if (_context == null)
                 {
-                    _context = new ProcessorContext();
+                    _context = new ProcessorContext(new TaskStore(_options));
                 }
 
                 return _context;

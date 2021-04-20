@@ -17,14 +17,6 @@ namespace Broadcast
 		/// <summary>
 		/// Creates a new instance of the ProcessorContext
 		/// </summary>
-		public ProcessorContext()
-            : this(new TaskStore())
-        {
-        }
-
-		/// <summary>
-		/// Creates a new instance of the ProcessorContext
-		/// </summary>
 		/// <param name="store"></param>
         public ProcessorContext(ITaskStore store)
         {
