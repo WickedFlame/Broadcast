@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Broadcast.EventSourcing;
 using NUnit.Framework;
 
 namespace Broadcast.Integration.Test.Api
@@ -14,11 +15,23 @@ namespace Broadcast.Integration.Test.Api
 	[Category("Integration")]
 	public class BackgroundTaskClientApiTests
 	{
+		[SetUp]
+		public void Setup()
+		{
+			TaskStore.Default.Clear();
+			Broadcaster.Setup(s => { });
+		}
+
+		[OneTimeTearDown]
+		public void TearDown()
+		{
+			TaskStore.Default.Clear();
+			Broadcaster.Setup(s => { });
+		}
+
 		[Test]
 		public void BackgroundTaskClient_Api_Send_StaticTrace()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a static method
 			// serializeable
 			BackgroundTaskClient.Send(() => Trace.WriteLine("test"));
@@ -30,8 +43,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void BackgroundTaskClient_Api_Send_Method()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a local method
 			// serializeable
 			BackgroundTaskClient.Send(() => TestMethod(1));
@@ -43,8 +54,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void BackgroundTaskClient_Api_Send_GenericMethod()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a generic method
 			// serializeable
 			BackgroundTaskClient.Send(() => GenericMethod(1));
@@ -56,8 +65,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void BackgroundTaskClient_Api_Send_Notification_Class()
 		{
-			Broadcaster.Setup(s => { });
-
 			// send a event to a handler
 			// serializeable Func<TestClass>
 			BackgroundTaskClient.Send<TestClass>(() => new TestClass(1));
@@ -69,8 +76,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void BackgroundTaskClient_Api_Send_Notification_Method()
 		{
-			Broadcaster.Setup(s => { });
-
 			// send a event to a handler
 			// serializeable Func<TestClass>
 			BackgroundTaskClient.Send<TestClass>(() => Returnable(1));
@@ -82,8 +87,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void BackgroundTaskClient_Api_Send_Notification_Local()
 		{
-			Broadcaster.Setup(s => { });
-
 			// send a local action
 			// Nonserializeable
 			BackgroundTaskClient.Send(() =>
@@ -101,8 +104,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void BackgroundTaskClient_Api_Schedule_StaticTrace()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a static method
 			// serializeable
 			BackgroundTaskClient.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(1));
@@ -115,8 +116,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void BackgroundTaskClient_Api_Schedule_Method()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a local method
 			// serializeable
 			BackgroundTaskClient.Schedule(() => TestMethod(1), TimeSpan.FromSeconds(1));
@@ -129,8 +128,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void BackgroundTaskClient_Api_Schedule_GenericMethod()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a generic method
 			// serializeable
 			BackgroundTaskClient.Schedule(() => GenericMethod(1), TimeSpan.FromSeconds(1));
@@ -143,8 +140,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void BackgroundTaskClient_Api_Schedule_Notification_Class()
 		{
-			Broadcaster.Setup(s => { });
-
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>
 			BackgroundTaskClient.Schedule<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(1));
@@ -157,8 +152,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void BackgroundTaskClient_Api_Schedule_Notification_Method()
 		{
-			Broadcaster.Setup(s => { });
-
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>
 			BackgroundTaskClient.Schedule<TestClass>(() => Returnable(1), TimeSpan.FromSeconds(1));
@@ -171,8 +164,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void BackgroundTaskClient_Api_Schedule_Notification_Lopcal()
 		{
-			Broadcaster.Setup(s => { }); 
-
 			// send a local action
 			// Nonserializeable
 			BackgroundTaskClient.Schedule(() =>
@@ -191,8 +182,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void BackgroundTaskClient_Api_Recurring_StaticTrace()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a static method
 			// serializeable
 			BackgroundTaskClient.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
@@ -205,8 +194,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void BackgroundTaskClient_Api_Recurring_Method()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a local method
 			// serializeable
 			BackgroundTaskClient.Recurring(() => TestMethod(1), TimeSpan.FromSeconds(0.5));
@@ -219,8 +206,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void BackgroundTaskClient_Api_Recurring_GenericMethod()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a generic method
 			// serializeable
 			BackgroundTaskClient.Recurring(() => GenericMethod(1), TimeSpan.FromSeconds(0.5));
@@ -233,8 +218,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void BackgroundTaskClient_Api_Recurring_Notification_Class()
 		{
-			Broadcaster.Setup(s => { });
-
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>
 			BackgroundTaskClient.Recurring<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(0.5));
@@ -247,8 +230,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void BackgroundTaskClient_Api_Recurring_Notification_Method()
 		{
-			Broadcaster.Setup(s => { });
-
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>
 			BackgroundTaskClient.Recurring<TestClass>(() => Returnable(1), TimeSpan.FromSeconds(0.5));
@@ -261,8 +242,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void BackgroundTaskClient_Api_Recurring_Notification_Lopcal()
 		{
-			Broadcaster.Setup(s => { });
-
 			// send a local action
 			// Nonserializeable
 			BackgroundTaskClient.Recurring(() =>

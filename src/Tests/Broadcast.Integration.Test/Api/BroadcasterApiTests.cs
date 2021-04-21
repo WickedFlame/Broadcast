@@ -19,7 +19,7 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void Broadcaster_Api_Send_StaticTrace()
 		{
-			var broadcaster = new Broadcaster ();
+			var broadcaster = new Broadcaster(new TaskStore());
 
 			// execute a static method
 			// serializeable
@@ -32,7 +32,7 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void Broadcaster_Api_Send_Method()
 		{
-			var broadcaster = new Broadcaster ();
+			var broadcaster = new Broadcaster(new TaskStore());
 
 			// execute a local method
 			// serializeable
@@ -45,7 +45,7 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void Broadcaster_Api_Send_GenericMethod()
 		{
-			var broadcaster = new Broadcaster ();
+			var broadcaster = new Broadcaster(new TaskStore());
 
 			// execute a generic method
 			// serializeable
@@ -58,7 +58,7 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void Broadcaster_Api_Send_Notification_Class()
 		{
-			var broadcaster = new Broadcaster {Context = new ProcessorContext(new TaskStore(new Options())) };
+			var broadcaster = new Broadcaster(new TaskStore());
 
 			// send a event to a handler
 			// serializeable Func<TestClass>
@@ -71,7 +71,7 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void Broadcaster_Api_Send_Notification_Method()
 		{
-			var broadcaster = new Broadcaster ();
+			var broadcaster = new Broadcaster(new TaskStore());
 
 			// send a event to a handler
 			// serializeable Func<TestClass>
@@ -86,7 +86,7 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void Broadcaster_Api_Schedule_StaticTrace()
 		{
-			var broadcaster = new Broadcaster ();
+			var broadcaster = new Broadcaster(new TaskStore());
 
 			// execute a static method
 			// serializeable
@@ -100,7 +100,7 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void Broadcaster_Api_Schedule_Method()
 		{
-			var broadcaster = new Broadcaster();
+			var broadcaster = new Broadcaster(new TaskStore());
 
 			// execute a local method
 			// serializeable
@@ -114,7 +114,7 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void Broadcaster_Api_Schedule_GenericMethod()
 		{
-			var broadcaster = new Broadcaster ();
+			var broadcaster = new Broadcaster(new TaskStore());
 
 			// execute a generic method
 			// serializeable
@@ -128,7 +128,7 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void Broadcaster_Api_Schedule_Notification_Class()
 		{
-			var broadcaster = new Broadcaster ();
+			var broadcaster = new Broadcaster(new TaskStore());
 
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>
@@ -142,7 +142,7 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void Broadcaster_Api_Schedule_Notification_Method()
 		{
-			var broadcaster = new Broadcaster ();
+			var broadcaster = new Broadcaster(new TaskStore());
 
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>
@@ -163,7 +163,7 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void Broadcaster_Api_Recurring_StaticTrace()
 		{
-			var broadcaster = new Broadcaster ();
+			var broadcaster = new Broadcaster(new TaskStore());
 
 			// execute a static method
 			// serializeable
@@ -177,7 +177,7 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void Broadcaster_Api_Recurring_Method()
 		{
-			var broadcaster = new Broadcaster ();
+			var broadcaster = new Broadcaster(new TaskStore());
 
 			// execute a local method
 			// serializeable
@@ -191,7 +191,7 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void Broadcaster_Api_Recurring_GenericMethod()
 		{
-			var broadcaster = new Broadcaster ();
+			var broadcaster = new Broadcaster(new TaskStore());
 
 			// execute a generic method
 			// serializeable
@@ -205,7 +205,7 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void Broadcaster_Api_Recurring_Notification_Class()
 		{
-			var broadcaster = new Broadcaster ();
+			var broadcaster = new Broadcaster(new TaskStore());
 
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>
@@ -219,7 +219,7 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void Broadcaster_Api_Recurring_Notification_Method()
 		{
-			var broadcaster = new Broadcaster();
+			var broadcaster = new Broadcaster(new TaskStore());
 
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>

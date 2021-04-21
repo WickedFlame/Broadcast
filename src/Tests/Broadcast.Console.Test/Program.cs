@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Linq.Expressions;
 using Broadcast.Composition;
 
 namespace Broadcast.Console.Test
@@ -68,17 +69,20 @@ namespace Broadcast.Console.Test
                             System.Console.ReadLine();
                         }
                         break;
-                    case "recurring2":
-	                    using (var scheduler = new Broadcaster())
-	                    {
-							scheduler.Recurring(TaskFactory.CreateTask(() => System.Console.WriteLine("   Recurring Action 5 sec")), TimeSpan.FromSeconds(5));
-							scheduler.Recurring(TaskFactory.CreateTask(() => System.Console.WriteLine("   Recurring Action 3 sec")), TimeSpan.FromSeconds(3));
+       //             case "recurring2":
+	      //              using (var scheduler = new Broadcaster())
+	      //              {
+		     //               Action exp1 = () => System.Console.WriteLine("   Recurring Action 5 sec");
+		     //               Action exp2 = () => System.Console.WriteLine("   Recurring Action 3 sec");
+							//scheduler.Recurring(exp1, TimeSpan.FromSeconds(5));
+							//scheduler.Recurring(exp2, TimeSpan.FromSeconds(3));
 
-							System.Console.WriteLine($"Starting recurring with {Scheduler.SchedulerCount} schedulers");
+							//System.Console.WriteLine($"Starting recurring with {Scheduler.SchedulerCount} schedulers");
 
-		                    System.Console.ReadLine();
-	                    }
-	                    break;
+		     //               System.Console.ReadLine();
+	      //              }
+
+	      //              break;
 
 					case "multy":
                         using (var scheduler = new Broadcaster())

@@ -35,63 +35,124 @@ namespace Broadcast.Test.Api
 			});
 		}
 
+		[TearDown]
+		public void Teardown()
+		{
+			BroadcastingClient.Setup(null);
+		}
+
 		[Test]
-		public void BackgroundTaskClient_Api_Send_StaticTrace()
+		public void BackgroundTaskClient_Api_Send_StaticTrace_Process()
 		{
 			// execute a static method
 			// serializeable
 			BackgroundTaskClient.Send(() => Trace.WriteLine("test"));
 
 			_processor.Verify(exp => exp.Process(It.IsAny<ITask>()), Times.Once);
+		}
+
+		[Test]
+		public void BackgroundTaskClient_Api_Send_StaticTrace_StoreAdd()
+		{
+			BroadcastingClient.Setup(() => new BroadcastingClient(_store.Object));
+
+			// execute a static method
+			// serializeable
+			BackgroundTaskClient.Send(() => Trace.WriteLine("test"));
+
 			_store.Verify(exp => exp.Add(It.IsAny<ITask>()), Times.Once);
 		}
 
 		[Test]
-		public void BackgroundTaskClient_Api_Send_Method()
+		public void BackgroundTaskClient_Api_Send_Method_Process()
 		{
 			// execute a local method
 			// serializeable
 			BackgroundTaskClient.Send(() => TestMethod(1));
 
 			_processor.Verify(exp => exp.Process(It.IsAny<ITask>()), Times.Once);
+		}
+
+		[Test]
+		public void BackgroundTaskClient_Api_Send_Method_StoreAdd()
+		{
+			BroadcastingClient.Setup(() => new BroadcastingClient(_store.Object));
+
+			// execute a local method
+			// serializeable
+			BackgroundTaskClient.Send(() => TestMethod(1));
+
 			_store.Verify(exp => exp.Add(It.IsAny<ITask>()), Times.Once);
 		}
 
 		[Test]
-		public void BackgroundTaskClient_Api_Send_GenericMethod()
+		public void BackgroundTaskClient_Api_Send_GenericMethod_Process()
 		{
 			// execute a generic method
 			// serializeable
 			BackgroundTaskClient.Send(() => GenericMethod(1));
 
 			_processor.Verify(exp => exp.Process(It.IsAny<ITask>()), Times.Once);
+		}
+
+		[Test]
+		public void BackgroundTaskClient_Api_Send_GenericMethod_StoreAdd()
+		{
+			BroadcastingClient.Setup(() => new BroadcastingClient(_store.Object));
+
+			// execute a generic method
+			// serializeable
+			BackgroundTaskClient.Send(() => GenericMethod(1));
+
 			_store.Verify(exp => exp.Add(It.IsAny<ITask>()), Times.Once);
 		}
 
 		[Test]
-		public void BackgroundTaskClient_Api_Send_Notification_Class()
+		public void BackgroundTaskClient_Api_Send_Notification_Class_Process()
 		{
 			// send a event to a handler
 			// serializeable Func<TestClass>
 			BackgroundTaskClient.Send<TestClass>(() => new TestClass(1));
 
 			_processor.Verify(exp => exp.Process(It.IsAny<ITask>()), Times.Once);
+		}
+
+		[Test]
+		public void BackgroundTaskClient_Api_Send_Notification_Class_StoreAdd()
+		{
+			BroadcastingClient.Setup(() => new BroadcastingClient(_store.Object));
+
+			// send a event to a handler
+			// serializeable Func<TestClass>
+			BackgroundTaskClient.Send<TestClass>(() => new TestClass(1));
+
 			_store.Verify(exp => exp.Add(It.IsAny<ITask>()), Times.Once);
 		}
 
 		[Test]
-		public void BackgroundTaskClient_Api_Send_Notification_Method()
+		public void BackgroundTaskClient_Api_Send_Notification_Method_Process()
 		{
 			// send a event to a handler
 			// serializeable Func<TestClass>
 			BackgroundTaskClient.Send<TestClass>(() => Returnable(1));
 
 			_processor.Verify(exp => exp.Process(It.IsAny<ITask>()), Times.Once);
+		}
+
+		[Test]
+		public void BackgroundTaskClient_Api_Send_Notification_Method_StoreAdd()
+		{
+			BroadcastingClient.Setup(() => new BroadcastingClient(_store.Object));
+
+			// send a event to a handler
+			// serializeable Func<TestClass>
+			BackgroundTaskClient.Send<TestClass>(() => Returnable(1));
+
 			_store.Verify(exp => exp.Add(It.IsAny<ITask>()), Times.Once);
 		}
 
 		[Test]
-		public void BackgroundTaskClient_Api_Send_Notification_Local()
+		public void BackgroundTaskClient_Api_Send_Notification_Local_Process()
 		{
 			// send a local action
 			// Nonserializeable
@@ -101,6 +162,20 @@ namespace Broadcast.Test.Api
 			});
 
 			_processor.Verify(exp => exp.Process(It.IsAny<ITask>()), Times.Once);
+		}
+
+		[Test]
+		public void BackgroundTaskClient_Api_Send_Notification_Local_StoreAdd()
+		{
+			BroadcastingClient.Setup(() => new BroadcastingClient(_store.Object));
+
+			// send a local action
+			// Nonserializeable
+			BackgroundTaskClient.Send(() =>
+			{
+				Trace.WriteLine("test");
+			});
+
 			_store.Verify(exp => exp.Add(It.IsAny<ITask>()), Times.Once);
 		}
 

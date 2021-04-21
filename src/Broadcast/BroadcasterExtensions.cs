@@ -12,12 +12,6 @@ namespace Broadcast
 	/// </summary>
 	public static class BroadcasterExtensions
 	{
-		public static void Send(this IBroadcaster broadcaster, ITask task)
-		{
-			broadcaster.GetStore().Add(task);
-			broadcaster.Process(task);
-		}
-
 		/// <summary>
 		/// Send a delegate to the task processor
 		/// </summary>
@@ -26,7 +20,8 @@ namespace Broadcast
 		public static void Send(this IBroadcaster broadcaster, Expression<Action> action)
 		{
 			var task = TaskFactory.CreateTask(action);
-			broadcaster.Send(task);
+
+			broadcaster.GetStore().Add(task);
 		}
 
 		/// <summary>
@@ -38,39 +33,40 @@ namespace Broadcast
 		public static void Send<T>(this IBroadcaster broadcaster, Expression<Func<T>> notification) where T : INotification
 		{
 			var task = TaskFactory.CreateNotifiableTask(notification);
-			broadcaster.Send(task);
-		}
 
-		/// <summary>
-		/// Schedules a task
-		/// </summary>
-		/// <param name="broadcaster"></param>
-		/// <param name="task"></param>
-		/// <param name="time"></param>
-		public static void Schedule(this IBroadcaster broadcaster, ITask task, TimeSpan time)
-		{
 			broadcaster.GetStore().Add(task);
-			broadcaster.Scheduler.Enqueue(() => broadcaster.Process(task), time);
 		}
 
-		/// <summary>
-		/// Create a recurring task
-		/// </summary>
-		/// <param name="broadcaster"></param>
-		/// <param name="task"></param>
-		/// <param name="time"></param>
-		public static void Recurring(this IBroadcaster broadcaster, ITask task, TimeSpan time)
-		{
-			broadcaster.GetStore().Add(task);
-			broadcaster.Scheduler.Enqueue(() =>
-			{
-				// execute the task
-				broadcaster.Process(task);
+		///// <summary>
+		///// Schedules a task
+		///// </summary>
+		///// <param name="broadcaster"></param>
+		///// <param name="task"></param>
+		///// <param name="time"></param>
+		//public static void Schedule(this IBroadcaster broadcaster, ITask task, TimeSpan time)
+		//{
+		//	broadcaster.GetStore().Add(task);
+		//	broadcaster.Scheduler.Enqueue(() => broadcaster.Process(task), time);
+		//}
 
-				// reschedule the task
-				broadcaster.Recurring(task.Clone(), time);
-			}, time);
-		}
+		///// <summary>
+		///// Create a recurring task
+		///// </summary>
+		///// <param name="broadcaster"></param>
+		///// <param name="task"></param>
+		///// <param name="time"></param>
+		//public static void Recurring(this IBroadcaster broadcaster, ITask task, TimeSpan time)
+		//{
+		//	broadcaster.GetStore().Add(task);
+		//	broadcaster.Scheduler.Enqueue(() =>
+		//	{
+		//		// execute the task
+		//		broadcaster.Process(task);
+
+		//		// reschedule the task
+		//		broadcaster.Recurring(task.Clone(), time);
+		//	}, time);
+		//}
 
 
 
@@ -84,7 +80,9 @@ namespace Broadcast
 		public static void Schedule(this IBroadcaster broadcaster, Expression<Action> expression, TimeSpan time)
 		{
 			var task = TaskFactory.CreateTask(expression);
-			broadcaster.Schedule(task, time);
+			task.Time = time;
+
+			broadcaster.GetStore().Add(task);
 		}
 
 		/// <summary>
@@ -96,7 +94,9 @@ namespace Broadcast
 		public static void Schedule<T>(this IBroadcaster broadcaster, Expression<Func<T>> expression, TimeSpan time) where T : INotification
 		{
 			var task = TaskFactory.CreateNotifiableTask(expression);
-			broadcaster.Schedule(task, time);
+			task.Time = time;
+
+			broadcaster.GetStore().Add(task);
 		}
 
 
@@ -109,11 +109,12 @@ namespace Broadcast
 		public static void Recurring(this IBroadcaster broadcaster, Expression<Action> expression, TimeSpan time)
 		{
 			var task = TaskFactory.CreateTask(expression);
-			broadcaster.Recurring(task, time);
+			task.Time = time;
+			task.IsRecurring = true;
+
+			broadcaster.GetStore().Add(task);
 		}
-
-
-
+		
 		/// <summary>
 		/// Schedules a recurring INotification task that is sent to the processor. The INotification will be passed to all registered Handlers of the same type
 		/// </summary>
@@ -124,7 +125,10 @@ namespace Broadcast
 		public static void Recurring<T>(this IBroadcaster broadcaster, Expression<Func<T>> expression, TimeSpan time) where T : INotification
 		{
 			var task = TaskFactory.CreateNotifiableTask(expression);
-			broadcaster.Recurring(task, time);
+			task.Time = time;
+			task.IsRecurring = true;
+
+			broadcaster.GetStore().Add(task);
 		}
 	}
 }

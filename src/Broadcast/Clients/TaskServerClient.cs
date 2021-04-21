@@ -18,7 +18,11 @@ namespace Broadcast
 		public static string Recurring(Expression<Action> expression, TimeSpan time)
 		{
 			var task = TaskFactory.CreateTask(expression);
-			Broadcaster.Server.Recurring(task, time);
+			task.Time = time;
+			task.IsRecurring = true;
+
+			var factory = BroadcastingClient.Default;
+			factory.Enqueue(task);
 
 			return task.Id;
 		}
@@ -32,7 +36,10 @@ namespace Broadcast
 		public static string Schedule(Expression<Action> expression, TimeSpan time)
 		{
 			var task = TaskFactory.CreateTask(expression);
-			Broadcaster.Server.Schedule(task, time);
+			task.Time = time;
+
+			var factory = BroadcastingClient.Default;
+			factory.Enqueue(task);
 
 			return task.Id;
 		}
@@ -45,7 +52,9 @@ namespace Broadcast
 		public static string Send(Expression<Action> expression)
 		{
 			var task = TaskFactory.CreateTask(expression);
-			Broadcaster.Server.Send(task);
+			
+			var factory = BroadcastingClient.Default;
+			factory.Enqueue(task);
 
 			return task.Id;
 		}

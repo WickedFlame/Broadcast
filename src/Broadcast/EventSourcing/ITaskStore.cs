@@ -12,5 +12,18 @@ namespace Broadcast.EventSourcing
         /// </summary>
         /// <param name="task"></param>
         void Add(ITask task);
+
+		/// <summary>
+		/// Register a set of <see cref="IDispatcher"/> to the TaskStore.
+		/// Dispatchers are executed when a new Task is added to the TaskStore to notify clients of the changes.
+		/// All previously registered <see cref="IDispatcher"/> will be removed.
+		/// </summary>
+		/// <param name="dispatchers"></param>
+		void RegisterDispatchers(IEnumerable<IDispatcher> dispatchers);
+
+		/// <summary>
+		/// Clear all Tasks from the TaskStore
+		/// </summary>
+		void Clear();
     }
 }

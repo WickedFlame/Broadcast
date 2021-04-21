@@ -52,5 +52,11 @@ namespace Broadcast.Storage
 		/// <param name="key"></param>
 		/// <returns></returns>
 		IEnumerable<string> GetKeys(StorageKey key);
+
+		/// <summary>
+		/// Delete the storage entry
+		/// </summary>
+		/// <param name="key"></param>
+		void Delete(StorageKey key);
 	}
 }

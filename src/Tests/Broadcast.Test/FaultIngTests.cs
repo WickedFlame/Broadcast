@@ -16,7 +16,7 @@ namespace Broadcast.Test
         [Test]
         public void FailingTask()
         {
-            var broadcaster = new Broadcaster();
+            var broadcaster = new Broadcaster(new TaskStore());
 
 			//TODO: Refactore
 			Action action = () => throw new NotImplementedException();
@@ -33,7 +33,7 @@ namespace Broadcast.Test
 		[Ignore("Test does not fail")]
         public void FailingEvent()
         {
-            var broadcaster = new Broadcaster();
+            var broadcaster = new Broadcaster(new TaskStore());
             broadcaster.RegisterHandler(new GenericEventHandler());
 
             broadcaster.Schedule(() => new GenericEvent(), TimeSpan.FromSeconds(0.01));
@@ -48,7 +48,7 @@ namespace Broadcast.Test
         [Ignore("Implementation not finished")]
         public void FailingTask_CheckState()
         {
-            var broadcaster = new Broadcaster();
+            var broadcaster = new Broadcaster(new TaskStore());
             //TODO: Refactore
 			Action action = () => throw new NotImplementedException();
 			broadcaster.Schedule(() => action.Invoke(), TimeSpan.FromSeconds(0.01));

@@ -15,11 +15,23 @@ namespace Broadcast.Integration.Test.Composition
 	[Category("Integration")]
 	public class TaskServerClientTaskGenerationTests
 	{
+		[SetUp]
+		public void Setup()
+		{
+			TaskStore.Default.Clear();
+			Broadcaster.Setup(s => { });
+		}
+
+		[OneTimeTearDown]
+		public void TearDown()
+		{
+			TaskStore.Default.Clear();
+			Broadcaster.Setup(s => { });
+		}
+
 		[Test]
 		public void TaskServerClient_TaskGeneration_Send()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a static method
 			// serializeable
 			TaskServerClient.Send(() => Trace.WriteLine("test"));
@@ -30,8 +42,6 @@ namespace Broadcast.Integration.Test.Composition
 		[Test]
 		public void TaskServerClient_TaskGeneration_Schedule()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a static method
 			// serializeable
 			TaskServerClient.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
@@ -39,14 +49,12 @@ namespace Broadcast.Integration.Test.Composition
 			//Thread.Sleep(TimeSpan.FromSeconds(1));
 			Task.Delay(1000).Wait();
 
-			Assert.IsAssignableFrom<ExpressionTask>(Broadcaster.Server.GetStore().Single());
+			Assert.IsAssignableFrom<ExpressionTask>(Broadcaster.Server.GetStore().First());
 		}
 
 		[Test]
 		public void TaskServerClient_TaskGeneration_Recurring()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a static method
 			// serializeable
 			TaskServerClient.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));

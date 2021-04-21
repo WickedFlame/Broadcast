@@ -3,6 +3,7 @@ using Broadcast.Processing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Broadcast.Configuration;
 
 namespace Broadcast
 {
@@ -28,6 +29,8 @@ namespace Broadcast
         /// Gets or sets the TaskSore containing all Tasks
         /// </summary>
         public ITaskStore Store { get; set; }
+
+        public Options Options { get; set; }
 
 		/// <summary>
 		/// Gets the TaskQueue

@@ -22,7 +22,7 @@ namespace Broadcast.Test
 			    called = true;
 		    });
 			
-		    var broadcaster = new Broadcaster();
+		    var broadcaster = new Broadcaster(new TaskStore());
 		    broadcaster.Process(task);
 		    broadcaster.WaitAll();
 
@@ -37,7 +37,7 @@ namespace Broadcast.Test
 		    var called = false;
 		    var task = Broadcast.Composition.TaskFactory.CreateTask(() => called = true);
 
-		    var broadcaster = new Broadcaster();
+		    var broadcaster = new Broadcaster(new TaskStore());
 		    broadcaster.Process(task);
 		    broadcaster.WaitAll();
 
@@ -58,7 +58,7 @@ namespace Broadcast.Test
 		[Test]
         public void BroadcasterDefaultProcessorTest_Prallel()
         {
-            IBroadcaster broadcaster = new Broadcaster();
+            IBroadcaster broadcaster = new Broadcaster(new TaskStore());
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
@@ -75,7 +75,7 @@ namespace Broadcast.Test
         [Test]
         public void BroadcasterDefaultProcessorWithProcessorTest()
         {
-            IBroadcaster broadcaster = new Broadcaster();
+            IBroadcaster broadcaster = new Broadcaster(new TaskStore());
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
@@ -90,7 +90,7 @@ namespace Broadcast.Test
         [Test]
         public void BroadcasterDefaultProcessorWithModeParameterTest()
         {
-            IBroadcaster broadcaster = new Broadcaster();
+            IBroadcaster broadcaster = new Broadcaster(new TaskStore());
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
@@ -106,7 +106,7 @@ namespace Broadcast.Test
         [Test]
         public void BroadcasterBackgroundProcessorTest()
         {
-            IBroadcaster broadcaster = new Broadcaster();
+            IBroadcaster broadcaster = new Broadcaster(new TaskStore());
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
@@ -121,7 +121,7 @@ namespace Broadcast.Test
         [Test]
         public void BroadcasterBackgroundProcessorWithModeParameterTest()
         {
-            IBroadcaster broadcaster = new Broadcaster();
+            IBroadcaster broadcaster = new Broadcaster(new TaskStore());
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
@@ -139,7 +139,7 @@ namespace Broadcast.Test
         [Test]
         public void BroadcasterAsyncProcessorTest()
         {
-            IBroadcaster broadcaster = new Broadcaster();
+            IBroadcaster broadcaster = new Broadcaster(new TaskStore());
 
 			for (int i = 1; i <= 10; i++)
 			{
@@ -154,7 +154,7 @@ namespace Broadcast.Test
         [Test]
         public void BroadcasterAsyncProcessorWithModeParameterTest()
         {
-            IBroadcaster broadcaster = new Broadcaster();
+            IBroadcaster broadcaster = new Broadcaster(new TaskStore());
 			for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
@@ -169,7 +169,7 @@ namespace Broadcast.Test
         [Test]
         public void BroadcasterAsyncWithStoreTest()
         {
-	        IBroadcaster broadcaster = new Broadcaster();
+	        IBroadcaster broadcaster = new Broadcaster(new TaskStore());
             for (int i = 1; i <= 10; i++)
             {
                 var value = i.ToString();
@@ -184,7 +184,7 @@ namespace Broadcast.Test
         [Test]
         public void BroadcasterBackgroundWithStoreTest()
         {
-            IBroadcaster broadcaster = new Broadcaster();
+            IBroadcaster broadcaster = new Broadcaster(new TaskStore());
 
 			for (int i = 1; i <= 10; i++)
             {
@@ -200,7 +200,7 @@ namespace Broadcast.Test
         [Test]
         public void BroadcasterAsyncTestInLoop()
         {
-            IBroadcaster broadcaster = new Broadcaster(); 
+            IBroadcaster broadcaster = new Broadcaster(new TaskStore()); 
             var taskValues = new List<int>();
 
             for (int i = 1; i <= 100; i++)
@@ -226,7 +226,7 @@ namespace Broadcast.Test
         [Ignore("Fails when NUnit runs second time")]
         public void BroadcasterAsyncTestInLoopFail()
         {
-            IBroadcaster broadcaster = new Broadcaster();
+            IBroadcaster broadcaster = new Broadcaster(new TaskStore());
             broadcaster.Send(() => Trace.WriteLine("Just for warmup"));
 
             var taskValues = new List<int>();
@@ -257,21 +257,21 @@ namespace Broadcast.Test
         [Test]
         public void Broadcaster_Schedule()
         {
-            var broadcaster = new Broadcaster();
+            var broadcaster = new Broadcaster(new TaskStore());
             broadcaster.Schedule(() => Console.WriteLine("test"), TimeSpan.FromMinutes(1));
         }
 
         [Test]
         public void Broadcaster_Recurring()
         {
-            var broadcaster = new Broadcaster();
+            var broadcaster = new Broadcaster(new TaskStore());
             broadcaster.Recurring(() => Console.WriteLine("test"), TimeSpan.FromMinutes(1));
         }
 
         [Test]
         public void Broadcaster_Scheduler_Simple()
         {
-            var broadcaster = new Broadcaster();
+            var broadcaster = new Broadcaster(new TaskStore());
             broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
             broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
             broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
@@ -287,7 +287,7 @@ namespace Broadcast.Test
         //    TaskStoreFactory.StoreFactory = () => new TaskStore();
         //    var store = TaskStoreFactory.GetStore();
 
-        //    var broadcaster = new Broadcaster();
+        //    var broadcaster = new Broadcaster(new TaskStore());
         //    broadcaster.Schedule(SomeDelegateMethod, TimeSpan.FromSeconds(0.005));
         //    broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
         //    broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));

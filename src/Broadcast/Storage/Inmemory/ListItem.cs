@@ -10,12 +10,10 @@ namespace Broadcast.Storage.Inmemory
 	{
 		private readonly object _lockHandle = new object();
 
-		private readonly List<IStorageItem> _items = new List<IStorageItem>();
-
 		/// <summary>
 		/// Gets the list of items
 		/// </summary>
-		public IEnumerable<IStorageItem> Items => _items;
+		public List<IStorageItem> Items { get; } = new List<IStorageItem>();
 
 		/// <summary>
 		/// Add a new value to the list
@@ -25,7 +23,7 @@ namespace Broadcast.Storage.Inmemory
 		{
 			lock(_lockHandle)
 			{
-				_items.Add(new ValueItem(value));
+				Items.Add(new ValueItem(value));
 			}
 		}
 
@@ -37,7 +35,7 @@ namespace Broadcast.Storage.Inmemory
 		{
 			lock(_lockHandle)
 			{
-				return _items.Select(s => s.GetValue()).ToList();
+				return Items.Select(s => s.GetValue()).ToList();
 			}
 		}
 	}

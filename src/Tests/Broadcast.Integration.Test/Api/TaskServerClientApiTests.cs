@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Broadcast.EventSourcing;
 using NUnit.Framework;
 
 namespace Broadcast.Integration.Test.Api
@@ -14,11 +15,23 @@ namespace Broadcast.Integration.Test.Api
 	[Category("Integration")]
 	public class TaskServerClientApiTests
 	{
+		[SetUp]
+		public void Setup()
+		{
+			TaskStore.Default.Clear();
+			Broadcaster.Setup(s => { });
+		}
+
+		[OneTimeTearDown]
+		public void TearDown()
+		{
+			TaskStore.Default.Clear();
+			Broadcaster.Setup(s => { });
+		}
+
 		[Test]
 		public void TaskServerClient_Api_Send_StaticTrace()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a static method
 			// serializeable
 			TaskServerClient.Send(() => Trace.WriteLine("test"));
@@ -30,8 +43,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void TaskServerClient_Api_Send_Method()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a local method
 			// serializeable
 			TaskServerClient.Send(() => TestMethod(1));
@@ -43,8 +54,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void TaskServerClient_Api_Send_GenericMethod()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a generic method
 			// serializeable
 			TaskServerClient.Send(() => GenericMethod(1));
@@ -64,8 +73,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void TaskServerClient_Api_Schedule_StaticTrace()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a static method
 			// serializeable
 			TaskServerClient.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(1));
@@ -78,8 +85,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void TaskServerClient_Api_Schedule_Method()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a local method
 			// serializeable
 			TaskServerClient.Schedule(() => TestMethod(1), TimeSpan.FromSeconds(1));
@@ -92,8 +97,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void TaskServerClient_Api_Schedule_GenericMethod()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a generic method
 			// serializeable
 			TaskServerClient.Schedule(() => GenericMethod(1), TimeSpan.FromSeconds(1));
@@ -108,8 +111,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void TaskServerClient_Api_Recurring_StaticTrace()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a static method
 			// serializeable
 			TaskServerClient.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
@@ -122,8 +123,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void TaskServerClient_Api_Recurring_Method()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a local method
 			// serializeable
 			TaskServerClient.Recurring(() => TestMethod(1), TimeSpan.FromSeconds(0.5));
@@ -136,8 +135,6 @@ namespace Broadcast.Integration.Test.Api
 		[Test]
 		public void TaskServerClient_Api_Recurring_GenericMethod()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a generic method
 			// serializeable
 			TaskServerClient.Recurring(() => GenericMethod(1), TimeSpan.FromSeconds(0.5));
@@ -146,17 +143,6 @@ namespace Broadcast.Integration.Test.Api
 
 			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 2);
 		}
-
-
-
-
-
-
-
-
-
-
-
 
 		public void TestMethod(int i) { }
 

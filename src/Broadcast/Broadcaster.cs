@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using Broadcast.Composition;
 using Broadcast.Configuration;
+using Broadcast.Server;
 using Task = System.Threading.Tasks.Task;
 
 namespace Broadcast
@@ -41,39 +42,47 @@ namespace Broadcast
 
 		private IProcessorContext _context;
         private IScheduler _scheduler;
-        private Options _options;
 		
 		/// <summary>
 		/// Creates a new Broadcaster
 		/// </summary>
-        public Broadcaster() : this(Options.Default)
+        public Broadcaster() : this(Options.Default, TaskStore.Default)
         {
         }
+
+		public Broadcaster(Options options, ITaskStore store) 
+			: this(new ProcessorContext(store) {Options = options})
+		{
+		}
+
+		public Broadcaster(ITaskStore store)
+			: this(new ProcessorContext(store) { Options = Options.Default })
+		{
+		}
 
 		/// <summary>
 		/// Creates a new Broadcaster
 		/// </summary>
-		/// <param name="options"></param>
-		public Broadcaster(Options options)
-        {
-			_options = options;
-        }
+		/// <param name="context"></param>
+		public Broadcaster(IProcessorContext context)
+		{
+			Context = context;
+
+			context.Store.RegisterDispatchers(new IDispatcher[]
+			{
+				new RecurringTaskDispatcher(this, context.Store),
+				new ScheduleTaskDispatcher(this),
+				new ProcessTaskDispatcher(this)
+			});
+		}
 
         /// <summary>
         /// Gets the ProcessorContext that containes all information create a TaskProcessor
         /// </summary>
         public IProcessorContext Context
         {
-            get
-            {
-                if (_context == null)
-                {
-                    _context = new ProcessorContext(new TaskStore(_options));
-                }
-
-                return _context;
-			}
-			set => _context = value;
+            get => _context;
+            set => _context = value;
         }
 
         /// <summary>

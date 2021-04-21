@@ -15,11 +15,23 @@ namespace Broadcast.Integration.Test.Composition
 	[Category("Integration")]
 	public class BackgroundTaskClientTaskGenerationTests
 	{
+		[SetUp]
+		public void Setup()
+		{
+			TaskStore.Default.Clear();
+			Broadcaster.Setup(s => { });
+		}
+
+		[OneTimeTearDown]
+		public void TearDown()
+		{
+			TaskStore.Default.Clear();
+			Broadcaster.Setup(s => { });
+		}
+
 		[Test]
 		public void BackgroundTaskClient_TaskGeneration_Send()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a static method
 			// serializeable
 			BackgroundTaskClient.Send(() => Trace.WriteLine("test"));
@@ -30,22 +42,18 @@ namespace Broadcast.Integration.Test.Composition
 		[Test]
 		public void BackgroundTaskClient_TaskGeneration_Schedule()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a static method
 			// serializeable
 			BackgroundTaskClient.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
 
 			Task.Delay(1000).Wait();
 
-			Assert.IsAssignableFrom<ActionTask>(Broadcaster.Server.GetStore().Single());
+			Assert.IsAssignableFrom<ActionTask>(Broadcaster.Server.GetStore().Last());
 		}
 
 		[Test]
 		public void BackgroundTaskClient_TaskGeneration_Recurring()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a static method
 			// serializeable
 			BackgroundTaskClient.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
@@ -58,34 +66,28 @@ namespace Broadcast.Integration.Test.Composition
 		[Test]
 		public void BackgroundTaskClient_TaskGeneration_Send_Notify()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a static method
 			// serializeable
 			BackgroundTaskClient.Send<TestClass>(() => new TestClass(1));
 
-			Assert.IsAssignableFrom<DelegateTask<TestClass>>(Broadcaster.Server.GetStore().Single());
+			Assert.IsAssignableFrom<DelegateTask<TestClass>>(Broadcaster.Server.GetStore().First());
 		}
 
 		[Test]
 		public void BackgroundTaskClient_TaskGeneration_Schedule_Notify()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a static method
 			// serializeable
 			BackgroundTaskClient.Schedule<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(0.5));
 
 			Task.Delay(1000).Wait();
 
-			Assert.IsAssignableFrom<DelegateTask<TestClass>>(Broadcaster.Server.GetStore().Single());
+			Assert.IsAssignableFrom<DelegateTask<TestClass>>(Broadcaster.Server.GetStore().First());
 		}
 
 		[Test]
 		public void BackgroundTaskClient_TaskGeneration_Recurring_Notify()
 		{
-			Broadcaster.Setup(s => { });
-
 			// execute a static method
 			// serializeable
 			BackgroundTaskClient.Recurring<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(0.5));

@@ -41,7 +41,7 @@ namespace Broadcast.Storage
 				}
 			}
 
-			return (IEnumerable<T>)default;
+			return Enumerable.Empty<T>();
 		}
 
 		/// <inheritdoc/>
@@ -49,9 +49,14 @@ namespace Broadcast.Storage
 		{
 			if (_store.ContainsKey(key.ToString()))
 			{
-				if (_store[key.ToString()].GetValue() is List<object> items)
+				if (_store[key.ToString()] is ListItem list)
 				{
-					items.RemoveRange(0, count);
+					if (list.Items.Count() < count)
+					{
+						count = list.Items.Count();
+					}
+
+					list.Items.RemoveRange(0, count);
 				}
 			}
 		}
@@ -67,7 +72,11 @@ namespace Broadcast.Storage
 		{
 			if (_store.ContainsKey(key.ToString()))
 			{
-				return (T)_store[key.ToString()].GetValue();
+				var item = _store[key.ToString()].GetValue();
+				if (item != null && item.GetType() == typeof(T))
+				{
+					return (T) item;
+				}
 			}
 
 			return (T)default;
@@ -77,6 +86,18 @@ namespace Broadcast.Storage
 		public IEnumerable<string> GetKeys(StorageKey key)
 		{
 			return _store.Keys.Where(k => k.StartsWith(key.ToString()));
+		}
+
+		/// <summary>
+		/// Delete the storage entry
+		/// </summary>
+		/// <param name="key"></param>
+		public void Delete(StorageKey key)
+		{
+			if (_store.ContainsKey(key.ToString()))
+			{
+				_store.Remove(key.ToString());
+			}
 		}
 	}
 }

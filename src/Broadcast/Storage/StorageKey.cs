@@ -30,6 +30,11 @@ namespace Broadcast.Storage
 				throw new ArgumentNullException(key);
 			}
 
+			if (string.IsNullOrEmpty(serverName))
+			{
+				throw new ArgumentNullException(serverName);
+			}
+
 			Key = key;
 			ServerName = serverName;
 		}

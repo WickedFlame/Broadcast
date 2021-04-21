@@ -13,6 +13,10 @@ namespace Broadcast.EventSourcing
 
 		TaskState State { get; set; }
 
+		TimeSpan? Time { get; set; }
+
+		bool IsRecurring { get; set; }
+
 		object Invoke(TaskInvocation invocation);
 
 		ITask Clone();
@@ -33,6 +37,10 @@ namespace Broadcast.EventSourcing
 	    public string Id { get; }
 
 		public TaskState State { get; set; }
+
+		public TimeSpan? Time { get; set; }
+
+		public bool IsRecurring { get; set; }
 
 		public abstract object Invoke(TaskInvocation invocation);
 
@@ -110,7 +118,9 @@ namespace Broadcast.EventSourcing
 			return new ActionTask
 			{
 				State = TaskState.New,
-				Task = Task
+				Task = Task,
+				IsRecurring = IsRecurring,
+				Time = Time
 			};
 		}
 	}
@@ -129,7 +139,9 @@ namespace Broadcast.EventSourcing
 			return new DelegateTask<T>
 			{
 				State = TaskState.New,
-				Task = Task
+				Task = Task,
+				IsRecurring = IsRecurring,
+				Time = Time
 			};
 		}
 	}
@@ -148,7 +160,9 @@ namespace Broadcast.EventSourcing
 			return new ExpressionTask<T>
 			{
 				State = TaskState.New,
-				Task = Task
+				Task = Task,
+				IsRecurring = IsRecurring,
+				Time = Time
 			};
 		}
 	}
@@ -199,7 +213,9 @@ namespace Broadcast.EventSourcing
 		{
 			return new ExpressionTask(Type, Method, Args.ToArray())
 			{
-				State = TaskState.New
+				State = TaskState.New,
+				IsRecurring = IsRecurring,
+				Time = Time
 			};
 		}
 	}
