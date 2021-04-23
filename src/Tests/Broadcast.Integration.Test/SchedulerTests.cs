@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Broadcast.Scheduling;
 
 namespace Broadcast.Integration.Test
 {
@@ -21,9 +22,14 @@ namespace Broadcast.Integration.Test
 
         }
 
-
         [Test]
-        public void Broadcast_Scheduler_ExecutionCheck()
+        public void Scheduler_ctor()
+        {
+	        Assert.DoesNotThrow(() => new Scheduler());
+        }
+
+		[Test]
+        public void Scheduler_ExecutionCheck()
         {
             var scheduler = new Scheduler();
             scheduler.Enqueue(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
@@ -32,11 +38,11 @@ namespace Broadcast.Integration.Test
 
             Task.Delay(1000).Wait();
 
-            Assert.IsFalse(scheduler.GetActiveTasks().Any());
+            Assert.IsFalse(scheduler.ScheduledTasks().Any());
         }
 
         [Test]
-        public void Broadcast_Scheduler_TaskCount()
+        public void Scheduler_TaskCount()
         {
             int cnt = 0;
             var scheduler = new Scheduler();

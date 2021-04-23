@@ -35,7 +35,7 @@ namespace Broadcast.Server
 		}
 
 		/// <summary>
-		/// Wait for all threads in the taskprocessor to end
+		/// Wait for all threads in the serverprocess to end
 		/// </summary>
 		public void WaitAll()
 		{

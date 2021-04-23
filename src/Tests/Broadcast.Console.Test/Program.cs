@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 using Broadcast.Composition;
+using Broadcast.Scheduling;
 
 namespace Broadcast.Console.Test
 {
