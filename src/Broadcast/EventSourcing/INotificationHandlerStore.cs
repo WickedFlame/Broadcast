@@ -8,16 +8,16 @@ namespace Broadcast.EventSourcing
     /// </summary>
     public interface INotificationHandlerStore
     {
-        /// <summary>
-        /// Sore of all INotification handlers
-        /// </summary>
-        Dictionary<Type, List<Action<INotification>>> Handlers { get; }
+		/// <summary>
+		/// Try to get all handlers for the type
+		/// </summary>
+		bool TryGetHandlers(Type key, out List<Action<INotification>> handlers);
 
-        /// <summary>
-        /// Add a notification handler to the store
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="target"></param>
-        void AddHandler<T>(Action<T> target) where T : INotification;
+		/// <summary>
+		/// Add a notification handler to the store
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="target"></param>
+		void AddHandler<T>(Action<T> target) where T : INotification;
     }
 }

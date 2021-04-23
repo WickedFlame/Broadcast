@@ -4,13 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Broadcast.Configuration;
+using Broadcast.Server;
 
 namespace Broadcast
 {
     /// <summary>
     /// Represents the Context that provides all elements needed by the TaskProcessor
     /// </summary>
-    public class ProcessorContext : IProcessorContext
+    public class ProcessorContext : IProcessorContext, IServerContext
     {
         readonly INotificationHandlerStore _notificationHandlers;
 		private ITaskProcessor _processor;
@@ -61,7 +62,7 @@ namespace Broadcast
         {
 	        if (_processor == null)
 	        {
-		        _processor = new TaskProcessor(_notificationHandlers);
+		        _processor = new TaskProcessor(this);
 	        }
 
 	        return _processor;

@@ -30,7 +30,8 @@ namespace Broadcast
 		public static IBroadcaster Server => _server;
 
 		/// <summary>
-		/// Setup a BroadcasterServer
+		/// Setup a BroadcasterServer.
+		/// This uses the default store from TaskStore.Default and the default options from Options.Default
 		/// </summary>
 		/// <param name="setup"></param>
 		public static void Setup(Action<IBroadcaster> setup)
@@ -158,11 +159,8 @@ namespace Broadcast
         /// <param name="target">The delegate that handles the INotification</param>
         public void RegisterHandler<T>(Action<T> target) where T : INotification
         {
-            using (var processor = Context.Open())
-            {
-                processor.AddHandler(target);
-            }
-        }
+			Context.NotificationHandlers.AddHandler(target);
+		}
 
         
 		/// <summary>

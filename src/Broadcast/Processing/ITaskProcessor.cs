@@ -14,13 +14,6 @@ namespace Broadcast.Processing
 		ITaskQueue Queue { get; }
 
 		/// <summary>
-		/// Add a delegate handler to the store
-		/// </summary>
-		/// <typeparam name="T">Type of handler</typeparam>
-		/// <param name="target">Task to process</param>
-		void AddHandler<T>(Action<T> target) where T : INotification;
-		
-		/// <summary>
 		/// Wait for all threads to end
 		/// </summary>
         void WaitAll();

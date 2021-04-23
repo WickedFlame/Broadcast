@@ -2,13 +2,14 @@
 using Broadcast.Processing;
 using System.Collections.Generic;
 using Broadcast.Configuration;
+using Broadcast.Server;
 
 namespace Broadcast
 {
     /// <summary>
     /// Represents the Context that provides all elements needed by the TaskProcessor
     /// </summary>
-    public interface IProcessorContext
+    public interface IProcessorContext : IServerContext
     {
         /// <summary>
         /// Gets or sets the TaskSore containing all Tasks

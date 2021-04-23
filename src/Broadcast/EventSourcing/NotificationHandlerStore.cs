@@ -4,21 +4,30 @@ using System.Linq.Expressions;
 
 namespace Broadcast.EventSourcing
 {
+	/// <summary>
+	/// Store for NotificationHandlers
+	/// </summary>
     public class NotificationHandlerStore : INotificationHandlerStore
     {
-        Dictionary<Type, List<Action<INotification>>> _handlers;
+        private readonly Dictionary<Type, List<Action<INotification>>> _handlers;
 
-        /// <summary>
-        /// Sore of all INotification handlers
-        /// </summary>
-        public Dictionary<Type, List<Action<INotification>>> Handlers
+		/// <summary>
+		/// Creates a new instance of the NotificationHandlerStore
+		/// </summary>
+        public NotificationHandlerStore()
         {
-            get
-            {
-                if (_handlers == null)
-                    _handlers = new Dictionary<Type, List<Action<INotification>>>();
-                return _handlers;
-            }
+	        _handlers = new Dictionary<Type, List<Action<INotification>>>();
+        }
+
+		/// <summary>
+		/// Try to get all handlers for the type
+		/// </summary>
+		/// <param name="key"></param>
+		/// <param name="handlers"></param>
+		/// <returns></returns>
+        public bool TryGetHandlers(Type key, out List<Action<INotification>> handlers)
+        {
+	        return _handlers.TryGetValue(key, out handlers);
         }
 
         /// <summary>
@@ -30,10 +39,10 @@ namespace Broadcast.EventSourcing
         {
             List<Action<INotification>> handlers;
 
-            if (!Handlers.TryGetValue(typeof(T), out handlers))
+            if (!_handlers.TryGetValue(typeof(T), out handlers))
             {
                 handlers = new List<Action<INotification>>();
-                Handlers.Add(typeof(T), handlers);
+                _handlers.Add(typeof(T), handlers);
             }
 
             handlers.Add(DelegateCaster.CastToBase<INotification, T>(x => target(x)));
