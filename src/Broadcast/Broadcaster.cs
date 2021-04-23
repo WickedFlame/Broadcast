@@ -36,6 +36,9 @@ namespace Broadcast
 		/// <param name="setup"></param>
 		public static void Setup(Action<IBroadcaster> setup)
 		{
+			// dispose existing servers to ensure the scheduler threads and all dispatchers are ended
+			_server?.Dispose();
+
 			var server = new Broadcaster();
 			setup(server);
 			_server = server;
