@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Broadcast.Server;
 
 namespace Broadcast.Scheduling
@@ -28,7 +29,6 @@ namespace Broadcast.Scheduling
 			while (context.IsRunning)
 			{
 				var time = context.Elapsed;
-
 				foreach (var task in _queue.ToList())
 				{
 					if (time > task.Time)
@@ -40,6 +40,9 @@ namespace Broadcast.Scheduling
 						task.Task.Invoke();
 					}
 				}
+
+				// Delay the thread to avoid high CPU usage with the infinite loop
+				System.Threading.Tasks.Task.Delay(50).Wait();
 			}
 		}
 	}
