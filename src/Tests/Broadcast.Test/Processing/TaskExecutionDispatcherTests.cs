@@ -51,6 +51,21 @@ namespace Broadcast.Test.Processing
 		}
 
 		[Test]
+		public void TaskExecutionDispatcher_Task_Faulted()
+		{
+			var task = new Mock<ITask>();
+			task.Setup(exp => exp.Invoke(It.IsAny<TaskInvocation>())).Throws<Exception>();
+
+			var dispatcher = new TaskExecutionDispatcher(task.Object);
+
+			var ctx = new Mock<IProcessorContext>();
+
+			dispatcher.Execute(ctx.Object);
+
+			task.VerifySet(exp => exp.State = TaskState.Faulted);
+		}
+
+		[Test]
 		public void TaskExecutionDispatcher_Task_Invoke()
 		{
 			var task = new Mock<ITask>();
@@ -61,6 +76,19 @@ namespace Broadcast.Test.Processing
 			dispatcher.Execute(ctx.Object);
 
 			task.Verify(exp => exp.Invoke(It.IsAny<TaskInvocation>()), Times.Once);
+		}
+
+		[Test]
+		public void TaskExecutionDispatcher_Execute_Exception()
+		{
+			var task = new Mock<ITask>();
+			task.Setup(exp => exp.Invoke(It.IsAny<TaskInvocation>())).Throws<Exception>();
+
+			var dispatcher = new TaskExecutionDispatcher(task.Object);
+
+			var ctx = new Mock<IProcessorContext>();
+
+			Assert.DoesNotThrow(() => dispatcher.Execute(ctx.Object));
 		}
 
 		[Test]

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using Broadcast.Diagnostics;
 using Broadcast.EventSourcing;
 using Broadcast.Server;
 
@@ -47,28 +49,27 @@ namespace Broadcast.Processing
 				// try to find the handlers
 				if (output != null && context.NotificationHandlers.TryGetHandlers(output.GetType(), out var handlers))
 				{
-					//// it could be that T is of a base/inherited type but the handler is of a object type
-					//if (!Handlers.Handlers.TryGetValue(output.GetType(), out handlers))
-					//{
-					//	return;
-					//}
-
 					// run all handlers with the value
 					foreach (var handler in handlers)
 					{
 						handler(output);
 					}
 				}
-			}
-			catch (Exception ex)
-			{
-				//TODO: set taskt to faulted
-				//TODO: log exception
-				System.Diagnostics.Debug.WriteLine(ex.Message);
-				System.Diagnostics.Debug.WriteLine(ex.StackTrace);
-			}
 
-			_task.SetProcessed();
+				_task.SetProcessed();
+			}
+			catch (Exception e)
+			{
+				_task.SetState(TaskState.Faulted);
+				_logger.Write($"Task execution failed for {_task.Id}", e);
+			}
+			finally
+			{
+				sw.Stop();
+				//TODO: Write metrics here
+
+				_logger.Write($"End processing task {_task.Id}. Duration {sw.ElapsedMilliseconds} ms");
+			}
 		}
 	}
 }
