@@ -19,14 +19,14 @@ namespace Broadcast.Integration.Test.Composition
 		public void Setup()
 		{
 			TaskStore.Default.Clear();
-			Broadcaster.Setup(s => { });
+			BroadcastServer.Setup(s => { });
 		}
 
 		[OneTimeTearDown]
 		public void TearDown()
 		{
 			TaskStore.Default.Clear();
-			Broadcaster.Setup(s => { });
+			BroadcastServer.Setup(s => { });
 		}
 
 		[Test]
@@ -36,7 +36,7 @@ namespace Broadcast.Integration.Test.Composition
 			// serializeable
 			BackgroundTaskClient.Send(() => Trace.WriteLine("test"));
 
-			Assert.IsAssignableFrom<ActionTask>(Broadcaster.Server.GetStore().Single());
+			Assert.IsAssignableFrom<ActionTask>(BroadcastServer.Server.Store.Single());
 		}
 
 		[Test]
@@ -48,7 +48,7 @@ namespace Broadcast.Integration.Test.Composition
 
 			Task.Delay(1000).Wait();
 
-			Assert.IsAssignableFrom<ActionTask>(Broadcaster.Server.GetStore().Last());
+			Assert.IsAssignableFrom<ActionTask>(BroadcastServer.Server.Store.Last());
 		}
 
 		[Test]
@@ -60,7 +60,7 @@ namespace Broadcast.Integration.Test.Composition
 
 			Task.Delay(1000).Wait();
 
-			Assert.IsAssignableFrom<ActionTask>(Broadcaster.Server.GetStore().First());
+			Assert.IsAssignableFrom<ActionTask>(BroadcastServer.Server.Store.First());
 		}
 
 		[Test]
@@ -70,7 +70,7 @@ namespace Broadcast.Integration.Test.Composition
 			// serializeable
 			BackgroundTaskClient.Send<TestClass>(() => new TestClass(1));
 
-			Assert.IsAssignableFrom<DelegateTask<TestClass>>(Broadcaster.Server.GetStore().First());
+			Assert.IsAssignableFrom<DelegateTask<TestClass>>(BroadcastServer.Server.Store.First());
 		}
 
 		[Test]
@@ -82,7 +82,7 @@ namespace Broadcast.Integration.Test.Composition
 
 			Task.Delay(1000).Wait();
 
-			Assert.IsAssignableFrom<DelegateTask<TestClass>>(Broadcaster.Server.GetStore().First());
+			Assert.IsAssignableFrom<DelegateTask<TestClass>>(BroadcastServer.Server.Store.First());
 		}
 
 		[Test]
@@ -94,7 +94,7 @@ namespace Broadcast.Integration.Test.Composition
 
 			Task.Delay(1000).Wait();
 
-			Assert.IsAssignableFrom<DelegateTask<TestClass>>(Broadcaster.Server.GetStore().First());
+			Assert.IsAssignableFrom<DelegateTask<TestClass>>(BroadcastServer.Server.Store.First());
 		}
 
 		public class TestClass : INotification

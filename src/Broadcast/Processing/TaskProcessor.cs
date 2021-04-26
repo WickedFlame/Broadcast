@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using Broadcast.Configuration;
 using Broadcast.EventSourcing;
 using Broadcast.Server;
 
@@ -16,19 +12,31 @@ namespace Broadcast.Processing
     {
 	    private readonly object _processorLock = new object();
 	    private readonly DispatcherLock _dispatcherLock;
-		private readonly BackgroundServerProcess<IProcessorContext> _server;
+		private readonly IBackgroundServerProcess<IProcessorContext> _server;
 		private readonly ITaskQueue _queue;
+		private readonly IProcessorContext _context;
 
 		/// <summary>
 		/// Creates a new TaskProcessor
 		/// </summary>
-		/// <param name="context"></param>
-        public TaskProcessor(IProcessorContext context)
-        {
-            _queue = new TaskQueue();
-            _dispatcherLock = new DispatcherLock();
-            _server = new BackgroundServerProcess<IProcessorContext>(context);
-        }
+		public TaskProcessor() : this(Options.Default)
+		{
+		}
+
+		/// <summary>
+		/// Creates a new TaskProcessor
+		/// </summary>
+		/// <param name="options"></param>
+		public TaskProcessor(Options options)
+		{
+			_context = new ProcessorContext
+			{
+				Options = options
+			};
+			_queue = new TaskQueue();
+			_dispatcherLock = new DispatcherLock();
+			_server = new BackgroundServerProcess<IProcessorContext>(_context);
+		}
 
 		/// <summary>
 		/// Gets the TaskQueue
@@ -42,6 +50,11 @@ namespace Broadcast.Processing
         {
 	        _server.WaitAll();
         }
+
+		public void AddHandler<T>(Action<T> target) where T : INotification
+		{
+			_context.NotificationHandlers.AddHandler(target);
+		}
 
 		/// <summary>
 		/// Process the delegate task

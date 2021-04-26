@@ -14,7 +14,7 @@ namespace Broadcast.Test.Composition
 		[Test]
 		public void TaskServerClient_TaskGeneration_Recurring_Id()
 		{
-			Broadcaster.Setup(s => { });
+			BroadcastServer.Setup(s => { });
 
 			// execute a static method
 			// serializeable
@@ -24,7 +24,7 @@ namespace Broadcast.Test.Composition
 		[Test]
 		public void TaskServerClient_TaskGeneration_Schedule_Id()
 		{
-			Broadcaster.Setup(s => { });
+			BroadcastServer.Setup(s => { });
 
 			// execute a static method
 			// serializeable
@@ -34,7 +34,7 @@ namespace Broadcast.Test.Composition
 		[Test]
 		public void TaskServerClient_TaskGeneration_Send_Id()
 		{
-			Broadcaster.Setup(s => { });
+			BroadcastServer.Setup(s => { });
 
 			// execute a static method
 			// serializeable

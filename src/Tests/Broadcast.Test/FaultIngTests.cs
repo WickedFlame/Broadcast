@@ -25,7 +25,7 @@ namespace Broadcast.Test
 
             Task.Delay(1000).Wait();
 
-            var store = broadcaster.GetStore();
+            var store = broadcaster.Store;
             Assert.IsTrue(store.Count(t => t.State == TaskState.Processed) == 2, $"Store Count is {store.Count()}, processed Count is {store.Count(t => t.State == TaskState.Processed)}");
         }
 
@@ -41,7 +41,7 @@ namespace Broadcast.Test
 
             Task.Delay(1000).Wait();
 
-            Assert.IsTrue(broadcaster.GetStore().Count(t => t.State == TaskState.Processed) == 2);
+            Assert.IsTrue(broadcaster.Store.Count(t => t.State == TaskState.Processed) == 2);
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace Broadcast.Test
 
             Task.Delay(1000).Wait();
 
-            //Assert.IsTrue(broadcaster.GetStore().All(t => t.State == TaskState.Faulted));
+            //Assert.IsTrue(broadcaster.Store.All(t => t.State == TaskState.Faulted));
         }
 		
         public class GenericEvent : INotification

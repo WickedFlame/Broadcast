@@ -26,16 +26,13 @@ namespace Broadcast.Test.Api
 			_scheduler = new Mock<IScheduler>();
 			_store = new Mock<ITaskStore>();
 			_context = new Mock<IProcessorContext>();
-			_context.Setup(exp => exp.Open()).Returns(_processor.Object);
-			_context.Setup(exp => exp.Store).Returns(_store.Object);
 		}
 
 		[Test]
 		public void Broadcaster_Api_Send_StaticTrace_Processor()
 		{
 			var store = new TaskStore();
-			_context.Setup(exp => exp.Store).Returns(store);
-			var broadcaster = new Broadcaster(store) { Context = _context.Object, Scheduler = _scheduler.Object};
+			var broadcaster = new Broadcaster(store, _processor.Object, _scheduler.Object);
 
 			// execute a static method
 			// serializeable
@@ -47,7 +44,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void Broadcaster_Api_Send_StaticTrace_StoreAdd()
 		{
-			var broadcaster = new Broadcaster() { Context = _context.Object, Scheduler = _scheduler.Object };
+			var broadcaster = new Broadcaster(_store.Object, _processor.Object, _scheduler.Object);
 
 			// execute a static method
 			// serializeable
@@ -60,8 +57,7 @@ namespace Broadcast.Test.Api
 		public void Broadcaster_Api_Send_Method_Process()
 		{
 			var store = new TaskStore();
-			_context.Setup(exp => exp.Store).Returns(store);
-			var broadcaster = new Broadcaster(store) {Context = _context.Object, Scheduler = _scheduler.Object};
+			var broadcaster = new Broadcaster(store, _processor.Object, _scheduler.Object);
 
 			// execute a local method
 			// serializeable
@@ -73,7 +69,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void Broadcaster_Api_Send_Method_StoreAdd()
 		{
-			var broadcaster = new Broadcaster() { Context = _context.Object, Scheduler = _scheduler.Object };
+			var broadcaster = new Broadcaster(_store.Object, _processor.Object, _scheduler.Object);
 
 			// execute a local method
 			// serializeable
@@ -86,8 +82,7 @@ namespace Broadcast.Test.Api
 		public void Broadcaster_Api_Send_GenericMethod()
 		{
 			var store = new TaskStore();
-			_context.Setup(exp => exp.Store).Returns(store);
-			var broadcaster = new Broadcaster(store) {Context = _context.Object, Scheduler = _scheduler.Object};
+			var broadcaster = new Broadcaster(store, _processor.Object, _scheduler.Object);
 
 			// execute a generic method
 			// serializeable
@@ -99,7 +94,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void Broadcaster_Api_Send_GenericMethod_AddStore()
 		{
-			var broadcaster = new Broadcaster(_store.Object) { Scheduler = _scheduler.Object };
+			var broadcaster = new Broadcaster(_store.Object, _processor.Object, _scheduler.Object);
 
 			// execute a generic method
 			// serializeable
@@ -112,8 +107,7 @@ namespace Broadcast.Test.Api
 		public void Broadcaster_Api_Send_Notification_Class_Process()
 		{
 			var store = new TaskStore();
-			_context.Setup(exp => exp.Store).Returns(store);
-			var broadcaster = new Broadcaster(store) { Context = _context.Object, Scheduler = _scheduler.Object };
+			var broadcaster = new Broadcaster(store, _processor.Object, _scheduler.Object);
 
 			// send a event to a handler
 			// serializeable Func<TestClass>
@@ -125,7 +119,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void Broadcaster_Api_Send_Notification_Class_AddStore()
 		{
-			var broadcaster = new Broadcaster(_store.Object) { Scheduler = _scheduler.Object };
+			var broadcaster = new Broadcaster(_store.Object, _processor.Object, _scheduler.Object);
 
 			// send a event to a handler
 			// serializeable Func<TestClass>
@@ -138,8 +132,7 @@ namespace Broadcast.Test.Api
 		public void Broadcaster_Api_Send_Notification_Method_Process()
 		{
 			var store = new TaskStore();
-			_context.Setup(exp => exp.Store).Returns(store);
-			var broadcaster = new Broadcaster(store) { Context = _context.Object, Scheduler = _scheduler.Object};
+			var broadcaster = new Broadcaster(store, _processor.Object, _scheduler.Object);
 
 			// send a event to a handler
 			// serializeable Func<TestClass>
@@ -151,7 +144,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void Broadcaster_Api_Send_Notification_Method_AddStore()
 		{
-			var broadcaster = new Broadcaster(_store.Object) { Scheduler = _scheduler.Object };
+			var broadcaster = new Broadcaster(_store.Object, _processor.Object, _scheduler.Object);
 
 			// send a event to a handler
 			// serializeable Func<TestClass>
@@ -165,7 +158,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void Broadcaster_Api_Schedule_StaticTrace()
 		{
-			var broadcaster = new Broadcaster(new TaskStore()) {Scheduler = _scheduler.Object};
+			var broadcaster = new Broadcaster(new TaskStore(), _processor.Object, _scheduler.Object);
 
 			// execute a static method
 			// serializeable
@@ -177,7 +170,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void Broadcaster_Api_Schedule_Method()
 		{
-			var broadcaster = new Broadcaster(new TaskStore()) {Scheduler = _scheduler.Object};
+			var broadcaster = new Broadcaster(new TaskStore(), _processor.Object, _scheduler.Object);
 
 			// execute a local method
 			// serializeable
@@ -189,7 +182,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void Broadcaster_Api_Schedule_GenericMethod()
 		{
-			var broadcaster = new Broadcaster(new TaskStore()) {Scheduler = _scheduler.Object};
+			var broadcaster = new Broadcaster(new TaskStore(), _processor.Object, _scheduler.Object);
 
 			// execute a generic method
 			// serializeable
@@ -201,7 +194,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void Broadcaster_Api_Schedule_Notification_Class()
 		{
-			var broadcaster = new Broadcaster(new TaskStore()) {Scheduler = _scheduler.Object};
+			var broadcaster = new Broadcaster(new TaskStore(), _processor.Object, _scheduler.Object);
 
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>
@@ -213,7 +206,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void Broadcaster_Api_Schedule_Notification_Method()
 		{
-			var broadcaster = new Broadcaster(new TaskStore()) {Scheduler = _scheduler.Object};
+			var broadcaster = new Broadcaster(new TaskStore(), _processor.Object, _scheduler.Object);
 
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>
@@ -232,7 +225,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void Broadcaster_Api_Recurring_StaticTrace()
 		{
-			var broadcaster = new Broadcaster(new TaskStore()) {Scheduler = _scheduler.Object};
+			var broadcaster = new Broadcaster(new TaskStore(), _processor.Object, _scheduler.Object);
 
 			// execute a static method
 			// serializeable
@@ -244,7 +237,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void Broadcaster_Api_Recurring_Method()
 		{
-			var broadcaster = new Broadcaster(new TaskStore()) {Scheduler = _scheduler.Object};
+			var broadcaster = new Broadcaster(new TaskStore(), _processor.Object, _scheduler.Object);
 
 			// execute a local method
 			// serializeable
@@ -256,7 +249,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void Broadcaster_Api_Recurring_GenericMethod()
 		{
-			var broadcaster = new Broadcaster(new TaskStore()) {Scheduler = _scheduler.Object};
+			var broadcaster = new Broadcaster(new TaskStore(), _processor.Object, _scheduler.Object);
 
 			// execute a generic method
 			// serializeable
@@ -268,7 +261,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void Broadcaster_Api_Recurring_Notification_Class()
 		{
-			var broadcaster = new Broadcaster(new TaskStore()) {Scheduler = _scheduler.Object};
+			var broadcaster = new Broadcaster(new TaskStore(), _processor.Object, _scheduler.Object);
 
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>
@@ -280,7 +273,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void Broadcaster_Api_Recurring_Notification_Method()
 		{
-			var broadcaster = new Broadcaster(new TaskStore()) {Scheduler = _scheduler.Object};
+			var broadcaster = new Broadcaster(new TaskStore(), _processor.Object, _scheduler.Object);
 
 			// send a event to a handler
 			// Nonserializeable Func<TestClass>

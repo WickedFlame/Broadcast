@@ -128,13 +128,13 @@ namespace Broadcast.Console.Test
                         broadcaster.Send(() => System.Console.WriteLine(string.Format(format, value)));
                     }
 
-                    System.Console.WriteLine(string.Format("Items in Queue: {0}", broadcaster.Context.Queue.Count));
-                    System.Console.WriteLine(string.Format("Items porcessed: {0}", broadcaster.Context.ProcessedTasks.Count()));
+                    System.Console.WriteLine(string.Format("Items in Queue: {0}", broadcaster.Processor.Queue.Count));
+                    System.Console.WriteLine(string.Format("Items porcessed: {0}", broadcaster.GetProcessedTasks().Count()));
 
                     System.Threading.Thread.Sleep(TimeSpan.FromSeconds(1));
 
-                    System.Console.WriteLine(string.Format("Items in Queue: {0}", broadcaster.Context.Queue.Count));
-                    System.Console.WriteLine(string.Format("Items porcessed: {0}", broadcaster.Context.ProcessedTasks.Count()));
+                    System.Console.WriteLine(string.Format("Items in Queue: {0}", broadcaster.Processor.Queue.Count));
+                    System.Console.WriteLine(string.Format("Items porcessed: {0}", broadcaster.GetProcessedTasks().Count()));
                 }
 
                 input = System.Console.ReadLine();

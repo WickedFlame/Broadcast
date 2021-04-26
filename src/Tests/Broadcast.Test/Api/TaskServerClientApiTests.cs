@@ -25,14 +25,11 @@ namespace Broadcast.Test.Api
 			_processor = new Mock<ITaskProcessor>();
 			_scheduler = new Mock<IScheduler>();
 			_store = new Mock<ITaskStore>();
-			var ctx = new Mock<IProcessorContext>();
-			ctx.Setup(exp => exp.Open()).Returns(_processor.Object);
-			ctx.Setup(exp => exp.Store).Returns(_store.Object);
 
-			Broadcaster.Setup(s =>
+			BroadcastServer.Setup(s =>
 			{
-				s.Context = ctx.Object;
-				s.Scheduler = _scheduler.Object;
+				s.AddScheduler(_scheduler.Object);
+				s.AddProcessor(_processor.Object);
 			});
 		}
 
@@ -151,7 +148,8 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void TaskServerClient_Api_Recurring_StaticTrace()
 		{
-			Broadcaster.Setup(s => { });
+			TaskStore.Default.Clear();
+			BroadcastServer.Setup(s => { });
 
 			// execute a static method
 			// serializeable
@@ -159,7 +157,7 @@ namespace Broadcast.Test.Api
 
 			Task.Delay(2000).Wait();
 
-			Assert.GreaterOrEqual(Broadcaster.Server.Context.ProcessedTasks.Count(), 2);
+			Assert.GreaterOrEqual(BroadcastServer.Server.GetProcessedTasks().Count(), 2);
 		}
 
 		[Test]

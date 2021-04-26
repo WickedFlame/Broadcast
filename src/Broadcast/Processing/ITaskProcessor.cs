@@ -23,5 +23,7 @@ namespace Broadcast.Processing
 		/// </summary>
 		/// <param name="task">The task to process</param>
         void Process(ITask task);
+
+		void AddHandler<T>(Action<T> target) where T : INotification;
     }
 }

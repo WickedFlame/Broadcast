@@ -63,13 +63,13 @@ namespace Broadcast.Test
             {
                 var value = i.ToString();
                 broadcaster.Send(() => Trace.WriteLine(string.Format("Test default {0}", value)));
-                //Assert.IsTrue(broadcaster.Context.ProcessedTasks.Last().State == TaskState.Processed);
+                //Assert.IsTrue(broadcaster.GetProcessedTasks().Last().State == TaskState.Processed);
             }
 
             broadcaster.WaitAll();
             //TODO: has to work without sleep!
             Task.Delay(1000).Wait();
-			Assert.AreEqual(broadcaster.Context.ProcessedTasks.Count(), 10);
+			Assert.AreEqual(broadcaster.GetProcessedTasks().Count(), 10);
         }
 
         [Test]
@@ -80,11 +80,11 @@ namespace Broadcast.Test
             {
                 var value = i.ToString();
                 broadcaster.Send(() => Trace.WriteLine(string.Format("Test default {0}", value)));
-                //Assert.IsTrue(broadcaster.Context.ProcessedTasks.Last().State == TaskState.Processed);
+                //Assert.IsTrue(broadcaster.GetProcessedTasks().Last().State == TaskState.Processed);
             }
 
             broadcaster.WaitAll();
-			Assert.AreEqual(broadcaster.Context.ProcessedTasks.Count(), 10);
+			Assert.AreEqual(broadcaster.GetProcessedTasks().Count(), 10);
         }
 
         [Test]
@@ -95,12 +95,12 @@ namespace Broadcast.Test
             {
                 var value = i.ToString();
                 broadcaster.Send(() => Trace.WriteLine(string.Format("Test default {0}", value)));
-                //Assert.IsTrue(broadcaster.Context.ProcessedTasks.Last().State == TaskState.Processed);
+                //Assert.IsTrue(broadcaster.GetProcessedTasks().Last().State == TaskState.Processed);
             }
 
             broadcaster.WaitAll();
 
-			Assert.AreEqual(broadcaster.Context.ProcessedTasks.Count(), 10);
+			Assert.AreEqual(broadcaster.GetProcessedTasks().Count(), 10);
         }
 
         [Test]
@@ -115,7 +115,7 @@ namespace Broadcast.Test
 
             broadcaster.WaitAll();
 
-			Assert.AreEqual(broadcaster.Context.ProcessedTasks.Count(), 10);
+			Assert.AreEqual(broadcaster.GetProcessedTasks().Count(), 10);
         }
 
         [Test]
@@ -131,7 +131,7 @@ namespace Broadcast.Test
             broadcaster.WaitAll();
             //TODO: has to work without sleep!
             Task.Delay(1000).Wait();
-			Assert.AreEqual(broadcaster.Context.ProcessedTasks.Count(), 10);
+			Assert.AreEqual(broadcaster.GetProcessedTasks().Count(), 10);
         }
 
 
@@ -148,7 +148,7 @@ namespace Broadcast.Test
 			}
 
 			broadcaster.WaitAll();
-			Assert.IsTrue(broadcaster.Context.ProcessedTasks.Count() == 10);
+			Assert.IsTrue(broadcaster.GetProcessedTasks().Count() == 10);
         }
 
         [Test]
@@ -163,7 +163,7 @@ namespace Broadcast.Test
 			
             broadcaster.WaitAll();
 
-            Assert.AreEqual(10, broadcaster.Context.ProcessedTasks.Count());
+            Assert.AreEqual(10, broadcaster.GetProcessedTasks().Count());
         }
 
         [Test]
@@ -178,7 +178,7 @@ namespace Broadcast.Test
 
             broadcaster.WaitAll();
 
-            Assert.AreEqual(10, broadcaster.Context.ProcessedTasks.Count());
+            Assert.AreEqual(10, broadcaster.GetProcessedTasks().Count());
         }
 
         [Test]
@@ -194,7 +194,7 @@ namespace Broadcast.Test
 
 			broadcaster.WaitAll();
 
-            Assert.IsTrue(broadcaster.Context.ProcessedTasks.Count() == 10);
+            Assert.IsTrue(broadcaster.GetProcessedTasks().Count() == 10);
         }
 
         [Test]
@@ -212,7 +212,7 @@ namespace Broadcast.Test
 
             broadcaster.WaitAll();
 
-            Assert.IsTrue(broadcaster.Context.ProcessedTasks.Count() == 100);
+            Assert.IsTrue(broadcaster.GetProcessedTasks().Count() == 100);
 
             int v = 1;
             foreach (var value in taskValues)
@@ -243,7 +243,7 @@ namespace Broadcast.Test
                 // just spend some time
             }
 
-            Assert.IsTrue(broadcaster.Context.ProcessedTasks.Any(), "Broadcaseter ProcessedTasks: " + broadcaster.Context.ProcessedTasks.Count());
+            Assert.IsTrue(broadcaster.GetProcessedTasks().Any(), "Broadcaseter ProcessedTasks: " + broadcaster.GetProcessedTasks().Count());
 
             //int v = 1;
             //foreach (var value in taskValues.ToList())
@@ -278,7 +278,7 @@ namespace Broadcast.Test
 
             Task.Delay(1000).Wait();
 
-            Assert.IsTrue(broadcaster.GetStore().Count(t => t.State == TaskState.Processed) == 3);
+            Assert.IsTrue(broadcaster.Store.Count(t => t.State == TaskState.Processed) == 3);
         }
 
         //[Test]

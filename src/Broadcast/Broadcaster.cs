@@ -16,130 +16,73 @@ namespace Broadcast
 	/// </summary>
     public class Broadcaster : IBroadcaster
     {
-		static IBroadcaster _server;
-
-		static Broadcaster()
-		{
-			// setup the default server
-			// this is created even if it is not used
-			Setup(s => { });
-		}
-
-		/// <summary>
-		/// Gets the BroadcasterServer
-		/// </summary>
-		public static IBroadcaster Server => _server;
-
-		/// <summary>
-		/// Setup a BroadcasterServer.
-		/// This uses the default store from TaskStore.Default and the default options from Options.Default
-		/// </summary>
-		/// <param name="setup"></param>
-		public static void Setup(Action<IBroadcaster> setup)
-		{
-			// dispose existing servers to ensure the scheduler threads and all dispatchers are ended
-			_server?.Dispose();
-
-			var server = new Broadcaster();
-			setup(server);
-			_server = server;
-		}
-
-		private IProcessorContext _context;
-        private IScheduler _scheduler;
-		
 		/// <summary>
 		/// Creates a new Broadcaster
 		/// </summary>
-        public Broadcaster() : this(Options.Default, TaskStore.Default)
+        public Broadcaster() : this(TaskStore.Default)
         {
         }
 
-		public Broadcaster(Options options, ITaskStore store) 
-			: this(new ProcessorContext(store) {Options = options})
+		/// <summary>
+		/// Creates a new Broadcaster
+		/// </summary>
+		/// <param name="store"></param>
+		public Broadcaster(ITaskStore store)
+			: this(store, new TaskProcessor(Options.Default), new Scheduler(), Options.Default)
 		{
 		}
 
-		public Broadcaster(ITaskStore store)
-			: this(new ProcessorContext(store) { Options = Options.Default })
+		public Broadcaster(ITaskStore store, ITaskProcessor processor, IScheduler scheduler)
+			: this(store, processor, scheduler, Options.Default)
 		{
 		}
 
 		/// <summary>
 		/// Creates a new Broadcaster
 		/// </summary>
-		/// <param name="context"></param>
-		public Broadcaster(IProcessorContext context)
+		/// <param name="store"></param>
+		/// <param name="processor"></param>
+		/// <param name="scheduler"></param>
+		/// <param name="options"></param>
+		public Broadcaster(ITaskStore store, ITaskProcessor processor, IScheduler scheduler, Options options)
 		{
-			Context = context;
+			Processor = processor;
+			Scheduler = scheduler;
+			Store = store;
 
-			context.Store.RegisterDispatchers(new IDispatcher[]
+			store.RegisterDispatchers(new IDispatcher[]
 			{
-				new RecurringTaskDispatcher(this, context.Store),
+				new RecurringTaskDispatcher(this, store),
 				new ScheduleTaskDispatcher(this),
 				new ProcessTaskDispatcher(this)
 			});
 		}
 
         /// <summary>
-        /// Gets the ProcessorContext that containes all information create a TaskProcessor
+        /// The scheduler for timing tasks
         /// </summary>
-        public IProcessorContext Context
+        public IScheduler Scheduler{ get; }
+
+        public ITaskProcessor Processor { get; }
+
+		public ITaskStore Store { get; }
+
+        /// <summary>
+        /// Process the task
+        /// </summary>
+        /// <param name="task"></param>
+        public void Process(ITask task)
         {
-            get => _context;
-            set => _context = value;
+	        Processor.Process(task);
         }
 
         /// <summary>
-        /// The scheduler for timing tasks
-        /// </summary>
-        public IScheduler Scheduler
-        {
-            get
-            {
-                if (_scheduler == null)
-                {
-                    _scheduler = new Scheduler();
-                }
-
-                return _scheduler;
-			}
-			set => _scheduler = value;
-        }
-
-		/// <summary>
-		/// Process the task
-		/// </summary>
-		/// <param name="task"></param>
-        public void Process(ITask task)
-        {
-			using (var processor = Context.Open())
-			{
-				processor.Process(task);
-			}
-		}
-
-		/// <summary>
 		/// Wait for all threads to end
 		/// </summary>
         public void WaitAll()
         {
-	        using (var processor = Context.Open())
-	        {
-		        processor.WaitAll();
-	        }
+	        Processor.WaitAll();
 		}
-
-		/// <summary>
-		/// Gets the TaskStore
-		/// </summary>
-		/// <returns></returns>
-        public ITaskStore GetStore()
-        {
-	        return Context.Store;
-        }
-
-
 
 
 
@@ -163,7 +106,7 @@ namespace Broadcast
         /// <param name="target">The delegate that handles the INotification</param>
         public void RegisterHandler<T>(Action<T> target) where T : INotification
         {
-			Context.NotificationHandlers.AddHandler(target);
+			Processor.AddHandler(target);
 		}
 
         
@@ -187,11 +130,8 @@ namespace Broadcast
                 return;
             }
 
-            if (_scheduler != null)
-            {
-                _scheduler.Dispose();
-                _scheduler = null;
-            }
+			Scheduler.Dispose();
+			Processor.Dispose();
         }
     }
 }

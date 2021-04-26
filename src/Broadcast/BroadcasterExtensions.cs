@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using Broadcast.Composition;
@@ -21,7 +22,7 @@ namespace Broadcast
 		{
 			var task = TaskFactory.CreateTask(action);
 
-			broadcaster.GetStore().Add(task);
+			broadcaster.Store.Add(task);
 		}
 
 		/// <summary>
@@ -34,43 +35,9 @@ namespace Broadcast
 		{
 			var task = TaskFactory.CreateNotifiableTask(notification);
 
-			broadcaster.GetStore().Add(task);
+			broadcaster.Store.Add(task);
 		}
-
-		///// <summary>
-		///// Schedules a task
-		///// </summary>
-		///// <param name="broadcaster"></param>
-		///// <param name="task"></param>
-		///// <param name="time"></param>
-		//public static void Schedule(this IBroadcaster broadcaster, ITask task, TimeSpan time)
-		//{
-		//	broadcaster.GetStore().Add(task);
-		//	broadcaster.Scheduler.Enqueue(() => broadcaster.Process(task), time);
-		//}
-
-		///// <summary>
-		///// Create a recurring task
-		///// </summary>
-		///// <param name="broadcaster"></param>
-		///// <param name="task"></param>
-		///// <param name="time"></param>
-		//public static void Recurring(this IBroadcaster broadcaster, ITask task, TimeSpan time)
-		//{
-		//	broadcaster.GetStore().Add(task);
-		//	broadcaster.Scheduler.Enqueue(() =>
-		//	{
-		//		// execute the task
-		//		broadcaster.Process(task);
-
-		//		// reschedule the task
-		//		broadcaster.Recurring(task.Clone(), time);
-		//	}, time);
-		//}
-
-
-
-
+		
 		/// <summary>
 		/// Schedules a new task. The task will be executed at the time passed
 		/// </summary>
@@ -82,13 +49,14 @@ namespace Broadcast
 			var task = TaskFactory.CreateTask(expression);
 			task.Time = time;
 
-			broadcaster.GetStore().Add(task);
+			broadcaster.Store.Add(task);
 		}
 
 		/// <summary>
 		/// Schedules a INotification that is sent to the processor. The INotification will be passed to all registered Handlers of the same type
 		/// </summary>
 		/// <typeparam name="T">The notification type</typeparam>
+		/// <param name="broadcaster"></param>
 		/// <param name="expression">The delegate returning the notification that will be processed and passed to the handlers</param>
 		/// <param name="time">The interval time to execute the task at</param>
 		public static void Schedule<T>(this IBroadcaster broadcaster, Expression<Func<T>> expression, TimeSpan time) where T : INotification
@@ -96,7 +64,7 @@ namespace Broadcast
 			var task = TaskFactory.CreateNotifiableTask(expression);
 			task.Time = time;
 
-			broadcaster.GetStore().Add(task);
+			broadcaster.Store.Add(task);
 		}
 
 
@@ -112,7 +80,7 @@ namespace Broadcast
 			task.Time = time;
 			task.IsRecurring = true;
 
-			broadcaster.GetStore().Add(task);
+			broadcaster.Store.Add(task);
 		}
 		
 		/// <summary>
@@ -128,7 +96,16 @@ namespace Broadcast
 			task.Time = time;
 			task.IsRecurring = true;
 
-			broadcaster.GetStore().Add(task);
+			broadcaster.Store.Add(task);
+		}
+
+		/// <summary>
+		/// Gets all Tasks that have been processed
+		/// </summary>
+		/// <param name="broadcaster"></param>
+		public static IEnumerable<ITask> GetProcessedTasks(this IBroadcaster broadcaster)
+		{
+				return broadcaster.Store.Where(s => s.State == TaskState.Processed);
 		}
 	}
 }

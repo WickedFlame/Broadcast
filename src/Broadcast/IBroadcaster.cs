@@ -1,5 +1,6 @@
 ﻿using System;
 using Broadcast.EventSourcing;
+using Broadcast.Processing;
 
 namespace Broadcast
 {
@@ -8,33 +9,29 @@ namespace Broadcast
 	/// </summary>
     public interface IBroadcaster : IDisposable
     {
-        /// <summary>
-        /// Gets the ProcessorContext that containes all information create a TaskProcessor
-        /// </summary>
-        IProcessorContext Context { get; set; }
+		/// <summary>
+		/// Gets the <see cref="IScheduler"/>
+		/// </summary>
+		IScheduler Scheduler { get; }
 
 		/// <summary>
-		/// Gets the Scheduler
+		/// Gets the <see cref="ITaskProcessor"/>
 		/// </summary>
-		IScheduler Scheduler { get; set; }
+		ITaskProcessor Processor { get; }
+
+		ITaskStore Store { get; }
 
 		/// <summary>
 		/// Process the task
 		/// </summary>
 		/// <param name="task"></param>
-        void Process(ITask task);
+		void Process(ITask task);
 
         /// <summary>
 		/// Wait for all threads to end
 		/// </summary>
         void WaitAll();
-
-		/// <summary>
-		/// Get the TaskStore
-		/// </summary>
-		/// <returns></returns>
-        ITaskStore GetStore();
-
+		
 		/// <summary>
 		/// Register a INotificationTarget that gets called when a INotification of the same type is sent
 		/// </summary>

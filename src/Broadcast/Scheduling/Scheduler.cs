@@ -91,6 +91,7 @@ namespace Broadcast.Scheduling
             }
 
             _context.IsRunning = false;
+
             _backgroundProcess.WaitAll();
             _schedulerCount--;
 		}

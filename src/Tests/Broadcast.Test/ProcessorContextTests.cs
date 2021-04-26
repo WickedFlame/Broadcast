@@ -18,52 +18,24 @@ namespace Broadcast.Test
         }
 
         [Test]
-        public void DefaultProcessorContextTest()
+        public void ProcessorContext_ctor()
         {
-            var context = new ProcessorContext(new TaskStore(new Options()));
-
-            Assert.IsNotNull(context.Store);
+	        Assert.DoesNotThrow(() => new ProcessorContext());
         }
 
         [Test]
-        public void ProcessorContextWithCustomModeTest()
+        public void ProcessorContext_Notificationhandlers()
         {
-            var context = new ProcessorContext(new TaskStore(new Options()));
-
-            Assert.IsNotNull(context.Store);
+	        var ctx = new ProcessorContext();
+	        Assert.IsNotNull(ctx.NotificationHandlers);
         }
 
         [Test]
-        public void ProcessorContextWithCustomAndDefaultModeTest()
+        public void ProcessorContext_Options()
         {
-            var context = new ProcessorContext(new TaskStore(new Options()));
-
-            Assert.IsNotNull(context.Store);
-        }
-		
-        [Test]
-        public void BroadcasterCustom_TaskStore_InBroadcaster()
-        {
-	        var broadcaster = new Broadcaster
-	        {
-		        Context = new ProcessorContext(new TaskStore(new Options()))
-	        };
-
-            Assert.AreSame(broadcaster.GetStore(), broadcaster.Context.Store);
+	        var ctx = new ProcessorContext();
+	        Assert.IsNotNull(ctx.Options);
         }
 
-        [Test]
-        public void BroadcasterCustom_Open_Multiple()
-        {
-	        var context = new ProcessorContext(new TaskStore(new Options()));
-
-	        Assert.AreSame(context.Open(), context.Open());
-        }
-
-        [Test]
-        public void BroadcasterCustom_Open_DifferentContext()
-        {
-	        Assert.AreNotSame(new ProcessorContext(new TaskStore(new Options())).Open(), new ProcessorContext(new TaskStore(new Options())).Open());
-        }
 	}
 }

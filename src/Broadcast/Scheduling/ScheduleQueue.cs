@@ -51,6 +51,11 @@ namespace Broadcast.Scheduling
 		{
 			lock (_lockHandle)
 			{
+				if (!_queue.Any())
+				{
+					return Enumerable.Empty<SchedulerTask>();
+				}
+
 				return _queue.ToList();
 			}
 		}

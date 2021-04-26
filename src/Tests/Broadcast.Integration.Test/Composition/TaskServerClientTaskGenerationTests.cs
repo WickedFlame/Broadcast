@@ -19,14 +19,14 @@ namespace Broadcast.Integration.Test.Composition
 		public void Setup()
 		{
 			TaskStore.Default.Clear();
-			Broadcaster.Setup(s => { });
+			BroadcastServer.Setup(s => { });
 		}
 
 		[OneTimeTearDown]
 		public void TearDown()
 		{
 			TaskStore.Default.Clear();
-			Broadcaster.Setup(s => { });
+			BroadcastServer.Setup(s => { });
 		}
 
 		[Test]
@@ -36,7 +36,7 @@ namespace Broadcast.Integration.Test.Composition
 			// serializeable
 			TaskServerClient.Send(() => Trace.WriteLine("test"));
 
-			Assert.IsAssignableFrom<ExpressionTask>(Broadcaster.Server.GetStore().Single());
+			Assert.IsAssignableFrom<ExpressionTask>(BroadcastServer.Server.Store.Single());
 		}
 
 		[Test]
@@ -49,7 +49,7 @@ namespace Broadcast.Integration.Test.Composition
 			//Thread.Sleep(TimeSpan.FromSeconds(1));
 			Task.Delay(1000).Wait();
 
-			Assert.IsAssignableFrom<ExpressionTask>(Broadcaster.Server.GetStore().First());
+			Assert.IsAssignableFrom<ExpressionTask>(BroadcastServer.Server.Store.First());
 		}
 
 		[Test]
@@ -62,7 +62,7 @@ namespace Broadcast.Integration.Test.Composition
 			//Thread.Sleep(TimeSpan.FromSeconds(1));
 			Task.Delay(1000).Wait();
 
-			Assert.IsAssignableFrom<ExpressionTask>(Broadcaster.Server.GetStore().First());
+			Assert.IsAssignableFrom<ExpressionTask>(BroadcastServer.Server.Store.First());
 		}
 	}
 }

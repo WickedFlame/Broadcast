@@ -15,12 +15,12 @@ namespace Broadcast.Integration.Test
         [Test]
         public void Recurring_Simple()
         {
-            var broadcaster = new Broadcaster();
+            var broadcaster = new Broadcaster(new TaskStore());
             broadcaster.Recurring(() => System.Diagnostics.Trace.WriteLine("Recurring"), TimeSpan.FromSeconds(0.01));
 
             Task.Delay(1000).Wait();
 
-            Assert.IsTrue(broadcaster.GetStore().Count() > 10);
+            Assert.GreaterOrEqual(broadcaster.Store.Count(), 10);
         }
     }
 }

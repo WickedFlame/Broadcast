@@ -24,15 +24,11 @@ namespace Broadcast.Test.Api
 			_processor = new Mock<ITaskProcessor>();
 			_scheduler = new Mock<IScheduler>();
 			_store = new Mock<ITaskStore>();
-			var ctx = new Mock<IProcessorContext>();
-			ctx.Setup(exp => exp.Open()).Returns(_processor.Object);
-			ctx.Setup(exp => exp.Store).Returns(_store.Object);
 
-			Broadcaster.Setup(s =>
-			{
-				s.Context = ctx.Object;
-				s.Scheduler = _scheduler.Object;
-			});
+			BroadcastServer.Setup(s =>
+				s.AddScheduler(_scheduler.Object)
+					.AddProcessor(_processor.Object)
+			);
 		}
 
 		[TearDown]

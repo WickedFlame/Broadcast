@@ -26,7 +26,7 @@ namespace Broadcast.Integration.Test.Api
 			broadcaster.Send(() => Trace.WriteLine("test"));
 
 			broadcaster.WaitAll();
-			Assert.AreEqual(1, broadcaster.Context.ProcessedTasks.Count());
+			Assert.AreEqual(1, broadcaster.GetProcessedTasks().Count());
 		}
 
 		[Test]
@@ -39,7 +39,7 @@ namespace Broadcast.Integration.Test.Api
 			broadcaster.Send(() => TestMethod(1));
 
 			broadcaster.WaitAll();
-			Assert.AreEqual(1, broadcaster.Context.ProcessedTasks.Count());
+			Assert.AreEqual(1, broadcaster.GetProcessedTasks().Count());
 		}
 
 		[Test]
@@ -52,7 +52,7 @@ namespace Broadcast.Integration.Test.Api
 			broadcaster.Send(() => GenericMethod(1));
 
 			broadcaster.WaitAll();
-			Assert.AreEqual(1, broadcaster.Context.ProcessedTasks.Count());
+			Assert.AreEqual(1, broadcaster.GetProcessedTasks().Count());
 		}
 
 		[Test]
@@ -65,7 +65,7 @@ namespace Broadcast.Integration.Test.Api
 			broadcaster.Send<TestClass>(() => new TestClass(1));
 
 			broadcaster.WaitAll();
-			Assert.AreEqual(1, broadcaster.Context.ProcessedTasks.Count());
+			Assert.AreEqual(1, broadcaster.GetProcessedTasks().Count());
 		}
 
 		[Test]
@@ -78,7 +78,7 @@ namespace Broadcast.Integration.Test.Api
 			broadcaster.Send<TestClass>(() => Returnable(1));
 
 			broadcaster.WaitAll();
-			Assert.AreEqual(1, broadcaster.Context.ProcessedTasks.Count());
+			Assert.AreEqual(1, broadcaster.GetProcessedTasks().Count());
 		}
 
 
@@ -94,7 +94,7 @@ namespace Broadcast.Integration.Test.Api
 
 			Task.Delay(1500).Wait();
 
-			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 1);
+			Assert.GreaterOrEqual(broadcaster.GetProcessedTasks().Count(), 1);
 		}
 
 		[Test]
@@ -108,7 +108,7 @@ namespace Broadcast.Integration.Test.Api
 
 			Task.Delay(1500).Wait();
 
-			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 1);
+			Assert.GreaterOrEqual(broadcaster.GetProcessedTasks().Count(), 1);
 		}
 
 		[Test]
@@ -122,7 +122,7 @@ namespace Broadcast.Integration.Test.Api
 
 			Task.Delay(1500).Wait();
 
-			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 1);
+			Assert.GreaterOrEqual(broadcaster.GetProcessedTasks().Count(), 1);
 		}
 
 		[Test]
@@ -136,7 +136,7 @@ namespace Broadcast.Integration.Test.Api
 
 			Task.Delay(1500).Wait();
 
-			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 1);
+			Assert.GreaterOrEqual(broadcaster.GetProcessedTasks().Count(), 1);
 		}
 
 		[Test]
@@ -150,7 +150,7 @@ namespace Broadcast.Integration.Test.Api
 
 			Task.Delay(1500).Wait();
 
-			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 1);
+			Assert.GreaterOrEqual(broadcaster.GetProcessedTasks().Count(), 1);
 		}
 
 
@@ -171,7 +171,7 @@ namespace Broadcast.Integration.Test.Api
 
 			Task.Delay(2000).Wait();
 
-			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 2);
+			Assert.GreaterOrEqual(broadcaster.GetProcessedTasks().Count(), 2);
 		}
 
 		[Test]
@@ -185,7 +185,7 @@ namespace Broadcast.Integration.Test.Api
 
 			Task.Delay(2000).Wait();
 
-			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 2);
+			Assert.GreaterOrEqual(broadcaster.GetProcessedTasks().Count(), 2);
 		}
 
 		[Test]
@@ -199,7 +199,7 @@ namespace Broadcast.Integration.Test.Api
 
 			Task.Delay(2000).Wait();
 
-			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 2);
+			Assert.GreaterOrEqual(broadcaster.GetProcessedTasks().Count(), 2);
 		}
 
 		[Test]
@@ -213,7 +213,7 @@ namespace Broadcast.Integration.Test.Api
 
 			Task.Delay(2000).Wait();
 
-			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 2);
+			Assert.GreaterOrEqual(broadcaster.GetProcessedTasks().Count(), 2);
 		}
 
 		[Test]
@@ -227,7 +227,7 @@ namespace Broadcast.Integration.Test.Api
 
 			Task.Delay(2000).Wait();
 
-			Assert.GreaterOrEqual(broadcaster.Context.ProcessedTasks.Count(), 2);
+			Assert.GreaterOrEqual(broadcaster.GetProcessedTasks().Count(), 2);
 		}
 
 
