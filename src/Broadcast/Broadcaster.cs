@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using Broadcast.Composition;
 using Broadcast.Configuration;
+using Broadcast.Diagnostics;
 using Broadcast.Scheduling;
 using Broadcast.Server;
 using Task = System.Threading.Tasks.Task;
@@ -16,7 +17,11 @@ namespace Broadcast
 	/// </summary>
     public class Broadcaster : IBroadcaster
     {
-		/// <summary>
+	    private readonly Options _options;
+	    private readonly ILogger _logger;
+	    private readonly string _id = Guid.NewGuid().ToString();
+
+	    /// <summary>
 		/// Creates a new Broadcaster
 		/// </summary>
         public Broadcaster() : this(TaskStore.Default)
@@ -46,6 +51,9 @@ namespace Broadcast
 		/// <param name="options"></param>
 		public Broadcaster(ITaskStore store, ITaskProcessor processor, IScheduler scheduler, Options options)
 		{
+			_logger = LoggerFactory.Create();
+			_logger.Write($"Starting new Broadcaster {options.ServerName}:{_id}");
+
 			Processor = processor;
 			Scheduler = scheduler;
 			Store = store;
@@ -56,6 +64,8 @@ namespace Broadcast
 				new ScheduleTaskDispatcher(this),
 				new ProcessTaskDispatcher(this)
 			});
+
+			_options = options;
 		}
 
         /// <summary>
@@ -132,6 +142,7 @@ namespace Broadcast
 
 			Scheduler.Dispose();
 			Processor.Dispose();
-        }
+			_logger.Write($"Disposed Broadcaster {_options.ServerName}:{_id}");
+		}
     }
 }

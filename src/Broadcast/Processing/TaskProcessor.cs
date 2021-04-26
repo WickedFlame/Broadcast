@@ -1,5 +1,6 @@
 ﻿using System;
 using Broadcast.Configuration;
+using Broadcast.Diagnostics;
 using Broadcast.EventSourcing;
 using Broadcast.Server;
 
@@ -15,6 +16,7 @@ namespace Broadcast.Processing
 		private readonly IBackgroundServerProcess<IProcessorContext> _server;
 		private readonly ITaskQueue _queue;
 		private readonly IProcessorContext _context;
+		private readonly ILogger _logger;
 
 		/// <summary>
 		/// Creates a new TaskProcessor
@@ -29,6 +31,9 @@ namespace Broadcast.Processing
 		/// <param name="options"></param>
 		public TaskProcessor(Options options)
 		{
+			_logger = LoggerFactory.Create();
+			_logger.Write($"Starting new TaskProcessor for {options.ServerName}");
+
 			_context = new ProcessorContext
 			{
 				Options = options
@@ -61,8 +66,10 @@ namespace Broadcast.Processing
 		/// </summary>
 		/// <param name="task">The task to process</param>
 		public void Process(ITask task)
-        {
-	        _queue.Enqueue(task);
+		{
+			_logger.Write($"Enqueued task {task.Id}");
+
+			_queue.Enqueue(task);
 	        task.SetState(TaskState.Queued);
 
 	        // check if a thread is allready processing the queue
@@ -83,6 +90,7 @@ namespace Broadcast.Processing
 		/// </summary>
         public void Dispose()
         {
-        }
+	        _logger.Write($"Disposing TaskProcessor");
+		}
     }
 }

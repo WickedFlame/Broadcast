@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Broadcast.Diagnostics;
 using Broadcast.Server;
 
 namespace Broadcast.Scheduling
@@ -18,7 +19,7 @@ namespace Broadcast.Scheduling
 		private readonly ISchedulerContext _context;
 		private readonly IScheduleQueue _scheduleQueue;
 		private readonly IBackgroundServerProcess<ISchedulerContext> _backgroundProcess;
-
+		private readonly ILogger _logger;
 
 		/// <summary>
 		/// Creates a new <see cref="IScheduler"/> for the broadcaster
@@ -34,6 +35,8 @@ namespace Broadcast.Scheduling
 		/// <param name="queue"></param>
 		public Scheduler(IScheduleQueue queue)
 		{
+			_logger = LoggerFactory.Create();
+
 			_scheduleQueue = queue ?? throw new ArgumentNullException();
 			_context = new SchedulerContext
 			{
@@ -44,6 +47,8 @@ namespace Broadcast.Scheduling
 			_backgroundProcess.StartNew(new SchedulerTaskDispatcher(_scheduleQueue));
 
 			_schedulerCount++;
+
+			_logger.Write($"Started new Scheduler. New SchedulerCount: {_schedulerCount}");
 		}
 
         /// <summary>
@@ -94,6 +99,7 @@ namespace Broadcast.Scheduling
 
             _backgroundProcess.WaitAll();
             _schedulerCount--;
+            _logger.Write($"Disposed Scheduler. New SchedulerCount: {_schedulerCount}");
 		}
     }
 }

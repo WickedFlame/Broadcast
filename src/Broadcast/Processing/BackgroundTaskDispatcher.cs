@@ -1,4 +1,5 @@
 ﻿using System;
+using Broadcast.Diagnostics;
 using Broadcast.EventSourcing;
 using Broadcast.Server;
 
@@ -13,6 +14,7 @@ namespace Broadcast.Processing
 		private readonly DispatcherLock _dispatcherLock;
 		private readonly ITaskQueue _queue;
 		private readonly IBackgroundServerProcess<IProcessorContext> _server;
+		private readonly ILogger _logger;
 
 		/// <summary>
 		/// Creates a new instance of a BackgroundTaskDispatcher
@@ -23,8 +25,11 @@ namespace Broadcast.Processing
 		public BackgroundTaskDispatcher(DispatcherLock dispatcherLock, ITaskQueue queue, IBackgroundServerProcess<IProcessorContext> server)
 		{
 			_dispatcherLock = dispatcherLock ?? throw new ArgumentNullException(nameof(dispatcherLock));
-			_queue = queue ?? throw new ArgumentNullException(nameof(queue)); ;
-			_server = server ?? throw new ArgumentNullException(nameof(server)); ;
+			_queue = queue ?? throw new ArgumentNullException(nameof(queue));
+			_server = server ?? throw new ArgumentNullException(nameof(server));
+
+			_logger = LoggerFactory.Create();
+			_logger.Write($"Starting new BackgroundTaskDispatcher");
 		}
 
 		/// <summary>
@@ -43,6 +48,7 @@ namespace Broadcast.Processing
 
 			while (_queue.TryDequeue(out var task))
 			{
+				_logger.Write($"Dequeued task {task.Id}");
 				task.SetState(TaskState.Dequeued);
 
 				try
@@ -51,13 +57,11 @@ namespace Broadcast.Processing
 				}
 				catch (Exception e)
 				{
-					//_logger.Write($"Error processing eveng{Environment.NewLine}EventId: {@event.Id}{Environment.NewLine}Pipeline: {PipelineId}{Environment.NewLine}{e.Message}", Category.Log, LogLevel.Error, "EventBus");
+					_logger.Write($"Error creating process for event{Environment.NewLine}EventId: {task.Id}{Environment.NewLine}{e.Message}", LogLevel.Error);
 				}
 			}
 
 			_dispatcherLock.Unlock();
 		}
-
-
 	}
 }

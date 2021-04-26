@@ -11,6 +11,7 @@ namespace Broadcast.Processing
 	public class TaskExecutionDispatcher : IBackgroundDispatcher<IProcessorContext>
 	{
 		private readonly ITask _task;
+		private readonly ILogger _logger;
 
 		/// <summary>
 		/// Creates a new instance of a TaskExecutionDispatcher
@@ -19,6 +20,9 @@ namespace Broadcast.Processing
 		public TaskExecutionDispatcher(ITask task)
 		{
 			_task = task ?? throw new ArgumentNullException(nameof(task));
+
+			_logger = LoggerFactory.Create();
+			_logger.Write($"Starting new TaskExecutionDispatcher for {task.Id}");
 		}
 
 		/// <summary>
@@ -27,10 +31,15 @@ namespace Broadcast.Processing
 		/// <param name="context"></param>
 		public void Execute(IProcessorContext context)
 		{
-			_task.SetInprocess();
+			// Stopwatch is the only object allowed outside the try..catch to ensure no errors occure outside the executionblock
+			var sw = new Stopwatch();
+			sw.Start();
 
 			try
 			{
+				_logger.Write($"Start processing task {_task.Id}");
+				_task.SetInprocess();
+
 				//TODO: INotification is bad design. any object should be useable
 				var invocation = new TaskInvocation();
 				var output = _task.Invoke(invocation) as INotification;
