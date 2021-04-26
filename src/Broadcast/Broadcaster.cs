@@ -58,7 +58,7 @@ namespace Broadcast
 			Scheduler = scheduler;
 			Store = store;
 
-			store.RegisterDispatchers(new IDispatcher[]
+			store.RegisterDispatchers(_id, new IDispatcher[]
 			{
 				new RecurringTaskDispatcher(this, store),
 				new ScheduleTaskDispatcher(this),
@@ -93,12 +93,7 @@ namespace Broadcast
         {
 	        Processor.WaitAll();
 		}
-
-
-
-
-
-
+		
 		/// <summary>
 		/// Register a INotificationTarget that gets called when a INotification of the same type is sent
 		/// </summary>
@@ -142,6 +137,8 @@ namespace Broadcast
 
 			Scheduler.Dispose();
 			Processor.Dispose();
+			Store.UnregisterDispatchers(_id);
+
 			_logger.Write($"Disposed Broadcaster {_options.ServerName}:{_id}");
 		}
     }

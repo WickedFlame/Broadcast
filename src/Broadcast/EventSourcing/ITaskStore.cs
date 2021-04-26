@@ -18,8 +18,11 @@ namespace Broadcast.EventSourcing
 		/// Dispatchers are executed when a new Task is added to the TaskStore to notify clients of the changes.
 		/// All previously registered <see cref="IDispatcher"/> will be removed.
 		/// </summary>
+		/// <param name="id"></param>
 		/// <param name="dispatchers"></param>
-		void RegisterDispatchers(IEnumerable<IDispatcher> dispatchers);
+		void RegisterDispatchers(string id, IEnumerable<IDispatcher> dispatchers);
+
+		void UnregisterDispatchers(string id);
 
 		/// <summary>
 		/// Clear all Tasks from the TaskStore

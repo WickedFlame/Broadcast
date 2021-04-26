@@ -3,6 +3,7 @@ using Broadcast.Configuration;
 using Broadcast.Storage;
 using System.Collections;
 using System.Collections.Generic;
+using Broadcast.Diagnostics;
 
 namespace Broadcast.EventSourcing
 {
@@ -15,11 +16,12 @@ namespace Broadcast.EventSourcing
 
         private readonly IStorage _store;
         private readonly Options _options;
-        private readonly List<IDispatcher> _dispatchers;
+        private readonly DispatcherStorage _dispatchers;
 
         private static readonly ItemFactory<ITaskStore> ItemFactory = new ItemFactory<ITaskStore>(() => new TaskStore(Options.Default));
+        private readonly ILogger _logger;
 
-		/// <summary>
+        /// <summary>
 		/// Gets the default instance of the <see cref="ITaskStore"/>
 		/// </summary>
         public static ITaskStore Default => ItemFactory.Factory();
@@ -50,8 +52,11 @@ namespace Broadcast.EventSourcing
 			_options = options;
 
             _store = new InmemoryStorage();
-            _dispatchers = new List<IDispatcher>();
-        }
+            _dispatchers = new DispatcherStorage();
+
+            _logger = LoggerFactory.Create();
+			_logger.Write("Starting new Storage");
+		}
 		
         /// <summary>
         /// Adds a new Task to the queue to be processed
@@ -59,6 +64,7 @@ namespace Broadcast.EventSourcing
         /// <param name="task"></param>
         public void Add(ITask task)
         {
+	        _logger.Write($"Add task {task.Id} to storage");
             lock (_lockHandle)
             {
 	            _store.AddToList(new StorageKey("task", _options.ServerName), task);
@@ -75,12 +81,19 @@ namespace Broadcast.EventSourcing
 		/// Dispatchers are executed when a new Task is added to the TaskStore to notify clients of the changes.
 		/// All previously registered <see cref="IDispatcher"/> will be removed.
 		/// </summary>
+		/// <param name="id"></param>
 		/// <param name="dispatchers"></param>
-		public void RegisterDispatchers(IEnumerable<IDispatcher> dispatchers)
+		public void RegisterDispatchers(string id, IEnumerable<IDispatcher> dispatchers)
         {
-	        _dispatchers.Clear();
-			_dispatchers.AddRange(dispatchers);
+	        _logger.Write($"Register a new set of dispatchers to storage for {id}");
+			_dispatchers.Add(id, dispatchers);
         }
+
+		public void UnregisterDispatchers(string id)
+		{
+			_logger.Write($"Remove all dispatchers for {id}");
+			_dispatchers.Remove(id);
+		}
 
 		/// <summary>
 		/// Clear all Tasks from the TaskStore

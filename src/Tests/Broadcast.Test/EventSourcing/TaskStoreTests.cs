@@ -64,7 +64,7 @@ namespace Broadcast.Test.EventSourcing
 		{
 			ITask output = null;
 			var store = new TaskStore();
-			store.RegisterDispatchers(new IDispatcher[]
+			store.RegisterDispatchers("id", new IDispatcher[]
 			{
 				new TestDispatcher(t => output = t)
 			});
@@ -82,13 +82,44 @@ namespace Broadcast.Test.EventSourcing
 			var store = new TaskStore();
 
 			// dispatchers are reset before registration
-			store.RegisterDispatchers(new IDispatcher[] {new TestDispatcher(t => cnt += 1)});
-			store.RegisterDispatchers(new IDispatcher[] { new TestDispatcher(t => cnt += 1) });
-			store.RegisterDispatchers(new IDispatcher[] { new TestDispatcher(t => cnt += 1) });
+			store.RegisterDispatchers("1", new IDispatcher[] { new TestDispatcher(t => cnt += 1) });
+			store.RegisterDispatchers("2", new IDispatcher[] { new TestDispatcher(t => cnt += 1) });
+			store.RegisterDispatchers("3", new IDispatcher[] { new TestDispatcher(t => cnt += 1) });
+
+			store.Add(TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers")));
+
+			Assert.AreEqual(3, cnt);
+		}
+
+		[Test]
+		public void TaskStore_Dispatchers_RegisterMultiple_SameId()
+		{
+			var cnt = 0;
+			var store = new TaskStore();
+
+			// dispatchers are reset before registration
+			store.RegisterDispatchers("id", new IDispatcher[] {new TestDispatcher(t => cnt += 1)});
+			store.RegisterDispatchers("id", new IDispatcher[] { new TestDispatcher(t => cnt += 1) });
+			store.RegisterDispatchers("id", new IDispatcher[] { new TestDispatcher(t => cnt += 1) });
 
 			store.Add(TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers")));
 
 			Assert.AreEqual(1, cnt);
+		}
+
+		[Test]
+		public void TaskStore_Dispatchers_Unregister()
+		{
+			var cnt = 0;
+			var store = new TaskStore();
+
+			// dispatchers are reset before registration
+			store.RegisterDispatchers("id", new IDispatcher[] { new TestDispatcher(t => cnt += 1) });
+			store.UnregisterDispatchers("id");
+
+			store.Add(TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers")));
+
+			Assert.AreEqual(0, cnt);
 		}
 
 		[Test]
