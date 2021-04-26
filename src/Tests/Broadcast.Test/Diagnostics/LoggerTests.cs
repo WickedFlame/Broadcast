@@ -42,7 +42,7 @@ namespace Broadcast.Test.Diagnostics
 			var writer1 = new Mock<ILogWriter>();
 			writer1.Setup(exp => exp.Category).Returns(() => Category.Log);
 			var writer2 = new Mock<ILogWriter>();
-			writer1.Setup(exp => exp.Category).Returns(() => Category.Statistic);
+			writer2.Setup(exp => exp.Category).Returns(() => Category.Statistic);
 
 			var logger = new Logger();
 			logger.Writers.Add(writer1.Object);
@@ -60,7 +60,7 @@ namespace Broadcast.Test.Diagnostics
 			var writer1 = new Mock<ILogWriter>();
 			writer1.Setup(exp => exp.Category).Returns(() => Category.Log);
 			var writer2 = new Mock<ILogWriter>();
-			writer1.Setup(exp => exp.Category).Returns(() => Category.Statistic);
+			writer2.Setup(exp => exp.Category).Returns(() => Category.Statistic);
 
 			var logger = new Logger();
 			logger.Writers.Add(writer1.Object);

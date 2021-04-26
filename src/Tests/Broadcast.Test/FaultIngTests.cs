@@ -26,54 +26,9 @@ namespace Broadcast.Test
             Task.Delay(1000).Wait();
 
             var store = broadcaster.Store;
-            Assert.IsTrue(store.Count(t => t.State == TaskState.Processed) == 2, $"Store Count is {store.Count()}, processed Count is {store.Count(t => t.State == TaskState.Processed)}");
-        }
-
-        [Test]
-		[Ignore("Test does not fail")]
-        public void FailingEvent()
-        {
-            var broadcaster = new Broadcaster(new TaskStore());
-            broadcaster.RegisterHandler(new GenericEventHandler());
-
-            broadcaster.Schedule(() => new GenericEvent(), TimeSpan.FromSeconds(0.01));
-            broadcaster.Schedule(() => new GenericEvent(), TimeSpan.FromSeconds(0.02));
-
-            Task.Delay(1000).Wait();
-
-            Assert.IsTrue(broadcaster.Store.Count(t => t.State == TaskState.Processed) == 2);
-        }
-
-        [Test]
-        [Ignore("Implementation not finished")]
-        public void FailingTask_CheckState()
-        {
-            var broadcaster = new Broadcaster(new TaskStore());
-            //TODO: Refactore
-			Action action = () => throw new NotImplementedException();
-			broadcaster.Schedule(() => action.Invoke(), TimeSpan.FromSeconds(0.01));
-
-            Task.Delay(1000).Wait();
-
-            //Assert.IsTrue(broadcaster.Store.All(t => t.State == TaskState.Faulted));
-        }
-		
-        public class GenericEvent : INotification
-        {
-            public GenericEvent()
-            {
-            }
-
-            //public Action Action { get; }
-        }
-
-        public class GenericEventHandler : INotificationTarget<GenericEvent>
-        {
-            public void Handle(GenericEvent notification)
-            {
-                //notification.Action.Invoke();
-            }
-        }
+            Assert.IsTrue(store.Count(t => t.State == TaskState.Processed) == 1, $"Store Count is {store.Count()}, processed Count is {store.Count(t => t.State == TaskState.Processed)}");
+            Assert.IsTrue(store.Count(t => t.State == TaskState.Faulted) == 1, $"Store Count is {store.Count()}, processed Count is {store.Count(t => t.State == TaskState.Faulted)}");
+		}
 
     }
 }

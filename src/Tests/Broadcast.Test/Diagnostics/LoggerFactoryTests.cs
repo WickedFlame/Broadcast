@@ -26,7 +26,7 @@ namespace Broadcast.Test.Diagnostics
 		[Test]
 		public void LoggerFactory_Create_NotSame()
 		{
-			Assert.AreSame(LoggerFactory.Create(), LoggerFactory.Create());
+			Assert.AreNotSame(LoggerFactory.Create(), LoggerFactory.Create());
 		}
 
 		[Test]
@@ -58,7 +58,7 @@ namespace Broadcast.Test.Diagnostics
 			LoggerFactory.Setup(() => new Logger());
 			LoggerFactory.Setup(null);
 
-			Assert.AreSame(LoggerFactory.Create(), LoggerFactory.Create());
+			Assert.AreNotSame(LoggerFactory.Create(), LoggerFactory.Create());
 		}
 	}
 }
