@@ -63,6 +63,7 @@ namespace Broadcast.EventSourcing
 			_storage = storage ?? throw new ArgumentNullException(nameof(storage));
 
 			_storage.RegisterSubscription(new ServerHeartbeatSubscriber(this));
+			_storage.RegisterSubscription(new EnqueuedTaskSubscriber(this));
 
             _dispatchers = new DispatcherStorage();
             _registeredServers = new Dictionary<string, ServerModel>();
@@ -84,8 +85,17 @@ namespace Broadcast.EventSourcing
 		{
 			_logger.Write($"Add task {task.Id} to storage");
 
-			_storage.AddToList(new StorageKey("task", _options.ServerName), task);
+			// serializeable tasks are propagated to all registered servers through the storage
+			_storage.AddToList(new StorageKey("tasks:enqueued"), task.Id);
+			_storage.Set(new StorageKey($"task:{task.Id}"), task);
+		}
 
+		/// <summary>
+		/// Dispatch the task to all <see cref="IDispatcher"/>
+		/// </summary>
+		/// <param name="task"></param>
+		public void DispatchTask(ITask task)
+		{
 			foreach (var dispatcher in _dispatchers)
 			{
 				dispatcher.Execute(task);
@@ -119,7 +129,11 @@ namespace Broadcast.EventSourcing
 		/// </summary>
 		public void Clear()
 		{
-			_storage.Delete(new StorageKey("task", _options.ServerName));
+			var keys = _storage.GetKeys(new StorageKey("task"));
+			foreach (var key in keys)
+			{
+				_storage.Delete(new StorageKey(key));
+			}
 		}
 
 		/// <summary>
@@ -156,13 +170,21 @@ namespace Broadcast.EventSourcing
 		/// <returns></returns>
 		public IEnumerator<ITask> GetEnumerator()
 		{
-			var tasks = _storage.GetList<ITask>(new StorageKey("task", _options.ServerName));
-			return tasks.GetEnumerator();
+			return GetStoredTasks().GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
+
+		private IEnumerable<ITask> GetStoredTasks()
+		{
+			var keys = _storage.GetKeys(new StorageKey("task:"));
+			foreach (var key in keys)
+			{
+				yield return _storage.Get<ITask>(new StorageKey(key));
+			}
+		}
     }
 }

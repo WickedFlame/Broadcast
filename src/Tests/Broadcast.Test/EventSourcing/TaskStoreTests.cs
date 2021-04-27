@@ -59,6 +59,30 @@ namespace Broadcast.Test.EventSourcing
 		}
 
 		[Test]
+		public void TaskStore_Add_Storage_AddToList()
+		{
+			var storage = new Mock<IStorage>();
+			var store = new TaskStore(storage.Object);
+
+			var task = TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers"));
+			store.Add(task);
+
+			storage.Verify(exp => exp.AddToList(It.IsAny<StorageKey>(), It.IsAny<string>()), Times.Once);
+		}
+
+		[Test]
+		public void TaskStore_Add_Storage_Set()
+		{
+			var storage = new Mock<IStorage>();
+			var store = new TaskStore(storage.Object);
+
+			var task = TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers"));
+			store.Add(task);
+
+			storage.Verify(exp => exp.Set(It.IsAny<StorageKey>(), It.IsAny<ITask>()), Times.Once);
+		}
+
+		[Test]
 		public void TaskStore_AddMultiple()
 		{
 			var store = new TaskStore();
@@ -84,12 +108,21 @@ namespace Broadcast.Test.EventSourcing
 		}
 
 		[Test]
-		public void TaskStore_Subscriptions()
+		public void TaskStore_Subscriptions_ServerHeartbeatSubscriber()
 		{
 			var storage = new Mock<IStorage>();
 			var store = new TaskStore(storage.Object);
 
 			storage.Verify(exp => exp.RegisterSubscription(It.IsAny<ServerHeartbeatSubscriber>()), Times.Once);
+		}
+
+		[Test]
+		public void TaskStore_Subscriptions_EnqueuedTaskSubscriber()
+		{
+			var storage = new Mock<IStorage>();
+			var store = new TaskStore(storage.Object);
+
+			storage.Verify(exp => exp.RegisterSubscription(It.IsAny<EnqueuedTaskSubscriber>()), Times.Once);
 		}
 
 		[Test]
@@ -156,7 +189,44 @@ namespace Broadcast.Test.EventSourcing
 		}
 
 		[Test]
-		public void TaskStore_Clear()
+		public void TaskStore_DispatchTask()
+		{
+			var dispatcher = new Mock<IDispatcher>();
+
+			var store = new TaskStore();
+			store.RegisterDispatchers("id", new[] {dispatcher.Object});
+
+			var task = TaskFactory.CreateTask(() => Console.WriteLine("TaskStore"));
+			store.Add(task);
+
+			dispatcher.Verify(exp => exp.Execute(It.IsAny<ITask>()), Times.Once);
+		}
+
+		[Test]
+		public void TaskStore_Clear_GetKeys()
+		{
+			var storage = new Mock<IStorage>();
+			var store = new TaskStore(storage.Object);
+
+			store.Clear();
+
+			storage.Verify(exp => exp.GetKeys(It.IsAny<StorageKey>()), Times.Once);
+		}
+
+		[Test]
+		public void TaskStore_Clear_Delete()
+		{
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.GetKeys(It.IsAny<StorageKey>())).Returns(() => new[] {"one", "two", "tree"});
+			var store = new TaskStore(storage.Object);
+
+			store.Clear();
+
+			storage.Verify(exp => exp.Delete(It.IsAny<StorageKey>()), Times.Exactly(3));
+		}
+
+		[Test]
+		public void TaskStore_Clear_Integration()
 		{
 			var store = new TaskStore
 			{

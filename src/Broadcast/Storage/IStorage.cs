@@ -24,6 +24,15 @@ namespace Broadcast.Storage
 		IEnumerable<T> GetList<T>(StorageKey key);
 
 		/// <summary>
+		/// Remove a item from the list beind the key
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="key"></param>
+		/// <param name="item"></param>
+		/// <returns></returns>
+		bool RemoveFromList<T>(StorageKey key, T item);
+
+		/// <summary>
 		/// Removes a range of items from the list
 		/// </summary>
 		/// <param name="key"></param>

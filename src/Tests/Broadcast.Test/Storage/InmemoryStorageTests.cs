@@ -163,6 +163,20 @@ namespace Broadcast.Test.Storage
 		}
 
 		[Test]
+		public void InmemoryStorage_RemoveFromList()
+		{
+			var item = new StorageModel {Id = 2, Value = "two"};
+
+			var storage = new InmemoryStorage();
+			storage.AddToList(new StorageKey("storage", "key"), new StorageModel { Id = 1, Value = "one" });
+			storage.AddToList(new StorageKey("storage", "key"), item);
+
+			storage.RemoveFromList(new StorageKey("storage", "key"), item);
+
+			Assert.IsTrue(storage.GetList<StorageModel>(new StorageKey("storage", "key")).All(i => i != item));
+		}
+
+		[Test]
 		public void InmemoryStorage_Get_Invalid()
 		{
 			var storage = new InmemoryStorage();

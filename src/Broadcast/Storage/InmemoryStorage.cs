@@ -60,6 +60,30 @@ namespace Broadcast.Storage
 		}
 
 		/// <inheritdoc/>
+		public bool RemoveFromList<T>(StorageKey key, T item)
+		{
+			lock (_lockHandle)
+			{
+				if (_store.ContainsKey(key.ToString()))
+				{
+					if (_store[key.ToString()] is ListItem list)
+					{
+						foreach (var stored in list.Items)
+						{
+							if (((T)stored.GetValue()).Equals(item))
+							{
+								list.Items.Remove(stored);
+								return true;
+							}
+						}
+					}
+				}
+
+				return false;
+			}
+		}
+
+		/// <inheritdoc/>
 		public void RemoveRangeFromList(StorageKey key, int count)
 		{
 			lock (_lockHandle)
@@ -102,9 +126,9 @@ namespace Broadcast.Storage
 				if (_store.ContainsKey(key.ToString()))
 				{
 					var item = _store[key.ToString()].GetValue();
-					if (item != null && item.GetType() == typeof(T))
+					if (item != null && item is T item1)
 					{
-						return (T) item;
+						return item1;
 					}
 				}
 
