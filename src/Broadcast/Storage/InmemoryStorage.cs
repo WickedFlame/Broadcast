@@ -12,7 +12,14 @@ namespace Broadcast.Storage
 	{
 		private readonly object _lockHandle = new object();
 
-		private readonly Dictionary<string, IStorageItem> _store = new Dictionary<string, IStorageItem>();
+		private readonly Dictionary<string, IStorageItem> _store;
+		private readonly List<ISubscription> _subscriptions;
+
+		public InmemoryStorage()
+		{
+			_store = new Dictionary<string, IStorageItem>();
+			_subscriptions = new List<ISubscription>();
+		}
 
 		/// <inheritdoc/>
 		public void AddToList<T>(StorageKey key, T value)
@@ -78,6 +85,12 @@ namespace Broadcast.Storage
 			lock (_lockHandle)
 			{
 				_store[key.ToString()] = new ValueItem(value);
+
+				var stringKey = key.ToString().ToLower();
+				foreach (var dispatcher in _subscriptions.Where(d => stringKey.Contains(d.EventKey.ToLower())))
+				{
+					dispatcher.RaiseEvent();
+				}
 			}
 		}
 
@@ -121,6 +134,16 @@ namespace Broadcast.Storage
 					_store.Remove(key.ToString());
 				}
 			}
+		}
+
+		/// <summary>
+		/// Register a <see cref="ISubscription"/> to the storage.
+		/// The subscription gets called as soon as a item is added with the key in the event
+		/// </summary>
+		/// <param name="subscription"></param>
+		public void RegisterSubscription(ISubscription subscription)
+		{
+			_subscriptions.Add(subscription);
 		}
 	}
 }

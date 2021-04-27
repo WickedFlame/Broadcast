@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Broadcast.Storage
 {
@@ -14,8 +12,13 @@ namespace Broadcast.Storage
 		/// </summary>
 		/// <param name="key"></param>
 		public StorageKey(string key)
-			: this(key, null)
 		{
+			if (string.IsNullOrEmpty(key))
+			{
+				throw new ArgumentNullException(key);
+			}
+
+			Key = key;
 		}
 
 		/// <summary>

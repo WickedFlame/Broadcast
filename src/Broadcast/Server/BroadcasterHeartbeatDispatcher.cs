@@ -37,12 +37,13 @@ namespace Broadcast.Server
 				var model = new ServerModel
 				{
 					Name = _options.ServerName, 
+					Id = context.Id,
 					Heartbeat = DateTime.Now
 				};
-				_store.Storage(s => s.Set(new StorageKey("server", $"{_options.ServerName}:{context.Id}"), model));
+				_store.Storage(s => s.Set(new StorageKey($"server:{_options.ServerName}:{context.Id}"), model));
 
 				// don't run again for at least 
-				await Task.Delay(_options.HeartbeatDelay);
+				await Task.Delay(_options.HeartbeatInterval);
 			}
 		}
 	}

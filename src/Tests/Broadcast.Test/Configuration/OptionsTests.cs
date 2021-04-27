@@ -27,9 +27,9 @@ namespace Broadcast.Test.Configuration
 		}
 
 		[Test]
-		public void Options_Property_HeartbeatDelay_Default()
+		public void Options_Property_HeartbeatInterval_Default()
 		{
-			Assert.AreEqual(60000, new Options().HeartbeatDelay);
+			Assert.AreEqual(60000, new Options().HeartbeatInterval);
 		}
 
 		[Test]
@@ -38,11 +38,11 @@ namespace Broadcast.Test.Configuration
 			Options.Setup(o =>
 			{
 				o.ServerName = "test";
-				o.HeartbeatDelay = 1;
+				o.HeartbeatInterval = 1;
 			});
 
 			Assert.AreEqual("test", Options.Default.ServerName);
-			Assert.AreEqual(1, Options.Default.HeartbeatDelay);
+			Assert.AreEqual(1, Options.Default.HeartbeatInterval);
 		}
 
 		[Test]
@@ -51,13 +51,13 @@ namespace Broadcast.Test.Configuration
 			Options.Setup(o =>
 			{
 				o.ServerName = "test";
-				o.HeartbeatDelay = 1;
+				o.HeartbeatInterval = 1;
 			});
 
 			Options.Setup(o => { });
 
 			Assert.AreEqual(Environment.MachineName, Options.Default.ServerName);
-			Assert.AreEqual(60000, Options.Default.HeartbeatDelay);
+			Assert.AreEqual(60000, Options.Default.HeartbeatInterval);
 		}
 	}
 }

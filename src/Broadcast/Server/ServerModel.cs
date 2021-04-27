@@ -8,6 +8,11 @@ namespace Broadcast.Server
 	public class ServerModel
 	{
 		/// <summary>
+		/// Gets the Id of the <see cref="IBroadcaster"/>
+		/// </summary>
+		public string Id { get; set; }
+
+		/// <summary>
 		/// Gets or sets the ServerName
 		/// </summary>
 		public string Name { get; set; }

@@ -58,5 +58,12 @@ namespace Broadcast.Storage
 		/// </summary>
 		/// <param name="key"></param>
 		void Delete(StorageKey key);
+
+		/// <summary>
+		/// Register a <see cref="ISubscription"/> to the storage.
+		/// The subscription gets called as soon as a item is added with the key in the event
+		/// </summary>
+		/// <param name="subscription"></param>
+		void RegisterSubscription(ISubscription subscription);
 	}
 }

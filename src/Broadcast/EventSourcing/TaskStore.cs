@@ -3,7 +3,9 @@ using Broadcast.Configuration;
 using Broadcast.Storage;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Broadcast.Diagnostics;
+using Broadcast.Server;
 
 namespace Broadcast.EventSourcing
 {
@@ -12,9 +14,10 @@ namespace Broadcast.EventSourcing
 	/// </summary>
 	public class TaskStore : ITaskStore, IEnumerable<ITask>
     {
-        private readonly IStorage _store;
+        private readonly IStorage _storage;
         private readonly Options _options;
         private readonly DispatcherStorage _dispatchers;
+		private readonly IDictionary<string, ServerModel> _registeredServers;
 
         private static readonly ItemFactory<ITaskStore> ItemFactory = new ItemFactory<ITaskStore>(() => new TaskStore());
         private readonly ILogger _logger;
@@ -57,13 +60,21 @@ namespace Broadcast.EventSourcing
 		public TaskStore(Options options, IStorage storage)
         {
 			_options = options ?? throw new ArgumentNullException(nameof(options));
-			_store = storage ?? throw new ArgumentNullException(nameof(storage));
+			_storage = storage ?? throw new ArgumentNullException(nameof(storage));
+
+			_storage.RegisterSubscription(new ServerHeartbeatSubscriber(this));
 
             _dispatchers = new DispatcherStorage();
+            _registeredServers = new Dictionary<string, ServerModel>();
 
             _logger = LoggerFactory.Create();
 			_logger.Write("Starting new Storage");
 		}
+
+		/// <summary>
+		/// Gets a enumeration of all registered <see cref="IBroadcaster"/> servers
+		/// </summary>
+		public IEnumerable<ServerModel> Servers => _registeredServers.Values;
 
 		/// <summary>
 		/// Adds a new Task to the queue to be processed
@@ -73,7 +84,7 @@ namespace Broadcast.EventSourcing
 		{
 			_logger.Write($"Add task {task.Id} to storage");
 
-			_store.AddToList(new StorageKey("task", _options.ServerName), task);
+			_storage.AddToList(new StorageKey("task", _options.ServerName), task);
 
 			foreach (var dispatcher in _dispatchers)
 			{
@@ -84,7 +95,6 @@ namespace Broadcast.EventSourcing
 		/// <summary>
 		/// Register a set of <see cref="IDispatcher"/> to the TaskStore.
 		/// Dispatchers are executed when a new Task is added to the TaskStore to notify clients of the changes.
-		/// All previously registered <see cref="IDispatcher"/> will be removed.
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="dispatchers"></param>
@@ -103,22 +113,41 @@ namespace Broadcast.EventSourcing
 			_logger.Write($"Remove all dispatchers for {id}");
 			_dispatchers.Remove(id);
 		}
-
+		
 		/// <summary>
 		/// Clear all Tasks from the TaskStore
 		/// </summary>
 		public void Clear()
 		{
-			_store.Delete(new StorageKey("task", _options.ServerName));
+			_storage.Delete(new StorageKey("task", _options.ServerName));
 		}
 
 		/// <summary>
-		/// Gets the <see cref="IStorage"/> registered to the <see cref="ITaskStore"/>
+		/// Returns a delegate that allows accessing the connected <see cref="IStorage"/>.
+		/// This is used when a component needs to store data in the <see cref="IStorage"/>.
 		/// </summary>
 		/// <returns></returns>
 		public void Storage(Action<IStorage> action)
 		{
-			action(_store);
+			action(_storage);
+		}
+
+		/// <summary>
+		/// Propagate the Server to the TaskStore.
+		/// Poropagation is done during registration and heartbeat.
+		/// </summary>
+		/// <param name="server"></param>
+		public void PropagateServer(ServerModel server)
+		{
+			_registeredServers[server.Id] = server;
+
+			// cleanup dead servers
+			var expiration = DateTime.Now.Subtract(TimeSpan.FromMilliseconds(_options.HeartbeatInterval));
+			var deadServers = _registeredServers.Where(item => item.Value.Heartbeat < expiration).Select(item => item.Key);
+			foreach (var key in deadServers)
+			{
+				_registeredServers.Remove(key);
+			}
 		}
 
 		/// <summary>
@@ -127,7 +156,7 @@ namespace Broadcast.EventSourcing
 		/// <returns></returns>
 		public IEnumerator<ITask> GetEnumerator()
 		{
-			var tasks = _store.GetList<ITask>(new StorageKey("task", _options.ServerName));
+			var tasks = _storage.GetList<ITask>(new StorageKey("task", _options.ServerName));
 			return tasks.GetEnumerator();
 		}
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Broadcast.Storage;
+using Moq;
 using NUnit.Framework;
 using Polaroider;
 
@@ -21,6 +22,48 @@ namespace Broadcast.Test.Storage
 		{
 			var storage = new InmemoryStorage();
 			storage.Set(new StorageKey("storage", "key"), "value");
+		}
+
+		[Test]
+		public void InmemoryStorage_Set_Subscription()
+		{
+			var subscription = new Mock<ISubscription>();
+			subscription.Setup(exp => exp.EventKey).Returns(() => "key");
+
+			var storage = new InmemoryStorage();
+			storage.RegisterSubscription(subscription.Object);
+
+			storage.Set(new StorageKey("key:one"), "value");
+
+			subscription.Verify(exp => exp.RaiseEvent(), Times.Once);
+		}
+
+		[Test]
+		public void InmemoryStorage_Set_Subscription_CaseInsensitive()
+		{
+			var subscription = new Mock<ISubscription>();
+			subscription.Setup(exp => exp.EventKey).Returns(() => "KEY");
+
+			var storage = new InmemoryStorage();
+			storage.RegisterSubscription(subscription.Object);
+
+			storage.Set(new StorageKey("kEy:OnE"), "value");
+
+			subscription.Verify(exp => exp.RaiseEvent(), Times.Once);
+		}
+
+		[Test]
+		public void InmemoryStorage_Set_Subscription_DifferentKey()
+		{
+			var subscription = new Mock<ISubscription>();
+			subscription.Setup(exp => exp.EventKey).Returns(() => "different");
+
+			var storage = new InmemoryStorage();
+			storage.RegisterSubscription(subscription.Object);
+
+			storage.Set(new StorageKey("key:one"), "value");
+
+			subscription.Verify(exp => exp.RaiseEvent(), Times.Never);
 		}
 
 		[Test]
@@ -135,6 +178,15 @@ namespace Broadcast.Test.Storage
 			storage.Set(new StorageKey("storage", "key"), new StorageModel { Id = 1, Value = "one" });
 
 			Assert.IsEmpty(storage.GetList<StorageModel>(new StorageKey("storage", "key")));
+		}
+
+		[Test]
+		public void InmemoryStorage_RegisterSubscription()
+		{
+			var subscription = new Mock<ISubscription>();
+
+			var storage = new InmemoryStorage();
+			Assert.DoesNotThrow(() => storage.RegisterSubscription(subscription.Object));
 		}
 
 		public class StorageModel

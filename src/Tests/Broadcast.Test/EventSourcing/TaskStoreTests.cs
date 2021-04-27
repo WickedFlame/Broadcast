@@ -5,6 +5,7 @@ using System.Text;
 using Broadcast.Composition;
 using Broadcast.Configuration;
 using Broadcast.EventSourcing;
+using Broadcast.Server;
 using Broadcast.Storage;
 using Moq;
 using NUnit.Framework;
@@ -80,6 +81,15 @@ namespace Broadcast.Test.EventSourcing
 			};
 
 			Assert.AreEqual(3, store.Count());
+		}
+
+		[Test]
+		public void TaskStore_Subscriptions()
+		{
+			var storage = new Mock<IStorage>();
+			var store = new TaskStore(storage.Object);
+
+			storage.Verify(exp => exp.RegisterSubscription(It.IsAny<ServerHeartbeatSubscriber>()), Times.Once);
 		}
 
 		[Test]
@@ -175,6 +185,38 @@ namespace Broadcast.Test.EventSourcing
 			var store = new TaskStore();
 
 			store.Storage(s => Assert.IsAssignableFrom<InmemoryStorage>(s));
+		}
+
+		[Test]
+		public void TaskStore_PropagateServer()
+		{
+			var server = new ServerModel
+			{
+				Id = "1",
+				Name = "server",
+				Heartbeat = DateTime.Now
+			};
+
+			var store = new TaskStore();
+			store.PropagateServer(server);
+
+			Assert.AreSame(server, store.Servers.Single());
+		}
+
+		[Test]
+		public void TaskStore_PropagateServer_Cleanup()
+		{
+			var server = new ServerModel
+			{
+				Id = "1",
+				Name = "server",
+				Heartbeat = DateTime.Now.AddMinutes(-1)
+			};
+
+			var store = new TaskStore();
+			store.PropagateServer(server);
+
+			Assert.IsEmpty(store.Servers);
 		}
 
 		private class TestDispatcher : IDispatcher
