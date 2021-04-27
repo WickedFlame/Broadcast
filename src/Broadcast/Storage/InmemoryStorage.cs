@@ -10,53 +10,64 @@ namespace Broadcast.Storage
 	/// </summary>
 	public class InmemoryStorage : IStorage
 	{
+		private readonly object _lockHandle = new object();
+
 		private readonly Dictionary<string, IStorageItem> _store = new Dictionary<string, IStorageItem>();
 
 		/// <inheritdoc/>
 		public void AddToList<T>(StorageKey key, T value)
 		{
-			var internalKey = key.ToString();
-			if (!_store.ContainsKey(internalKey))
+			lock (_lockHandle)
 			{
-				_store.Add(internalKey, new ListItem());
-			}
+				var internalKey = key.ToString();
+				if (!_store.ContainsKey(internalKey))
+				{
+					_store.Add(internalKey, new ListItem());
+				}
 
-			var lst = _store[internalKey] as ListItem;
-			if (lst == null)
-			{
-				throw new InvalidOperationException($"{internalKey} is not a list");
-			}
+				var lst = _store[internalKey] as ListItem;
+				if (lst == null)
+				{
+					throw new InvalidOperationException($"{internalKey} is not a list");
+				}
 
-			lst.SetValue(value);
+				lst.SetValue(value);
+			}
 		}
 
 		/// <inheritdoc/>
 		public IEnumerable<T> GetList<T>(StorageKey key)
 		{
-			if (_store.ContainsKey(key.ToString()))
+			lock (_lockHandle)
 			{
-				if (_store[key.ToString()].GetValue() is List<object> items)
+				if (_store.ContainsKey(key.ToString()))
 				{
-					return items.Cast<T>();
+					if (_store[key.ToString()].GetValue() is List<object> items)
+					{
+						return items.Cast<T>();
+					}
 				}
-			}
 
-			return Enumerable.Empty<T>();
+				return Enumerable.Empty<T>();
+			}
 		}
 
 		/// <inheritdoc/>
 		public void RemoveRangeFromList(StorageKey key, int count)
 		{
-			if (_store.ContainsKey(key.ToString()))
+			lock (_lockHandle)
 			{
-				if (_store[key.ToString()] is ListItem list)
+				if (_store.ContainsKey(key.ToString()))
 				{
-					if (list.Items.Count() < count)
+					if (_store[key.ToString()] is ListItem list)
 					{
-						count = list.Items.Count();
-					}
+						if (list.Items.Count() < count)
+						{
+							count = list.Items.Count();
+						}
 
-					list.Items.RemoveRange(0, count);
+						list.Items.RemoveRange(0, count);
+					}
 				}
 			}
 		}
@@ -64,28 +75,37 @@ namespace Broadcast.Storage
 		/// <inheritdoc/>
 		public void Set<T>(StorageKey key, T value)
 		{
-			_store[key.ToString()] = new ValueItem(value);
+			lock (_lockHandle)
+			{
+				_store[key.ToString()] = new ValueItem(value);
+			}
 		}
 
 		/// <inheritdoc/>
 		public T Get<T>(StorageKey key)
 		{
-			if (_store.ContainsKey(key.ToString()))
+			lock (_lockHandle)
 			{
-				var item = _store[key.ToString()].GetValue();
-				if (item != null && item.GetType() == typeof(T))
+				if (_store.ContainsKey(key.ToString()))
 				{
-					return (T) item;
+					var item = _store[key.ToString()].GetValue();
+					if (item != null && item.GetType() == typeof(T))
+					{
+						return (T) item;
+					}
 				}
-			}
 
-			return (T)default;
+				return (T) default;
+			}
 		}
 
 		/// <inheritdoc/>
 		public IEnumerable<string> GetKeys(StorageKey key)
 		{
-			return _store.Keys.Where(k => k.StartsWith(key.ToString()));
+			lock (_lockHandle)
+			{
+				return _store.Keys.Where(k => k.StartsWith(key.ToString()));
+			}
 		}
 
 		/// <summary>
@@ -94,9 +114,12 @@ namespace Broadcast.Storage
 		/// <param name="key"></param>
 		public void Delete(StorageKey key)
 		{
-			if (_store.ContainsKey(key.ToString()))
+			lock (_lockHandle)
 			{
-				_store.Remove(key.ToString());
+				if (_store.ContainsKey(key.ToString()))
+				{
+					_store.Remove(key.ToString());
+				}
 			}
 		}
 	}
