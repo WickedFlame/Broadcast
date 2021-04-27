@@ -5,6 +5,8 @@ using System.Text;
 using Broadcast.Composition;
 using Broadcast.Configuration;
 using Broadcast.EventSourcing;
+using Broadcast.Storage;
+using Moq;
 using NUnit.Framework;
 
 namespace Broadcast.Test.EventSourcing
@@ -12,15 +14,36 @@ namespace Broadcast.Test.EventSourcing
 	public class TaskStoreTests
 	{
 		[Test]
-		public void TaskStore()
+		public void TaskStore_ctor()
 		{
 			Assert.DoesNotThrow(() => new TaskStore());
 		}
 
 		[Test]
-		public void TaskStore_Options()
+		public void TaskStore_ctor_All()
 		{
-			Assert.DoesNotThrow(() => new TaskStore(new Options()));
+			var storage = new Mock<IStorage>();
+			Assert.DoesNotThrow(() => new TaskStore(new Options(), storage.Object));
+		}
+
+		[Test]
+		public void TaskStore_ctor_Storage()
+		{
+			var storage = new Mock<IStorage>();
+			Assert.DoesNotThrow(() => new TaskStore(storage.Object));
+		}
+
+		[Test]
+		public void TaskStore_ctor_Null_Options()
+		{
+			var storage = new Mock<IStorage>();
+			Assert.Throws<ArgumentNullException>(() => new TaskStore(null, storage.Object));
+		}
+
+		[Test]
+		public void TaskStore_ctor_Null_Storage()
+		{
+			Assert.Throws<ArgumentNullException>(() => new TaskStore(Options.Default, null));
 		}
 
 		[Test]
@@ -135,6 +158,23 @@ namespace Broadcast.Test.EventSourcing
 			store.Clear();
 
 			Assert.AreEqual(0, store.Count());
+		}
+
+		[Test]
+		public void TaskStore_Storage()
+		{
+			var storage = new Mock<IStorage>();
+			var store = new TaskStore(storage.Object);
+
+			store.Storage(s => Assert.AreSame(s, storage.Object));
+		}
+
+		[Test]
+		public void TaskStore_Storage_Default_Type()
+		{
+			var store = new TaskStore();
+
+			store.Storage(s => Assert.IsAssignableFrom<InmemoryStorage>(s));
 		}
 
 		private class TestDispatcher : IDispatcher

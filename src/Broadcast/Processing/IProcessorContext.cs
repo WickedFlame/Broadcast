@@ -1,9 +1,8 @@
 ﻿using Broadcast.EventSourcing;
-using System.Collections.Generic;
 using Broadcast.Configuration;
 using Broadcast.Server;
 
-namespace Broadcast
+namespace Broadcast.Processing
 {
     /// <summary>
     /// Represents the Context that provides all elements needed by the TaskProcessor

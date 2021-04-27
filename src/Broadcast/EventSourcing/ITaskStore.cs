@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Broadcast.Storage;
 
 namespace Broadcast.EventSourcing
 {
@@ -22,11 +24,22 @@ namespace Broadcast.EventSourcing
 		/// <param name="dispatchers"></param>
 		void RegisterDispatchers(string id, IEnumerable<IDispatcher> dispatchers);
 
+		/// <summary>
+		/// Unregister all <see cref="IDispatcher"/> that are registered for the given key
+		/// </summary>
+		/// <param name="id"></param>
 		void UnregisterDispatchers(string id);
 
 		/// <summary>
 		/// Clear all Tasks from the TaskStore
 		/// </summary>
 		void Clear();
+
+		/// <summary>
+		/// Gets the <see cref="IStorage"/> registered to the <see cref="ITaskStore"/>
+		/// </summary>
+		/// <returns></returns>
+		void Storage(Action<IStorage> action);
+
     }
 }

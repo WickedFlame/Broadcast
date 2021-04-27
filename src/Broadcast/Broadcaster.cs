@@ -20,6 +20,8 @@ namespace Broadcast
 	    private readonly Options _options;
 	    private readonly ILogger _logger;
 	    private readonly string _id = Guid.NewGuid().ToString();
+	    private readonly BroadcasterConterxt _context;
+	    private readonly BackgroundServerProcess<IBroadcasterConterxt> _server;
 
 	    /// <summary>
 		/// Creates a new Broadcaster
@@ -57,6 +59,7 @@ namespace Broadcast
 			Processor = processor;
 			Scheduler = scheduler;
 			Store = store;
+			_options = options;
 
 			store.RegisterDispatchers(_id, new IDispatcher[]
 			{
@@ -65,7 +68,13 @@ namespace Broadcast
 				new ProcessTaskDispatcher(this)
 			});
 
-			_options = options;
+			_context = new BroadcasterConterxt
+			{
+				Id = _id,
+				IsRunning = true
+			};
+			_server = new BackgroundServerProcess<IBroadcasterConterxt>(_context);
+			_server.StartNew(new BroadcasterHeartbeatDispatcher(store, _options));
 		}
 
         /// <summary>
@@ -138,6 +147,8 @@ namespace Broadcast
 			Scheduler.Dispose();
 			Processor.Dispose();
 			Store.UnregisterDispatchers(_id);
+
+			_context.IsRunning = false;
 
 			_logger.Write($"Disposed Broadcaster {_options.ServerName}:{_id}");
 		}

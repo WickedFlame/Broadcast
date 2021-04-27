@@ -1,5 +1,6 @@
 ﻿using Broadcast.EventSourcing;
 using Broadcast.Configuration;
+using Broadcast.Processing;
 using Broadcast.Server;
 
 namespace Broadcast

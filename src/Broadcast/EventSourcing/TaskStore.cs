@@ -12,13 +12,11 @@ namespace Broadcast.EventSourcing
 	/// </summary>
 	public class TaskStore : ITaskStore, IEnumerable<ITask>
     {
-        private readonly object _lockHandle = new object();
-
         private readonly IStorage _store;
         private readonly Options _options;
         private readonly DispatcherStorage _dispatchers;
 
-        private static readonly ItemFactory<ITaskStore> ItemFactory = new ItemFactory<ITaskStore>(() => new TaskStore(Options.Default));
+        private static readonly ItemFactory<ITaskStore> ItemFactory = new ItemFactory<ITaskStore>(() => new TaskStore());
         private readonly ILogger _logger;
 
         /// <summary>
@@ -37,9 +35,17 @@ namespace Broadcast.EventSourcing
 
 		/// <summary>
 		/// Creates a new instance of the TaskStore.
-		/// Uses the instance of the default <see cref="Options"/> Default
+		/// Uses the instance of the default <see cref="Options"/> and  the <see cref="InmemoryStorage"/> as storage
 		/// </summary>
-		public TaskStore() : this(Options.Default)
+		public TaskStore() : this(Options.Default, new InmemoryStorage())
+		{
+		}
+
+		/// <summary>
+		/// Creates a new instance of the TaskStore.
+		/// Uses the instance of the default <see cref="Options"/>
+		/// </summary>
+		public TaskStore(IStorage storage) : this(Options.Default, storage)
 		{
 		}
 
@@ -47,34 +53,33 @@ namespace Broadcast.EventSourcing
 		/// Creates a new TaskStore
 		/// </summary>
 		/// <param name="options"></param>
-		public TaskStore(Options options)
+		/// <param name="storage"></param>
+		public TaskStore(Options options, IStorage storage)
         {
-			_options = options;
+			_options = options ?? throw new ArgumentNullException(nameof(options));
+			_store = storage ?? throw new ArgumentNullException(nameof(storage));
 
-            _store = new InmemoryStorage();
             _dispatchers = new DispatcherStorage();
 
             _logger = LoggerFactory.Create();
 			_logger.Write("Starting new Storage");
 		}
-		
-        /// <summary>
-        /// Adds a new Task to the queue to be processed
-        /// </summary>
-        /// <param name="task"></param>
-        public void Add(ITask task)
-        {
-	        _logger.Write($"Add task {task.Id} to storage");
-            lock (_lockHandle)
-            {
-	            _store.AddToList(new StorageKey("task", _options.ServerName), task);
-            }
 
-            foreach (var dispatcher in _dispatchers)
-            {
-	            dispatcher.Execute(task);
-            }
-        }
+		/// <summary>
+		/// Adds a new Task to the queue to be processed
+		/// </summary>
+		/// <param name="task"></param>
+		public void Add(ITask task)
+		{
+			_logger.Write($"Add task {task.Id} to storage");
+
+			_store.AddToList(new StorageKey("task", _options.ServerName), task);
+
+			foreach (var dispatcher in _dispatchers)
+			{
+				dispatcher.Execute(task);
+			}
+		}
 
 		/// <summary>
 		/// Register a set of <see cref="IDispatcher"/> to the TaskStore.
@@ -89,6 +94,10 @@ namespace Broadcast.EventSourcing
 			_dispatchers.Add(id, dispatchers);
         }
 
+		/// <summary>
+		/// Unregister all <see cref="IDispatcher"/> that are registered for the given key.
+		/// </summary>
+		/// <param name="id"></param>
 		public void UnregisterDispatchers(string id)
 		{
 			_logger.Write($"Remove all dispatchers for {id}");
@@ -98,28 +107,31 @@ namespace Broadcast.EventSourcing
 		/// <summary>
 		/// Clear all Tasks from the TaskStore
 		/// </summary>
-        public void Clear()
-        {
-			lock(_lockHandle)
-			{
-				_store.Delete(new StorageKey("task", _options.ServerName));
-			}
-        }
+		public void Clear()
+		{
+			_store.Delete(new StorageKey("task", _options.ServerName));
+		}
+
+		/// <summary>
+		/// Gets the <see cref="IStorage"/> registered to the <see cref="ITaskStore"/>
+		/// </summary>
+		/// <returns></returns>
+		public void Storage(Action<IStorage> action)
+		{
+			action(_store);
+		}
 
 		/// <summary>
 		/// Gets the enumerator
 		/// </summary>
 		/// <returns></returns>
 		public IEnumerator<ITask> GetEnumerator()
-        {
-	        lock (_lockHandle)
-	        {
-		        var tasks = _store.GetList<ITask>(new StorageKey("task", _options.ServerName));
-		        return tasks.GetEnumerator();
-	        }
-        }
+		{
+			var tasks = _store.GetList<ITask>(new StorageKey("task", _options.ServerName));
+			return tasks.GetEnumerator();
+		}
 
-        IEnumerator IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
