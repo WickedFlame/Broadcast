@@ -96,26 +96,18 @@ namespace Broadcast.EventSourcing
 		/// </summary>
 		public void DispatchTasks()
 		{
-			var taskIds = _storage.GetList<string>(new StorageKey("tasks:enqueued"));
-			while (taskIds.Any())
+			while (_storage.TryFetchNext(new StorageKey("tasks:enqueued"), new StorageKey("tasks:dequeued"), out string id))
 			{
-				var id = taskIds.FirstOrDefault();
-
 				// eager fetching of the data
 				// first TaskStore to fetch gets to execute the Task
-				if (_storage.RemoveFromList(new StorageKey("tasks:enqueued"), id))
+				var task = _storage.Get<ITask>(new StorageKey($"task:{id}"));
+
+				// use round robin to get the next set of dispatchers
+				var dispatchers = _dispatchers.GetNext();
+				foreach (var dispatcher in dispatchers)
 				{
-					_storage.AddToList(new StorageKey("tasks:dequeued"), id);
-					var task = _storage.Get<ITask>(new StorageKey($"task:{id}"));
-
-					var dispatchers = _dispatchers.GetNext();
-					foreach (var dispatcher in dispatchers)
-					{
-						dispatcher.Execute(task);
-					}
+					dispatcher.Execute(task);
 				}
-
-				taskIds = _storage.GetList<string>(new StorageKey("tasks:enqueued"));
 			}
 		}
 		

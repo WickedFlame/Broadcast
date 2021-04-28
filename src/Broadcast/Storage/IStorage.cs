@@ -33,6 +33,16 @@ namespace Broadcast.Storage
 		bool RemoveFromList<T>(StorageKey key, T item);
 
 		/// <summary>
+		/// Tries to fetch the next top item from a source key, moves the item to the destination key and returns the item
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="source"></param>
+		/// <param name="destination"></param>
+		/// <param name="item"></param>
+		/// <returns></returns>
+		bool TryFetchNext<T>(StorageKey source, StorageKey destination, out T item);
+
+		/// <summary>
 		/// Removes a range of items from the list
 		/// </summary>
 		/// <param name="key"></param>

@@ -26,20 +26,25 @@ namespace Broadcast.Storage
 		{
 			lock (_lockHandle)
 			{
-				var internalKey = key.ToString();
-				if (!_store.ContainsKey(internalKey))
-				{
-					_store.Add(internalKey, new ListItem());
-				}
-
-				var lst = _store[internalKey] as ListItem;
-				if (lst == null)
-				{
-					throw new InvalidOperationException($"{internalKey} is not a list");
-				}
-
-				lst.SetValue(value);
+				AddToList(key, new ValueItem(value));
 			}
+		}
+
+		private void AddToList(StorageKey key, ValueItem value)
+		{
+			var internalKey = key.ToString();
+			if (!_store.ContainsKey(internalKey))
+			{
+				_store.Add(internalKey, new ListItem());
+			}
+
+			var lst = _store[internalKey] as ListItem;
+			if (lst == null)
+			{
+				throw new InvalidOperationException($"{internalKey} is not a list");
+			}
+
+			lst.Set(value);
 		}
 
 		/// <inheritdoc/>
@@ -56,6 +61,40 @@ namespace Broadcast.Storage
 				}
 
 				return Enumerable.Empty<T>();
+			}
+		}
+
+		/// <inheritdoc/>
+		public bool TryFetchNext<T>(StorageKey source, StorageKey destination, out T item)
+		{
+			lock (_lockHandle)
+			{
+				if (_store.ContainsKey(source.ToString()))
+				{
+					var stored = _store[source.ToString()];
+					if (stored is ListItem list)
+					{
+						if (list.Items.FirstOrDefault() is ValueItem valueItem)
+						{
+							list.Items.Remove(valueItem);
+							AddToList(destination, valueItem);
+
+							item = (T)valueItem.GetValue();
+							return true;
+						}
+					}
+					else if (stored is ValueItem valueItem)
+					{
+						_store.Remove(source.ToString());
+						_store[destination.ToString()] = valueItem;
+
+						item = (T)valueItem.GetValue();
+						return true;
+					}
+				}
+
+				item = default(T);
+				return false;
 			}
 		}
 

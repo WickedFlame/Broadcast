@@ -203,6 +203,48 @@ namespace Broadcast.Test.Storage
 			Assert.DoesNotThrow(() => storage.RegisterSubscription(subscription.Object));
 		}
 
+		[Test]
+		public void InmemoryStorage_TryFetchNext_Simple()
+		{
+			var storage = new InmemoryStorage();
+			storage.Set(new StorageKey("key1"), new StorageModel { Id = 1, Value = "one" });
+
+			storage.TryFetchNext<StorageModel>(new StorageKey("key1"), new StorageKey("key2"), out var item);
+
+			Assert.IsNull(storage.Get<StorageModel>(new StorageKey("key1")));
+			Assert.AreSame(item, storage.Get<StorageModel>(new StorageKey("key2")));
+		}
+
+		[Test]
+		public void InmemoryStorage_TryFetchNext_Simple_True()
+		{
+			var storage = new InmemoryStorage();
+			storage.Set(new StorageKey("key1"), new StorageModel { Id = 1, Value = "one" });
+
+			Assert.IsTrue(storage.TryFetchNext<StorageModel>(new StorageKey("key1"), new StorageKey("key2"), out var item));
+		}
+
+		[Test]
+		public void InmemoryStorage_TryFetchNext_List()
+		{
+			var storage = new InmemoryStorage();
+			storage.AddToList(new StorageKey("key1"), new StorageModel { Id = 1, Value = "one" });
+
+			storage.TryFetchNext<StorageModel>(new StorageKey("key1"), new StorageKey("key2"), out var item);
+
+			Assert.IsEmpty(storage.GetList<StorageModel>(new StorageKey("key1")));
+			Assert.AreSame(item, storage.GetList<StorageModel>(new StorageKey("key2")).Single());
+		}
+
+		[Test]
+		public void InmemoryStorage_TryFetchNext_List_True()
+		{
+			var storage = new InmemoryStorage();
+			storage.AddToList(new StorageKey("key1"), new StorageModel { Id = 1, Value = "one" });
+
+			Assert.IsTrue(storage.TryFetchNext<StorageModel>(new StorageKey("key1"), new StorageKey("key2"), out var item));
+		}
+
 		public class StorageModel
 		{
 			public int Id { get; set; }

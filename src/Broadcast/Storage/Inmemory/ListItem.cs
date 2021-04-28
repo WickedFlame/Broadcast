@@ -21,9 +21,18 @@ namespace Broadcast.Storage.Inmemory
 		/// <param name="value"></param>
 		public void SetValue(object value)
 		{
-			lock(_lockHandle)
+			Set(new ValueItem(value));
+		}
+
+		/// <summary>
+		/// Add a new <see cref="ValueItem"/> to the list
+		/// </summary>
+		/// <param name="item"></param>
+		public void Set(ValueItem item)
+		{
+			lock (_lockHandle)
 			{
-				Items.Add(new ValueItem(value));
+				Items.Add(item);
 			}
 		}
 
