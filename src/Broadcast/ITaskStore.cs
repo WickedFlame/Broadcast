@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Broadcast.EventSourcing;
 using Broadcast.Server;
 using Broadcast.Storage;
 
-namespace Broadcast.EventSourcing
+namespace Broadcast
 {
     /// <summary>
     /// Represents a store conatining all Tasks

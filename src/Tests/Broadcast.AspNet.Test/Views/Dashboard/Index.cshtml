@@ -1,0 +1,59 @@
+﻿@model DashboardModel
+
+@{
+	ViewData["Title"] = "Custom Dashboard";
+}
+
+<div>
+	<div>
+		<h3>Servers</h3>
+		<table class="table">
+			<thead>
+			<tr>
+				<th scope="col">Server</th>
+				<th scope="col">Heartbeat</th>
+			</tr>
+			</thead>
+			<tbody>
+			@foreach (var server in Model.Monitor.Servers)
+			{
+				<tr>
+					<td><span>@server.Name</span>:<span>@server.Id</span> </td>
+					<td> <span>@server.Heartbeat</span></td>
+				</tr>
+			}
+			</tbody>
+		</table>
+	</div>
+	<div>
+		<h3>Recurring Tasks</h3>
+
+	</div>
+	<div>
+		<h3>Tasks</h3>
+		<table class="table">
+			<thead>
+			<tr>
+				<th scope="col">Id</th>
+				<th scope="col">Name</th>
+				<th scope="col">State</th>
+				<th scope="col">IsRecurring</th>
+				<th scope="col">Interval</th>
+			</tr>
+			</thead>
+			<tbody>
+				@foreach (var task in Model.Monitor.Tasks)
+				{
+					<tr>
+						<td>@task.Id</td>
+						<td></td>
+						<td>@task.State</td> 
+						<td>@task.IsRecurring</td> 
+						<td>@task.Time</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+
+</div>
