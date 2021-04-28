@@ -28,25 +28,7 @@ namespace Broadcast.EventSourcing
 		/// </summary>
 		public void RaiseEvent()
 		{
-			_store.Storage(s =>
-			{
-				var taskIds = s.GetList<string>(new StorageKey("tasks:enqueued"));
-				while (taskIds.Any())
-				{
-					var id = taskIds.FirstOrDefault();
-
-					// local tasks like actions are not serializeable
-					// these are automaticaly propagated to the dispatchers for processing
-					if (s.RemoveFromList(new StorageKey("tasks:enqueued"), id))
-					{
-						s.AddToList(new StorageKey("tasks:dequeued"), id);
-						var task = s.Get<ITask>(new StorageKey($"task:{id}"));
-						_store.DispatchTask(task);
-					}
-
-					taskIds = s.GetList<string>(new StorageKey("tasks:enqueued"));
-				}
-			});
+			_store.DispatchTasks();
 		}
 	}
 }

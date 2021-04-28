@@ -144,17 +144,25 @@ namespace Broadcast.Test.EventSourcing
 		[Test]
 		public void TaskStore_Dispatchers_RegisterMultiple()
 		{
-			var cnt = 0;
+			var number = 0;
 			var store = new TaskStore();
 
-			// dispatchers are reset before registration
-			store.RegisterDispatchers("1", new IDispatcher[] { new TestDispatcher(t => cnt += 1) });
-			store.RegisterDispatchers("2", new IDispatcher[] { new TestDispatcher(t => cnt += 1) });
-			store.RegisterDispatchers("3", new IDispatcher[] { new TestDispatcher(t => cnt += 1) });
+			store.RegisterDispatchers("1", new IDispatcher[] { new TestDispatcher(t => number = 1) });
+			store.RegisterDispatchers("2", new IDispatcher[] { new TestDispatcher(t => number = 2) });
+			store.RegisterDispatchers("3", new IDispatcher[] { new TestDispatcher(t => number = 3) });
+
+			// dispatching tasks uses a round robin implementation to select the set of dispatchers
+			store.Add(TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers")));
+			Assert.AreEqual(1, number);
 
 			store.Add(TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers")));
+			Assert.AreEqual(2, number);
 
-			Assert.AreEqual(3, cnt);
+			store.Add(TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers")));
+			Assert.AreEqual(3, number);
+
+			store.Add(TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers")));
+			Assert.AreEqual(1, number);
 		}
 
 		[Test]
@@ -288,6 +296,173 @@ namespace Broadcast.Test.EventSourcing
 
 			Assert.IsEmpty(store.Servers);
 		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		[Test]
+		public void TaskStore_DispatchTasks_GetList_Initial()
+		{
+			var storage = new Mock<IStorage>();
+			var store = new TaskStore(storage.Object);
+
+			store.DispatchTasks();
+
+			storage.Verify(exp => exp.GetList<string>(It.IsAny<StorageKey>()), Times.Once);
+		}
+
+		[Test]
+		public void TaskStore_DispatchTasks_GetList_Full()
+		{
+			var called = false;
+
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.GetList<string>(It.IsAny<StorageKey>())).Returns(() => called ? new string[] { } : new[] { "1" }).Callback(() => called = true);
+			
+			var store = new TaskStore(storage.Object);
+			store.DispatchTasks();
+
+			storage.Verify(exp => exp.GetList<string>(It.IsAny<StorageKey>()), Times.Exactly(2));
+		}
+
+		[Test]
+		public void TaskStore_DispatchTasks_RemoveFromList()
+		{
+			var called = false;
+
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.GetList<string>(It.IsAny<StorageKey>())).Returns(() => called ? new string[] { } : new[] { "1" }).Callback(() => called = true);
+			
+			var store = new TaskStore(storage.Object);
+			store.DispatchTasks();
+
+			storage.Verify(exp => exp.RemoveFromList(It.IsAny<StorageKey>(), It.IsAny<string>()), Times.Once);
+		}
+
+		[Test]
+		public void TaskStore_DispatchTasks_Get()
+		{
+			var called = false;
+
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.GetList<string>(It.IsAny<StorageKey>())).Returns(() => called ? new string[] { } : new[] { "1" }).Callback(() => called = true);
+			storage.Setup(exp => exp.RemoveFromList(It.IsAny<StorageKey>(), It.IsAny<string>())).Returns(() => true);
+
+			var store = new TaskStore(storage.Object);
+			store.DispatchTasks();
+
+			storage.Verify(exp => exp.Get<ITask>(It.IsAny<StorageKey>()), Times.Once);
+		}
+
+		[Test]
+		public void TaskStore_DispatchTasks_Get_NoDelete()
+		{
+			var called = false;
+
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.GetList<string>(It.IsAny<StorageKey>())).Returns(() => called ? new string[] { } : new[] { "1" }).Callback(() => called = true);
+			storage.Setup(exp => exp.RemoveFromList(It.IsAny<StorageKey>(), It.IsAny<string>())).Returns(() => false);
+
+			var store = new TaskStore(storage.Object);
+			store.DispatchTasks();
+
+			storage.Verify(exp => exp.Get<ITask>(It.IsAny<StorageKey>()), Times.Never);
+		}
+
+		[Test]
+		public void TaskStore_DispatchTasks_AddToList()
+		{
+			var called = false;
+
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.GetList<string>(It.IsAny<StorageKey>())).Returns(() => called ? new string[] { } : new[] { "1" }).Callback(() => called = true);
+			storage.Setup(exp => exp.RemoveFromList(It.IsAny<StorageKey>(), It.IsAny<string>())).Returns(() => true);
+
+			var store = new TaskStore(storage.Object);
+			store.DispatchTasks();
+
+			storage.Verify(exp => exp.AddToList(It.IsAny<StorageKey>(), "1"), Times.Once);
+		}
+
+		[Test]
+		public void TaskStore_DispatchTasks_AddToList_NoDelete()
+		{
+			var called = false;
+
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.GetList<string>(It.IsAny<StorageKey>())).Returns(() => called ? new string[] { } : new[] { "1" }).Callback(() => called = true);
+			storage.Setup(exp => exp.RemoveFromList(It.IsAny<StorageKey>(), It.IsAny<string>())).Returns(() => false);
+
+			var store = new TaskStore(storage.Object);
+			store.DispatchTasks();
+
+			storage.Verify(exp => exp.AddToList(It.IsAny<StorageKey>(), "1"), Times.Never);
+		}
+
+		[Test]
+		public void TaskStore_DispatchTasks_Dispatch()
+		{
+			var called = false;
+
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.GetList<string>(It.IsAny<StorageKey>())).Returns(() => called ? new string[] { } : new[] { "1" }).Callback(() => called = true);
+			storage.Setup(exp => exp.RemoveFromList(It.IsAny<StorageKey>(), It.IsAny<string>())).Returns(() => true);
+
+			var dispatcher = new Mock<IDispatcher>();
+
+			var store = new TaskStore(storage.Object);
+			store.RegisterDispatchers("1", new[] { dispatcher.Object });
+
+			store.DispatchTasks();
+
+			dispatcher.Verify(exp => exp.Execute(It.IsAny<ITask>()), Times.Once);
+		}
+
+		[Test]
+		public void TaskStore_DispatchTasks_Dispatch_NoDelete()
+		{
+			var called = false;
+
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.GetList<string>(It.IsAny<StorageKey>())).Returns(() => called ? new string[] { } : new[] { "1" }).Callback(() => called = true);
+			storage.Setup(exp => exp.RemoveFromList(It.IsAny<StorageKey>(), It.IsAny<string>())).Returns(() => false);
+
+			var dispatcher = new Mock<IDispatcher>();
+
+			var store = new TaskStore(storage.Object);
+			store.RegisterDispatchers("1", new[] { dispatcher.Object });
+
+			store.DispatchTasks();
+
+			dispatcher.Verify(exp => exp.Execute(It.IsAny<ITask>()), Times.Never);
+		}
+
+
+
+
+
+
+
+
+
+
+
+
 
 		private class TestDispatcher : IDispatcher
 		{

@@ -91,17 +91,34 @@ namespace Broadcast.EventSourcing
 		}
 
 		/// <summary>
-		/// Dispatch the task to all <see cref="IDispatcher"/>
+		/// Start dispatching all new tasks.
+		/// Uses a round robin implementation to select the <see cref="IBroadcaster"/> that processes the tasks
 		/// </summary>
-		/// <param name="task"></param>
-		public void DispatchTask(ITask task)
+		public void DispatchTasks()
 		{
-			foreach (var dispatcher in _dispatchers)
+			var taskIds = _storage.GetList<string>(new StorageKey("tasks:enqueued"));
+			while (taskIds.Any())
 			{
-				dispatcher.Execute(task);
+				var id = taskIds.FirstOrDefault();
+
+				// eager fetching of the data
+				// first TaskStore to fetch gets to execute the Task
+				if (_storage.RemoveFromList(new StorageKey("tasks:enqueued"), id))
+				{
+					_storage.AddToList(new StorageKey("tasks:dequeued"), id);
+					var task = _storage.Get<ITask>(new StorageKey($"task:{id}"));
+
+					var dispatchers = _dispatchers.GetNext();
+					foreach (var dispatcher in dispatchers)
+					{
+						dispatcher.Execute(task);
+					}
+				}
+
+				taskIds = _storage.GetList<string>(new StorageKey("tasks:enqueued"));
 			}
 		}
-
+		
 		/// <summary>
 		/// Register a set of <see cref="IDispatcher"/> to the TaskStore.
 		/// Dispatchers are executed when a new Task is added to the TaskStore to notify clients of the changes.

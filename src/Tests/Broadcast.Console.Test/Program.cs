@@ -88,16 +88,16 @@ namespace Broadcast.Console.Test
 					case "multy":
                         using (var scheduler = new Broadcaster())
                         {
-                            scheduler.Recurring(() => System.Console.WriteLine("   Recurring message 5 sec"), TimeSpan.FromSeconds(5));
-                            scheduler.Recurring(() => System.Console.WriteLine("   Recurring message 3 sec"), TimeSpan.FromSeconds(3));
+                            scheduler.Recurring(() => System.Console.WriteLine("   Recurring outer 5 sec"), TimeSpan.FromSeconds(5));
+                            //scheduler.Recurring(() => System.Console.WriteLine("   Recurring outer 3 sec"), TimeSpan.FromSeconds(3));
 
                             System.Console.WriteLine($"Starting recurring with {Scheduler.SchedulerCount} schedulers");
                             scheduler.Send(() => System.Console.WriteLine("Direct message"));
 
                             using (var scheduler2 = new Broadcaster())
                             {
-                                scheduler2.Recurring(() => System.Console.WriteLine("   Recurring message 2 5 sec"), TimeSpan.FromSeconds(5));
-                                scheduler2.Recurring(() => System.Console.WriteLine("   Recurring message 2 3 sec"), TimeSpan.FromSeconds(3));
+                                scheduler2.Recurring(() => System.Console.WriteLine("   Recurring inner 2 5 sec"), TimeSpan.FromSeconds(6));
+                                //scheduler2.Recurring(() => System.Console.WriteLine("   Recurring inner 2 3 sec"), TimeSpan.FromSeconds(12));
 
                                 System.Console.WriteLine($"Starting recurring with {Scheduler.SchedulerCount} schedulers");
                                 scheduler2.Send(() => System.Console.WriteLine("Direct 2 message"));
@@ -107,7 +107,18 @@ namespace Broadcast.Console.Test
                         }
                         break;
 
-                    default:
+                    case "multy2":
+	                    using (var scheduler = new Broadcaster())
+	                    {
+		                    scheduler.Recurring(() => System.Console.WriteLine("   Recurring outer 5 sec"), TimeSpan.FromSeconds(5));
+		                    using (var scheduler2 = new Broadcaster())
+		                    {
+			                    System.Console.ReadLine();
+		                    }
+	                    }
+	                    break;
+
+					default:
                         System.Console.WriteLine("Possyble commands:");
                         System.Console.WriteLine("   async");
                         System.Console.WriteLine("   background");
@@ -140,19 +151,14 @@ namespace Broadcast.Console.Test
                 input = System.Console.ReadLine();
             }
         }
-
-        private static void Schedule()
-        {
-            throw new NotImplementedException();
-        }
-
+		
         private static void DoMemoryTest()
         {
             var broadcaster = new Broadcaster();
             for (int i = 0; i < 4; i++)
             {
                 var tmp = new BroadcasterMemoryUser();
-                broadcaster.Send(() => tmp.useMemory());
+                broadcaster.Send(() => tmp.UseMemory());
             }
 
             broadcaster.Send(() => System.Console.WriteLine(" - Done"));
@@ -160,7 +166,7 @@ namespace Broadcast.Console.Test
 
         public class BroadcasterMemoryUser
         {
-            public void useMemory()
+            public void UseMemory()
             {
                 var broadcaster = new Broadcaster();
                 for (int i = 0; i < 1000; i++)

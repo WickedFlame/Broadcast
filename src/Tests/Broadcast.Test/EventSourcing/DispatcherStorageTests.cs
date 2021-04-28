@@ -17,23 +17,24 @@ namespace Broadcast.Test.EventSourcing
 		}
 
 		[Test]
-		public void DispatcherStorage_InitialList()
+		public void DispatcherStorage_GetNext_Empty()
 		{
 			var storage = new DispatcherStorage();
-			Assert.IsEmpty(storage);
+			Assert.IsEmpty(storage.GetNext());
 		}
 
 		[Test]
 		public void DispatcherStorage_Add()
 		{
-			var dispatcher = new Mock<IDispatcher>();
 			var storage = new DispatcherStorage();
-			storage.Add("id", new []
+			var set = new[]
 			{
-				dispatcher.Object
-			});
+				new Mock<IDispatcher>().Object
+			};
+			storage.Add("id", set);
 
-			Assert.AreSame(dispatcher.Object, storage.Single());
+			// DispatcherStorage creates a copy of the colleceion so we can't compare the collection but only the items
+			Assert.AreSame(set.Single(), storage.GetNext().Single());
 		}
 
 		[Test]
@@ -52,7 +53,7 @@ namespace Broadcast.Test.EventSourcing
 				new Mock<IDispatcher>().Object
 			});
 
-			Assert.AreEqual(4, storage.Count());
+			Assert.AreEqual(2, storage.Count());
 		}
 
 		[Test]
@@ -71,7 +72,7 @@ namespace Broadcast.Test.EventSourcing
 				new Mock<IDispatcher>().Object
 			});
 
-			Assert.AreEqual(2, storage.Count());
+			Assert.AreEqual(1, storage.Count());
 		}
 
 		[Test]
@@ -92,7 +93,31 @@ namespace Broadcast.Test.EventSourcing
 
 			storage.Remove("id1");
 
-			Assert.AreSame(dispatcher.Object, storage.Single());
+			Assert.AreSame(dispatcher.Object, storage.GetNext().Single());
+		}
+
+		[Test]
+		public void DispatcherStorage_GetNext_Multiple()
+		{
+			var storage = new DispatcherStorage();
+			var firstSet = new[]
+			{
+				new Mock<IDispatcher>().Object
+			};
+			storage.Add("id1", firstSet);
+
+			var secondSet = new[]
+			{
+				new Mock<IDispatcher>().Object
+			};
+			storage.Add("id2", secondSet);
+
+			// get first
+			Assert.AreSame(firstSet.Single(), storage.GetNext().Single());
+			// get next
+			Assert.AreSame(secondSet.Single(), storage.GetNext().Single());
+			// move to first again
+			Assert.AreSame(firstSet.Single(), storage.GetNext().Single());
 		}
 
 		[Test]

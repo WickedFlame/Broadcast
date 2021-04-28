@@ -6,20 +6,25 @@ namespace Broadcast.EventSourcing
 {
 	/// <summary>
 	/// A storage for managing <see cref="IDispatcher"/>
-	/// <see cref="IDispatcher"/> are stored per key or per <see cref="IBroadcaster"/>
+	/// <see cref="IDispatcher"/> are stored per Id of the <see cref="IBroadcaster"/>.
+	/// Uses a round robin implementation to get the next set of <see cref="IDispatcher"/> for processing
 	/// </summary>
-	public class DispatcherStorage : IEnumerable<IDispatcher>
+	public class DispatcherStorage
 	{
-		private readonly List<IDispatcher> _dispatchers;
-		private readonly Dictionary<string, IDispatcher[]> _idref;
+		private readonly object _lockObject = new object();
+
+		private readonly Dictionary<string, IDispatcher[]> _dispatchers;
+		private readonly List<string> _ids;
+		private int _currentIndex;
 
 		/// <summary>
 		/// Creates a new instance of the DispatcherStorage
 		/// </summary>
 		public DispatcherStorage()
 		{
-			_dispatchers = new List<IDispatcher>();
-			_idref = new Dictionary<string, IDispatcher[]>();
+			_dispatchers = new Dictionary<string, IDispatcher[]>();
+			_ids = new List<string>();
+			_currentIndex = -1;
 		}
 
 		/// <summary>
@@ -29,13 +34,16 @@ namespace Broadcast.EventSourcing
 		/// <param name="dispatchers"></param>
 		public void Add(string id, IEnumerable<IDispatcher> dispatchers)
 		{
-			if (_idref.ContainsKey(id))
+			lock(_lockObject)
 			{
-				Remove(id);
-			}
+				if (_dispatchers.ContainsKey(id))
+				{
+					Remove(id);
+				}
 
-			_dispatchers.AddRange(dispatchers);
-			_idref[id] = dispatchers.ToArray();
+				_dispatchers[id] = dispatchers.ToArray();
+				_ids.Add(id);
+			}
 		}
 
 		/// <summary>
@@ -44,31 +52,48 @@ namespace Broadcast.EventSourcing
 		/// <param name="id"></param>
 		public void Remove(string id)
 		{
-			if (!_idref.ContainsKey(id))
+			lock(_lockObject)
 			{
-				return;
-			}
+				if (!_dispatchers.ContainsKey(id))
+				{
+					return;
+				}
 
-			foreach (var dispatcher in _idref[id])
-			{
-				_dispatchers.Remove(dispatcher);
+				_dispatchers.Remove(id);
+				_ids.Remove(id);
 			}
-
-			_idref.Remove(id);
 		}
 
 		/// <summary>
-		/// Gets the enumerator of the storage
+		/// Get the next set of <see cref="IDispatcher"/> using a round robin selection
 		/// </summary>
 		/// <returns></returns>
-		public IEnumerator<IDispatcher> GetEnumerator()
+		public IEnumerable<IDispatcher> GetNext()
 		{
-			return _dispatchers.GetEnumerator();
+			if (!_dispatchers.Any())
+			{
+				return Enumerable.Empty<IDispatcher>();
+			}
+
+			lock (_lockObject)
+			{
+				_currentIndex += 1;
+				if (_currentIndex >= _ids.Count)
+				{
+					_currentIndex = 0;
+				}
+
+				return _dispatchers[_ids[_currentIndex]];
+			}
 		}
 
-		IEnumerator IEnumerable.GetEnumerator()
+		/// <summary>
+		/// Gets the number of registered sets of <see cref="IDispatcher"/>
+		/// </summary>
+		/// <returns></returns>
+		public int Count()
 		{
-			return GetEnumerator();
+			return _ids.Count();
 		}
 	}
 }

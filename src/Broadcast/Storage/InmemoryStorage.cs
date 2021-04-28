@@ -66,17 +66,19 @@ namespace Broadcast.Storage
 			{
 				if (_store.ContainsKey(key.ToString()))
 				{
-					if (_store[key.ToString()] is ListItem list)
+					if (!(_store[key.ToString()] is ListItem list))
 					{
-						foreach (var stored in list.Items)
-						{
-							if (((T)stored.GetValue()).Equals(item))
-							{
-								list.Items.Remove(stored);
-								return true;
-							}
-						}
+						return false;
 					}
+
+					var stored = list.Items.FirstOrDefault(i => ((T) i.GetValue()).Equals(item));
+					if (stored == null)
+					{
+						return false;
+					}
+					
+					list.Items.Remove(stored);
+					return true;
 				}
 
 				return false;

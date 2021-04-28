@@ -22,10 +22,10 @@ namespace Broadcast.EventSourcing
         void Add(ITask task);
 
 		/// <summary>
-		/// Dispatch the task to all <see cref="IDispatcher"/>
+		/// Dispatch the task to all <see cref="IDispatcher"/>.
+		/// Uses a round robin implementation to select the <see cref="IBroadcaster"/> that the task is dispatched to
 		/// </summary>
-		/// <param name="task"></param>
-        void DispatchTask(ITask task);
+        void DispatchTasks();
 
 		/// <summary>
 		/// Register a set of <see cref="IDispatcher"/> to the TaskStore.
