@@ -142,51 +142,7 @@ namespace Broadcast.EventSourcing
 			};
 		}
 	}
-
-    public class DelegateTask<T> : BroadcastTask, ITask<T>
-    {
-		public Func<T> Task { get; set; }
-
-		public override object Invoke(TaskInvocation invocation)
-		{
-			return Task.Invoke();
-		}
-
-		public override ITask Clone()
-		{
-			return new DelegateTask<T>
-			{
-				State = TaskState.New,
-				Task = Task,
-				IsRecurring = IsRecurring,
-				Time = Time,
-				Name = Name
-			};
-		}
-	}
-
-	public class ExpressionTask<T> : BroadcastTask, ITask<T>
-    {
-		public Expression<Func<T>> Task { get; set; }
-
-		public override object Invoke(TaskInvocation invocation)
-		{
-			return Task.Compile().Invoke();
-		}
-
-		public override ITask Clone()
-		{
-			return new ExpressionTask<T>
-			{
-				State = TaskState.New,
-				Task = Task,
-				IsRecurring = IsRecurring,
-				Time = Time,
-				Name = Name
-			};
-		}
-	}
-
+	
     public class ExpressionTask : BroadcastTask
     {
 	    public ExpressionTask(Type type, MethodInfo method, params object[] args)

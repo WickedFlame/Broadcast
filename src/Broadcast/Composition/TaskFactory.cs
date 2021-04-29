@@ -30,47 +30,7 @@ namespace Broadcast.Composition
 				State = TaskState.New
 			};
 		}
-
-		/// <summary>
-		/// Creates a task from a func
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="task"></param>
-		/// <returns></returns>
-		public static ITask CreateTask<T>(Func<T> task)
-		{
-			if (task == null)
-			{
-				throw new ArgumentNullException(nameof(task));
-			}
-
-			return new DelegateTask<T>
-			{
-				Task = task,
-				State = TaskState.New
-			};
-		}
-
-		/// <summary>
-		/// Creates a Notification Task based on the Func delegate
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="task"></param>
-		/// <returns></returns>
-		public static ExpressionTask<T> CreateNotifiableTask<T>(Expression<Func<T>> task) where T : INotification
-		{
-			if (task == null)
-			{
-				throw new ArgumentNullException(nameof(task));
-			}
-
-			return new ExpressionTask<T>
-			{
-				Task = task,
-				State = TaskState.New
-			};
-		}
-
+		
 		/// <summary>
 		/// Create a task from a labdaexpression
 		/// </summary>

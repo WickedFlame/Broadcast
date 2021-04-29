@@ -55,32 +55,6 @@ namespace Broadcast.Integration.Test.Api
 			Assert.AreEqual(1, broadcaster.GetProcessedTasks().Count());
 		}
 
-		[Test]
-		public void Broadcaster_Api_Send_Notification_Class()
-		{
-			var broadcaster = new Broadcaster(new TaskStore());
-
-			// send a event to a handler
-			// serializeable Func<TestClass>
-			broadcaster.Send<TestClass>(() => new TestClass(1));
-
-			broadcaster.WaitAll();
-			Assert.AreEqual(1, broadcaster.GetProcessedTasks().Count());
-		}
-
-		[Test]
-		public void Broadcaster_Api_Send_Notification_Method()
-		{
-			var broadcaster = new Broadcaster(new TaskStore());
-
-			// send a event to a handler
-			// serializeable Func<TestClass>
-			broadcaster.Send<TestClass>(() => Returnable(1));
-
-			broadcaster.WaitAll();
-			Assert.AreEqual(1, broadcaster.GetProcessedTasks().Count());
-		}
-
 
 
 		[Test]
@@ -119,34 +93,6 @@ namespace Broadcast.Integration.Test.Api
 			// execute a generic method
 			// serializeable
 			broadcaster.Schedule(() => GenericMethod(1), TimeSpan.FromSeconds(0.5));
-
-			Task.Delay(1500).Wait();
-
-			Assert.GreaterOrEqual(broadcaster.GetProcessedTasks().Count(), 1);
-		}
-
-		[Test]
-		public void Broadcaster_Api_Schedule_Notification_Class()
-		{
-			var broadcaster = new Broadcaster(new TaskStore());
-
-			// send a event to a handler
-			// Nonserializeable Func<TestClass>
-			broadcaster.Schedule<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(0.5));
-
-			Task.Delay(1500).Wait();
-
-			Assert.GreaterOrEqual(broadcaster.GetProcessedTasks().Count(), 1);
-		}
-
-		[Test]
-		public void Broadcaster_Api_Schedule_Notification_Method()
-		{
-			var broadcaster = new Broadcaster(new TaskStore());
-
-			// send a event to a handler
-			// Nonserializeable Func<TestClass>
-			broadcaster.Schedule<TestClass>(() => Returnable(1), TimeSpan.FromSeconds(0.5));
 
 			Task.Delay(1500).Wait();
 
@@ -201,49 +147,10 @@ namespace Broadcast.Integration.Test.Api
 
 			Assert.GreaterOrEqual(broadcaster.GetProcessedTasks().Count(), 2);
 		}
-
-		[Test]
-		public void Broadcaster_Api_Recurring_Notification_Class()
-		{
-			var broadcaster = new Broadcaster(new TaskStore());
-
-			// send a event to a handler
-			// Nonserializeable Func<TestClass>
-			broadcaster.Recurring<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(0.5));
-
-			Task.Delay(2000).Wait();
-
-			Assert.GreaterOrEqual(broadcaster.GetProcessedTasks().Count(), 2);
-		}
-
-		[Test]
-		public void Broadcaster_Api_Recurring_Notification_Method()
-		{
-			var broadcaster = new Broadcaster(new TaskStore());
-
-			// send a event to a handler
-			// Nonserializeable Func<TestClass>
-			broadcaster.Recurring<TestClass>(() => Returnable(1), TimeSpan.FromSeconds(0.5));
-
-			Task.Delay(2000).Wait();
-
-			Assert.GreaterOrEqual(broadcaster.GetProcessedTasks().Count(), 2);
-		}
-
-
-
-
-
+		
 
 		public void TestMethod(int i) { }
 
 		public void GenericMethod<T>(T value) { }
-
-		public TestClass Returnable(int i) => new TestClass(i);
-
-		public class TestClass : INotification
-		{
-			public TestClass(int i) { }
-		}
 	}
 }

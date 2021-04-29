@@ -24,13 +24,6 @@ namespace Broadcast.Test
         }
 
         [Test]
-        public void ProcessorContext_Notificationhandlers()
-        {
-	        var ctx = new ProcessorContext();
-	        Assert.IsNotNull(ctx.NotificationHandlers);
-        }
-
-        [Test]
         public void ProcessorContext_Options()
         {
 	        var ctx = new ProcessorContext();

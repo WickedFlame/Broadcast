@@ -1,5 +1,4 @@
-﻿using Broadcast.EventSourcing;
-using Broadcast.Configuration;
+﻿using Broadcast.Configuration;
 using Broadcast.Processing;
 using Broadcast.Server;
 
@@ -10,14 +9,11 @@ namespace Broadcast
     /// </summary>
     public class ProcessorContext : IProcessorContext, IServerContext
     {
-        readonly INotificationHandlerStore _notificationHandlers;
-
 		/// <summary>
 		/// Creates a new instance of the ProcessorContext
 		/// </summary>
         public ProcessorContext()
         {
-            _notificationHandlers = new NotificationHandlerStore();
             Options = Options.Default;
         }
 
@@ -25,10 +21,5 @@ namespace Broadcast
 		/// Gets or sets the <see cref="Options"/>
 		/// </summary>
         public Options Options { get; set; }
-
-        /// <summary>
-        /// Gets the store of the NotificationHandlers
-        /// </summary>
-        public INotificationHandlerStore NotificationHandlers => _notificationHandlers;
     }
 }

@@ -90,47 +90,5 @@ namespace Broadcast.Test.Processing
 
 			Assert.DoesNotThrow(() => dispatcher.Execute(ctx.Object));
 		}
-
-		[Test]
-		public void TaskExecutionDispatcher_ExecuteHandler()
-		{
-			var task = new Mock<ITask>();
-			task.Setup(exp => exp.Invoke(It.IsAny<TaskInvocation>())).Returns(() => new Mock<INotification>().Object);
-			var dispatcher = new TaskExecutionDispatcher(task.Object);
-
-			var notifier = new Mock<Action<INotification>>();
-			var handlers = new List<Action<INotification>>
-			{
-				notifier.Object
-			};
-
-			var ctx = new Mock<IProcessorContext>();
-			ctx.Setup(exp => exp.NotificationHandlers.TryGetHandlers(It.IsAny<Type>(), out handlers)).Returns(() => true);
-
-			dispatcher.Execute(ctx.Object);
-
-			notifier.Verify(exp => exp.Invoke(It.IsAny<INotification>()), Times.Once);
-		}
-
-		[Test]
-		public void TaskExecutionDispatcher_ExecuteHandler_InvalidOutput()
-		{
-			var task = new Mock<ITask>();
-			task.Setup(exp => exp.Invoke(It.IsAny<TaskInvocation>())).Returns(() => new Mock<TaskInvocation>().Object);
-			var dispatcher = new TaskExecutionDispatcher(task.Object);
-
-			var notifier = new Mock<Action<INotification>>();
-			var handlers = new List<Action<INotification>>
-			{
-				notifier.Object
-			};
-
-			var ctx = new Mock<IProcessorContext>();
-			ctx.Setup(exp => exp.NotificationHandlers.TryGetHandlers(It.IsAny<Type>(), out handlers)).Returns(() => true);
-
-			dispatcher.Execute(ctx.Object);
-
-			notifier.Verify(exp => exp.Invoke(It.IsAny<INotification>()), Times.Never);
-		}
 	}
 }

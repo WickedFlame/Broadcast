@@ -104,50 +104,6 @@ namespace Broadcast.Test.Api
 		}
 
 		[Test]
-		public void BackgroundTaskClient_Api_Send_Notification_Class_Process()
-		{
-			// send a event to a handler
-			// serializeable Func<TestClass>
-			BackgroundTaskClient.Send<TestClass>(() => new TestClass(1));
-
-			_processor.Verify(exp => exp.Process(It.IsAny<ITask>()), Times.Once);
-		}
-
-		[Test]
-		public void BackgroundTaskClient_Api_Send_Notification_Class_StoreAdd()
-		{
-			BroadcastingClient.Setup(() => new BroadcastingClient(_store.Object));
-
-			// send a event to a handler
-			// serializeable Func<TestClass>
-			BackgroundTaskClient.Send<TestClass>(() => new TestClass(1));
-
-			_store.Verify(exp => exp.Add(It.IsAny<ITask>()), Times.Once);
-		}
-
-		[Test]
-		public void BackgroundTaskClient_Api_Send_Notification_Method_Process()
-		{
-			// send a event to a handler
-			// serializeable Func<TestClass>
-			BackgroundTaskClient.Send<TestClass>(() => Returnable(1));
-
-			_processor.Verify(exp => exp.Process(It.IsAny<ITask>()), Times.Once);
-		}
-
-		[Test]
-		public void BackgroundTaskClient_Api_Send_Notification_Method_StoreAdd()
-		{
-			BroadcastingClient.Setup(() => new BroadcastingClient(_store.Object));
-
-			// send a event to a handler
-			// serializeable Func<TestClass>
-			BackgroundTaskClient.Send<TestClass>(() => Returnable(1));
-
-			_store.Verify(exp => exp.Add(It.IsAny<ITask>()), Times.Once);
-		}
-
-		[Test]
 		public void BackgroundTaskClient_Api_Send_Notification_Local_Process()
 		{
 			// send a local action
@@ -209,26 +165,6 @@ namespace Broadcast.Test.Api
 		}
 
 		[Test]
-		public void BackgroundTaskClient_Api_Schedule_Notification_Class()
-		{
-			// send a event to a handler
-			// Nonserializeable Func<TestClass>
-			BackgroundTaskClient.Schedule<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(1));
-
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
-		}
-
-		[Test]
-		public void BackgroundTaskClient_Api_Schedule_Notification_Method()
-		{
-			// send a event to a handler
-			// Nonserializeable Func<TestClass>
-			BackgroundTaskClient.Schedule<TestClass>(() => Returnable(1), TimeSpan.FromSeconds(1));
-
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
-		}
-
-		[Test]
 		public void BackgroundTaskClient_Api_Schedule_Notification_Lopcal()
 		{
 			// send a local action
@@ -275,26 +211,6 @@ namespace Broadcast.Test.Api
 		}
 
 		[Test]
-		public void BackgroundTaskClient_Api_Recurring_Notification_Class()
-		{
-			// send a event to a handler
-			// Nonserializeable Func<TestClass>
-			BackgroundTaskClient.Recurring<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(0.5));
-
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
-		}
-
-		[Test]
-		public void BackgroundTaskClient_Api_Recurring_Notification_Method()
-		{
-			// send a event to a handler
-			// Nonserializeable Func<TestClass>
-			BackgroundTaskClient.Recurring<TestClass>(() => Returnable(1), TimeSpan.FromSeconds(0.5));
-
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
-		}
-
-		[Test]
 		public void BackgroundTaskClient_Api_Recurring_Notification_Lopcal()
 		{
 			// send a local action
@@ -323,12 +239,5 @@ namespace Broadcast.Test.Api
 		public void TestMethod(int i) { }
 
 		public void GenericMethod<T>(T value) { }
-
-		public TestClass Returnable(int i) => new TestClass(i);
-
-		public class TestClass : INotification
-		{
-			public TestClass(int i) { }
-		}
 	}
 }

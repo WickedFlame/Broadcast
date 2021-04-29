@@ -31,19 +31,5 @@ namespace Broadcast
 		/// Wait for all threads to end
 		/// </summary>
         void WaitAll();
-		
-		/// <summary>
-		/// Register a INotificationTarget that gets called when a INotification of the same type is sent
-		/// </summary>
-		/// <typeparam name="T">The notification type</typeparam>
-		/// <param name="target">The INotificationTarget that handles the INotification</param>
-		void RegisterHandler<T>(INotificationTarget<T> target) where T : INotification;
-
-        /// <summary>
-        /// Register a delegate that gets called when a INotification of the same type is sent
-        /// </summary>
-        /// <typeparam name="T">The notification type</typeparam>
-        /// <param name="target">The delegate that handles the INotification</param>
-        void RegisterHandler<T>(Action<T> target) where T : INotification;
     }
 }

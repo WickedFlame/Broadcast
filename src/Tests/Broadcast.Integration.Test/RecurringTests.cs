@@ -18,7 +18,7 @@ namespace Broadcast.Integration.Test
             var broadcaster = new Broadcaster(new TaskStore());
             broadcaster.Recurring(() => System.Diagnostics.Trace.WriteLine("Recurring"), TimeSpan.FromSeconds(0.01));
 
-            Task.Delay(1000).Wait();
+            Task.Delay(2000).Wait();
 
             Assert.GreaterOrEqual(broadcaster.Store.Count(), 10);
         }

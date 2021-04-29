@@ -196,23 +196,8 @@ namespace Broadcast.Test.Api
 		}
 
 
-
-
-
-
-
-
-
-
 		public void TestMethod(int i) { }
 
 		public void GenericMethod<T>(T value) { }
-
-		public TestClass Returnable(int i) => new TestClass(i);
-
-		public class TestClass : INotification
-		{
-			public TestClass(int i) { }
-		}
 	}
 }

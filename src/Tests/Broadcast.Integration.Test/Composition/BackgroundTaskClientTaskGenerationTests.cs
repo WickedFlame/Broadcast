@@ -62,44 +62,5 @@ namespace Broadcast.Integration.Test.Composition
 
 			Assert.IsAssignableFrom<ActionTask>(BroadcastServer.Server.Store.First());
 		}
-
-		[Test]
-		public void BackgroundTaskClient_TaskGeneration_Send_Notify()
-		{
-			// execute a static method
-			// serializeable
-			BackgroundTaskClient.Send<TestClass>(() => new TestClass(1));
-
-			Assert.IsAssignableFrom<DelegateTask<TestClass>>(BroadcastServer.Server.Store.First());
-		}
-
-		[Test]
-		public void BackgroundTaskClient_TaskGeneration_Schedule_Notify()
-		{
-			// execute a static method
-			// serializeable
-			BackgroundTaskClient.Schedule<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(0.5));
-
-			Task.Delay(1000).Wait();
-
-			Assert.IsAssignableFrom<DelegateTask<TestClass>>(BroadcastServer.Server.Store.First());
-		}
-
-		[Test]
-		public void BackgroundTaskClient_TaskGeneration_Recurring_Notify()
-		{
-			// execute a static method
-			// serializeable
-			BackgroundTaskClient.Recurring<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(0.5));
-
-			Task.Delay(1000).Wait();
-
-			Assert.IsAssignableFrom<DelegateTask<TestClass>>(BroadcastServer.Server.Store.First());
-		}
-
-		public class TestClass : INotification
-		{
-			public TestClass(int i) { }
-		}
 	}
 }

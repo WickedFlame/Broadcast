@@ -104,27 +104,6 @@ namespace Broadcast
 		}
 		
 		/// <summary>
-		/// Register a INotificationTarget that gets called when a INotification of the same type is sent
-		/// </summary>
-		/// <typeparam name="T">The notification type</typeparam>
-		/// <param name="target">The INotificationTarget that handles the INotification</param>
-		public void RegisterHandler<T>(INotificationTarget<T> target) where T : INotification
-        {
-            RegisterHandler<T>(a => target.Handle(a));
-        }
-
-        /// <summary>
-        /// Register a delegate that gets called when a INotification of the same type is sent
-        /// </summary>
-        /// <typeparam name="T">The notification type</typeparam>
-        /// <param name="target">The delegate that handles the INotification</param>
-        public void RegisterHandler<T>(Action<T> target) where T : INotification
-        {
-			Processor.AddHandler(target);
-		}
-
-        
-		/// <summary>
 		/// Dispose the Broadcaster
 		/// </summary>
         public void Dispose()

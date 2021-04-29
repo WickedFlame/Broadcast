@@ -63,28 +63,6 @@ namespace Broadcast.Integration.Test.Api
 		}
 
 		[Test]
-		public void BackgroundTaskClient_Api_Send_Notification_Class()
-		{
-			// send a event to a handler
-			// serializeable Func<TestClass>
-			BackgroundTaskClient.Send<TestClass>(() => new TestClass(1));
-
-			BroadcastServer.Server.WaitAll();
-			Assert.AreEqual(1, BroadcastServer.Server.GetProcessedTasks().Count());
-		}
-
-		[Test]
-		public void BackgroundTaskClient_Api_Send_Notification_Method()
-		{
-			// send a event to a handler
-			// serializeable Func<TestClass>
-			BackgroundTaskClient.Send<TestClass>(() => Returnable(1));
-
-			BroadcastServer.Server.WaitAll();
-			Assert.AreEqual(1, BroadcastServer.Server.GetProcessedTasks().Count());
-		}
-
-		[Test]
 		public void BackgroundTaskClient_Api_Send_Notification_Local()
 		{
 			// send a local action
@@ -131,30 +109,6 @@ namespace Broadcast.Integration.Test.Api
 			// execute a generic method
 			// serializeable
 			BackgroundTaskClient.Schedule(() => GenericMethod(1), TimeSpan.FromSeconds(1));
-
-			Task.Delay(1500).Wait();
-
-			Assert.GreaterOrEqual(BroadcastServer.Server.GetProcessedTasks().Count(), 1);
-		}
-
-		[Test]
-		public void BackgroundTaskClient_Api_Schedule_Notification_Class()
-		{
-			// send a event to a handler
-			// Nonserializeable Func<TestClass>
-			BackgroundTaskClient.Schedule<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(1));
-
-			Task.Delay(1500).Wait();
-
-			Assert.GreaterOrEqual(BroadcastServer.Server.GetProcessedTasks().Count(), 1);
-		}
-
-		[Test]
-		public void BackgroundTaskClient_Api_Schedule_Notification_Method()
-		{
-			// send a event to a handler
-			// Nonserializeable Func<TestClass>
-			BackgroundTaskClient.Schedule<TestClass>(() => Returnable(1), TimeSpan.FromSeconds(1));
 
 			Task.Delay(1500).Wait();
 
@@ -216,30 +170,6 @@ namespace Broadcast.Integration.Test.Api
 		}
 
 		[Test]
-		public void BackgroundTaskClient_Api_Recurring_Notification_Class()
-		{
-			// send a event to a handler
-			// Nonserializeable Func<TestClass>
-			BackgroundTaskClient.Recurring<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(0.5));
-
-			Task.Delay(2000).Wait();
-
-			Assert.GreaterOrEqual(BroadcastServer.Server.GetProcessedTasks().Count(), 2);
-		}
-
-		[Test]
-		public void BackgroundTaskClient_Api_Recurring_Notification_Method()
-		{
-			// send a event to a handler
-			// Nonserializeable Func<TestClass>
-			BackgroundTaskClient.Recurring<TestClass>(() => Returnable(1), TimeSpan.FromSeconds(0.5));
-
-			Task.Delay(2000).Wait();
-
-			Assert.GreaterOrEqual(BroadcastServer.Server.GetProcessedTasks().Count(), 2);
-		}
-
-		[Test]
 		public void BackgroundTaskClient_Api_Recurring_Notification_Lopcal()
 		{
 			// send a local action
@@ -271,12 +201,5 @@ namespace Broadcast.Integration.Test.Api
 		public void TestMethod(int i) { }
 
 		public void GenericMethod<T>(T value) { }
-
-		public TestClass Returnable(int i) => new TestClass(i);
-
-		public class TestClass : INotification
-		{
-			public TestClass(int i) { }
-		}
 	}
 }

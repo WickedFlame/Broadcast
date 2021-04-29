@@ -44,17 +44,7 @@ namespace Broadcast.Processing
 
 				//TODO: INotification is bad design. any object should be useable
 				var invocation = new TaskInvocation();
-				var output = _task.Invoke(invocation) as INotification;
-
-				// try to find the handlers
-				if (output != null && context.NotificationHandlers.TryGetHandlers(output.GetType(), out var handlers))
-				{
-					// run all handlers with the value
-					foreach (var handler in handlers)
-					{
-						handler(output);
-					}
-				}
+				var output = _task.Invoke(invocation);
 
 				_task.SetProcessed();
 			}

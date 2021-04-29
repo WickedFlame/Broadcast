@@ -103,56 +103,6 @@ namespace Broadcast.Test.Api
 			_store.Verify(exp => exp.Add(It.IsAny<ITask>()), Times.Once);
 		}
 
-		[Test]
-		public void Broadcaster_Api_Send_Notification_Class_Process()
-		{
-			var store = new TaskStore();
-			var broadcaster = new Broadcaster(store, _processor.Object, _scheduler.Object);
-
-			// send a event to a handler
-			// serializeable Func<TestClass>
-			broadcaster.Send<TestClass>(() => new TestClass(1));
-
-			_processor.Verify(exp => exp.Process(It.IsAny<ITask>()), Times.Once);
-		}
-
-		[Test]
-		public void Broadcaster_Api_Send_Notification_Class_AddStore()
-		{
-			var broadcaster = new Broadcaster(_store.Object, _processor.Object, _scheduler.Object);
-
-			// send a event to a handler
-			// serializeable Func<TestClass>
-			broadcaster.Send<TestClass>(() => new TestClass(1));
-
-			_store.Verify(exp => exp.Add(It.IsAny<ITask>()), Times.Once);
-		}
-
-		[Test]
-		public void Broadcaster_Api_Send_Notification_Method_Process()
-		{
-			var store = new TaskStore();
-			var broadcaster = new Broadcaster(store, _processor.Object, _scheduler.Object);
-
-			// send a event to a handler
-			// serializeable Func<TestClass>
-			broadcaster.Send<TestClass>(() => Returnable(1));
-
-			_processor.Verify(exp => exp.Process(It.IsAny<ITask>()), Times.Once);
-		}
-
-		[Test]
-		public void Broadcaster_Api_Send_Notification_Method_AddStore()
-		{
-			var broadcaster = new Broadcaster(_store.Object, _processor.Object, _scheduler.Object);
-
-			// send a event to a handler
-			// serializeable Func<TestClass>
-			broadcaster.Send<TestClass>(() => Returnable(1));
-
-			_store.Verify(exp => exp.Add(It.IsAny<ITask>()), Times.Once);
-		}
-
 
 
 		[Test]
@@ -190,34 +140,7 @@ namespace Broadcast.Test.Api
 
 			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
-
-		[Test]
-		public void Broadcaster_Api_Schedule_Notification_Class()
-		{
-			var broadcaster = new Broadcaster(new TaskStore(), _processor.Object, _scheduler.Object);
-
-			// send a event to a handler
-			// Nonserializeable Func<TestClass>
-			broadcaster.Schedule<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(0.5));
-
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
-		}
-
-		[Test]
-		public void Broadcaster_Api_Schedule_Notification_Method()
-		{
-			var broadcaster = new Broadcaster(new TaskStore(), _processor.Object, _scheduler.Object);
-
-			// send a event to a handler
-			// Nonserializeable Func<TestClass>
-			broadcaster.Schedule<TestClass>(() => Returnable(1), TimeSpan.FromSeconds(0.5));
-
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
-		}
-
-
-
-
+		
 
 
 
@@ -257,45 +180,12 @@ namespace Broadcast.Test.Api
 
 			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
-
-		[Test]
-		public void Broadcaster_Api_Recurring_Notification_Class()
-		{
-			var broadcaster = new Broadcaster(new TaskStore(), _processor.Object, _scheduler.Object);
-
-			// send a event to a handler
-			// Nonserializeable Func<TestClass>
-			broadcaster.Recurring<TestClass>(() => new TestClass(1), TimeSpan.FromSeconds(0.5));
-
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
-		}
-
-		[Test]
-		public void Broadcaster_Api_Recurring_Notification_Method()
-		{
-			var broadcaster = new Broadcaster(new TaskStore(), _processor.Object, _scheduler.Object);
-
-			// send a event to a handler
-			// Nonserializeable Func<TestClass>
-			broadcaster.Recurring<TestClass>(() => Returnable(1), TimeSpan.FromSeconds(0.5));
-
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
-		}
-
-
-
+		
 
 
 
 		public void TestMethod(int i) { }
 
 		public void GenericMethod<T>(T value) { }
-
-		public TestClass Returnable(int i) => new TestClass(i);
-
-		public class TestClass : INotification
-		{
-			public TestClass(int i) { }
-		}
 	}
 }

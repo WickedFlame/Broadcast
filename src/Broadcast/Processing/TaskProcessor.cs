@@ -56,11 +56,6 @@ namespace Broadcast.Processing
 	        _server.WaitAll();
         }
 
-		public void AddHandler<T>(Action<T> target) where T : INotification
-		{
-			_context.NotificationHandlers.AddHandler(target);
-		}
-
 		/// <summary>
 		/// Process the delegate task
 		/// </summary>
