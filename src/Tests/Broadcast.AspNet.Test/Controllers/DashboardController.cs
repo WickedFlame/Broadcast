@@ -67,7 +67,14 @@ namespace Broadcast.AspNet.Test.Controllers
 
 		public IEnumerable<TaskDescription> GetAllTasks()
 		{
-			return _store.Select(t => new TaskDescription { Id = t.Id, IsRecurring = t.IsRecurring, State = t.State, Time = t.Time });
+			return _store.Select(t => new TaskDescription
+			{
+				Id = t.Id, 
+				Name = t.Name,
+				IsRecurring = t.IsRecurring, 
+				State = t.State,
+				Time = t.Time
+			});
 		}
 
 		public IEnumerable<RecurringTaskDescription> GetRecurringTasks()
@@ -102,11 +109,14 @@ namespace Broadcast.AspNet.Test.Controllers
 	{
 		public string Id { get; set; }
 
+		public string Name { get; set; }
+
 		public bool IsRecurring { get; set; }
 
 		public TaskState State { get; set; }
 
 		public TimeSpan? Time { get; set; }
+		
 	}
 
 	public class RecurringTaskDescription
