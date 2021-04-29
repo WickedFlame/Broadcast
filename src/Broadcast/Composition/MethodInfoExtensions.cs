@@ -1,13 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Broadcast.Composition
 {
+	/// <summary>
+	/// Extension class for MethodInfo
+	/// </summary>
 	internal static class MethodInfoExtensions
 	{
+		/// <summary>
+		/// Gets the name  of the method
+		/// </summary>
+		/// <param name="methodInfo"></param>
+		/// <returns></returns>
 		public static string GetNormalizedName(this MethodInfo methodInfo)
 		{
 			// Method names containing '.' are considered explicitly implemented interface methods

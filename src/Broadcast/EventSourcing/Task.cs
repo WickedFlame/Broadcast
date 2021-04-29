@@ -8,14 +8,30 @@ using Broadcast.Composition;
 
 namespace Broadcast.EventSourcing
 {
+	/// <summary>
+	/// The Task that is enqueued
+	/// </summary>
 	public interface ITask
 	{
+		/// <summary>
+		/// Id of the Task
+		/// This is regenerated for each new Taskenqueu. Recurring tasks are cloned and enqueued multiple times
+		/// </summary>
 		string Id { get; }
 
+		/// <summary>
+		/// Gets the current <see cref="TaskState"/> of the task
+		/// </summary>
 		TaskState State { get; set; }
 
+		/// <summary>
+		/// Gets the time for scheduling
+		/// </summary>
 		TimeSpan? Time { get; set; }
 
+		/// <summary>
+		/// Gets if a task is recurring
+		/// </summary>
 		bool IsRecurring { get; set; }
 
 		/// <summary>
@@ -25,14 +41,18 @@ namespace Broadcast.EventSourcing
 		/// </summary>
 		string Name { get; set; }
 
+		/// <summary>
+		/// Invoke the task
+		/// </summary>
+		/// <param name="invocation"></param>
+		/// <returns></returns>
 		object Invoke(TaskInvocation invocation);
 
+		/// <summary>
+		/// Clone the task for rescheduling
+		/// </summary>
+		/// <returns></returns>
 		ITask Clone();
-	}
-
-	public interface ITask<T> : ITask
-	{
-
 	}
 
     public abstract class BroadcastTask : ITask
@@ -43,27 +63,126 @@ namespace Broadcast.EventSourcing
 			Name = Guid.NewGuid().ToString();
 		}
 
-	    public string Id { get; }
+	    /// <inheritdoc/>
+		public string Id { get; }
 
+	    /// <inheritdoc/>
 		public TaskState State { get; set; }
 
+	    /// <inheritdoc/>
 		public TimeSpan? Time { get; set; }
 
+	    /// <inheritdoc/>
 		public bool IsRecurring { get; set; }
 
 		/// <inheritdoc/>
 		public string Name { get; set; }
 
+		/// <inheritdoc/>
 		public abstract object Invoke(TaskInvocation invocation);
 
+		/// <inheritdoc/>
 		public abstract ITask Clone();
 
+		/// <inheritdoc/>
 		public override string ToString()
 		{
 			return Name;
 		}
+	}
 
-		protected static void Validate(Type type, string typeParameterName, MethodInfo method, string methodParameterName, int argumentCount, string argumentParameterName)
+    public class ActionTask : BroadcastTask
+    {
+		public Action Task { get; set; }
+
+		/// <inheritdoc/>
+		public override object Invoke(TaskInvocation invocation)
+		{
+			Task.Invoke();
+
+			return Id;
+		}
+
+		/// <inheritdoc/>
+		public override ITask Clone()
+		{
+			return new ActionTask
+			{
+				State = TaskState.New,
+				Task = Task,
+				IsRecurring = IsRecurring,
+				Time = Time,
+				Name = Name
+			};
+		}
+	}
+	
+    public class ExpressionTask : BroadcastTask
+    {
+	    public ExpressionTask(Type type, MethodInfo method, params object[] args)
+	    {
+		    if (type == null)
+		    {
+			    throw new ArgumentNullException(nameof(type));
+		    }
+
+		    if (method == null)
+		    {
+			    throw new ArgumentNullException(nameof(method));
+		    }
+
+		    if (args == null)
+		    {
+			    throw new ArgumentNullException(nameof(args));
+		    }
+
+		    Validate(type, nameof(type), method, args.Length, nameof(args));
+
+		    Type = type;
+		    Method = method;
+		    Args = args;
+	    }
+
+		/// <summary>
+		/// Gets the type that the method to invoke is contained in
+		/// </summary>
+	    public Type Type { get; }
+
+		/// <summary>
+		/// Gets the method that has to be invoked
+		/// </summary>
+	    public MethodInfo Method { get; }
+
+		/// <summary>
+		/// Gets the arguments of the Method
+		/// </summary>
+	    public IReadOnlyList<object> Args { get; }
+
+	    /// <inheritdoc/>
+		public override string ToString()
+	    {
+		    return Name;
+	    }
+
+	    /// <inheritdoc/>
+		public override object Invoke(TaskInvocation invocation)
+		{
+			return invocation.InvokeTask(this);
+		}
+
+	    /// <inheritdoc/>
+		public override ITask Clone()
+		{
+			return new ExpressionTask(Type, Method, Args.ToArray())
+			{
+				State = TaskState.New,
+				IsRecurring = IsRecurring,
+				Time = Time,
+				Name = Name
+			};
+		}
+
+		protected static void Validate(Type type, string typeParameterName, MethodInfo method, int argumentCount, string argumentParameterName)
 		{
 			if (!method.IsPublic)
 			{
@@ -116,84 +235,6 @@ namespace Broadcast.EventSourcing
 					throw new NotSupportedException("Anonymous functions, delegates and lambda expressions aren't supported in job method parameters: it's very hard to serialize them and all their scope in general.");
 				}
 			}
-		}
-	}
-
-    public class ActionTask : BroadcastTask
-    {
-		public Action Task { get; set; }
-
-		public override object Invoke(TaskInvocation invocation)
-		{
-			Task.Invoke();
-
-			return Id;
-		}
-
-		public override ITask Clone()
-		{
-			return new ActionTask
-			{
-				State = TaskState.New,
-				Task = Task,
-				IsRecurring = IsRecurring,
-				Time = Time,
-				Name = Name
-			};
-		}
-	}
-	
-    public class ExpressionTask : BroadcastTask
-    {
-	    public ExpressionTask(Type type, MethodInfo method, params object[] args)
-	    {
-		    if (type == null)
-		    {
-			    throw new ArgumentNullException(nameof(type));
-		    }
-
-		    if (method == null)
-		    {
-			    throw new ArgumentNullException(nameof(method));
-		    }
-
-		    if (args == null)
-		    {
-			    throw new ArgumentNullException(nameof(args));
-		    }
-
-		    Validate(type, nameof(type), method, nameof(method), args.Length, nameof(args));
-
-		    Type = type;
-		    Method = method;
-		    Args = args;
-	    }
-
-	    public Type Type { get; }
-
-	    public MethodInfo Method { get; }
-
-	    public IReadOnlyList<object> Args { get; }
-
-		public override string ToString()
-	    {
-		    return Name;
-	    }
-
-		public override object Invoke(TaskInvocation invocation)
-		{
-			return invocation.InvokeTask(this);
-		}
-
-		public override ITask Clone()
-		{
-			return new ExpressionTask(Type, Method, Args.ToArray())
-			{
-				State = TaskState.New,
-				IsRecurring = IsRecurring,
-				Time = Time,
-				Name = Name
-			};
 		}
 	}
 }

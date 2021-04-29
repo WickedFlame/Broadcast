@@ -8,8 +8,16 @@ using Broadcast.EventSourcing;
 
 namespace Broadcast.Composition
 {
+	/// <summary>
+	/// Extension methods for Type
+	/// </summary>
 	public static class TypeExtensions
 	{
+		/// <summary>
+		/// Creates a name based on the type
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
 		public static string ToGenericTypeString(this Type type)
 		{
 			if (!type.GetTypeInfo().IsGenericType)
@@ -24,7 +32,13 @@ namespace Broadcast.Composition
 				.ReplaceGenericParametersInGenericTypeName(type);
 		}
 
-
+		/// <summary>
+		/// Gets the methodinfo
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="name"></param>
+		/// <param name="parameterTypes"></param>
+		/// <returns></returns>
 		public static MethodInfo GetNonOpenMatchingMethod(this Type type, string name, Type[] parameterTypes)
 		{
 			if (type == null)
