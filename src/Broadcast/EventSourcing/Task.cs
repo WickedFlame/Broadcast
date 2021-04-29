@@ -25,6 +25,11 @@ namespace Broadcast.EventSourcing
 		TaskState State { get; set; }
 
 		/// <summary>
+		/// Gets the times when the state of the task is changed
+		/// </summary>
+		IDictionary<TaskState, DateTime> StateChanges { get; }
+
+		/// <summary>
 		/// Gets the time for scheduling
 		/// </summary>
 		TimeSpan? Time { get; set; }
@@ -40,7 +45,7 @@ namespace Broadcast.EventSourcing
 		/// Recurring Tasks keep the name for each recurrence contrary to the Id
 		/// </summary>
 		string Name { get; set; }
-
+		
 		/// <summary>
 		/// Invoke the task
 		/// </summary>
@@ -57,8 +62,11 @@ namespace Broadcast.EventSourcing
 
     public abstract class BroadcastTask : ITask
     {
+		private TaskState _state;
+
 	    protected BroadcastTask()
 	    {
+		    StateChanges = new Dictionary<TaskState, DateTime>();
 		    Id = Guid.NewGuid().ToString();
 			Name = Guid.NewGuid().ToString();
 		}
@@ -67,9 +75,22 @@ namespace Broadcast.EventSourcing
 		public string Id { get; }
 
 	    /// <inheritdoc/>
-		public TaskState State { get; set; }
+	    public TaskState State
+	    {
+		    get => _state;
+		    set
+		    {
+			    _state = value;
+			    StateChanges[value] = DateTime.Now;
+		    }
+	    }
 
-	    /// <inheritdoc/>
+	    /// <summary>
+	    /// Gets the times when the state of the task is changed
+	    /// </summary>
+	    public IDictionary<TaskState, DateTime> StateChanges { get; }
+
+		/// <inheritdoc/>
 		public TimeSpan? Time { get; set; }
 
 	    /// <inheritdoc/>
