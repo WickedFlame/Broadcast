@@ -307,7 +307,16 @@ namespace Broadcast.Test.Api
 			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
 
+		[Test]
+		public void BackgroundTaskClient_Api_Recurring_Name()
+		{
+			BroadcastingClient.Setup(() => new BroadcastingClient(_store.Object));
+			// execute a local method
+			// serializeable
+			BackgroundTaskClient.Recurring("BackgroundTaskClient_Api_Recurring", () => TestMethod(1), TimeSpan.FromSeconds(0.5));
 
+			_store.Verify(exp => exp.Add(It.Is<ITask>(t => t.Name == "BackgroundTaskClient_Api_Recurring")), Times.Once);
+		}
 
 
 

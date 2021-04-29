@@ -254,7 +254,17 @@ namespace Broadcast.Integration.Test.Api
 			Assert.GreaterOrEqual(BroadcastServer.Server.GetProcessedTasks().Count(), 2);
 		}
 
+		[Test]
+		public void BackgroundTaskClient_Api_Recurring_Name()
+		{
+			// execute a static method
+			// serializeable
+			BackgroundTaskClient.Recurring("BackgroundTaskClient_Api_Recurring", () => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
 
+			Task.Delay(2000).Wait();
+
+			Assert.IsTrue(BroadcastServer.Server.GetProcessedTasks().All(t => t.Name == "BackgroundTaskClient_Api_Recurring"));
+		}
 
 
 

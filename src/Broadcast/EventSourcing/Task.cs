@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Broadcast.Composition;
 
 namespace Broadcast.EventSourcing
 {
@@ -16,6 +17,13 @@ namespace Broadcast.EventSourcing
 		TimeSpan? Time { get; set; }
 
 		bool IsRecurring { get; set; }
+
+		/// <summary>
+		/// The name of the Task.
+		/// If none is provided by the Client a GUID is generated.
+		/// Recurring Tasks keep the name for each recurrence contrary to the Id
+		/// </summary>
+		string Name { get; set; }
 
 		object Invoke(TaskInvocation invocation);
 
@@ -32,7 +40,8 @@ namespace Broadcast.EventSourcing
 	    protected BroadcastTask()
 	    {
 		    Id = Guid.NewGuid().ToString();
-	    }
+			Name = Guid.NewGuid().ToString();
+		}
 
 	    public string Id { get; }
 
@@ -42,9 +51,17 @@ namespace Broadcast.EventSourcing
 
 		public bool IsRecurring { get; set; }
 
+		/// <inheritdoc/>
+		public string Name { get; set; }
+
 		public abstract object Invoke(TaskInvocation invocation);
 
 		public abstract ITask Clone();
+
+		public override string ToString()
+		{
+			return Name;
+		}
 
 		protected static void Validate(Type type, string typeParameterName, MethodInfo method, string methodParameterName, int argumentCount, string argumentParameterName)
 		{
@@ -120,7 +137,8 @@ namespace Broadcast.EventSourcing
 				State = TaskState.New,
 				Task = Task,
 				IsRecurring = IsRecurring,
-				Time = Time
+				Time = Time,
+				Name = Name
 			};
 		}
 	}
@@ -141,7 +159,8 @@ namespace Broadcast.EventSourcing
 				State = TaskState.New,
 				Task = Task,
 				IsRecurring = IsRecurring,
-				Time = Time
+				Time = Time,
+				Name = Name
 			};
 		}
 	}
@@ -162,7 +181,8 @@ namespace Broadcast.EventSourcing
 				State = TaskState.New,
 				Task = Task,
 				IsRecurring = IsRecurring,
-				Time = Time
+				Time = Time,
+				Name = Name
 			};
 		}
 	}
@@ -191,7 +211,7 @@ namespace Broadcast.EventSourcing
 		    Type = type;
 		    Method = method;
 		    Args = args;
-		}
+	    }
 
 	    public Type Type { get; }
 
@@ -201,7 +221,7 @@ namespace Broadcast.EventSourcing
 
 		public override string ToString()
 	    {
-		    return $"{Type}.{Method.Name}";
+		    return Name;
 	    }
 
 		public override object Invoke(TaskInvocation invocation)
@@ -215,7 +235,8 @@ namespace Broadcast.EventSourcing
 			{
 				State = TaskState.New,
 				IsRecurring = IsRecurring,
-				Time = Time
+				Time = Time,
+				Name = Name
 			};
 		}
 	}

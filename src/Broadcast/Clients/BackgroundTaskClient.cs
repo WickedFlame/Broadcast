@@ -15,12 +15,27 @@ namespace Broadcast
 		/// </summary>
 		/// <param name="expression"></param>
 		/// <param name="time"></param>
-		/// <returns>The Id of the task</returns>
+		/// <returns></returns>
 		public static string Recurring(Action expression, TimeSpan time)
+			=> Recurring(null, expression, time);
+
+		/// <summary>
+		/// Adds a recurring task
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="expression"></param>
+		/// <param name="time"></param>
+		/// <returns>The Id of the task</returns>
+		public static string Recurring(string name, Action expression, TimeSpan time)
 		{
 			var task = TaskFactory.CreateTask(expression);
 			task.Time = time;
 			task.IsRecurring = true;
+
+			if (!string.IsNullOrEmpty(name))
+			{
+				task.Name = name;
+			}
 
 			var factory = BroadcastingClient.Default;
 			factory.Enqueue(task);

@@ -144,6 +144,18 @@ namespace Broadcast.Integration.Test.Api
 			Assert.GreaterOrEqual(BroadcastServer.Server.GetProcessedTasks().Count(), 2);
 		}
 
+		[Test]
+		public void TaskServerClient_Api_Recurring_Name()
+		{
+			// execute a generic method
+			// serializeable
+			TaskServerClient.Recurring("TaskServerClient_Api_Recurring", () => GenericMethod(1), TimeSpan.FromSeconds(0.5));
+
+			Task.Delay(2000).Wait();
+
+			Assert.IsTrue(BroadcastServer.Server.GetProcessedTasks().All(t => t.Name == "TaskServerClient_Api_Recurring"));
+		}
+
 		public void TestMethod(int i) { }
 
 		public void GenericMethod<T>(T value) { }

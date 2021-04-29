@@ -112,7 +112,10 @@ namespace Broadcast.Composition
 					callExpression.Method.GetParameters().Select(x => x.ParameterType).ToArray());
 			}
 
-			return new ExpressionTask(type, method, GetExpressionValues(callExpression.Arguments));
+			return new ExpressionTask(type, method, GetExpressionValues(callExpression.Arguments))
+			{
+				Name = $"{type.ToGenericTypeString()}.{method.Name}"
+			};
 		}
 
 		private static object[] GetExpressionValues(IEnumerable<Expression> expressions)

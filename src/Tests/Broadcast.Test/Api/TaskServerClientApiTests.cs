@@ -180,7 +180,20 @@ namespace Broadcast.Test.Api
 			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
 
+		[Test]
+		public void TaskServerClient_Api_Recurring_Name()
+		{
+			TaskStore.Default.Clear();
+			BroadcastServer.Setup(s => { });
 
+			// execute a static method
+			// serializeable
+			TaskServerClient.Recurring("TaskServerClient_Api_Recurring", () => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
+
+			Task.Delay(2000).Wait();
+
+			Assert.IsTrue(BroadcastServer.Server.GetProcessedTasks().All(t => t.Name == "TaskServerClient_Api_Recurring"));
+		}
 
 
 
