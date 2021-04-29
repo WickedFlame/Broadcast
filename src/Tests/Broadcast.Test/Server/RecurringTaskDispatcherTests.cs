@@ -4,6 +4,7 @@ using System.Text;
 using Broadcast.Composition;
 using Broadcast.EventSourcing;
 using Broadcast.Server;
+using Broadcast.Storage;
 using Moq;
 using NUnit.Framework;
 
@@ -105,6 +106,34 @@ namespace Broadcast.Test.Server
 			dispatcher.Execute(task);
 
 			_broadcaster.Verify(exp => exp.Process(It.IsAny<ITask>()), Times.Never);
+		}
+
+		[Test]
+		public void RecurringTaskDispatcher_Execute_StoreRecurringTask()
+		{
+			var dispatcher = new RecurringTaskDispatcher(_broadcaster.Object, _store.Object);
+			var task = TaskFactory.CreateTask(() => Console.WriteLine("RecurringTaskDispatcher"));
+			task.IsRecurring = true;
+			task.Time = TimeSpan.Zero;
+
+			dispatcher.Execute(task);
+
+			_store.Verify(exp => exp.Storage(It.IsAny<Action<IStorage>>()), Times.Once);
+		}
+
+		[Test]
+		public void RecurringTaskDispatcher_Execute_StoreRecurringTask_Storage()
+		{
+			var storage = new Mock<IStorage>();
+			var dispatcher = new RecurringTaskDispatcher(_broadcaster.Object, new TaskStore(storage.Object));
+			var task = TaskFactory.CreateTask(() => Console.WriteLine("RecurringTaskDispatcher"));
+			task.Name = "testTask";
+			task.IsRecurring = true;
+			task.Time = TimeSpan.Zero;
+
+			dispatcher.Execute(task);
+
+			storage.Verify(exp => exp.Set(It.Is<StorageKey>(k => k.Key == $"tasks:recurring:{task.Name}"), It.Is<RecurringTask>(t => t.Name == task.Name && t.Id == task.Id)), Times.Once);
 		}
 	}
 }

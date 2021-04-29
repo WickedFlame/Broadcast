@@ -1,5 +1,6 @@
 ﻿using System;
 using Broadcast.EventSourcing;
+using Broadcast.Storage;
 
 namespace Broadcast.Server
 {
@@ -31,6 +32,13 @@ namespace Broadcast.Server
 		{
 			if(task.Time != null && task.IsRecurring)
 			{
+				_store.Storage(s => s.Set(new StorageKey($"tasks:recurring:{task.Name}"), new RecurringTask
+				{
+					Id = task.Id,
+					Name = task.Name, 
+					NextExecution = DateTime.Now.Add(task.Time.Value)
+				}));
+
 				_broadcaster.Scheduler.Enqueue(() =>
 				{
 					// execute the task
