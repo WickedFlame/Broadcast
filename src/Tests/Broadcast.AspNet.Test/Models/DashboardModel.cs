@@ -8,6 +8,15 @@ namespace Broadcast.AspNet.Test.Models
 {
 	public class DashboardModel
 	{
-		public Monitor Monitor { get; set; }
+		public MonitorModel Monitor { get; set; }
+	}
+
+	public class MonitorModel
+	{
+		public IEnumerable<ServerDescription> Servers { get; set; }
+
+		public IEnumerable<TaskDescription> Tasks { get; set; }
+
+		public IEnumerable<RecurringTaskDescription> RecurringTasks { get; set; }
 	}
 }

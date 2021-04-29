@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Broadcast.AspNet.Test.Models;
 using Broadcast.EventSourcing;
+using Broadcast.Server;
+using Broadcast.Storage;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Broadcast.AspNet.Test.Controllers
@@ -20,9 +22,16 @@ namespace Broadcast.AspNet.Test.Controllers
 
 		public IActionResult Index()
 		{
+			var monitoring = new MonitoringService(_store);
+
 			var model = new DashboardModel
 			{
-				Monitor = new Monitor(_store)
+				Monitor = new MonitorModel
+				{
+					Servers = monitoring.GetServers(),
+					Tasks = monitoring.GetAllTasks(),
+					RecurringTasks = monitoring.GetRecurringTasks()
+				}
 			};
 
 			return View(model);
@@ -35,22 +44,52 @@ namespace Broadcast.AspNet.Test.Controllers
 		}
 	}
 
-	public class Monitor
+	public class MonitoringService
 	{
-		public Monitor(ITaskStore store)
+		private readonly ITaskStore _store;
+
+		public MonitoringService(ITaskStore store)
 		{
-			Servers = store.Servers.Select(s => new Server {Id = s.Id, Name = s.Name, Heartbeat = s.Heartbeat});
-			Tasks = store.Select(t => new TaskModel {Id = t.Id, IsRecurring = t.IsRecurring, State = t.State, Time = t.Time});
+			_store = store ?? throw new ArgumentNullException(nameof(store));
 		}
 
-		
 
-		public IEnumerable<Server> Servers { get; set; }
 
-		public IEnumerable<TaskModel> Tasks { get; set; }
+		public IEnumerable<ServerDescription> GetServers()
+		{
+			return _store.Servers.Select(s => new ServerDescription
+			{
+				Id = s.Id, 
+				Name = s.Name, 
+				Heartbeat = s.Heartbeat
+			});
+		}
+
+		public IEnumerable<TaskDescription> GetAllTasks()
+		{
+			return _store.Select(t => new TaskDescription { Id = t.Id, IsRecurring = t.IsRecurring, State = t.State, Time = t.Time });
+		}
+
+		public IEnumerable<RecurringTaskDescription> GetRecurringTasks()
+		{
+			IEnumerable<RecurringTaskDescription> recurring = null;
+			_store.Storage(s =>
+			{
+				var keys = s.GetKeys(new StorageKey($"tasks:recurring:"));
+
+				recurring = keys.Select(k => s.Get<RecurringTask>(new StorageKey(k)))
+					.Select(m => new RecurringTaskDescription
+					{
+						Name = m.Name,
+						NextExecution = m.NextExecution
+					});
+			});
+
+			return recurring;
+		}
 	}
 
-	public class Server
+	public class ServerDescription
 	{
 		public string Id { get; set; }
 
@@ -59,7 +98,7 @@ namespace Broadcast.AspNet.Test.Controllers
 		public DateTime Heartbeat { get; set; }
 	}
 
-	public class TaskModel
+	public class TaskDescription
 	{
 		public string Id { get; set; }
 
@@ -68,5 +107,12 @@ namespace Broadcast.AspNet.Test.Controllers
 		public TaskState State { get; set; }
 
 		public TimeSpan? Time { get; set; }
+	}
+
+	public class RecurringTaskDescription
+	{
+		public string Name { get; set; }
+
+		public DateTime NextExecution { get; set; }
 	}
 }

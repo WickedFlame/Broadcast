@@ -27,7 +27,23 @@
 	</div>
 	<div>
 		<h3>Recurring Tasks</h3>
-
+		<table class="table">
+			<thead>
+			<tr>
+				<th scope="col">Name</th>
+				<th scope="col">NextExecution</th>
+			</tr>
+			</thead>
+			<tbody>
+			@foreach (var task in Model.Monitor.RecurringTasks)
+			{
+				<tr>
+					<td>@task.Name</td>
+					<td>@task.NextExecution</td>
+				</tr>
+			}
+			</tbody>
+		</table>
 	</div>
 	<div>
 		<h3>Tasks</h3>
