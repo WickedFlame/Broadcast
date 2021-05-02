@@ -6,8 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Broadcast.Configuration;
+using Broadcast.Processing;
+using Moq;
 
-namespace Broadcast.Test
+namespace Broadcast.Test.Processing
 {
     [TestFixture]
     public class ProcessorContextTests
@@ -20,13 +22,13 @@ namespace Broadcast.Test
         [Test]
         public void ProcessorContext_ctor()
         {
-	        Assert.DoesNotThrow(() => new ProcessorContext());
+	        Assert.DoesNotThrow(() => new ProcessorContext(new Mock<ITaskStore>().Object));
         }
 
         [Test]
         public void ProcessorContext_Options()
         {
-	        var ctx = new ProcessorContext();
+	        var ctx = new ProcessorContext(new Mock<ITaskStore>().Object);
 	        Assert.IsNotNull(ctx.Options);
         }
 

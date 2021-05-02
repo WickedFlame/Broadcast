@@ -5,6 +5,7 @@ using Broadcast.Composition;
 using Broadcast.EventSourcing;
 using Broadcast.Processing;
 using Broadcast.Server;
+using Broadcast.Storage;
 using Moq;
 using NUnit.Framework;
 
@@ -20,6 +21,7 @@ namespace Broadcast.Test.Processing
 		{
 			_server = new Mock<IBackgroundServerProcess<IProcessorContext>>();
 			_context = new Mock<IProcessorContext>();
+			_context.Setup(exp => exp.Store).Returns(() => new Mock<ITaskStore>().Object);
 		}
 
 		[Test]
@@ -98,6 +100,32 @@ namespace Broadcast.Test.Processing
 			dispatcher.Execute(_context.Object);
 
 			_server.Verify(exp => exp.StartNew(It.IsAny<TaskExecutionDispatcher>()), Times.Exactly(2));
+		}
+
+		[Test]
+		public void BackgroundTaskDispatcher_Server_StartNew_SetState()
+		{
+			var queue = new TaskQueue();
+			queue.Enqueue(TaskFactory.CreateTask(() => Console.WriteLine("BackgroundTaskDispatcher")));
+
+			var dispatcher = new BackgroundTaskDispatcher(new DispatcherLock(), queue, _server.Object);
+			dispatcher.Execute(_context.Object);
+
+			_context.Verify(exp => exp.Store.Storage(It.IsAny<Action<IStorage>>()), Times.Once);
+		}
+
+		[Test]
+		public void BackgroundTaskDispatcher_Server_StartNew_SetState_Task()
+		{
+			var task = TaskFactory.CreateTask(() => Console.WriteLine("BackgroundTaskDispatcher"));
+
+			var queue = new TaskQueue();
+			queue.Enqueue(task);
+
+			var dispatcher = new BackgroundTaskDispatcher(new DispatcherLock(), queue, _server.Object);
+			dispatcher.Execute(_context.Object);
+
+			Assert.AreEqual(TaskState.Dequeued, task.State);
 		}
 	}
 }

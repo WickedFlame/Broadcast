@@ -35,12 +35,17 @@ namespace Broadcast
 		/// </summary>
 		/// <param name="store"></param>
 		public Broadcaster(ITaskStore store)
-			: this(store, new TaskProcessor(Options.Default), new Scheduler(), Options.Default)
+			: this(store, new Options())
+		{
+		}
+
+		public Broadcaster(ITaskStore store, Options options)
+			: this(store, new TaskProcessor(store, options), new Scheduler(), options)
 		{
 		}
 
 		public Broadcaster(ITaskStore store, ITaskProcessor processor, IScheduler scheduler)
-			: this(store, processor, scheduler, Options.Default)
+			: this(store, processor, scheduler, new Options())
 		{
 		}
 

@@ -66,6 +66,13 @@ namespace Broadcast.Storage
 		T Get<T>(StorageKey key);
 
 		/// <summary>
+		/// Set values as dictionary to the storage
+		/// </summary>
+		/// <param name="key"></param>
+		/// <param name="values"></param>
+		void SetValues(StorageKey key, Dictionary<string, object> values);
+
+		/// <summary>
 		/// Gets all keys that start with the given key value
 		/// </summary>
 		/// <param name="key"></param>

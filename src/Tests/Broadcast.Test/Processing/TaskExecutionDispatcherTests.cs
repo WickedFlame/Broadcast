@@ -4,6 +4,7 @@ using System.Text;
 using Broadcast.Composition;
 using Broadcast.EventSourcing;
 using Broadcast.Processing;
+using Broadcast.Storage;
 using Moq;
 using NUnit.Framework;
 
@@ -31,6 +32,7 @@ namespace Broadcast.Test.Processing
 			var dispatcher = new TaskExecutionDispatcher(task.Object);
 
 			var ctx = new Mock<IProcessorContext>();
+			ctx.Setup(exp => exp.Store).Returns(() => new Mock<ITaskStore>().Object);
 
 			dispatcher.Execute(ctx.Object);
 
@@ -44,10 +46,104 @@ namespace Broadcast.Test.Processing
 			var dispatcher = new TaskExecutionDispatcher(task.Object);
 
 			var ctx = new Mock<IProcessorContext>();
+			ctx.Setup(exp => exp.Store).Returns(() => new Mock<ITaskStore>().Object);
 
 			dispatcher.Execute(ctx.Object);
 
 			task.VerifySet(exp => exp.State = TaskState.Processed);
+		}
+
+		[Test]
+		public void TaskExecutionDispatcher_Task_SetState()
+		{
+			var task = new Mock<ITask>();
+			var dispatcher = new TaskExecutionDispatcher(task.Object);
+
+			var store = new Mock<ITaskStore>();
+
+			var ctx = new Mock<IProcessorContext>();
+			ctx.Setup(exp => exp.Store).Returns(() => store.Object);
+
+			dispatcher.Execute(ctx.Object);
+
+			store.Verify(exp => exp.Storage(It.IsAny<Action<IStorage>>()), Times.Exactly(3));
+		}
+
+		[Test]
+		public void TaskExecutionDispatcher_Task_SetValue_ExecutionTime()
+		{
+			var task = new Mock<ITask>();
+			task.Setup(exp => exp.Id).Returns("TestTask");
+			var dispatcher = new TaskExecutionDispatcher(task.Object);
+
+			var storage = new InmemoryStorage();
+			var store = new TaskStore(storage);
+
+			var ctx = new Mock<IProcessorContext>();
+			ctx.Setup(exp => exp.Store).Returns(() => store);
+
+			dispatcher.Execute(ctx.Object);
+
+			var values = storage.Get<Dictionary<string, object>>(new StorageKey($"tasks:values:TestTask"));
+			// there is no task that takes time so sometimes the executiontime is 0...
+			Assert.GreaterOrEqual((long)values["ExecutionTime"], 0);
+		}
+
+		[Test]
+		public void TaskExecutionDispatcher_Task_SetValue_State()
+		{
+			var task = new Mock<ITask>();
+			task.Setup(exp => exp.Id).Returns("TestTask");
+			var dispatcher = new TaskExecutionDispatcher(task.Object);
+
+			var storage = new InmemoryStorage();
+			var store = new TaskStore(storage);
+
+			var ctx = new Mock<IProcessorContext>();
+			ctx.Setup(exp => exp.Store).Returns(() => store);
+
+			dispatcher.Execute(ctx.Object);
+
+			var values = storage.Get<Dictionary<string, object>>(new StorageKey($"tasks:values:TestTask"));
+			Assert.AreEqual((TaskState)values["State"], TaskState.Processed);
+		}
+
+		[Test]
+		public void TaskExecutionDispatcher_Task_SetValue_ProcessedChange()
+		{
+			var task = new Mock<ITask>();
+			task.Setup(exp => exp.Id).Returns("TestTask");
+			var dispatcher = new TaskExecutionDispatcher(task.Object);
+
+			var storage = new InmemoryStorage();
+			var store = new TaskStore(storage);
+
+			var ctx = new Mock<IProcessorContext>();
+			ctx.Setup(exp => exp.Store).Returns(() => store);
+
+			dispatcher.Execute(ctx.Object);
+
+			var values = storage.Get<Dictionary<string, object>>(new StorageKey($"tasks:values:TestTask"));
+			Assert.Greater((DateTime)values["ProcessedChange"], DateTime.MinValue);
+		}
+
+		[Test]
+		public void TaskExecutionDispatcher_Task_SetValue_InProcessChange()
+		{
+			var task = new Mock<ITask>();
+			task.Setup(exp => exp.Id).Returns("TestTask");
+			var dispatcher = new TaskExecutionDispatcher(task.Object);
+
+			var storage = new InmemoryStorage();
+			var store = new TaskStore(storage);
+
+			var ctx = new Mock<IProcessorContext>();
+			ctx.Setup(exp => exp.Store).Returns(() => store);
+
+			dispatcher.Execute(ctx.Object);
+
+			var values = storage.Get<Dictionary<string, object>>(new StorageKey($"tasks:values:TestTask"));
+			Assert.Greater((DateTime)values["InProcessChange"], DateTime.MinValue);
 		}
 
 		[Test]
@@ -59,6 +155,7 @@ namespace Broadcast.Test.Processing
 			var dispatcher = new TaskExecutionDispatcher(task.Object);
 
 			var ctx = new Mock<IProcessorContext>();
+			ctx.Setup(exp => exp.Store).Returns(() => new Mock<ITaskStore>().Object);
 
 			dispatcher.Execute(ctx.Object);
 
@@ -72,6 +169,7 @@ namespace Broadcast.Test.Processing
 			var dispatcher = new TaskExecutionDispatcher(task.Object);
 
 			var ctx = new Mock<IProcessorContext>();
+			ctx.Setup(exp => exp.Store).Returns(() => new Mock<ITaskStore>().Object);
 
 			dispatcher.Execute(ctx.Object);
 
@@ -81,12 +179,15 @@ namespace Broadcast.Test.Processing
 		[Test]
 		public void TaskExecutionDispatcher_Execute_Exception()
 		{
+			// test if the execution continues when an exception is thrown
+
 			var task = new Mock<ITask>();
 			task.Setup(exp => exp.Invoke(It.IsAny<TaskInvocation>())).Throws<Exception>();
 
 			var dispatcher = new TaskExecutionDispatcher(task.Object);
 
 			var ctx = new Mock<IProcessorContext>();
+			ctx.Setup(exp => exp.Store).Returns(() => new Mock<ITaskStore>().Object);
 
 			Assert.DoesNotThrow(() => dispatcher.Execute(ctx.Object));
 		}

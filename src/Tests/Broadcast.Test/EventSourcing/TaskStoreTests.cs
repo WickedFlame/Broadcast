@@ -44,7 +44,7 @@ namespace Broadcast.Test.EventSourcing
 		[Test]
 		public void TaskStore_ctor_Null_Storage()
 		{
-			Assert.Throws<ArgumentNullException>(() => new TaskStore(Options.Default, null));
+			Assert.Throws<ArgumentNullException>(() => new TaskStore(new Options(), null));
 		}
 
 		[Test]

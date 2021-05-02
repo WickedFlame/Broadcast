@@ -7,8 +7,7 @@ using Broadcast.Server;
 namespace Broadcast.Processing
 {
 	/// <summary>
-	/// BackgroundDispatcher that processes a task.
-	/// If the task is a <see cref="INotification"/> and has registered handlers, the output is passed to all handlers
+	/// BackgroundDispatcher that processes a task
 	/// </summary>
 	public class TaskExecutionDispatcher : IBackgroundDispatcher<IProcessorContext>
 	{
@@ -40,24 +39,24 @@ namespace Broadcast.Processing
 			try
 			{
 				_logger.Write($"Start processing task {_task.Id}");
-				_task.SetInprocess();
+				context.SetState(_task, TaskState.InProcess);
 
 				//TODO: INotification is bad design. any object should be useable
 				var invocation = new TaskInvocation();
 				var output = _task.Invoke(invocation);
 
-				_task.SetProcessed();
+				context.SetState(_task, TaskState.Processed);
 			}
 			catch (Exception e)
 			{
-				_task.SetState(TaskState.Faulted);
+				context.SetState(_task, TaskState.Faulted);
 				_logger.Write($"Task execution failed for {_task.Id}", e);
 			}
 			finally
 			{
 				sw.Stop();
 				//TODO: Write metrics here
-
+				context.SetValue(_task, "ExecutionTime", sw.ElapsedMilliseconds);
 				_logger.Write($"End processing task {_task.Id}. Duration {sw.ElapsedMilliseconds} ms");
 			}
 		}

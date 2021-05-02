@@ -21,23 +21,24 @@ namespace Broadcast.Processing
 		/// <summary>
 		/// Creates a new TaskProcessor
 		/// </summary>
-		public TaskProcessor() : this(Options.Default)
-		{
-		}
-
-		/// <summary>
-		/// Creates a new TaskProcessor
-		/// </summary>
+		/// <param name="store"></param>
 		/// <param name="options"></param>
-		public TaskProcessor(Options options)
+		public TaskProcessor(ITaskStore store, Options options)
 		{
+			if (store == null)
+			{
+				throw new ArgumentNullException(nameof(store));
+			}
+
+			if (options == null)
+			{
+				throw new ArgumentNullException(nameof(options));
+			}
+
 			_logger = LoggerFactory.Create();
 			_logger.Write($"Starting new TaskProcessor for {options.ServerName}");
 
-			_context = new ProcessorContext
-			{
-				Options = options
-			};
+			_context = new ProcessorContext(store, options);
 			_queue = new TaskQueue();
 			_dispatcherLock = new DispatcherLock();
 			_server = new BackgroundServerProcess<IProcessorContext>(_context);
@@ -65,10 +66,10 @@ namespace Broadcast.Processing
 			_logger.Write($"Enqueued task {task.Id}");
 
 			_queue.Enqueue(task);
-	        task.SetState(TaskState.Queued);
+	        _context.SetState(task, TaskState.Queued);
 
-	        // check if a thread is allready processing the queue
-			lock(_processorLock)
+			// check if a thread is allready processing the queue
+			lock (_processorLock)
 			{
 				if (_dispatcherLock.IsLocked())
 				{

@@ -37,8 +37,8 @@ namespace Broadcast
 			config(serverSetup);
 
 			var store = serverSetup.Get<ITaskStore>() ?? TaskStore.Default;
-			var options = serverSetup.Get<Options>() ?? Options.Default;
-			var processor = serverSetup.Get<ITaskProcessor>() ?? new TaskProcessor(options);
+			var options = serverSetup.Get<Options>() ?? new Options();
+			var processor = serverSetup.Get<ITaskProcessor>() ?? new TaskProcessor(store, options);
 			var scheduler = serverSetup.Get<IScheduler>() ?? new Scheduler();
 
 

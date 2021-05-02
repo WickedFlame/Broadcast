@@ -1,4 +1,5 @@
 ﻿using Broadcast.Configuration;
+using Broadcast.EventSourcing;
 using Broadcast.Server;
 
 namespace Broadcast.Processing
@@ -8,6 +9,14 @@ namespace Broadcast.Processing
     /// </summary>
     public interface IProcessorContext : IServerContext
     {
+		/// <summary>
+		/// Gets the <see cref="Options"/>
+		/// </summary>
 	    Options Options { get; set; }
+
+		/// <summary>
+		/// Gets the <see cref="ITaskStore"/> associated with the <see cref="ITaskProcessor"/>
+		/// </summary>
+		ITaskStore Store { get; set; }
     }
 }

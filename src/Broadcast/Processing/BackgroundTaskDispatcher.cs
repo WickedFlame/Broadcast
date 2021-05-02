@@ -49,7 +49,7 @@ namespace Broadcast.Processing
 			while (_queue.TryDequeue(out var task))
 			{
 				_logger.Write($"Dequeued task {task.Id}");
-				task.SetState(TaskState.Dequeued);
+				context.SetState(task, TaskState.Dequeued);
 
 				try
 				{

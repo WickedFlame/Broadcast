@@ -145,6 +145,22 @@ namespace Broadcast.Storage
 		}
 
 		/// <inheritdoc/>
+		public void SetValues(StorageKey key, Dictionary<string, object> values)
+		{
+			// get original object from storage
+			var stored = Get<Dictionary<string, object>>(key) ?? new Dictionary<string, object>();
+
+			// merge objects
+			foreach (var k in values.Keys)
+			{
+				stored[k] = values[k];
+			}
+
+			// save objects
+			Set(key, stored);
+		}
+
+		/// <inheritdoc/>
 		public void Set<T>(StorageKey key, T value)
 		{
 			lock (_lockHandle)

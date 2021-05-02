@@ -40,7 +40,7 @@ namespace Broadcast.EventSourcing
 		/// Creates a new instance of the TaskStore.
 		/// Uses the instance of the default <see cref="Options"/> and  the <see cref="InmemoryStorage"/> as storage
 		/// </summary>
-		public TaskStore() : this(Options.Default, new InmemoryStorage())
+		public TaskStore() : this(new Options(), new InmemoryStorage())
 		{
 		}
 
@@ -48,7 +48,7 @@ namespace Broadcast.EventSourcing
 		/// Creates a new instance of the TaskStore.
 		/// Uses the instance of the default <see cref="Options"/>
 		/// </summary>
-		public TaskStore(IStorage storage) : this(Options.Default, storage)
+		public TaskStore(IStorage storage) : this(new Options(), storage)
 		{
 		}
 
