@@ -15,12 +15,6 @@ namespace Broadcast.Test.Configuration
 		}
 
 		[Test]
-		public void Options_Default()
-		{
-			Assert.IsNotNull(Options.Default);
-		}
-
-		[Test]
 		public void Options_Property_ServerName_Default()
 		{
 			Assert.AreEqual(Environment.MachineName, new Options().ServerName);
@@ -30,34 +24,6 @@ namespace Broadcast.Test.Configuration
 		public void Options_Property_HeartbeatInterval_Default()
 		{
 			Assert.AreEqual(60000, new Options().HeartbeatInterval);
-		}
-
-		[Test]
-		public void Options_Setup()
-		{
-			Options.Setup(o =>
-			{
-				o.ServerName = "test";
-				o.HeartbeatInterval = 1;
-			});
-
-			Assert.AreEqual("test", Options.Default.ServerName);
-			Assert.AreEqual(1, Options.Default.HeartbeatInterval);
-		}
-
-		[Test]
-		public void Options_Setup_Reset()
-		{
-			Options.Setup(o =>
-			{
-				o.ServerName = "test";
-				o.HeartbeatInterval = 1;
-			});
-
-			Options.Setup(o => { });
-
-			Assert.AreEqual(Environment.MachineName, Options.Default.ServerName);
-			Assert.AreEqual(60000, Options.Default.HeartbeatInterval);
 		}
 	}
 }

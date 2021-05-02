@@ -19,7 +19,7 @@ namespace Broadcast
 
 			config(serverSetup);
 
-			var options = serverSetup.Resolve<Options>() ?? Options.Default;
+			var options = serverSetup.Resolve<Options>() ?? new Options();
 			services.TryAddSingletonChecked(_ => options);
 
 			var storage = serverSetup.Resolve<IStorage>() ?? new InmemoryStorage();

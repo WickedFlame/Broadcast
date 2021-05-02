@@ -28,7 +28,7 @@ namespace Broadcast
 			var services = app.ApplicationServices;
 			
 			var storage = services.GetRequiredService<ITaskStore>();
-			options = options ?? services.GetService<Options>() ?? Options.Default;
+			options ??= services.GetService<Options>() ?? new Options();
 			//options.TimeZoneResolver = options.TimeZoneResolver ?? services.GetService<ITimeZoneResolver>();
 
 			var routes = app.ApplicationServices.GetRequiredService<RouteCollection>();
@@ -49,9 +49,9 @@ namespace Broadcast
 			var lifetime = services.GetRequiredService<IApplicationLifetime>();
 #endif
 			var storage = services.GetRequiredService<ITaskStore>();
-			options ??= services.GetService<Options>() ?? Options.Default;
+			options ??= services.GetService<Options>() ?? new Options();
 
-			var processor = new TaskProcessor(options);
+			var processor = new TaskProcessor(storage, options);
 			var scheduler = new Scheduler();
 
 			var server = new Broadcaster(storage, processor, scheduler, options);
