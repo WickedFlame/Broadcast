@@ -1,0 +1,29 @@
+﻿@model Broadcast.AspNet.Test.Controllers.StorageModel
+
+@{
+	ViewData["Title"] = "Custom Dashboard";
+}
+
+<div>
+	<div>
+		<h3>Storage</h3>
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">Key</th>
+					<th scope="col">Value</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in Model.Items.OrderBy(i => i.Key))
+				{
+					<tr>
+						<td><span>@item.Key</span> </td>
+						<td> <span>@item.Value</span></td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+
+</div>
