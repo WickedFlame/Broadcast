@@ -47,7 +47,7 @@ namespace Broadcast.Test.Processing
 
 			context.SetState(task, TaskState.Queued);
 
-			storage.Verify(exp => exp.SetValues(It.Is<StorageKey>(k => k.Key == $"tasks:values:{task.Id}"), It.Is<Dictionary<string, object>>(t => (TaskState)t["State"] == TaskState.Queued && (DateTime)t[$"{TaskState.Queued}Change"] > DateTime.MinValue)), Times.Once);
+			storage.Verify(exp => exp.SetValues(It.Is<StorageKey>(k => k.Key == $"tasks:values:{task.Id}"), It.Is<DataObject>(t => (TaskState)t["State"] == TaskState.Queued && (DateTime)t[$"{TaskState.Queued}At"] > DateTime.MinValue)), Times.Once);
 		}
 
 		[Test]
@@ -58,7 +58,7 @@ namespace Broadcast.Test.Processing
 
 			var context = new ProcessorContext(store.Object);
 
-			context.SetValue(task, "property", "value");
+			context.SetValues(task, new DataObject{{ "property", "value" } });
 
 			store.Verify(exp => exp.Storage(It.IsAny<Action<IStorage>>()), Times.Once);
 		}
@@ -72,9 +72,9 @@ namespace Broadcast.Test.Processing
 
 			var context = new ProcessorContext(store);
 
-			context.SetValue(task, "property", "value");
+			context.SetValues(task, new DataObject{{ "property", "value" } });
 
-			storage.Verify(exp => exp.SetValues(It.Is<StorageKey>(k => k.Key == $"tasks:values:{task.Id}"), It.Is<Dictionary<string, object>>(t => (string)t["property"] == "value")), Times.Once);
+			storage.Verify(exp => exp.SetValues(It.Is<StorageKey>(k => k.Key == $"tasks:values:{task.Id}"), It.Is<DataObject>(t => (string)t["property"] == "value")), Times.Once);
 		}
 	}
 }

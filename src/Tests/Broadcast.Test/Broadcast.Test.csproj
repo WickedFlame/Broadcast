@@ -18,8 +18,4 @@
     <ProjectReference Include="..\..\Broadcast\Broadcast.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Storage\" />
-  </ItemGroup>
-
 </Project>

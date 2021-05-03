@@ -84,7 +84,7 @@ namespace Broadcast.Test.Processing
 
 			dispatcher.Execute(ctx.Object);
 
-			var values = storage.Get<Dictionary<string, object>>(new StorageKey($"tasks:values:TestTask"));
+			var values = storage.Get<DataObject>(new StorageKey($"tasks:values:TestTask"));
 			// there is no task that takes time so sometimes the executiontime is 0...
 			Assert.GreaterOrEqual((long)values["ExecutionTime"], 0);
 		}
@@ -104,7 +104,7 @@ namespace Broadcast.Test.Processing
 
 			dispatcher.Execute(ctx.Object);
 
-			var values = storage.Get<Dictionary<string, object>>(new StorageKey($"tasks:values:TestTask"));
+			var values = storage.Get<DataObject>(new StorageKey($"tasks:values:TestTask"));
 			Assert.AreEqual((TaskState)values["State"], TaskState.Processed);
 		}
 
@@ -123,8 +123,8 @@ namespace Broadcast.Test.Processing
 
 			dispatcher.Execute(ctx.Object);
 
-			var values = storage.Get<Dictionary<string, object>>(new StorageKey($"tasks:values:TestTask"));
-			Assert.Greater((DateTime)values["ProcessedChange"], DateTime.MinValue);
+			var values = storage.Get<DataObject>(new StorageKey($"tasks:values:TestTask"));
+			Assert.Greater((DateTime)values["ProcessedAt"], DateTime.MinValue);
 		}
 
 		[Test]
@@ -142,8 +142,8 @@ namespace Broadcast.Test.Processing
 
 			dispatcher.Execute(ctx.Object);
 
-			var values = storage.Get<Dictionary<string, object>>(new StorageKey($"tasks:values:TestTask"));
-			Assert.Greater((DateTime)values["InProcessChange"], DateTime.MinValue);
+			var values = storage.Get<DataObject>(new StorageKey($"tasks:values:TestTask"));
+			Assert.Greater((DateTime)values["InProcessAt"], DateTime.MinValue);
 		}
 
 		[Test]

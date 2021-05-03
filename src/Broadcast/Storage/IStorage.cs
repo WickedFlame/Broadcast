@@ -70,7 +70,7 @@ namespace Broadcast.Storage
 		/// </summary>
 		/// <param name="key"></param>
 		/// <param name="values"></param>
-		void SetValues(StorageKey key, Dictionary<string, object> values);
+		void SetValues(StorageKey key, DataObject values);
 
 		/// <summary>
 		/// Gets all keys that start with the given key value

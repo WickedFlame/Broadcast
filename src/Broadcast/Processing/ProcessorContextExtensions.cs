@@ -24,10 +24,10 @@ namespace Broadcast.Processing
 
 			context.Store.Storage(s =>
 			{
-				var values = new Dictionary<string, object>
+				var values = new DataObject
 				{
 					{"State", state},
-					{$"{state}Change", DateTime.Now}
+					{$"{state}At", DateTime.Now}
 				};
 				s.SetValues(new StorageKey($"tasks:values:{task.Id}"), values);
 			});
@@ -39,16 +39,11 @@ namespace Broadcast.Processing
 		/// <typeparam name="T"></typeparam>
 		/// <param name="context"></param>
 		/// <param name="task"></param>
-		/// <param name="property"></param>
-		/// <param name="value"></param>
-		public static void SetValue<T>(this IProcessorContext context, ITask task, string property, T value)
+		/// <param name="values"></param>
+		public static void SetValues(this IProcessorContext context, ITask task, DataObject values)
 		{
 			context.Store.Storage(s =>
 			{
-				var values = new Dictionary<string, object>
-				{
-					{property, value}
-				};
 				s.SetValues(new StorageKey($"tasks:values:{task.Id}"), values);
 			});
 		}

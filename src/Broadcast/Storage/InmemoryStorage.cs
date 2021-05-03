@@ -145,15 +145,15 @@ namespace Broadcast.Storage
 		}
 
 		/// <inheritdoc/>
-		public void SetValues(StorageKey key, Dictionary<string, object> values)
+		public void SetValues(StorageKey key, DataObject values)
 		{
 			// get original object from storage
-			var stored = Get<Dictionary<string, object>>(key) ?? new Dictionary<string, object>();
+			var stored = Get<DataObject>(key) ?? new DataObject();
 
 			// merge objects
-			foreach (var k in values.Keys)
+			foreach (var item in values)
 			{
-				stored[k] = values[k];
+				stored[item.Key] = item.Value;
 			}
 
 			// save objects
@@ -186,6 +186,11 @@ namespace Broadcast.Storage
 					if (item != null && item is T item1)
 					{
 						return item1;
+					}
+
+					if (item != null && !(item is List<object>))
+					{
+						throw new InvalidCastException($"Object of type {item.GetType().FullName} cannot be cast to {typeof(T).FullName}");
 					}
 				}
 

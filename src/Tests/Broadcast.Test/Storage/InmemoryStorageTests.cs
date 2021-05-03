@@ -195,6 +195,15 @@ namespace Broadcast.Test.Storage
 		}
 
 		[Test]
+		public void InmemoryStorage_Get_Invalid_Type()
+		{
+			var storage = new InmemoryStorage();
+			storage.Set(new StorageKey("storage", "key"), new StorageModel { Id = 1, Value = "one" });
+
+			Assert.Throws<InvalidCastException>(() => storage.Get<InmemoryStorage>(new StorageKey("storage", "key")));
+		}
+
+		[Test]
 		public void InmemoryStorage_RegisterSubscription()
 		{
 			var subscription = new Mock<ISubscription>();
@@ -243,6 +252,43 @@ namespace Broadcast.Test.Storage
 			storage.AddToList(new StorageKey("key1"), new StorageModel { Id = 1, Value = "one" });
 
 			Assert.IsTrue(storage.TryFetchNext<StorageModel>(new StorageKey("key1"), new StorageKey("key2"), out var item));
+		}
+
+		[Test]
+		public void InmemoryStorage_SetValues()
+		{
+			var storage = new InmemoryStorage();
+			storage.SetValues(new StorageKey("key1"), new DataObject
+			{
+				{"one", 1},
+				{"two", 2}
+			});
+
+			var obj = storage.Get<DataObject>(new StorageKey("key1"));
+
+			Assert.AreEqual(1, obj["one"]);
+			Assert.AreEqual(2, obj["two"]);
+		}
+
+		[Test]
+		public void InmemoryStorage_SetValues_Overwrite()
+		{
+			var storage = new InmemoryStorage();
+			storage.SetValues(new StorageKey("key1"), new DataObject
+			{
+				{"one", 1},
+				{"two", 2}
+			});
+
+			storage.SetValues(new StorageKey("key1"), new DataObject
+			{
+				{"one", 3}
+			});
+
+			var obj = storage.Get<DataObject>(new StorageKey("key1"));
+
+			Assert.AreEqual(3, obj["one"]);
+			Assert.AreEqual(2, obj["two"]);
 		}
 
 		public class StorageModel

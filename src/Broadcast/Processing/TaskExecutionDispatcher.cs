@@ -55,8 +55,12 @@ namespace Broadcast.Processing
 			finally
 			{
 				sw.Stop();
-				//TODO: Write metrics here
-				context.SetValue(_task, "ExecutionTime", sw.ElapsedMilliseconds);
+
+				context.SetValues(_task, new Storage.DataObject
+				{
+					{"ExecutionTime", sw.ElapsedMilliseconds},
+					{"ExecutedAt", DateTime.Now}
+				});
 				_logger.Write($"End processing task {_task.Id}. Duration {sw.ElapsedMilliseconds} ms");
 			}
 		}
