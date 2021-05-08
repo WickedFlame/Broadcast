@@ -66,7 +66,7 @@ namespace Broadcast.Test.Processing
 
 			dispatcher.Execute(ctx.Object);
 
-			store.Verify(exp => exp.Storage(It.IsAny<Action<IStorage>>()), Times.Exactly(3));
+			store.Verify(exp => exp.Storage(It.IsAny<Action<IStorage>>()), Times.Exactly(4));
 		}
 
 		[Test]
@@ -190,6 +190,24 @@ namespace Broadcast.Test.Processing
 			ctx.Setup(exp => exp.Store).Returns(() => new Mock<ITaskStore>().Object);
 
 			Assert.DoesNotThrow(() => dispatcher.Execute(ctx.Object));
+		}
+
+		[Test]
+		public void TaskExecutionDispatcher_RemoveFromDequeuedList()
+		{
+			var task = new Mock<ITask>();
+			task.Setup(exp => exp.Id).Returns("TestTask");
+			var dispatcher = new TaskExecutionDispatcher(task.Object);
+
+			var storage = new Mock<IStorage>();
+			var store = new TaskStore(storage.Object);
+
+			var ctx = new Mock<IProcessorContext>();
+			ctx.Setup(exp => exp.Store).Returns(() => store);
+
+			dispatcher.Execute(ctx.Object);
+
+			storage.Verify(exp => exp.RemoveFromList<string>(It.Is<StorageKey>(k => k.Key == "tasks:dequeued"), task.Object.Id), Times.Once);
 		}
 	}
 }

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Broadcast.Diagnostics;
 using Broadcast.EventSourcing;
 using Broadcast.Server;
+using Broadcast.Storage;
 
 namespace Broadcast.Processing
 {
@@ -62,6 +63,9 @@ namespace Broadcast.Processing
 					{"ExecutedAt", DateTime.Now}
 				});
 				_logger.Write($"End processing task {_task.Id}. Duration {sw.ElapsedMilliseconds} ms");
+
+				// remove the id from the list of enqueued
+				context.Store.Storage(s => s.RemoveFromList<string>(new StorageKey("tasks:dequeued"), _task.Id));
 			}
 		}
 	}
