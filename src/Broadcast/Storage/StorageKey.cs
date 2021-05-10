@@ -20,27 +20,27 @@ namespace Broadcast.Storage
 		/// Creates a new instance of the StorageKey
 		/// </summary>
 		/// <param name="key"></param>
-		/// <param name="serverName"></param>
-		public StorageKey(string key, string serverName)
+		/// <param name="prefix"></param>
+		public StorageKey(string key, string prefix)
 		{
 			if (string.IsNullOrEmpty(key))
 			{
 				throw new ArgumentNullException(key);
 			}
 
-			if (string.IsNullOrEmpty(serverName))
+			if (string.IsNullOrEmpty(prefix))
 			{
-				throw new ArgumentNullException(serverName);
+				throw new ArgumentNullException(prefix);
 			}
 
 			Key = key;
-			ServerName = serverName;
+			Prefix = prefix;
 		}
 
 		/// <summary>
 		/// Gets or sets the ServerName
 		/// </summary>
-		public string ServerName { get; set; }
+		public string Prefix { get; set; }
 
 		/// <summary>
 		/// Gets or sets the Key for the item in the storage
@@ -50,12 +50,12 @@ namespace Broadcast.Storage
 		/// <inheritdoc/>
 		public override string ToString()
 		{
-			if (string.IsNullOrEmpty(ServerName))
+			if (string.IsNullOrEmpty(Prefix))
 			{
 				return Key.ToLower();
 			}
 
-			return $"{ServerName}:{Key}".ToLower();
+			return $"{Prefix}:{Key}".ToLower();
 		}
 	}
 }
