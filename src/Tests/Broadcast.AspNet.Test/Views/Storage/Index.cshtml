@@ -4,26 +4,63 @@
 	ViewData["Title"] = "Custom Dashboard";
 }
 
-<div>
+@section styles{
+	<link href="~/css/Storage.min.css" rel="stylesheet" type="text/css" />
+}
+
+<div class="broadcast-storage">
 	<div>
 		<h3>Storage</h3>
-		<table class="table">
-			<thead>
-				<tr>
-					<th scope="col">Key</th>
-					<th scope="col">Value</th>
-				</tr>
-			</thead>
-			<tbody>
+		@*<table class="table">
+				<thead>
+					<tr>
+						<th scope="col">Key</th>
+						<th scope="col">Value</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var item in Model.Items.OrderBy(i => i.Key))
+					{
+						<tr>
+							<td><span>@item.Key</span> </td>
+							<td> <span>@item.Value</span></td>
+						</tr>
+					}
+				</tbody>
+			</table>*@
+		<div>
+			<ul>
 				@foreach (var item in Model.Items.OrderBy(i => i.Key))
 				{
-					<tr>
-						<td><span>@item.Key</span> </td>
-						<td> <span>@item.Value</span></td>
-					</tr>
+					<li>
+						<div class="broadcast-toggler-section">
+							<div class="broadcast-toggler-button">
+
+							</div>
+							<div>
+								<span>@item.Key</span>
+								<span>@item.Value</span>
+							</div>
+						</div>
+						<ul class="broadcast-toggle-wrapper">
+							<partial name="Partials/_StorageKey" for="@item" />
+						</ul>
+					</li>
 				}
-			</tbody>
-		</table>
+			</ul>
+		</div>
+		<div>
+			<div id="broadcast-storage-content">
+
+			</div>
+		</div>
 	</div>
 
 </div>
+
+@section scripts{
+	<script type='module'>
+		import { BroadcastStorage } from  '/js/broadcast-storage.js'
+		const storage = new BroadcastStorage();
+	</script>
+}

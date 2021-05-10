@@ -32,9 +32,38 @@ namespace Broadcast.AspNet.Test.Controllers
 				var keys = s.GetKeys(new Storage.StorageKey("")).ToList();
 				foreach (var key in keys)
 				{
+					StorageItem current = null;
+
+					var parts = key.Split(":");
+					foreach (var part in parts)
+					{
+						if (current == null)
+						{
+							current = model.Items.FirstOrDefault(i => i.Key == part);
+							if (current == null)
+							{
+								current = new StorageItem {Key = part};
+								model.Items.Add(current);
+							}
+						}
+						else
+						{
+							var next = current.Items.FirstOrDefault(i => i.Key == part);
+							if (next == null)
+							{
+								next = new StorageItem {Key = part};
+								current.Items.Add(next);
+							}
+
+							current = next;
+						}
+					}
+
+
 					var item = s.Get<object>(new Storage.StorageKey(key));
 					if (item != null)
 					{
+						current.Key = key;
 						if (item is ITask task)
 						{
 							var itm = new
@@ -46,11 +75,13 @@ namespace Broadcast.AspNet.Test.Controllers
 								task.StateChanges,
 								task.Time
 							};
-							model.Items.Add(new StorageItem { Key = key, Value = Newtonsoft.Json.JsonConvert.SerializeObject(itm) });
+							//model.Items.Add(new StorageItem { Key = key, Value = Newtonsoft.Json.JsonConvert.SerializeObject(itm) });
+							current.Value = Newtonsoft.Json.JsonConvert.SerializeObject(itm);
 						}
 						else
 						{
-							model.Items.Add(new StorageItem {Key = key, Value = Newtonsoft.Json.JsonConvert.SerializeObject(item)});
+							//model.Items.Add(new StorageItem { Key = key, Value = Newtonsoft.Json.JsonConvert.SerializeObject(item) });
+							current.Value = Newtonsoft.Json.JsonConvert.SerializeObject(item);
 						}
 
 						continue;
@@ -59,7 +90,8 @@ namespace Broadcast.AspNet.Test.Controllers
 					var items = s.GetList<object>(new Storage.StorageKey(key));
 					if (items != null)
 					{
-						model.Items.Add(new StorageItem {Key = key, Value = JsonSerializer.Serialize(items)});
+						//model.Items.Add(new StorageItem {Key = key, Value = JsonSerializer.Serialize(items)});
+						current.Value = JsonSerializer.Serialize(items);
 						continue;
 					}
 				}
@@ -79,5 +111,7 @@ namespace Broadcast.AspNet.Test.Controllers
 		public string Key { get; set; }
 
 		public string Value{ get; set; }
+
+		public List<StorageItem> Items { get; } = new List<StorageItem>();
 	}
 }
