@@ -36,7 +36,7 @@ namespace Broadcast.Test.Api
 		[TearDown]
 		public void Teardown()
 		{
-			BroadcastingClient.Setup(null);
+			TaskServerClient.Setup(null);
 		}
 
 		[Test]
@@ -52,7 +52,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void TaskServerClient_Api_Send_StaticTrace_StoreAdd()
 		{
-			BroadcastingClient.Setup(() => new BroadcastingClient(_store.Object));
+			TaskServerClient.Setup(() => new BroadcastingClient(_store.Object));
 
 			// execute a static method
 			// serializeable
@@ -74,7 +74,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void TaskServerClient_Api_Send_Method_StoreAdd()
 		{
-			BroadcastingClient.Setup(() => new BroadcastingClient(_store.Object));
+			TaskServerClient.Setup(() => new BroadcastingClient(_store.Object));
 
 			// execute a local method
 			// serializeable
@@ -96,7 +96,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void TaskServerClient_Api_Send_GenericMethod_StoreAdd()
 		{
-			BroadcastingClient.Setup(() => new BroadcastingClient(_store.Object));
+			TaskServerClient.Setup(() => new BroadcastingClient(_store.Object));
 
 			// execute a generic method
 			// serializeable

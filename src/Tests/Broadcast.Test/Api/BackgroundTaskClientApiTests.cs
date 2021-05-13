@@ -34,7 +34,7 @@ namespace Broadcast.Test.Api
 		[TearDown]
 		public void Teardown()
 		{
-			BroadcastingClient.Setup(null);
+			BackgroundTaskClient.Setup(null);
 		}
 
 		[Test]
@@ -50,7 +50,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void BackgroundTaskClient_Api_Send_StaticTrace_StoreAdd()
 		{
-			BroadcastingClient.Setup(() => new BroadcastingClient(_store.Object));
+			BackgroundTaskClient.Setup(() => new BroadcastingClient(_store.Object));
 
 			// execute a static method
 			// serializeable
@@ -72,7 +72,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void BackgroundTaskClient_Api_Send_Method_StoreAdd()
 		{
-			BroadcastingClient.Setup(() => new BroadcastingClient(_store.Object));
+			BackgroundTaskClient.Setup(() => new BroadcastingClient(_store.Object));
 
 			// execute a local method
 			// serializeable
@@ -94,7 +94,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void BackgroundTaskClient_Api_Send_GenericMethod_StoreAdd()
 		{
-			BroadcastingClient.Setup(() => new BroadcastingClient(_store.Object));
+			BackgroundTaskClient.Setup(() => new BroadcastingClient(_store.Object));
 
 			// execute a generic method
 			// serializeable
@@ -119,7 +119,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void BackgroundTaskClient_Api_Send_Notification_Local_StoreAdd()
 		{
-			BroadcastingClient.Setup(() => new BroadcastingClient(_store.Object));
+			BackgroundTaskClient.Setup(() => new BroadcastingClient(_store.Object));
 
 			// send a local action
 			// Nonserializeable
@@ -226,7 +226,7 @@ namespace Broadcast.Test.Api
 		[Test]
 		public void BackgroundTaskClient_Api_Recurring_Name()
 		{
-			BroadcastingClient.Setup(() => new BroadcastingClient(_store.Object));
+			BackgroundTaskClient.Setup(() => new BroadcastingClient(_store.Object));
 			// execute a local method
 			// serializeable
 			BackgroundTaskClient.Recurring("BackgroundTaskClient_Api_Recurring", () => TestMethod(1), TimeSpan.FromSeconds(0.5));

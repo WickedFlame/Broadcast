@@ -10,13 +10,6 @@ namespace Broadcast.Test
 {
 	public class BroadcastingClientTests
 	{
-		[SetUp]
-		public void Setup()
-		{
-			// set to null to reset
-			BroadcastingClient.Setup(null);
-		}
-
 		[Test]
 		public void BroadcastingClient_ctor()
 		{
@@ -52,41 +45,6 @@ namespace Broadcast.Test
 			client.Enqueue(task);
 
 			Assert.AreSame(task, TaskStore.Default.Single());
-		}
-
-		[Test]
-		public void BroadcastingClient_Default()
-		{
-			Assert.IsNotNull(BroadcastingClient.Default);
-		}
-
-		[Test]
-		public void BroadcastingClient_Default_Setup()
-		{
-			var def = BroadcastingClient.Default;
-			BroadcastingClient.Setup(() => new BroadcastingClient());
-			
-			Assert.AreNotSame(def, BroadcastingClient.Default);
-		}
-
-		[Test]
-		public void BroadcastingClient_Default_Setup_Reset()
-		{
-			var def = BroadcastingClient.Default;
-			BroadcastingClient.Setup(() => new BroadcastingClient());
-
-			// set to null to reset
-			BroadcastingClient.Setup(null);
-
-			Assert.AreSame(def, BroadcastingClient.Default);
-		}
-
-		[Test]
-		public void BroadcastingClient_Default_Setup_Singleton()
-		{
-			BroadcastingClient.Setup(() => new BroadcastingClient());
-			
-			Assert.AreSame(BroadcastingClient.Default, BroadcastingClient.Default);
 		}
 	}
 }

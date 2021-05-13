@@ -56,7 +56,8 @@ namespace Broadcast
 
 			var server = new Broadcaster(storage, processor, scheduler, options);
 
-			BroadcastingClient.Setup(() => new BroadcastingClient(storage));
+			TaskServerClient.Setup(() => new BroadcastingClient(storage));
+			BackgroundTaskClient.Setup(() => new BroadcastingClient(storage));
 
 			//lifetime.ApplicationStopping.Register(() => server.SendStop());
 			lifetime.ApplicationStopped.Register(() => server.Dispose());

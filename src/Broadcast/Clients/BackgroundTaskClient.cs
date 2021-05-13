@@ -1,5 +1,6 @@
 ﻿using Broadcast.Composition;
 using System;
+using Broadcast.Configuration;
 
 namespace Broadcast
 {
@@ -8,6 +9,23 @@ namespace Broadcast
 	/// </summary>
 	public class BackgroundTaskClient
 	{
+		private static readonly ItemFactory<IBroadcastingClient> ItemFactory = new ItemFactory<IBroadcastingClient>(() => new BroadcastingClient());
+
+		/// <summary>
+		/// Gets the default instance of the <see cref="IBroadcastingClient"/>
+		/// </summary>
+		public static IBroadcastingClient Client => ItemFactory.Factory();
+
+		/// <summary>
+		/// Setup a new instance for the default <see cref="IBroadcastingClient"/>.
+		/// Setup with null to reset to the default
+		/// </summary>
+		/// <param name="setup"></param>
+		public static void Setup(Func<IBroadcastingClient> setup)
+		{
+			ItemFactory.Factory = setup;
+		}
+
 		// local jobs need a local server running
 
 		/// <summary>
@@ -37,8 +55,7 @@ namespace Broadcast
 				task.Name = name;
 			}
 
-			var factory = BroadcastingClient.Default;
-			factory.Enqueue(task);
+			Client.Enqueue(task);
 
 			return task.Id;
 		}
@@ -54,8 +71,7 @@ namespace Broadcast
 			var task = TaskFactory.CreateTask(expression);
 			task.Time = time;
 
-			var factory = BroadcastingClient.Default;
-			factory.Enqueue(task);
+			Client.Enqueue(task);
 
 			return task.Id;
 		}
@@ -69,8 +85,7 @@ namespace Broadcast
 		{
 			var task = TaskFactory.CreateTask(expression);
 
-			var factory = BroadcastingClient.Default;
-			factory.Enqueue(task);
+			Client.Enqueue(task);
 
 			return task.Id;
 		}

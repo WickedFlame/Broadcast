@@ -9,23 +9,6 @@ namespace Broadcast
 	/// </summary>
 	public class BroadcastingClient : IBroadcastingClient
 	{
-		private static readonly ItemFactory<IBroadcastingClient> ItemFactory = new ItemFactory<IBroadcastingClient>(() => new BroadcastingClient());
-
-		/// <summary>
-		/// Gets the default instance of the <see cref="IBroadcastingClient"/>
-		/// </summary>
-		public static IBroadcastingClient Default => ItemFactory.Factory();
-
-		/// <summary>
-		/// Setup a new instance for the default <see cref="IBroadcastingClient"/>.
-		/// Setup with null to reset to the default
-		/// </summary>
-		/// <param name="setup"></param>
-		public static void Setup(Func<IBroadcastingClient> setup)
-		{
-			ItemFactory.Factory = setup;
-		}
-
 		private readonly ITaskStore _taskStore;
 
 		/// <summary>

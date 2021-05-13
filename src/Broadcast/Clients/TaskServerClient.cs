@@ -1,6 +1,7 @@
 ﻿using Broadcast.Composition;
 using System;
 using System.Linq.Expressions;
+using Broadcast.Configuration;
 
 namespace Broadcast
 {
@@ -9,6 +10,23 @@ namespace Broadcast
 	/// </summary>
 	public class TaskServerClient
 	{
+		private static readonly ItemFactory<IBroadcastingClient> ItemFactory = new ItemFactory<IBroadcastingClient>(() => new BroadcastingClient());
+
+		/// <summary>
+		/// Gets the default instance of the <see cref="IBroadcastingClient"/>
+		/// </summary>
+		public static IBroadcastingClient Client => ItemFactory.Factory();
+
+		/// <summary>
+		/// Setup a new instance for the default <see cref="IBroadcastingClient"/>.
+		/// Setup with null to reset to the default
+		/// </summary>
+		/// <param name="setup"></param>
+		public static void Setup(Func<IBroadcastingClient> setup)
+		{
+			ItemFactory.Factory = setup;
+		}
+
 		/// <summary>
 		/// Adds a recurring task
 		/// </summary>
@@ -36,8 +54,7 @@ namespace Broadcast
 				task.Name = name;
 			}
 
-			var factory = BroadcastingClient.Default;
-			factory.Enqueue(task);
+			Client.Enqueue(task);
 
 			return task.Id;
 		}
@@ -53,8 +70,7 @@ namespace Broadcast
 			var task = TaskFactory.CreateTask(expression);
 			task.Time = time;
 
-			var factory = BroadcastingClient.Default;
-			factory.Enqueue(task);
+			Client.Enqueue(task);
 
 			return task.Id;
 		}
@@ -67,9 +83,8 @@ namespace Broadcast
 		public static string Send(Expression<Action> expression)
 		{
 			var task = TaskFactory.CreateTask(expression);
-			
-			var factory = BroadcastingClient.Default;
-			factory.Enqueue(task);
+
+			Client.Enqueue(task);
 
 			return task.Id;
 		}
