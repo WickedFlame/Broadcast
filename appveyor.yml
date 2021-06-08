@@ -4,10 +4,13 @@ image:
 - Visual Studio 2017
 
 # version format
-version: 0.5.1.{build}
+version: 1.0.0.{build}
 
 # you can use {branch} name in version format too
 # version: 1.0.{build}-{branch}
+environment:
+  rc_version: 1.0.1-RC{build}
+  base_version: 1.0.1
 
 # branches to build
 branches:
@@ -27,8 +30,8 @@ dotnet_csproj:
   patch: true
   file: '**\*.csproj'
   version: '{version}'
-  package_version: '{version}'
-  assembly_version: '{version}'
+  package_version: $(base_version)-RC{build}
+  assembly_version: $(base_version)
   file_version: '{version}'
   informational_version: '{version}'
  
