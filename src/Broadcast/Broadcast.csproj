@@ -20,6 +20,7 @@ Broadcast helps implement patterns like Mediator and CQRS (Command- and Queryhan
     <Version>1.0.0</Version>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
+		<PackageVersion>1.0.0.0</PackageVersion>
     <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
 
