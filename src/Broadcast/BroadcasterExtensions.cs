@@ -14,7 +14,19 @@ namespace Broadcast
 	public static class BroadcasterExtensions
 	{
 		/// <summary>
-		/// Send a delegate to the task processor
+		/// Execute a task on the local task processor
+		/// </summary>
+		/// <param name="broadcaster"></param>
+		/// <param name="action"></param>
+		public static void Execute(this IBroadcaster broadcaster, Action action)
+		{
+			var task = TaskFactory.CreateTask(action);
+
+			broadcaster.Store.Add(task);
+		}
+
+		/// <summary>
+		/// Send a delegate to the task processor server
 		/// </summary>
 		/// <param name="broadcaster"></param>
 		/// <param name="action">The Task to process</param>

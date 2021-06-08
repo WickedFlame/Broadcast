@@ -55,6 +55,59 @@ namespace Broadcast.Integration.Test.Api
 			Assert.AreEqual(1, broadcaster.GetProcessedTasks().Count());
 		}
 
+		[Test]
+		public void Broadcaster_Api_Execute_Local()
+		{
+			var broadcaster = new Broadcaster(new TaskStore());
+			var i = 0;
+
+			// execute a static method
+			// serializeable
+			broadcaster.Execute(() => i = 1);
+
+			broadcaster.WaitAll();
+			Assert.AreEqual(1, broadcaster.GetProcessedTasks().Count());
+			Assert.AreEqual(1, i);
+		}
+
+		[Test]
+		public void Broadcaster_Api_Execute_StaticTrace()
+		{
+			var broadcaster = new Broadcaster(new TaskStore());
+
+			// execute a static method
+			// serializeable
+			broadcaster.Execute(() => Trace.WriteLine("test"));
+
+			broadcaster.WaitAll();
+			Assert.AreEqual(1, broadcaster.GetProcessedTasks().Count());
+		}
+
+		[Test]
+		public void Broadcaster_Api_Execute_Method()
+		{
+			var broadcaster = new Broadcaster(new TaskStore());
+
+			// execute a local method
+			// serializeable
+			broadcaster.Execute(() => TestMethod(1));
+
+			broadcaster.WaitAll();
+			Assert.AreEqual(1, broadcaster.GetProcessedTasks().Count());
+		}
+
+		[Test]
+		public void Broadcaster_Api_Execute_GenericMethod()
+		{
+			var broadcaster = new Broadcaster(new TaskStore());
+
+			// execute a generic method
+			// serializeable
+			broadcaster.Execute(() => GenericMethod(1));
+
+			broadcaster.WaitAll();
+			Assert.AreEqual(1, broadcaster.GetProcessedTasks().Count());
+		}
 
 
 		[Test]
