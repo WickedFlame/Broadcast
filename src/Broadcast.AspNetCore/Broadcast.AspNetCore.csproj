@@ -1,7 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+	  <SignAssembly>true</SignAssembly>
+	  <AssemblyOriginatorKeyFile>../Broadcast.snk</AssemblyOriginatorKeyFile>
+    <RootNamespace>Broadcast</RootNamespace>
   </PropertyGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Broadcast\Broadcast.csproj" />
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DocumentationFile>bin\Release\netstandard2.0\Broadcast.AspNetCore.xml</DocumentationFile>
+	</PropertyGroup>
 
 </Project>

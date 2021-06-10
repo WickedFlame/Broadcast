@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Threading.Tasks;
 using Broadcast.Configuration;
-using Broadcast.EventSourcing;
 using Broadcast.Processing;
 using Broadcast.Scheduling;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,7 +21,7 @@ namespace Broadcast
 			if (pathMatch == null) throw new ArgumentNullException(nameof(pathMatch));
 
 			var services = app.ApplicationServices;
-			
+
 			var storage = services.GetRequiredService<ITaskStore>();
 			options ??= services.GetService<Options>() ?? new Options();
 			//options.TimeZoneResolver = options.TimeZoneResolver ?? services.GetService<ITimeZoneResolver>();
@@ -40,11 +35,14 @@ namespace Broadcast
 
 		public static IApplicationBuilder UseBroadcastServer([NotNull] this IApplicationBuilder app, Options options = null)
 		{
-			if (app == null) throw new ArgumentNullException(nameof(app));
+			if (app == null)
+			{
+				throw new ArgumentNullException(nameof(app));
+			}
 
 			var services = app.ApplicationServices;
 #if NETCOREAPP3_1
-            var lifetime = services.GetRequiredService<IHostApplicationLifetime>();
+			var lifetime = services.GetRequiredService<IHostApplicationLifetime>();
 #else
 			var lifetime = services.GetRequiredService<IApplicationLifetime>();
 #endif
