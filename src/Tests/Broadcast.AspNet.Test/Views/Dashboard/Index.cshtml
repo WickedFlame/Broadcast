@@ -1,76 +1,168 @@
-﻿@model DashboardModel
+﻿@using Broadcast.EventSourcing
+@model DashboardModel
 
 @{
 	ViewData["Title"] = "Custom Dashboard";
+	Layout = "_LayoutBasic";
 }
 
-<div>
-	<div>
-		<h3>Servers</h3>
-		<table class="table">
-			<thead>
-			<tr>
-				<th scope="col">Server</th>
-				<th scope="col">Heartbeat</th>
-			</tr>
-			</thead>
-			<tbody>
-			@foreach (var server in Model.Monitor.Servers)
-			{
-				<tr>
-					<td><span>@server.Name</span>:<span>@server.Id</span> </td>
-					<td> <span>@server.Heartbeat</span></td>
-				</tr>
-			}
-			</tbody>
-		</table>
+@section styles{
+	<link href="~/css/Dashboard.min.css" rel="stylesheet" type="text/css" />
+}
+
+<div class="broadcast-dashboard">
+	<div class="broadcast-nav">
+		<div class="broadcast-nav-header broadcast-header">
+			<div>
+				Broadcast
+			</div>
+		</div>
+		<div class="broadcast-nav-item selected">
+			<div>
+				Servers
+			</div>
+			<div>
+				<span class="right" id="broadcast-servers-count">
+					@Model.Monitor.Servers.Count()
+				</span>
+			</div>
+		</div>
+		<div class="broadcast-nav-item">
+			<div>
+				Recurring Tasks
+			</div>
+			<div>
+				<span class="right" id="broadcast-recurring-count">
+					@Model.Monitor.RecurringTasks.Count()
+				</span>
+			</div>
+		</div>
+		<div class="broadcast-nav-item">
+			<div>
+				Enqueued Tasks
+			</div>
+			<div>
+				<span class="right" id="broadcast-enqueued-count">
+					@Model.Monitor.Tasks.Count(t => t.State != TaskState.Processed && t.State != TaskState.Faulted)
+				</span>
+			</div>
+		</div>
+		<div class="broadcast-nav-item">
+			<div>
+				Processed Tasks
+			</div>
+			<div>
+				<span class="right" id="broadcast-processed-count">
+					@Model.Monitor.Tasks.Count(t => t.State == TaskState.Processed)
+				</span>
+			</div>
+		</div>
+
+		<div class="broadcast-nav-item">
+			<div>
+				Failed Tasks
+			</div>
+			<div>
+				<span class="right" id="broadcast-failed-count">
+					@Model.Monitor.Tasks.Count(t => t.State == TaskState.Faulted)
+				</span>
+			</div>
+		</div>
 	</div>
-	<div>
-		<h3>Recurring Tasks</h3>
-		<table class="table">
-			<thead>
-			<tr>
-				<th scope="col">Name</th>
-				<th scope="col">NextExecution</th>
-			</tr>
-			</thead>
-			<tbody>
-			@foreach (var task in Model.Monitor.RecurringTasks)
-			{
-				<tr>
-					<td>@task.Name</td>
-					<td>@task.NextExecution</td>
-				</tr>
-			}
-			</tbody>
-		</table>
-	</div>
-	<div>
-		<h3>Tasks</h3>
-		<table class="table">
-			<thead>
-			<tr>
-				<th scope="col">Id</th>
-				<th scope="col">Name</th>
-				<th scope="col">State</th>
-				<th scope="col">IsRecurring</th>
-				<th scope="col">Interval</th>
-			</tr>
-			</thead>
-			<tbody>
-			@foreach (var task in Model.Monitor.Tasks)
-			{
-				<tr>
-					<td>@task.Id</td>
-					<td>@task.Name</td>
-					<td>@task.State</td> 
-					<td>@task.IsRecurring</td> 
-					<td>@task.Time</td>
-				</tr>
-			}
-			</tbody>
-		</table>
+	<div class="broadcast-main-container">
+		<div class="broadcast-main-header broadcast-header">
+			<span>Servers</span>
+		</div>
+		<div class="broadcast-main">
+			<div>
+				<table>
+					<thead>
+						<tr>
+							<th scope="col">Name</th>
+							<th scope="col">Heartbeat</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var server in Model.Monitor.Servers)
+						{
+							<tr>
+								<td><span>@server.Name</span>:<span>@server.Id</span> </td>
+								<td> <span>@server.Heartbeat</span></td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+			<div>
+				<h3>Recurring Tasks</h3>
+				<table class="table">
+					<thead>
+						<tr>
+							<th scope="col">Name</th>
+							<th scope="col">NextExecution</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var task in Model.Monitor.RecurringTasks)
+						{
+							<tr>
+								<td>@task.Name</td>
+								<td>@task.NextExecution</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+			<div>
+				<h3>Tasks</h3>
+				<table class="table">
+					<thead>
+						<tr>
+							<th scope="col">Id</th>
+							<th scope="col">Name</th>
+							<th scope="col">State</th>
+							<th scope="col">IsRecurring</th>
+							<th scope="col">Interval</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var task in Model.Monitor.Tasks)
+						{
+							<tr>
+								<td>@task.Id</td>
+								<td>@task.Name</td>
+								<td>@task.State</td>
+								<td>@task.IsRecurring</td>
+								<td>@task.Time</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div>
 
+
 </div>
+
+@section scripts{
+	<script>
+		var dashboardConfig = {
+			@*pollUrl: "@(Url.To("/dashboard/metrics"))",*@
+			pollUrl: "/dashboard/metrics",
+			pollInterval: 2000
+		}
+	</script>
+	<script src="/js/broadcast-dashboard.js" type="module"></script>
+	@*<script type='module'>
+			import { BroadcastDashboard } from '/js/broadcast-dashboard.js'
+			var config = {
+				pollUrl: "@(Url.To("/dashboard/metrics"))",
+				pollInterval: 2000
+			}
+			const dashboard = new BroadcastDashboard(config);
+		</script>*@
+
+	@*<script src="@Url.To($"/js{version.Major}{version.Minor}{version.Build}")" type="module"></script>*@
+}
 

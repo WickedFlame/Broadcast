@@ -43,7 +43,7 @@ namespace Broadcast
 			if (app == null) throw new ArgumentNullException(nameof(app));
 
 			var services = app.ApplicationServices;
-#if NETCOREAPP3_0
+#if NETCOREAPP3_1
             var lifetime = services.GetRequiredService<IHostApplicationLifetime>();
 #else
 			var lifetime = services.GetRequiredService<IApplicationLifetime>();

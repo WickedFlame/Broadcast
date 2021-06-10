@@ -6,5 +6,9 @@
   {
     "outputFile": "wwwroot/css/Storage.css",
     "inputFile": "wwwroot/css/Storage.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/Dashboard.css",
+    "inputFile": "wwwroot/css/Dashboard.scss"
   }
 ]
