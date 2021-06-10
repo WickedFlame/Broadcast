@@ -1,0 +1,30 @@
+﻿@using Broadcast.EventSourcing
+@model DashboardModel
+
+@{
+	ViewData["Title"] = "Servers";
+	Layout = "_Layout";
+}
+
+<div class="broadcast-main">
+	<div>
+		<table>
+			<thead>
+			<tr>
+				<th scope="col">Name</th>
+				<th scope="col">Heartbeat</th>
+			</tr>
+			</thead>
+			<tbody>
+			@foreach (var server in Model.Monitor.Servers)
+			{
+				<tr>
+					<td><span>@server.Name</span>:<span>@server.Id</span> </td>
+					<td> <span>@server.Heartbeat</span></td>
+				</tr>
+			}
+			</tbody>
+		</table>
+	</div>
+</div>
+

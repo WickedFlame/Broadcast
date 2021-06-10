@@ -26,17 +26,26 @@ main {
       font-size: 18px;
       font-weight: 500;
       color: #777; }
+      .broadcast-dashboard .broadcast-nav .broadcast-nav-header a {
+        text-decoration: none;
+        color: inherit; }
     .broadcast-dashboard .broadcast-nav .broadcast-nav-item {
-      display: grid;
-      grid-template-columns: 5fr 1fr;
       border-bottom: 1px solid #bbb;
       padding: 10px 20px;
       color: #343a40;
       font-size: 14px; }
+      .broadcast-dashboard .broadcast-nav .broadcast-nav-item a {
+        text-decoration: none;
+        color: inherit; }
+      .broadcast-dashboard .broadcast-nav .broadcast-nav-item .broadcast-nav-button {
+        display: grid;
+        grid-template-columns: 5fr 1fr; }
       .broadcast-dashboard .broadcast-nav .broadcast-nav-item:last-child {
         border-bottom: 0; }
       .broadcast-dashboard .broadcast-nav .broadcast-nav-item .right {
         float: right; }
+      .broadcast-dashboard .broadcast-nav .broadcast-nav-item:hover {
+        background-color: #eee; }
       .broadcast-dashboard .broadcast-nav .broadcast-nav-item.selected {
         background-color: #eee; }
   .broadcast-dashboard .broadcast-header {

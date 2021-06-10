@@ -1,0 +1,73 @@
+﻿@using Broadcast.EventSourcing
+@model DashboardModel
+
+<div class="broadcast-nav">
+	<div class="broadcast-nav-header broadcast-header">
+		<a class="broadcast-nav-button" href="@Url.Action("Index", "Dashboard")">
+			<div>
+				Broadcast
+			</div>
+		</a>
+	</div>
+	<div class="broadcast-nav-item @(Model.Action == "Servers" ? "selected" : "")">
+		<a class="broadcast-nav-button" href="@Url.Action("Servers", "Dashboard")">
+			<div>
+				Servers
+			</div>
+			<div>
+				<span class="right" id="broadcast-servers-count">
+					@Model.Monitor.Servers.Count()
+				</span>
+			</div>
+		</a>
+	</div>
+	<div class="broadcast-nav-item @(Model.Action == "RecurringTasks" ? "selected" : "")">
+		<a class="broadcast-nav-button" href="@Url.Action("RecurringTasks", "Dashboard")">
+			<div>
+				Recurring Tasks
+			</div>
+			<div>
+				<span class="right" id="broadcast-recurring-count">
+					@Model.Monitor.RecurringTasks.Count()
+				</span>
+			</div>
+		</a>
+	</div>
+	<div class="broadcast-nav-item @(Model.Action == "EnqueuedTasks" ? "selected" : "")">
+		<a class="broadcast-nav-button" href="@Url.Action("EnqueuedTasks", "Dashboard")">
+			<div>
+				Enqueued Tasks
+			</div>
+			<div>
+				<span class="right" id="broadcast-enqueued-count">
+					@Model.Monitor.Tasks.Count(t => t.State != TaskState.Processed && t.State != TaskState.Faulted)
+				</span>
+			</div>
+		</a>
+	</div>
+	<div class="broadcast-nav-item @(Model.Action == "ProcessedTasks" ? "selected" : "")">
+		<a class="broadcast-nav-button" href="@Url.Action("ProcessedTasks", "Dashboard")">
+			<div>
+				Processed Tasks
+			</div>
+			<div>
+				<span class="right" id="broadcast-processed-count">
+					@Model.Monitor.Tasks.Count(t => t.State == TaskState.Processed)
+				</span>
+			</div>
+		</a>
+	</div>
+	<div class="broadcast-nav-item @(Model.Action == "FailedTasks" ? "selected" : "")">
+		<a class="broadcast-nav-button" href="@Url.Action("FailedTasks", "Dashboard")">
+			<div>
+				Failed Tasks
+			</div>
+			<div>
+				<span class="right" id="broadcast-failed-count">
+					@Model.Monitor.Tasks.Count(t => t.State == TaskState.Faulted)
+				</span>
+			</div>
+		</a>
+	</div>
+	
+</div>

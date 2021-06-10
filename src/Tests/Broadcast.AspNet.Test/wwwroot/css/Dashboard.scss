@@ -34,15 +34,28 @@ main{
 			font-size: 18px;
 			font-weight: 500;
 			color: #777;
+
+			a {
+				text-decoration: none;
+				color: inherit;
+			}
 		}
 
 		.broadcast-nav-item {
-			display: grid;
-			grid-template-columns: 5fr 1fr;
 			border-bottom: 1px solid #bbb;
 			padding: 10px 20px;
 			color: #343a40;
 			font-size: 14px;
+
+			a {
+				text-decoration: none;
+				color: inherit;
+			}
+
+			.broadcast-nav-button {
+				display: grid;
+				grid-template-columns: 5fr 1fr;
+			}
 
 			&:last-child {
 				border-bottom: 0;
@@ -52,7 +65,11 @@ main{
 				float: right;
 			}
 
-			&.selected{
+			&:hover {
+				background-color: #eee;
+			}
+
+			&.selected {
 				background-color: #eee;
 			}
 		}

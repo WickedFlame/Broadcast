@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Broadcast.AspNet.Test</title>
+    <link href="~/css/Dashboard.min.css" rel="stylesheet" type="text/css" />
+    @await RenderSectionAsync("Styles", false)
+</head>
+<body>
+	<div class="broadcast-dashboard">
+		<partial name="_Navigation" model="@Model"/>
+		<div class="broadcast-main-container">
+			<div class="broadcast-main-header broadcast-header">
+				<span>@ViewData["Title"]</span>
+			</div>
+			<div class="broadcast-main">
+				<main role="main">
+					@RenderBody()
+				</main>
+			</div>
+		</div>
+
+
+	</div>
+
+	@await RenderSectionAsync("Scripts", required: false)
+
+<script>
+	var dashboardConfig = {
+		@*pollUrl: "@(Url.To("/dashboard/metrics"))",*@
+		pollUrl: "/dashboard/metrics",
+		pollInterval: 2000
+	}
+</script>
+<script src="/js/broadcast-dashboard.js" type="module"></script>
+
+</body>
+</html>

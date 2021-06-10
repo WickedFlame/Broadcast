@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Broadcast.AspNet.Test.Controllers;
 
 namespace Broadcast.AspNet.Test.Models
@@ -9,6 +6,8 @@ namespace Broadcast.AspNet.Test.Models
 	public class DashboardModel
 	{
 		public MonitorModel Monitor { get; set; }
+
+		public string Action { get; set; }
 	}
 
 	public class MonitorModel

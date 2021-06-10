@@ -189,7 +189,8 @@ namespace Broadcast.EventSourcing
 
 		private IEnumerable<ITask> GetStoredTasks()
 		{
-			var keys = _storage.GetKeys(new StorageKey("task:"));
+			var keys = _storage.GetKeys(new StorageKey("task:")).ToList();
+
 			foreach (var key in keys)
 			{
 				yield return _storage.Get<ITask>(new StorageKey(key));
