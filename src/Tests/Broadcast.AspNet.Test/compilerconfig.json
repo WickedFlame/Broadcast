@@ -10,5 +10,9 @@
   {
     "outputFile": "wwwroot/css/Dashboard.css",
     "inputFile": "wwwroot/css/Dashboard.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/broadcast-console.css",
+    "inputFile": "wwwroot/css/broadcast-console.scss"
   }
 ]

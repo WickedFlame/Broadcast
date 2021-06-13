@@ -1,0 +1,43 @@
+﻿
+#broadcast-console * {
+	box-sizing: border-box;
+}
+
+.broadcast-console {
+	z-index: 10000;
+	font-size: 14px; // 1.4em; //1.4rem;
+	right: 0;
+	top: 0;
+	/*position: relative;*/
+	position: absolute;
+	text-align: initial;
+	/*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+	/*font-family: "Lucida Console", "Lucida Sans Typewriter", monaco, "Bitstream Vera Sans Mono", monospace;*/
+	font-family: "Consolas";
+	width: 200px;
+	/*float: right;*/
+	display: inline;
+	padding: 10px;
+
+	.broadcast-console-panel {
+		padding: 10px;
+		border: solid 1px #777;
+		background-color: rgba(0, 0, 0, 0.1);
+		/*box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 5%);*/
+		box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.3);
+		line-height: 1.2;
+		color: #777;
+		font-size: 12px;
+
+		.broadcast-console-title {
+			font-size: 12px;
+			font-weight: bold;
+			padding-bottom: 4px;
+		}
+
+		.broadcast-metric {
+			display: grid;
+			grid-template-columns: 1fr auto;
+		}
+	}
+}

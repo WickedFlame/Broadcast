@@ -8,6 +8,18 @@
     <link rel="stylesheet" href="~/css/site.css" />
 	
     @await RenderSectionAsync("Styles", false)
+	
+	
+    <link rel="stylesheet" href="~/css/broadcast-console.min.css"/>
+    <script type="text/javascript">
+	    var consoleConfig = {
+		    pollUrl: "/dashboard/metrics",
+		    pollInterval: 2000
+	    };
+    </script>
+    <script type='module' async src="~/js/broadcast-console.js"></script>
+
+
 </head>
 <body>
     <header>
