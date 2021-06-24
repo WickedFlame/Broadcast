@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Broadcast.AspNet.Test.Controllers;
+using Broadcast.Monitoring;
 
 namespace Broadcast.AspNet.Test.Models
 {

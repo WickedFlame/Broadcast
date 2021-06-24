@@ -7,7 +7,7 @@ export class BroadcastConsole extends BroadcastBase {
 		this.renderConsole(config);
 		setTimeout(() => {
 			this.startPolling(config, (data) => this.updateConsole(data, this));
-		}, 3000);
+		}, 1000);
 	}
 
 	
@@ -18,18 +18,18 @@ export class BroadcastConsole extends BroadcastBase {
 			return;
 		}
 
-		this.updateElement(consElem.querySelector('#broadcast-servers-count'), data.monitor.servers.length);
-		this.updateElement(consElem.querySelector('#broadcast-recurring-count'), data.monitor.recurringTasks.length);
+		this.updateElement(consElem.querySelector('#broadcast-servers-count'), data.servers.length);
+		this.updateElement(consElem.querySelector('#broadcast-recurring-count'), data.recurringTasks.length);
 
 		var cnt = 0;
 		var processedCnt = 0;
 		var failedCnt = 0;
-		data.monitor.tasks.forEach(t => {
-			if (t.state !== 4 && t.state !== 5) {
+		data.tasks.forEach(t => {
+			if (t.state !== 'processed' && t.state !== 'faulted') {
 				cnt = cnt + 1;
-			}else if (t.state === 4) {
+			} else if (t.state === 'processed') {
 				processedCnt = processedCnt + 1;
-			} else if (t.state === 5) {
+			} else if (t.state === 'faulted') {
 				failedCnt = failedCnt + 1;
 			}
 		});
@@ -63,7 +63,7 @@ export class BroadcastConsole extends BroadcastBase {
 
 if (consoleConfig === undefined) {
 	consoleConfig = {
-		pollUrl: "/dashboard/metrics",
+		pollUrl: "/broadcast/dashboard/metrics",
 		pollInterval: 2000
 	};
 }

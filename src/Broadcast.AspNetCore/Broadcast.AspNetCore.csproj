@@ -12,6 +12,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\Broadcast.Dashboard\Broadcast.Dashboard.csproj" />
 	  <ProjectReference Include="..\Broadcast\Broadcast.csproj" />
 	</ItemGroup>
 

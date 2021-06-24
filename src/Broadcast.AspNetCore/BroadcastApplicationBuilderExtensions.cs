@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using Broadcast.Configuration;
+using Broadcast.Dashboard;
 using Broadcast.Processing;
 using Broadcast.Scheduling;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -12,27 +13,6 @@ namespace Broadcast
 {
 	public static class BroadcastApplicationBuilderExtensions
 	{
-		public static IApplicationBuilder UseBroadcastDashboard(
-			[NotNull] this IApplicationBuilder app,
-			[NotNull] string pathMatch = "/broadcast",
-			Options options = null)
-		{
-			if (app == null) throw new ArgumentNullException(nameof(app));
-			if (pathMatch == null) throw new ArgumentNullException(nameof(pathMatch));
-
-			var services = app.ApplicationServices;
-
-			var storage = services.GetRequiredService<ITaskStore>();
-			options ??= services.GetService<Options>() ?? new Options();
-			//options.TimeZoneResolver = options.TimeZoneResolver ?? services.GetService<ITimeZoneResolver>();
-
-			var routes = app.ApplicationServices.GetRequiredService<RouteCollection>();
-
-			//app.Map(new PathString(pathMatch), x => x.UseMiddleware<AspNetCoreDashboardMiddleware>(storage, options, routes));
-
-			return app;
-		}
-
 		public static IApplicationBuilder UseBroadcastServer([NotNull] this IApplicationBuilder app, Options options = null)
 		{
 			if (app == null)
@@ -59,6 +39,26 @@ namespace Broadcast
 
 			//lifetime.ApplicationStopping.Register(() => server.SendStop());
 			lifetime.ApplicationStopped.Register(() => server.Dispose());
+
+			return app;
+		}
+
+		public static IApplicationBuilder UseBroadcastDashboard(this IApplicationBuilder app, string pathMatch = "/broadcast")
+		{
+			if (app == null)
+			{
+				throw new ArgumentNullException(nameof(app));
+			}
+
+			if (pathMatch == null)
+			{
+				throw new ArgumentNullException(nameof(pathMatch));
+			}
+
+			var routes = app.ApplicationServices.GetService<RouteCollection>() ?? Routes.RouteCollection;
+			var storage = app.ApplicationServices.GetRequiredService<ITaskStore>();
+
+			app.Map(new PathString(pathMatch), x => x.UseMiddleware<DashboardMiddleware>(routes, storage));
 
 			return app;
 		}

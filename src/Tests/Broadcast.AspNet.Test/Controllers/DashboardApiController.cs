@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Broadcast.AspNet.Test.Models;
+﻿using Broadcast.AspNet.Test.Models;
+using Broadcast.Monitoring;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Broadcast.AspNet.Test.Controllers
@@ -17,7 +14,7 @@ namespace Broadcast.AspNet.Test.Controllers
 		}
 
 		[HttpGet]
-		[Route("/dashboard/metrics")]
+		//[Route("/dashboard/metrics")]
 		public IActionResult Get()
 		{
 			var monitoring = new MonitoringService(_store);

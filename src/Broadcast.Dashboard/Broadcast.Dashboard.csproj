@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+	  <!--<TargetFrameworks>netstandard2.0;net48</TargetFrameworks>-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\css\broadcast-console.min.css" />
+    <None Remove="Assets\js\broadcast-base.js" />
+    <None Remove="Assets\js\broadcast-console.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\css\broadcast-console.min.css" />
+    <EmbeddedResource Include="Assets\js\broadcast-base.js" />
+    <EmbeddedResource Include="Assets\js\broadcast-console.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Broadcast\Broadcast.csproj" />
+  </ItemGroup>
+
+</Project>

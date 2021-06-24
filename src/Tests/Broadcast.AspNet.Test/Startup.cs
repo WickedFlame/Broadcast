@@ -53,6 +53,9 @@ namespace Broadcast.AspNet.Test
 				ServerName = "test 1"
 			});
 
+			app.UseBroadcastDashboard();
+
+
 			app.UseRouting();
 
 			app.UseAuthorization();
