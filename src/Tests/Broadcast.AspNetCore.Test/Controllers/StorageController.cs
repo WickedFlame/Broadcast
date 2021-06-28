@@ -7,7 +7,7 @@ using Broadcast.EventSourcing;
 using Broadcast.Storage.Inmemory;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Broadcast.AspNet.Test.Controllers
+namespace Broadcast.AspNetCore.Test.Controllers
 {
 	public class StorageController : Controller
 	{

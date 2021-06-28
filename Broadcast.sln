@@ -24,7 +24,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.Test", "src\Tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.Integration.Test", "src\Tests\Broadcast.Integration.Test\Broadcast.Integration.Test.csproj", "{D3D96D6A-ED86-46B2-BB0A-7BAD8326DE7E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.AspNet.Test", "src\Tests\Broadcast.AspNet.Test\Broadcast.AspNet.Test.csproj", "{082D5010-3136-4500-AF51-79D3153044DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.AspNetCore.Test", "src\Tests\Broadcast.AspNetCore.Test\Broadcast.AspNetCore.Test.csproj", "{082D5010-3136-4500-AF51-79D3153044DF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.AspNetCore", "src\Broadcast.AspNetCore\Broadcast.AspNetCore.csproj", "{3516311F-5827-4D8C-8B92-AB60D07F1E16}"
 EndProject
@@ -32,7 +32,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.AspNet", "src\Bro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.Dashboard", "src\Broadcast.Dashboard\Broadcast.Dashboard.csproj", "{FF470A41-7608-4E25-A298-8565E92C592A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Broadcast.Dashboard.Test", "src\Tests\Broadcast.Dashboard.Test\Broadcast.Dashboard.Test.csproj", "{CBD5AFD6-5AFC-41E5-B112-00FF3BBB485E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.Dashboard.Test", "src\Tests\Broadcast.Dashboard.Test\Broadcast.Dashboard.Test.csproj", "{CBD5AFD6-5AFC-41E5-B112-00FF3BBB485E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Broadcast.Monitoring;
 
-namespace Broadcast.AspNet.Test.Models
+namespace Broadcast.AspNetCore.Test.Models
 {
 	public class DashboardModel
 	{

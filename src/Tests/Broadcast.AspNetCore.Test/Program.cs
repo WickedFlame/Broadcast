@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Broadcast.AspNet.Test
+namespace Broadcast.AspNetCore.Test
 {
 	public class Program
 	{

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Broadcast.AspNet.Test.Models;
+using Broadcast.AspNetCore.Test.Models;
 
-namespace Broadcast.AspNet.Test.Controllers
+namespace Broadcast.AspNetCore.Test.Controllers
 {
 	public class HomeController : Controller
 	{

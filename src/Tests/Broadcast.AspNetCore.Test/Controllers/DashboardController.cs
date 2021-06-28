@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Broadcast.AspNet.Test.Models;
+using Broadcast.AspNetCore.Test.Models;
 using Broadcast.EventSourcing;
 using Broadcast.Monitoring;
 using Broadcast.Server;
 using Broadcast.Storage;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Broadcast.AspNet.Test.Controllers
+namespace Broadcast.AspNetCore.Test.Controllers
 {
 	public class DashboardController : Controller
 	{

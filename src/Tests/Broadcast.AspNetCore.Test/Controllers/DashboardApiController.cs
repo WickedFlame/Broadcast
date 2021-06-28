@@ -1,8 +1,8 @@
-﻿using Broadcast.AspNet.Test.Models;
+﻿using Broadcast.AspNetCore.Test.Models;
 using Broadcast.Monitoring;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Broadcast.AspNet.Test.Controllers
+namespace Broadcast.AspNetCore.Test.Controllers
 {
 	public class DashboardApiController : ControllerBase
 	{
