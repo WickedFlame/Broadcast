@@ -1,6 +1,10 @@
 <ul class="nav nav-list">
-    <li class="nav-header">Getting Started</li>
+    <li class="nav-header">About</li>
     <li {% if page.url == "/" %}class="active"{% endif %}><a href="{{ site.baseurl }}/">Overview</a></li>
+    <li class="nav-header">Getting Started</li>
+    <li {% if page.url == "/console.html" %}class="active"{% endif %}><a href="{{ site.baseurl }}/console">Console</a></li>
+    
+    <li class="nav-header">Deprecated</li>
     <li {% if page.url == "/taskprocessing.html" %}class="active"{% endif %}><a href="{{ site.baseurl }}/taskprocessing">Task processing</a></li>
     <li {% if page.url == "/scheduler.html" %}class="active"{% endif %}><a href="{{ site.baseurl }}/scheduler">Scheduler</a></li>
     <li {% if page.url == "/mediator.html" %}class="active"{% endif %}><a href="{{ site.baseurl }}/mediator">Mediator</a></li>
