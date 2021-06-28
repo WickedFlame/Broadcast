@@ -1,12 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 using Microsoft.AspNetCore.Html;
 
 namespace Broadcast.Dashboard
 {
+	/// <summary>
+	/// Helper methods for adding the console to the UI
+	/// </summary>
 	public static class BroadcastConsole
 	{
+		/// <summary>
+		/// Append the HTML that loads the JS to add a console overlay to the UI
+		/// </summary>
+		/// <returns></returns>
 		public static HtmlString AppendConsoleIncludes()
 		{
 			var path = DashboardOptions.Default.RouteBasePath.EnsureTrailingSlash();

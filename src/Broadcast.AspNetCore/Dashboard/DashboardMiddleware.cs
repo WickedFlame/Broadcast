@@ -9,9 +9,8 @@ namespace Broadcast.Dashboard
 		private readonly RequestDelegate _next;
 		private readonly RouteCollection _routes;
 		private readonly ITaskStore _storage;
-		//private readonly DashboardOptions _options;
 
-		public DashboardMiddleware(RequestDelegate next, RouteCollection routes, ITaskStore storage/*, DashboardOptions options*/)
+		public DashboardMiddleware(RequestDelegate next, RouteCollection routes, ITaskStore storage)
 		{
 			_next = next ?? throw new ArgumentNullException(nameof(next));
 			_routes = routes ?? throw new ArgumentNullException(nameof(routes));
@@ -43,9 +42,9 @@ namespace Broadcast.Dashboard
 			//    }
 			//}
 
-			context.UriMatch = findResult.Item2;
+			context.UriMatch = findResult.UriMatch;
 
-			await findResult.Item1.Dispatch(context);
+			await findResult.Dispatcher.Dispatch(context);
 		}
 	}
 }

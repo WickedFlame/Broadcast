@@ -3,6 +3,9 @@ using System.Text.RegularExpressions;
 
 namespace Broadcast.Dashboard
 {
+	/// <summary>
+	/// Context for creating the dashboard
+	/// </summary>
 	public interface IDashboardContext
 	{
 		/// <summary>

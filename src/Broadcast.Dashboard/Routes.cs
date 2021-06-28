@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
+﻿using System.Reflection;
 using Broadcast.Dashboard.Dispatchers;
 
 namespace Broadcast.Dashboard
 {
-	public class Routes
+	/// <summary>
+	/// Collection of all routes for the Dashboard with all associated <see cref="IDashboardDispatcher"/>
+	/// </summary>
+	public static class Routes
 	{
 		static Routes()
 		{
@@ -14,8 +14,6 @@ namespace Broadcast.Dashboard
 
 			RouteCollection.Add("/dashboard/metrics", new ConsoleMetricsDispatcher());
 
-			//RouteCollection.Add("/js[0-9]+", new EmbeddedResourceDispatcher(
-			//RouteCollection.Add("/js/dashboard-console/js", new EmbeddedResourceDispatcher(
 			RouteCollection.Add("/js/broadcast-base.js", new EmbeddedResourceDispatcher(
 				"application/javascript",
 				GetExecutingAssembly(),
@@ -32,6 +30,9 @@ namespace Broadcast.Dashboard
 				GetContentResourceName("css", "broadcast-console.min.css")));
 		}
 
+		/// <summary>
+		/// The collection of routes
+		/// </summary>
 		public static RouteCollection RouteCollection { get; }
 
 		private static Assembly GetExecutingAssembly()
