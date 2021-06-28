@@ -55,6 +55,9 @@ namespace Broadcast
 				throw new ArgumentNullException(nameof(pathMatch));
 			}
 
+			DashboardOptions.Default.RouteBasePath = $"~{pathMatch.EnsureLeadingSlash()}";
+			DashboardOptions.Default.RouteBasePath = pathMatch.RemoveLeadingSlash().EnsureTrailingSlash();
+
 			var routes = app.ApplicationServices.GetService<RouteCollection>() ?? Routes.RouteCollection;
 			var storage = app.ApplicationServices.GetRequiredService<ITaskStore>();
 
