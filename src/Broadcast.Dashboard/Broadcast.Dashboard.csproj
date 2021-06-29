@@ -5,7 +5,32 @@
     <!--<TargetFramework>net48</TargetFramework>-->
 	  <TargetFrameworks>net48;netstandard2.0</TargetFrameworks>
 	  <LangVersion>latest</LangVersion>
+
+		<SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>../Broadcast.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworks Condition="'$(OS)' != 'Windows_NT'">netcoreapp2.0</TargetFrameworks>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
+    <Company>WickedFlame</Company>
+    <Authors>Christian Walpen</Authors>
+    <Copyright>@WickedFlame 2019</Copyright>
+    <Title>Broadcast</Title>
+    <Summary>
+	    Dashboard for Broadcast that integrates into Asp.Net and Asp.Net Core projects
+    </Summary>
+    <Description>Dashboard for Broadcast</Description>
+    <PackageProjectUrl>http://wickedflame.github.io/</PackageProjectUrl>
+    <PackageTags>Async Task processing, Task scheduler Request, Commands, Notification, Mediator, CQRS, Fire and forget, Dashboard</PackageTags>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <PackageVersion>1.0.0.0</PackageVersion>
+    <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DocumentationFile>bin\Release\netstandard2.0\Broadcast.Dashboard.xml</DocumentationFile>
+	</PropertyGroup>
 
   <ItemGroup>
     <None Remove="Assets\css\broadcast-console.min.css" />

@@ -109,6 +109,8 @@ test_script:
 artifacts:
   - path: src\Broadcast\bin\Release\netstandard2.0\Broadcast.dll
     name: Broadcast.dll
+  - path: src\Broadcast.Dashboard\bin\Release\netstandard2.0\Broadcast.Dashboard.dll
+    name: Broadcast.Dashboard.dll
 
   # pushing all *.nupkg files in directory
   - path: '.\*.nupkg'
