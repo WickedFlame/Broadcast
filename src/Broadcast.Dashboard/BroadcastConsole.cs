@@ -15,6 +15,9 @@ namespace Broadcast.Dashboard
 		public static HtmlString AppendConsoleIncludes()
 		{
 			var path = DashboardOptions.Default.RouteBasePath.EnsureTrailingSlash();
+			path = path.EnsureLeadingSlash()
+				.EnsureTrailingSlash();
+
 			var sb = new StringBuilder();
 
 			sb.AppendLine($"<link rel=\"stylesheet\" href=\"{path}css/broadcast-console\"/>");
