@@ -16,7 +16,7 @@ namespace Broadcast.Dashboard
 		public static DashboardOptions Default { get; } = new DashboardOptions
 		{
 			RouteTemplate = "broadcast/",
-			RouteBasePath = "~/broadcast",
+			RouteBasePath = "/broadcast",
 			AuthorizeRequest = request => true
 		};
 
