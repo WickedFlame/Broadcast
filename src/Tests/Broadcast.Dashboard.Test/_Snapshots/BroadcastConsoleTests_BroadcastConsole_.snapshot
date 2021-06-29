@@ -1,10 +1,10 @@
 ---data
-<link rel="stylesheet" href="~/broadcast/css/broadcast-console.min.css"/>
+<link rel="stylesheet" href="~/broadcast/css/broadcast-console"/>
 <script type="text/javascript">
   var consoleConfig = {
     pollUrl: "~/broadcast/dashboard/metrics",
     pollInterval: 2000
   };
 </script>
-<script type='module' async src="~/broadcast/js/broadcast-console.js"></script>
+<script type='module' async src="~/broadcast/js/broadcast-console"></script>
 

@@ -35,6 +35,7 @@
 	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
 		<Compile Remove="AppBuilderExtensions.cs" />
 		<Compile Remove="Owin/OwinDashboardResponse.cs" />
+		<Compile Remove="Owin/OwinDashboardMiddleware.cs" />
 	</ItemGroup>
 
   <ItemGroup>
