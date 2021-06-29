@@ -1,4 +1,4 @@
-﻿import { BroadcastBase } from './broadcast-base.js';
+﻿import { BroadcastBase } from './broadcast-base';
 
 export class BroadcastConsole extends BroadcastBase {
 	constructor(config) {

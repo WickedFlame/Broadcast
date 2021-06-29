@@ -13,7 +13,7 @@ namespace Broadcast
 {
 	public static class BroadcastApplicationBuilderExtensions
 	{
-		public static IApplicationBuilder UseBroadcastServer([NotNull] this IApplicationBuilder app, Options options = null)
+		public static IApplicationBuilder UseBroadcastServer(this IApplicationBuilder app, Options options = null)
 		{
 			if (app == null)
 			{

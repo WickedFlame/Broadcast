@@ -2,21 +2,19 @@
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Owin;
 
-namespace Broadcast.Dashboard
+namespace Broadcast.Dashboard.Owin
 {
-	/// <summary>
-	/// Wrapper for the <see cref="HttpResponse"/>
-	/// </summary>
-	public class DashboardResponse : IDashboardResponse
+	public class OwinDashboardResponse : IDashboardResponse
 	{
-		private readonly HttpContext _context;
+		private readonly IOwinContext _context;
 
 		/// <summary>
 		/// Creates a new instance 
 		/// </summary>
 		/// <param name="context"></param>
-		public DashboardResponse(HttpContext context)
+		public OwinDashboardResponse(OwinContext context)
 		{
 			_context = context ?? throw new ArgumentNullException(nameof(context));
 		}

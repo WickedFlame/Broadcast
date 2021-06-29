@@ -2,7 +2,9 @@
 
   <PropertyGroup>
     <!--<TargetFramework>netstandard2.0</TargetFramework>-->
-	  <TargetFrameworks>netstandard2.0;net48</TargetFrameworks>
+    <!--<TargetFramework>net48</TargetFramework>-->
+	  <TargetFrameworks>net48;netstandard2.0</TargetFrameworks>
+	  <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,13 +20,26 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Html.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.16" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='net48'">
+		<PackageReference Include="Owin" Version="1.0.0" />
+		<PackageReference Include="Microsoft.Owin" Version="4.2.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+		<Compile Remove="AppBuilderExtensions.cs" />
+		<Compile Remove="Owin/OwinDashboardResponse.cs" />
+	</ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Broadcast\Broadcast.csproj" />
   </ItemGroup>
+
 
 </Project>

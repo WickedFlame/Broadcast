@@ -19,8 +19,8 @@ namespace Broadcast.Dashboard
 		Match UriMatch { get; set; }
 
 		/// <summary>
-		/// Gets the <see cref="DashboardResponse"/>
+		/// Gets the <see cref="IDashboardResponse"/>
 		/// </summary>
-		DashboardResponse Response { get; }
+		IDashboardResponse Response { get; }
 	}
 }

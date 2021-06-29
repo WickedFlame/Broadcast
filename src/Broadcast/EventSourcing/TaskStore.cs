@@ -166,7 +166,7 @@ namespace Broadcast.EventSourcing
 
 			// cleanup dead servers
 			var expiration = DateTime.Now.Subtract(TimeSpan.FromMilliseconds(_options.HeartbeatInterval));
-			var deadServers = _registeredServers.Where(item => item.Value.Heartbeat < expiration).Select(item => item.Key);
+			var deadServers = _registeredServers.Where(item => item.Value.Heartbeat < expiration).Select(item => item.Key).ToList();
 			foreach (var key in deadServers)
 			{
 				_registeredServers.Remove(key);

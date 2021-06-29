@@ -19,7 +19,7 @@ namespace Broadcast.Dashboard
 
 		public async Task Invoke(HttpContext httpContext)
 		{
-			var context = new AspNetCoreDashboardContext(httpContext, _storage);
+			var context = new DashboardContext(new DashboardResponse(httpContext), _storage);
 			var findResult = _routes.FindDispatcher(httpContext.Request.Path.Value);
 
 			if (findResult == null)

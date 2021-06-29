@@ -17,14 +17,14 @@ namespace Broadcast.Dashboard
 			var path = DashboardOptions.Default.RouteBasePath.EnsureTrailingSlash();
 			var sb = new StringBuilder();
 
-			sb.AppendLine($"<link rel=\"stylesheet\" href=\"{path}css/broadcast-console.min.css\"/>");
+			sb.AppendLine($"<link rel=\"stylesheet\" href=\"{path}css/broadcast-console\"/>");
 			sb.AppendLine("<script type=\"text/javascript\">");
 			sb.AppendLine("  var consoleConfig = {");
 			sb.AppendLine($"    pollUrl: \"{path}dashboard/metrics\",");
 			sb.AppendLine("    pollInterval: 2000");
 			sb.AppendLine("  };");
 			sb.AppendLine("</script>");
-			sb.AppendLine($"<script type='module' async src=\"{path}js/broadcast-console.js\"></script>");
+			sb.AppendLine($"<script type='module' async src=\"{path}js/broadcast-console\"></script>");
 
 			return new HtmlString(sb.ToString());
 		}

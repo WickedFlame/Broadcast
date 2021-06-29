@@ -6,17 +6,17 @@ namespace Broadcast.Dashboard
 	/// <summary>
 	/// <<see cref="IDashboardDispatcher"/> for the dashboard
 	/// </summary>
-	public class AspNetCoreDashboardContext : IDashboardContext
+	public class DashboardContext : IDashboardContext
 	{
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="httpContext"></param>
+		/// <param name="response"></param>
 		/// <param name="store"></param>
-		public AspNetCoreDashboardContext(HttpContext httpContext, ITaskStore store)
+		public DashboardContext(IDashboardResponse response, ITaskStore store)
 		{
 			TaskStore = store;
-			Response = new DashboardResponse(httpContext);
+			Response = response;
 		}
 
 		/// <summary>
@@ -32,6 +32,6 @@ namespace Broadcast.Dashboard
 		/// <summary>
 		/// Gets the <see cref="DashboardResponse"/>
 		/// </summary>
-		public DashboardResponse Response { get; }
+		public IDashboardResponse Response { get; }
 	}
 }

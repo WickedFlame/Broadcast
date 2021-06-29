@@ -34,6 +34,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.Dashboard", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.Dashboard.Test", "src\Tests\Broadcast.Dashboard.Test\Broadcast.Dashboard.Test.csproj", "{CBD5AFD6-5AFC-41E5-B112-00FF3BBB485E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Broadcast.AspNet.Test", "src\Tests\Broadcast.AspNet.Test\Broadcast.AspNet.Test.csproj", "{420C8308-7468-4553-A062-E082CDCB78DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -76,6 +78,10 @@ Global
 		{CBD5AFD6-5AFC-41E5-B112-00FF3BBB485E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBD5AFD6-5AFC-41E5-B112-00FF3BBB485E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBD5AFD6-5AFC-41E5-B112-00FF3BBB485E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{420C8308-7468-4553-A062-E082CDCB78DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{420C8308-7468-4553-A062-E082CDCB78DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{420C8308-7468-4553-A062-E082CDCB78DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{420C8308-7468-4553-A062-E082CDCB78DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -86,6 +92,7 @@ Global
 		{D3D96D6A-ED86-46B2-BB0A-7BAD8326DE7E} = {7B8E8745-88B2-4319-884D-556F587570DC}
 		{082D5010-3136-4500-AF51-79D3153044DF} = {7B8E8745-88B2-4319-884D-556F587570DC}
 		{CBD5AFD6-5AFC-41E5-B112-00FF3BBB485E} = {7B8E8745-88B2-4319-884D-556F587570DC}
+		{420C8308-7468-4553-A062-E082CDCB78DB} = {7B8E8745-88B2-4319-884D-556F587570DC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D51F4967-993D-46CE-9ABE-2E6FBFF95E80}

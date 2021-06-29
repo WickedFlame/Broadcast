@@ -39,12 +39,12 @@ namespace Broadcast.Dashboard.Dispatchers
 			await WriteResponse(context.Response).ConfigureAwait(false);
 		}
 
-		protected virtual Task WriteResponse(DashboardResponse response)
+		protected virtual Task WriteResponse(IDashboardResponse response)
 		{
 			return WriteResource(response, _assembly, _resourceName);
 		}
 
-		protected async Task WriteResource(DashboardResponse response, Assembly assembly, string resourceName)
+		protected async Task WriteResource(IDashboardResponse response, Assembly assembly, string resourceName)
 		{
 			using (var inputStream = assembly.GetManifestResourceStream(resourceName))
 			{

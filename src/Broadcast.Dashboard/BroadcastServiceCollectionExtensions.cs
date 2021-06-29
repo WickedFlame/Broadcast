@@ -11,7 +11,7 @@ namespace Broadcast
 {
 	public static class BroadcastServiceCollectionExtensions
 	{
-		public static IServiceCollection AddBroadcast([NotNull] this IServiceCollection services, Action<ServerSetup> config)
+		public static IServiceCollection AddBroadcast(this IServiceCollection services, Action<ServerSetup> config)
 		{
 			var serverSetup = new ServerSetup();
 
