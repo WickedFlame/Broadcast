@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Broadcast.AspNetCore\Broadcast.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\Broadcast.Dashboard\Broadcast.Dashboard.csproj" />
     <ProjectReference Include="..\..\Broadcast\Broadcast.csproj" />
   </ItemGroup>
 
