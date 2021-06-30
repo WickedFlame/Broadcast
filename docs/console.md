@@ -39,7 +39,7 @@ public void Configuration(IAppBuilder app)
 ## Display the console
 The console is added to the page by adding some JavaScript files to the page. These can easily be added with a call to BroadcastConsole.AppendConsoleIncludes().
 
-```html
+```csharp
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -51,7 +51,7 @@ The console is added to the page by adding some JavaScript files to the page. Th
 ```
 
 If you are using an older version of MVC you may need to wrap the command in a Html.Raw to ensure the console is not Html-Encoded
-```html
+```csharp
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
