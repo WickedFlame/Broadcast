@@ -43,7 +43,16 @@ export class BroadcastConsole extends BroadcastBase {
 	}
 
 	renderConsole(config) {
-		var console = `<div class="broadcast-console" id="broadcast-console">
+		var style = 'top:0;right:0;bottom:auto;left:auto;';
+		if (config.position === 'BottomRight') {
+			style = 'top:auto;right:0;bottom:0;left:auto;';
+		} else if (config.position === 'BottomLeft') {
+			style = 'top:auto;right:auto;bottom:0;left:0;';
+		} else if (config.position === 'TopLeft') {
+			style = 'top:0;right:auto;bottom:auto;left:0;';
+		}
+
+		var console = `<div class="broadcast-console" style="${style}" id="broadcast-console">
 	<div class="broadcast-console-panel">
 		<div class="broadcast-console-title">Broadcast</div>
 		<div class="broadcast-metric"><span>Servers</span><span id="broadcast-servers-count">-</span></div>
@@ -64,7 +73,8 @@ export class BroadcastConsole extends BroadcastBase {
 if (consoleConfig === undefined) {
 	consoleConfig = {
 		pollUrl: "/broadcast/dashboard/metrics",
-		pollInterval: 2000
+		pollInterval: 2000,
+		position: "TopRight"
 	};
 }
 

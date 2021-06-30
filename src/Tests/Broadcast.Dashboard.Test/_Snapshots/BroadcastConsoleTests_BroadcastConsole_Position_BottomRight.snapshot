@@ -4,6 +4,7 @@
   var consoleConfig = {
     pollUrl: "/broadcast/dashboard/metrics",
     pollInterval: 2000,
+    position: "BottomRight"
   };
 </script>
 <script type='module' async src="/broadcast/js/broadcast-console"></script>

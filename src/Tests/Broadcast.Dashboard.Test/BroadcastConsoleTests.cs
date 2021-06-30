@@ -13,5 +13,41 @@ namespace Broadcast.Dashboard.Test
 		{
 			BroadcastConsole.AppendConsoleIncludes().ToString().MatchSnapshot();
 		}
+
+		[Test]
+		public void BroadcastConsole_Position_NoOptions()
+		{
+			BroadcastConsole.AppendConsoleIncludes().ToString().MatchSnapshot();
+		}
+
+		[Test]
+		public void BroadcastConsole_Position_Default()
+		{
+			BroadcastConsole.AppendConsoleIncludes(new ConsoleOptions { }).ToString().MatchSnapshot();
+		}
+
+		[Test]
+		public void BroadcastConsole_Position_TopRight()
+		{
+			BroadcastConsole.AppendConsoleIncludes(new ConsoleOptions{Position = ConsolePosition.TopRight}).ToString().MatchSnapshot();
+		}
+
+		[Test]
+		public void BroadcastConsole_Position_BottomRight()
+		{
+			BroadcastConsole.AppendConsoleIncludes(new ConsoleOptions { Position = ConsolePosition.BottomRight }).ToString().MatchSnapshot();
+		}
+
+		[Test]
+		public void BroadcastConsole_Position_BottomLeft()
+		{
+			BroadcastConsole.AppendConsoleIncludes(new ConsoleOptions { Position = ConsolePosition.BottomLeft }).ToString().MatchSnapshot();
+		}
+
+		[Test]
+		public void BroadcastConsole_Position_TopLeft()
+		{
+			BroadcastConsole.AppendConsoleIncludes(new ConsoleOptions { Position = ConsolePosition.TopLeft }).ToString().MatchSnapshot();
+		}
 	}
 }
