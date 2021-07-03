@@ -54,12 +54,14 @@ export class BroadcastConsole extends BroadcastBase {
 
 		var console = `<div class="broadcast-console" style="${style}" id="broadcast-console">
 	<div class="broadcast-console-panel">
-		<div class="broadcast-console-title">Broadcast</div>
-		<div class="broadcast-metric"><span>Servers</span><span id="broadcast-servers-count">-</span></div>
-		<div class="broadcast-metric"><span>Recurring Tasks</span><span id="broadcast-recurring-count">-</span></div>
-		<div class="broadcast-metric"><span>Enqueued Tasks</span><span id="broadcast-enqueued-count">-</span></div>
-		<div class="broadcast-metric"><span>Processed Tasks</span><span id="broadcast-processed-count">-</span></div>
-		<div class="broadcast-metric"><span>Failed Tasks</span><span id="broadcast-failed-count">-</span></div>
+		<div class="broadcast-console-title broadcast-toggler is-open"><div class="broadcast-toggler-button"><span class="broadcast-toggler-icon"></span></div>Broadcast</div>
+		<div class="broadcast-console-metrics broadcst-toggler-panel">
+			<div class="broadcast-metric"><span>Servers</span><span id="broadcast-servers-count">-</span></div>
+			<div class="broadcast-metric"><span>Recurring Tasks</span><span id="broadcast-recurring-count">-</span></div>
+			<div class="broadcast-metric"><span>Enqueued Tasks</span><span id="broadcast-enqueued-count">-</span></div>
+			<div class="broadcast-metric"><span>Processed Tasks</span><span id="broadcast-processed-count">-</span></div>
+			<div class="broadcast-metric"><span>Failed Tasks</span><span id="broadcast-failed-count">-</span></div>
+		</div>
 	</div>	
 </div>`;
 
@@ -67,6 +69,10 @@ export class BroadcastConsole extends BroadcastBase {
 		let div = document.createElement('div');
 		div.innerHTML = console.trim();
 		document.querySelector('body').appendChild(div.firstChild);
+
+		document.querySelector('.broadcast-toggler').addEventListener('click', e => {
+			document.querySelector('.broadcast-console-title').classList.toggle('is-open');
+		});
 	}
 }
 

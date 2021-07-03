@@ -20,7 +20,6 @@
     padding: 10px;
     border: solid 1px #777;
     background-color: rgba(0, 0, 0, 0.1);
-    /*box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 5%);*/
     box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.3);
     line-height: 1.2;
     color: #777;
@@ -29,9 +28,53 @@
       background-color: rgba(255, 255, 255, 0.5);
       transition-duration: 1s; }
     .broadcast-console .broadcast-console-panel .broadcast-console-title {
+      display: inline-flex;
       font-size: 12px;
       font-weight: bold;
-      padding-bottom: 4px; }
+      padding-bottom: 4px;
+      cursor: pointer; }
     .broadcast-console .broadcast-console-panel .broadcast-metric {
       display: grid;
       grid-template-columns: 1fr auto; }
+    .broadcast-console .broadcast-console-panel .broadcst-toggler-panel {
+      max-height: 0;
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: all 0.15s ease-in-out; }
+    .broadcast-console .broadcast-console-panel .broadcast-toggler .broadcast-toggler-button {
+      position: relative;
+      margin-top: -1px;
+      width: 18px;
+      height: 15px;
+      padding-left: 0;
+      margin-left: -5px;
+      cursor: pointer; }
+      .broadcast-console .broadcast-console-panel .broadcast-toggler .broadcast-toggler-button .broadcast-toggler-icon {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 18px;
+        width: 18px;
+        cursor: pointer; }
+      .broadcast-console .broadcast-console-panel .broadcast-toggler .broadcast-toggler-button .broadcast-toggler-icon:after {
+        content: "";
+        position: absolute;
+        left: 5px;
+        top: 5px;
+        width: 6px;
+        height: 6px;
+        border-right: 2px solid #000;
+        border-bottom: 2px solid #000;
+        -webkit-transform: rotate(-45deg);
+        -ms-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+        margin-top: 0; }
+    .broadcast-console .broadcast-console-panel .broadcast-toggler.is-open + .broadcst-toggler-panel {
+      max-height: 100%;
+      transform: scaleY(1);
+      transition: all 0.15s ease-in-out; }
+    .broadcast-console .broadcast-console-panel .broadcast-toggler.is-open .broadcast-toggler-icon:after {
+      -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      transform: rotate(45deg);
+      margin-top: -1px; }
