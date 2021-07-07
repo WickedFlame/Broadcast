@@ -207,7 +207,7 @@ namespace Broadcast.Test.Processing
 
 			dispatcher.Execute(ctx.Object);
 
-			storage.Verify(exp => exp.RemoveFromList<string>(It.Is<StorageKey>(k => k.Key == "tasks:dequeued"), task.Object.Id), Times.Once);
+			storage.Verify(exp => exp.RemoveFromList(It.Is<StorageKey>(k => k.Key == "tasks:dequeued"), task.Object.Id), Times.Once);
 		}
 	}
 }

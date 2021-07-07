@@ -14,7 +14,7 @@ namespace Broadcast.AspNetCore.Test.Controllers
 		}
 
 		[HttpGet]
-		//[Route("/dashboard/metrics")]
+		[Route("/dashboard/metrics")]
 		public IActionResult Get()
 		{
 			var monitoring = new MonitoringService(_store);

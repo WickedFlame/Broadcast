@@ -10,27 +10,24 @@ namespace Broadcast.Storage
 		/// <summary>
 		/// Add a value to a list in the storage
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
 		/// <param name="key"></param>
 		/// <param name="value"></param>
-		void AddToList<T>(StorageKey key, T value);
+		void AddToList(StorageKey key, string value);
 
 		/// <summary>
 		/// Get a list of values from the storage
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
 		/// <param name="key"></param>
 		/// <returns></returns>
-		IEnumerable<T> GetList<T>(StorageKey key);
+		IEnumerable<string> GetList(StorageKey key);
 
 		/// <summary>
 		/// Remove a item from the list beind the key
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
 		/// <param name="key"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		bool RemoveFromList<T>(StorageKey key, T item);
+		bool RemoveFromList(StorageKey key, string item);
 
 		/// <summary>
 		/// Tries to fetch the next top item from a source key, moves the item to the destination key and returns the item
@@ -40,7 +37,7 @@ namespace Broadcast.Storage
 		/// <param name="destination"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		bool TryFetchNext<T>(StorageKey source, StorageKey destination, out T item);
+		bool TryFetchNext(StorageKey source, StorageKey destination, out string item);
 
 		/// <summary>
 		/// Removes a range of items from the list

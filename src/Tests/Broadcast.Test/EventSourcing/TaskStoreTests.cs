@@ -334,7 +334,7 @@ namespace Broadcast.Test.EventSourcing
 
 			store.DispatchTasks();
 
-			storage.Verify(exp => exp.TryFetchNext<string>(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out It.Ref<string>.IsAny), Times.Once);
+			storage.Verify(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out It.Ref<string>.IsAny), Times.Once);
 		}
 
 		[Test]
@@ -343,12 +343,12 @@ namespace Broadcast.Test.EventSourcing
 			var id = "1";
 
 			var storage = new Mock<IStorage>();
-			storage.Setup(exp => exp.TryFetchNext<string>(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
+			storage.Setup(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
 
 			var store = new TaskStore(storage.Object);
 			store.DispatchTasks();
 
-			storage.Verify(exp => exp.TryFetchNext<string>(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out It.Ref<string>.IsAny), Times.Exactly(2));
+			storage.Verify(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out It.Ref<string>.IsAny), Times.Exactly(2));
 		}
 
 		[Test]
@@ -357,7 +357,7 @@ namespace Broadcast.Test.EventSourcing
 			var id = "1";
 
 			var storage = new Mock<IStorage>();
-			storage.Setup(exp => exp.TryFetchNext<string>(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
+			storage.Setup(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
 
 			var store = new TaskStore(storage.Object);
 			store.DispatchTasks();
@@ -371,7 +371,7 @@ namespace Broadcast.Test.EventSourcing
 			string id = null;
 
 			var storage = new Mock<IStorage>();
-			storage.Setup(exp => exp.TryFetchNext<string>(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => false);
+			storage.Setup(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => false);
 
 			var store = new TaskStore(storage.Object);
 			store.DispatchTasks();
@@ -385,7 +385,7 @@ namespace Broadcast.Test.EventSourcing
 			var id = "1";
 
 			var storage = new Mock<IStorage>();
-			storage.Setup(exp => exp.TryFetchNext<string>(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
+			storage.Setup(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
 			storage.Setup(exp => exp.Get<ITask>(It.IsAny<StorageKey>())).Returns(() => new Mock<ITask>().Object);
 
 			var dispatcher = new Mock<IDispatcher>();
@@ -404,7 +404,7 @@ namespace Broadcast.Test.EventSourcing
 			string id = null;
 
 			var storage = new Mock<IStorage>();
-			storage.Setup(exp => exp.TryFetchNext<string>(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => false);
+			storage.Setup(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => false);
 
 			var dispatcher = new Mock<IDispatcher>();
 

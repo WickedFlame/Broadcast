@@ -65,7 +65,7 @@ namespace Broadcast.Processing
 				_logger.Write($"End processing task {_task.Id}. Duration {sw.ElapsedMilliseconds} ms");
 
 				// remove the id from the list of enqueued
-				context.Store.Storage(s => s.RemoveFromList<string>(new StorageKey("tasks:dequeued"), _task.Id));
+				context.Store.Storage(s => s.RemoveFromList(new StorageKey("tasks:dequeued"), _task.Id));
 			}
 		}
 	}
