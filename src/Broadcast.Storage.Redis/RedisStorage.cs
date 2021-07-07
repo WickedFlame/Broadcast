@@ -27,25 +27,25 @@ namespace Broadcast.Storage.Redis
 		}
 
 		/// <inheritdoc/>
-		public void AddToList<T>(StorageKey key, T value)
+		public void AddToList(StorageKey key, string value)
 		{
 			throw new NotImplementedException();
 		}
 
 		/// <inheritdoc/>
-		public IEnumerable<T> GetList<T>(StorageKey key)
+		public IEnumerable<string> GetList(StorageKey key)
 		{
 			throw new NotImplementedException();
 		}
 
 		/// <inheritdoc/>
-		public bool RemoveFromList<T>(StorageKey key, T item)
+		public bool RemoveFromList(StorageKey key, string item)
 		{
 			throw new NotImplementedException();
 		}
 
 		/// <inheritdoc/>
-		public bool TryFetchNext<T>(StorageKey source, StorageKey destination, out T item)
+		public bool TryFetchNext(StorageKey source, StorageKey destination, out string item)
 		{
 			throw new NotImplementedException();
 		}

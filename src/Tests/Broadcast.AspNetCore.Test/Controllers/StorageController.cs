@@ -87,11 +87,11 @@ namespace Broadcast.AspNetCore.Test.Controllers
 						continue;
 					}
 
-					var items = s.GetList<object>(new Storage.StorageKey(key));
+					var items = s.GetList(new Storage.StorageKey(key));
 					if (items != null)
 					{
 						//model.Items.Add(new StorageItem {Key = key, Value = JsonSerializer.Serialize(items)});
-						current.Value = JsonSerializer.Serialize(items);
+						current.Value = $"[{string.Join(',', items)}]";
 						continue;
 					}
 				}

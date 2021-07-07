@@ -22,7 +22,7 @@ namespace Broadcast.Storage
 		}
 
 		/// <inheritdoc/>
-		public void AddToList<T>(StorageKey key, T value)
+		public void AddToList(StorageKey key, string value)
 		{
 			lock (_lockHandle)
 			{
@@ -48,7 +48,7 @@ namespace Broadcast.Storage
 		}
 
 		/// <inheritdoc/>
-		public IEnumerable<T> GetList<T>(StorageKey key)
+		public IEnumerable<string> GetList(StorageKey key)
 		{
 			lock (_lockHandle)
 			{
@@ -56,15 +56,52 @@ namespace Broadcast.Storage
 				{
 					if (_store[key.ToString()].GetValue() is List<object> items)
 					{
-						return items.Cast<T>();
+						return items.Cast<string>();
 					}
 				}
 
-				return Enumerable.Empty<T>();
+				return Enumerable.Empty<string>();
 			}
 		}
 
 		/// <inheritdoc/>
+		public bool RemoveFromList(StorageKey key, string item)
+		{
+			lock (_lockHandle)
+			{
+				if (_store.ContainsKey(key.ToString()))
+				{
+					if (!(_store[key.ToString()] is ListItem list))
+					{
+						return false;
+					}
+
+					var stored = list.Items.FirstOrDefault(i => ((string)i.GetValue()).Equals(item));
+					if (stored == null)
+					{
+						return false;
+					}
+
+					list.Items.Remove(stored);
+					return true;
+				}
+
+				return false;
+			}
+		}
+
+		/// <inheritdoc/>
+		public bool TryFetchNext(StorageKey source, StorageKey destination, out string item)
+			=> TryFetchNext<string>(source, destination, out item);
+		
+		/// <summary>
+		/// Fetch the next entry from the store
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="source"></param>
+		/// <param name="destination"></param>
+		/// <param name="item"></param>
+		/// <returns></returns>
 		public bool TryFetchNext<T>(StorageKey source, StorageKey destination, out T item)
 		{
 			lock (_lockHandle)
@@ -94,32 +131,6 @@ namespace Broadcast.Storage
 				}
 
 				item = default(T);
-				return false;
-			}
-		}
-
-		/// <inheritdoc/>
-		public bool RemoveFromList<T>(StorageKey key, T item)
-		{
-			lock (_lockHandle)
-			{
-				if (_store.ContainsKey(key.ToString()))
-				{
-					if (!(_store[key.ToString()] is ListItem list))
-					{
-						return false;
-					}
-
-					var stored = list.Items.FirstOrDefault(i => ((T) i.GetValue()).Equals(item));
-					if (stored == null)
-					{
-						return false;
-					}
-					
-					list.Items.Remove(stored);
-					return true;
-				}
-
 				return false;
 			}
 		}

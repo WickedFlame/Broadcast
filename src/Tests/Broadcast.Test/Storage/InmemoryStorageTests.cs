@@ -104,10 +104,10 @@ namespace Broadcast.Test.Storage
 		public void InmemoryStorage_List_Objects()
 		{
 			var storage = new InmemoryStorage();
-			storage.AddToList(new StorageKey("storage", "key"), new StorageModel {Id = 1, Value = "one"});
-			storage.AddToList(new StorageKey("storage", "key"), new StorageModel { Id = 2, Value = "two" });
+			storage.AddToList(new StorageKey("storage", "key"), "one");
+			storage.AddToList(new StorageKey("storage", "key"), "two");
 
-			var items = storage.GetList<StorageModel>(new StorageKey("storage", "key"));
+			var items = storage.GetList(new StorageKey("storage", "key"));
 			items.MatchSnapshot();
 		}
 
@@ -128,11 +128,11 @@ namespace Broadcast.Test.Storage
 			storage.AddToList(new StorageKey("storage", "key"), "value");
 			storage.AddToList(new StorageKey("storage", "key"), "reset");
 
-			Assert.AreEqual(2, storage.GetList<string>(new StorageKey("storage", "key")).Count());
+			Assert.AreEqual(2, storage.GetList(new StorageKey("storage", "key")).Count());
 
 			storage.Delete(new StorageKey("storage", "key"));
 
-			Assert.IsEmpty(storage.GetList<string>(new StorageKey("storage", "key")));
+			Assert.IsEmpty(storage.GetList(new StorageKey("storage", "key")));
 		}
 
 		[Test]
@@ -152,35 +152,35 @@ namespace Broadcast.Test.Storage
 		public void InmemoryStorage_RemoveRange()
 		{
 			var storage = new InmemoryStorage();
-			storage.AddToList(new StorageKey("storage", "key"), new StorageModel { Id = 1, Value = "one" });
-			storage.AddToList(new StorageKey("storage", "key"), new StorageModel { Id = 1, Value = "one" });
+			storage.AddToList(new StorageKey("storage", "key"), "one");
+			storage.AddToList(new StorageKey("storage", "key"), "one");
 
-			Assert.AreEqual(2, storage.GetList<StorageModel>(new StorageKey("storage", "key")).Count());
+			Assert.AreEqual(2, storage.GetList(new StorageKey("storage", "key")).Count());
 
 			storage.RemoveRangeFromList(new StorageKey("storage", "key"), 3);
 
-			Assert.IsEmpty(storage.GetList<StorageModel>(new StorageKey("storage", "key")));
+			Assert.IsEmpty(storage.GetList(new StorageKey("storage", "key")));
 		}
 
 		[Test]
 		public void InmemoryStorage_RemoveFromList()
 		{
-			var item = new StorageModel {Id = 2, Value = "two"};
+			var item = "two";
 
 			var storage = new InmemoryStorage();
-			storage.AddToList(new StorageKey("storage", "key"), new StorageModel { Id = 1, Value = "one" });
+			storage.AddToList(new StorageKey("storage", "key"), "one");
 			storage.AddToList(new StorageKey("storage", "key"), item);
 
 			storage.RemoveFromList(new StorageKey("storage", "key"), item);
 
-			Assert.IsTrue(storage.GetList<StorageModel>(new StorageKey("storage", "key")).All(i => i != item));
+			Assert.IsTrue(storage.GetList(new StorageKey("storage", "key")).All(i => i != item));
 		}
 
 		[Test]
 		public void InmemoryStorage_Get_Invalid()
 		{
 			var storage = new InmemoryStorage();
-			storage.AddToList(new StorageKey("storage", "key"), new StorageModel { Id = 1, Value = "one" });
+			storage.AddToList(new StorageKey("storage", "key"), "one");
 
 			Assert.IsNull(storage.Get<StorageModel>(new StorageKey("storage", "key")));
 		}
@@ -191,7 +191,7 @@ namespace Broadcast.Test.Storage
 			var storage = new InmemoryStorage();
 			storage.Set(new StorageKey("storage", "key"), new StorageModel { Id = 1, Value = "one" });
 
-			Assert.IsEmpty(storage.GetList<StorageModel>(new StorageKey("storage", "key")));
+			Assert.IsEmpty(storage.GetList(new StorageKey("storage", "key")));
 		}
 
 		[Test]
@@ -237,21 +237,21 @@ namespace Broadcast.Test.Storage
 		public void InmemoryStorage_TryFetchNext_List()
 		{
 			var storage = new InmemoryStorage();
-			storage.AddToList(new StorageKey("key1"), new StorageModel { Id = 1, Value = "one" });
+			storage.AddToList(new StorageKey("key1"), "one");
 
-			storage.TryFetchNext<StorageModel>(new StorageKey("key1"), new StorageKey("key2"), out var item);
+			storage.TryFetchNext<string>(new StorageKey("key1"), new StorageKey("key2"), out var item);
 
-			Assert.IsEmpty(storage.GetList<StorageModel>(new StorageKey("key1")));
-			Assert.AreSame(item, storage.GetList<StorageModel>(new StorageKey("key2")).Single());
+			Assert.IsEmpty(storage.GetList(new StorageKey("key1")));
+			Assert.AreSame(item, storage.GetList(new StorageKey("key2")).Single());
 		}
 
 		[Test]
 		public void InmemoryStorage_TryFetchNext_List_True()
 		{
 			var storage = new InmemoryStorage();
-			storage.AddToList(new StorageKey("key1"), new StorageModel { Id = 1, Value = "one" });
+			storage.AddToList(new StorageKey("key1"), "one");
 
-			Assert.IsTrue(storage.TryFetchNext<StorageModel>(new StorageKey("key1"), new StorageKey("key2"), out var item));
+			Assert.IsTrue(storage.TryFetchNext<string>(new StorageKey("key1"), new StorageKey("key2"), out var item));
 		}
 
 		[Test]

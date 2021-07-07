@@ -96,7 +96,7 @@ namespace Broadcast.EventSourcing
 		/// </summary>
 		public void DispatchTasks()
 		{
-			while (_storage.TryFetchNext(new StorageKey("tasks:enqueued"), new StorageKey("tasks:dequeued"), out string id))
+			while (_storage.TryFetchNext(new StorageKey("tasks:enqueued"), new StorageKey("tasks:dequeued"), out var id))
 			{
 				// eager fetching of the data
 				// first TaskStore to fetch gets to execute the Task
