@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Broadcast.AspNet.Test", "sr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{18910F76-F1A5-43F3-9284-EFEC491C8C52}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Broadcast.Storage.Redis", "src\Broadcast.Storage.Redis\Broadcast.Storage.Redis.csproj", "{97B196E3-1A77-458F-80CD-AFA3A15E2652}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,6 +74,10 @@ Global
 		{420C8308-7468-4553-A062-E082CDCB78DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{420C8308-7468-4553-A062-E082CDCB78DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{420C8308-7468-4553-A062-E082CDCB78DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97B196E3-1A77-458F-80CD-AFA3A15E2652}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97B196E3-1A77-458F-80CD-AFA3A15E2652}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97B196E3-1A77-458F-80CD-AFA3A15E2652}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97B196E3-1A77-458F-80CD-AFA3A15E2652}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
