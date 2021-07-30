@@ -11,8 +11,11 @@ namespace Broadcast.Storage.Redis
 	public class RedisStorage : IStorage
 	{
 		private readonly RedisStorageOptions _options;
+		
 		private readonly IDatabase _database;
 		private readonly IServer _server;
+
+		private readonly RedisSubscription _subscription;
 
 		public RedisStorage(IConnectionMultiplexer connectionMultiplexer, RedisStorageOptions options = null)
 		{
@@ -24,24 +27,31 @@ namespace Broadcast.Storage.Redis
 			_options = options ?? new RedisStorageOptions();
 			_database = connectionMultiplexer.GetDatabase(_options.Db);
 			_server = connectionMultiplexer.GetServer(connectionMultiplexer.GetEndPoints(true).FirstOrDefault());
+
+			_subscription = new RedisSubscription(connectionMultiplexer.GetSubscriber());
 		}
+
+		public RedisSubscription Subscription => _subscription;
 
 		/// <inheritdoc/>
 		public void AddToList(StorageKey key, string value)
 		{
-			throw new NotImplementedException();
+			_database.ListRightPushAsync(CreateKey(key), value);
 		}
 
 		/// <inheritdoc/>
 		public IEnumerable<string> GetList(StorageKey key)
 		{
-			throw new NotImplementedException();
+			var list = _database.ListRange(CreateKey(key));
+			return list.Select(l => l.ToString());
 		}
 
 		/// <inheritdoc/>
 		public bool RemoveFromList(StorageKey key, string item)
 		{
-			throw new NotImplementedException();
+			_database.ListRemoveAsync(CreateKey(key), item);
+
+			return true;
 		}
 
 		/// <inheritdoc/>
@@ -53,43 +63,56 @@ namespace Broadcast.Storage.Redis
 		/// <inheritdoc/>
 		public void RemoveRangeFromList(StorageKey key, int count)
 		{
-			throw new NotImplementedException();
+			for (var i = 0; i < count; i++)
+			{
+				_database.ListLeftPopAsync(CreateKey(key));
+			}
 		}
 
 		/// <inheritdoc/>
 		public void Set<T>(StorageKey key, T value)
 		{
-			throw new NotImplementedException();
+			_database.HashSetAsync(CreateKey(key), value.SerializeToRedis());
+
+			_database.PublishAsync(RedisSubscription.Channel, CreateKey(key));
 		}
 
 		/// <inheritdoc/>
 		public T Get<T>(StorageKey key)
 		{
-			throw new NotImplementedException();
+			var hash = _database.HashGetAll(CreateKey(key));
+
+			return hash.DeserializeRedis<T>();
 		}
 
 		/// <inheritdoc/>
 		public void SetValues(StorageKey key, DataObject values)
 		{
-			throw new NotImplementedException();
+			var list = values.Where(v => v.Value != null)
+				.Select(v => new HashEntry(v.Key, v.Value.ToString()))
+				.ToArray();
+
+			_database.HashSetAsync(CreateKey(key), list);
 		}
 
 		/// <inheritdoc/>
 		public IEnumerable<string> GetKeys(StorageKey key)
 		{
-			throw new NotImplementedException();
+			return _server.Keys(_options.Db, $"{CreateKey(key)}*").Select(k => k.ToString());
 		}
 
 		/// <inheritdoc/>
 		public void Delete(StorageKey key)
 		{
-			throw new NotImplementedException();
+			_database.KeyDeleteAsync(CreateKey(key));
 		}
 
 		/// <inheritdoc/>
 		public void RegisterSubscription(ISubscription subscription)
 		{
-			throw new NotImplementedException();
+			_subscription.RegisterSubscription(subscription);
 		}
+
+		private string CreateKey(StorageKey key) => key.ToString();
 	}
 }
