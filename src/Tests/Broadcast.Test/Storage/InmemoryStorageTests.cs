@@ -25,6 +25,15 @@ namespace Broadcast.Test.Storage
 		}
 
 		[Test]
+		public void InmemoryStorage_Set_Object()
+		{
+			var storage = new InmemoryStorage();
+			storage.Set(new StorageKey("storage", "key"), new StorageModel { Id = 1, Value = "one" });
+
+			storage.Get<StorageModel>(new StorageKey("storage", "key")).MatchSnapshot();
+		}
+
+		[Test]
 		public void InmemoryStorage_Set_Subscription()
 		{
 			var subscription = new Mock<ISubscription>();
