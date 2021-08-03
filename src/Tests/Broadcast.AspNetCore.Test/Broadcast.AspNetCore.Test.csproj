@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Broadcast.Dashboard\Broadcast.Dashboard.csproj" />
+    <ProjectReference Include="..\..\Broadcast.Storage.Redis\Broadcast.Storage.Redis.csproj" />
     <ProjectReference Include="..\..\Broadcast\Broadcast.csproj" />
   </ItemGroup>
 

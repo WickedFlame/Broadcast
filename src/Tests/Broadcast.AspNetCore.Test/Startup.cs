@@ -27,7 +27,11 @@ namespace Broadcast.AspNetCore.Test
 		{
 			services.AddControllersWithViews();
 
+#if REDIS
+			services.AddBroadcast(c => c.UseRedisStorage("localhost:6379"));
+#else
 			services.AddBroadcast(c => c.UseTaskStore(new TaskStore()));
+#endif
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

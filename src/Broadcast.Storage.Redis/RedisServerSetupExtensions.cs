@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Broadcast.EventSourcing;
 using Broadcast.Setup;
+using Broadcast.Storage.Redis;
 using StackExchange.Redis;
 
-namespace Broadcast.Storage.Redis
+namespace Broadcast
 {
 	/// <summary>
 	/// Redis Extensions for the <see cref="ServerSetup"/>
