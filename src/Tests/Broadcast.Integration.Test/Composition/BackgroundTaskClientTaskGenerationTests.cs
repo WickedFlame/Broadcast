@@ -36,7 +36,7 @@ namespace Broadcast.Integration.Test.Composition
 			// serializeable
 			BackgroundTaskClient.Send(() => Trace.WriteLine("test"));
 
-			Assert.IsAssignableFrom<ActionTask>(BroadcastServer.Server.Store.Single());
+			Assert.IsAssignableFrom<ExpressionTask>(BroadcastServer.Server.Store.Single());
 		}
 
 		[Test]
@@ -48,7 +48,7 @@ namespace Broadcast.Integration.Test.Composition
 
 			Task.Delay(1000).Wait();
 
-			Assert.IsAssignableFrom<ActionTask>(BroadcastServer.Server.Store.Last());
+			Assert.IsAssignableFrom<ExpressionTask>(BroadcastServer.Server.Store.Last());
 		}
 
 		[Test]
@@ -60,7 +60,7 @@ namespace Broadcast.Integration.Test.Composition
 
 			Task.Delay(1000).Wait();
 
-			Assert.IsAssignableFrom<ActionTask>(BroadcastServer.Server.Store.First());
+			Assert.IsAssignableFrom<ExpressionTask>(BroadcastServer.Server.Store.First());
 		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using Broadcast.Composition;
 using System;
+using System.Linq.Expressions;
 using Broadcast.Configuration;
 
 namespace Broadcast
@@ -34,7 +35,7 @@ namespace Broadcast
 		/// <param name="expression"></param>
 		/// <param name="time"></param>
 		/// <returns></returns>
-		public static string Recurring(Action expression, TimeSpan time)
+		public static string Recurring(Expression<Action> expression, TimeSpan time)
 			=> Recurring(null, expression, time);
 
 		/// <summary>
@@ -44,7 +45,7 @@ namespace Broadcast
 		/// <param name="expression"></param>
 		/// <param name="time"></param>
 		/// <returns>The Id of the task</returns>
-		public static string Recurring(string name, Action expression, TimeSpan time)
+		public static string Recurring(string name, Expression<Action> expression, TimeSpan time)
 		{
 			var task = TaskFactory.CreateTask(expression);
 			task.Time = time;
@@ -66,7 +67,7 @@ namespace Broadcast
 		/// <param name="expression"></param>
 		/// <param name="time"></param>
 		/// <returns>The Id of the task</returns>
-		public static string Schedule(Action expression, TimeSpan time)
+		public static string Schedule(Expression<Action> expression, TimeSpan time)
 		{
 			var task = TaskFactory.CreateTask(expression);
 			task.Time = time;
@@ -81,7 +82,7 @@ namespace Broadcast
 		/// </summary>
 		/// <param name="expression"></param>
 		/// <returns>The Id of the task</returns>
-		public static string Send(Action expression)
+		public static string Send(Expression<Action> expression)
 		{
 			var task = TaskFactory.CreateTask(expression);
 

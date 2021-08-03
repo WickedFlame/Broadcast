@@ -111,32 +111,6 @@ namespace Broadcast.EventSourcing
 			return Name;
 		}
 	}
-
-    public class ActionTask : BroadcastTask
-    {
-		public Action Task { get; set; }
-
-		/// <inheritdoc/>
-		public override object Invoke(TaskInvocation invocation)
-		{
-			Task.Invoke();
-
-			return Id;
-		}
-
-		/// <inheritdoc/>
-		public override ITask Clone()
-		{
-			return new ActionTask
-			{
-				State = TaskState.New,
-				Task = Task,
-				IsRecurring = IsRecurring,
-				Time = Time,
-				Name = Name
-			};
-		}
-	}
 	
     public class ExpressionTask : BroadcastTask
     {

@@ -62,20 +62,6 @@ namespace Broadcast.Integration.Test.Api
 			Assert.AreEqual(1, BroadcastServer.Server.GetProcessedTasks().Count());
 		}
 
-		[Test]
-		public void BackgroundTaskClient_Api_Send_Notification_Local()
-		{
-			// send a local action
-			// Nonserializeable
-			BackgroundTaskClient.Send(() =>
-			{
-				Trace.WriteLine("test");
-			});
-
-			BroadcastServer.Server.WaitAll();
-			Assert.AreEqual(1, BroadcastServer.Server.GetProcessedTasks().Count());
-		}
-
 
 
 
@@ -115,22 +101,6 @@ namespace Broadcast.Integration.Test.Api
 			Assert.GreaterOrEqual(BroadcastServer.Server.GetProcessedTasks().Count(), 1);
 		}
 
-		[Test]
-		public void BackgroundTaskClient_Api_Schedule_Notification_Lopcal()
-		{
-			// send a local action
-			// Nonserializeable
-			BackgroundTaskClient.Schedule(() =>
-			{
-				Trace.WriteLine("test");
-			}, TimeSpan.FromSeconds(1));
-
-			Task.Delay(1500).Wait();
-
-			Assert.GreaterOrEqual(BroadcastServer.Server.GetProcessedTasks().Count(), 1);
-		}
-
-
 
 
 		[Test]
@@ -168,22 +138,7 @@ namespace Broadcast.Integration.Test.Api
 
 			Assert.GreaterOrEqual(BroadcastServer.Server.GetProcessedTasks().Count(), 2);
 		}
-
-		[Test]
-		public void BackgroundTaskClient_Api_Recurring_Notification_Lopcal()
-		{
-			// send a local action
-			// Nonserializeable
-			BackgroundTaskClient.Recurring(() =>
-			{
-				Trace.WriteLine("test");
-			}, TimeSpan.FromSeconds(0.5));
-
-			Task.Delay(2000).Wait();
-
-			Assert.GreaterOrEqual(BroadcastServer.Server.GetProcessedTasks().Count(), 2);
-		}
-
+		
 		[Test]
 		public void BackgroundTaskClient_Api_Recurring_Name()
 		{

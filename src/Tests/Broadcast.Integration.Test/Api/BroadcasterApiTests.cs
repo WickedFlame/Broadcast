@@ -56,18 +56,33 @@ namespace Broadcast.Integration.Test.Api
 		}
 
 		[Test]
-		public void Broadcaster_Api_Execute_Local()
+		public void Broadcaster_Api_Execute_LocalInstance()
 		{
 			var broadcaster = new Broadcaster(new TaskStore());
-			var i = 0;
+			var caller = new LocalInstanceCaller();
 
 			// execute a static method
 			// serializeable
-			broadcaster.Execute(() => i = 1);
+			broadcaster.Execute(() => caller.Set(1));
 
 			broadcaster.WaitAll();
 			Assert.AreEqual(1, broadcaster.GetProcessedTasks().Count());
-			Assert.AreEqual(1, i);
+			Assert.AreEqual(1, LocalInstanceCaller.Number);
+		}
+
+		public class LocalInstanceCaller
+		{
+			public LocalInstanceCaller()
+			{
+				Number = 0;
+			}
+
+			public static int Number { get; set; }
+
+			public void Set(int nbr)
+			{
+				Number = nbr;
+			}
 		}
 
 		[Test]

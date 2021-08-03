@@ -25,13 +25,6 @@ namespace Broadcast.Test.Composition
 			Assert.IsAssignableFrom<ExpressionTask>(TaskFactory.CreateTask(expr));
 		}
 
-		[Test]
-		public void TaskFactory_CreateTask_Action()
-		{
-			Action expr = () => GenericMethod<int>(5);
-			Assert.IsAssignableFrom<ActionTask>(TaskFactory.CreateTask(expr));
-		}
-		
 		public void GenericMethod<T>(T input)
 		{
 			Console.WriteLine(input);

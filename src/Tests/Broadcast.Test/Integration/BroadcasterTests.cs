@@ -16,11 +16,8 @@ namespace Broadcast.Test
 	    [Test]
 	    public void Broadcaster_Process()
 	    {
-		    var called = false;
-		    var task = Broadcast.Composition.TaskFactory.CreateTask(() =>
-		    {
-			    called = true;
-		    });
+		    var caller = new TestCaller();
+		    var task = Broadcast.Composition.TaskFactory.CreateTask(() => caller.Call());
 			
 		    var broadcaster = new Broadcaster(new TaskStore());
 		    broadcaster.Process(task);
@@ -28,14 +25,14 @@ namespace Broadcast.Test
 
 		    Task.Delay(1000).Wait();
 
-		    Assert.IsTrue(called);
+		    Assert.IsTrue(TestCaller.Called);
 	    }
 
 	    [Test]
 	    public void Broadcaster_Process_Func()
 	    {
-		    var called = false;
-		    var task = Broadcast.Composition.TaskFactory.CreateTask(() => called = true);
+			var caller = new TestCaller();
+			var task = Broadcast.Composition.TaskFactory.CreateTask(() => caller.Call());
 
 		    var broadcaster = new Broadcaster(new TaskStore());
 		    broadcaster.Process(task);
@@ -43,10 +40,23 @@ namespace Broadcast.Test
 
 		    Task.Delay(1000).Wait();
 
-			Assert.IsTrue(called);
+			Assert.IsTrue(TestCaller.Called);
 	    }
 
+	    public class TestCaller
+	    {
+		    public TestCaller()
+		    {
+				Called = false;
+		    }
 
+			public static bool Called { get; set; } = false;
+
+			public void Call()
+			{
+				Called = true;
+			}
+	    }
 
 
 

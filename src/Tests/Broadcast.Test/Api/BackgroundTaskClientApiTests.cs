@@ -103,36 +103,6 @@ namespace Broadcast.Test.Api
 			_store.Verify(exp => exp.Add(It.IsAny<ITask>()), Times.Once);
 		}
 
-		[Test]
-		public void BackgroundTaskClient_Api_Send_Notification_Local_Process()
-		{
-			// send a local action
-			// Nonserializeable
-			BackgroundTaskClient.Send(() =>
-			{
-				Trace.WriteLine("test");
-			});
-
-			_processor.Verify(exp => exp.Process(It.IsAny<ITask>()), Times.Once);
-		}
-
-		[Test]
-		public void BackgroundTaskClient_Api_Send_Notification_Local_StoreAdd()
-		{
-			BackgroundTaskClient.Setup(() => new BroadcastingClient(_store.Object));
-
-			// send a local action
-			// Nonserializeable
-			BackgroundTaskClient.Send(() =>
-			{
-				Trace.WriteLine("test");
-			});
-
-			_store.Verify(exp => exp.Add(It.IsAny<ITask>()), Times.Once);
-		}
-
-
-
 
 		[Test]
 		public void BackgroundTaskClient_Api_Schedule_StaticTrace()
@@ -163,23 +133,7 @@ namespace Broadcast.Test.Api
 
 			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
-
-		[Test]
-		public void BackgroundTaskClient_Api_Schedule_Notification_Lopcal()
-		{
-			// send a local action
-			// Nonserializeable
-			BackgroundTaskClient.Schedule(() =>
-			{
-				Trace.WriteLine("test");
-			}, TimeSpan.FromSeconds(1));
-
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
-		}
-
-
-
-
+		
 		[Test]
 		public void BackgroundTaskClient_Api_Recurring_StaticTrace()
 		{
@@ -206,19 +160,6 @@ namespace Broadcast.Test.Api
 			// execute a generic method
 			// serializeable
 			BackgroundTaskClient.Recurring(() => GenericMethod(1), TimeSpan.FromSeconds(0.5));
-
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
-		}
-
-		[Test]
-		public void BackgroundTaskClient_Api_Recurring_Notification_Lopcal()
-		{
-			// send a local action
-			// Nonserializeable
-			BackgroundTaskClient.Recurring(() =>
-			{
-				Trace.WriteLine("test");
-			}, TimeSpan.FromSeconds(0.5));
 
 			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
