@@ -272,6 +272,48 @@ namespace Broadcast.Storage.Redis.Test
 			_db.Verify(exp => exp.HashSetAsync(It.Is<RedisKey>(k => k.ToString() == "key1"), It.IsAny<HashEntry[]>(), CommandFlags.None), Times.Exactly(2));
 		}
 
+
+		[Test]
+		public void RedisStorage_TryFetchNext()
+		{
+			var storage = new RedisStorage(_multiplexer.Object, new RedisStorageOptions());
+			_db.Setup(exp => exp.ListRightPopLeftPush(It.Is<RedisKey>(k => k.ToString() == "key1"), It.Is<RedisKey>(k => k.ToString() == "key2"), CommandFlags.None)).Returns("key moved");
+
+			storage.TryFetchNext(new StorageKey("key1"), new StorageKey("key2"), out var item);
+
+			Assert.AreEqual("key moved", item);
+		}
+
+		[Test]
+		public void RedisStorage_TryFetchNext_True()
+		{
+			var storage = new RedisStorage(_multiplexer.Object, new RedisStorageOptions());
+			_db.Setup(exp => exp.ListRightPopLeftPush(It.Is<RedisKey>(k => k.ToString() == "key1"), It.Is<RedisKey>(k => k.ToString() == "key2"), CommandFlags.None)).Returns("key moved");
+
+			Assert.IsTrue(storage.TryFetchNext(new StorageKey("key1"), new StorageKey("key2"), out var item));
+		}
+
+		[Test]
+		public void RedisStorage_TryFetchNext_NoItem()
+		{
+			var storage = new RedisStorage(_multiplexer.Object, new RedisStorageOptions());
+			//_db.Setup(exp => exp.ListRightPopLeftPush(It.Is<RedisKey>(k => k.ToString() == "key1"), It.Is<RedisKey>(k => k.ToString() == "key2"), CommandFlags.None)).Returns("key moved");
+
+			storage.TryFetchNext(new StorageKey("key1"), new StorageKey("key2"), out var item);
+
+			Assert.IsNull(item);
+		}
+
+		[Test]
+		public void RedisStorage_TryFetchNext_False()
+		{
+			var storage = new RedisStorage(_multiplexer.Object, new RedisStorageOptions());
+			//_db.Setup(exp => exp.ListRightPopLeftPush(It.Is<RedisKey>(k => k.ToString() == "key1"), It.Is<RedisKey>(k => k.ToString() == "key2"), CommandFlags.None)).Returns("key moved");
+
+			Assert.IsFalse(storage.TryFetchNext(new StorageKey("key1"), new StorageKey("key2"), out var item));
+		}
+		
+
 		public class StorageModel
 		{
 			public int Id { get; set; }

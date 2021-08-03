@@ -54,7 +54,13 @@ namespace Broadcast.Storage.Redis
 		/// <inheritdoc/>
 		public bool TryFetchNext(StorageKey source, StorageKey destination, out string item)
 		{
-			throw new NotImplementedException();
+			item = _database.ListRightPopLeftPush(CreateKey(source), CreateKey(destination));
+			if (string.IsNullOrEmpty(item))
+			{
+				return false;
+			}
+
+			return true;
 		}
 
 		/// <inheritdoc/>
