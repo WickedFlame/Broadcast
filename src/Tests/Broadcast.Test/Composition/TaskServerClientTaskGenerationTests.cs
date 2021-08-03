@@ -18,7 +18,7 @@ namespace Broadcast.Test.Composition
 
 			// execute a static method
 			// serializeable
-			Assert.IsNotEmpty(TaskServerClient.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5)));
+			Assert.IsNotEmpty(BackgroundTaskClient.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5)));
 		}
 
 		[Test]
@@ -28,7 +28,7 @@ namespace Broadcast.Test.Composition
 
 			// execute a static method
 			// serializeable
-			Assert.IsNotEmpty(TaskServerClient.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5)));
+			Assert.IsNotEmpty(BackgroundTaskClient.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5)));
 		}
 
 		[Test]
@@ -38,7 +38,7 @@ namespace Broadcast.Test.Composition
 
 			// execute a static method
 			// serializeable
-			Assert.IsNotEmpty(TaskServerClient.Send(() => Trace.WriteLine("test")));
+			Assert.IsNotEmpty(BackgroundTaskClient.Send(() => Trace.WriteLine("test")));
 		}
 	}
 }

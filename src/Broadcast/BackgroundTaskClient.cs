@@ -6,7 +6,7 @@ using Broadcast.Configuration;
 namespace Broadcast
 {
 	/// <summary>
-	/// Executes Tasks as backgroundtasks. These are only executed on the local server instance and are not shared on the cluster for execution
+	/// Executes Tasks in the background or on a TaskServer or cluster
 	/// </summary>
 	public class BackgroundTaskClient
 	{
@@ -27,14 +27,12 @@ namespace Broadcast
 			ItemFactory.Factory = setup;
 		}
 
-		// local jobs need a local server running
-
 		/// <summary>
 		/// Adds a recurring task
 		/// </summary>
 		/// <param name="expression"></param>
 		/// <param name="time"></param>
-		/// <returns></returns>
+		/// <returns>The Id of the task</returns>
 		public static string Recurring(Expression<Action> expression, TimeSpan time)
 			=> Recurring(null, expression, time);
 

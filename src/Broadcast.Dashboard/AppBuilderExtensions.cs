@@ -49,7 +49,6 @@ namespace Broadcast.Dashboard
 					.AddTaskStore(store)
 			);
 
-			TaskServerClient.Setup(() => new BroadcastingClient(store));
 			BackgroundTaskClient.Setup(() => new BroadcastingClient(store));
 			
 			return builder;
