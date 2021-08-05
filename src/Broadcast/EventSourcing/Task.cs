@@ -4,7 +4,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Broadcast.Composition;
 
 namespace Broadcast.EventSourcing
 {
@@ -60,19 +59,54 @@ namespace Broadcast.EventSourcing
 		ITask Clone();
 	}
 
-    public abstract class BroadcastTask : ITask
+	/// <summary>
+	/// Represents a task that is stored in the <see cref="ITaskStore"/> and executed by the <see cref="BroadcastServer"/>
+	/// </summary>
+    public class BroadcastTask : ITask
     {
 		private TaskState _state;
 
-	    protected BroadcastTask()
-	    {
+		public BroadcastTask()
+		{
+			StateChanges = new Dictionary<TaskState, DateTime>();
+		}
+
+		/// <summary>
+		/// Creates an instance of <see cref="BroadcastTask"/>
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="method"></param>
+		/// <param name="args"></param>
+		public BroadcastTask(Type type, MethodInfo method, params object[] args)
+		{
+			if (type == null)
+			{
+				throw new ArgumentNullException(nameof(type));
+			}
+
+			if (method == null)
+			{
+				throw new ArgumentNullException(nameof(method));
+			}
+
+			if (args == null)
+			{
+				throw new ArgumentNullException(nameof(args));
+			}
+
+			Validate(type, nameof(type), method, args.Length, nameof(args));
+
+			Type = type;
+			Method = method;
+			Args = args;
+
 		    StateChanges = new Dictionary<TaskState, DateTime>();
 		    Id = Guid.NewGuid().ToString();
 			Name = Guid.NewGuid().ToString();
 		}
 
 	    /// <inheritdoc/>
-		public string Id { get; }
+		public string Id { get; set; }
 
 	    /// <inheritdoc/>
 	    public TaskState State
@@ -88,7 +122,7 @@ namespace Broadcast.EventSourcing
 	    /// <summary>
 	    /// Gets the times when the state of the task is changed
 	    /// </summary>
-	    public IDictionary<TaskState, DateTime> StateChanges { get; }
+	    public IDictionary<TaskState, DateTime> StateChanges { get; set; }
 
 		/// <inheritdoc/>
 		public TimeSpan? Time { get; set; }
@@ -99,76 +133,37 @@ namespace Broadcast.EventSourcing
 		/// <inheritdoc/>
 		public string Name { get; set; }
 
-		/// <inheritdoc/>
-		public abstract object Invoke(TaskInvocation invocation);
+		/// <summary>
+		/// Gets the type that the method to invoke is contained in
+		/// </summary>
+		public Type Type { get; set; }
 
-		/// <inheritdoc/>
-		public abstract ITask Clone();
+		/// <summary>
+		/// Gets the method that has to be invoked
+		/// </summary>
+		public MethodInfo Method { get; set; }
+
+		/// <summary>
+		/// Gets the arguments of the Method
+		/// </summary>
+		public IReadOnlyList<object> Args { get; set; }
 
 		/// <inheritdoc/>
 		public override string ToString()
 		{
 			return Name;
 		}
-	}
-	
-    public class ExpressionTask : BroadcastTask
-    {
-	    public ExpressionTask(Type type, MethodInfo method, params object[] args)
-	    {
-		    if (type == null)
-		    {
-			    throw new ArgumentNullException(nameof(type));
-		    }
 
-		    if (method == null)
-		    {
-			    throw new ArgumentNullException(nameof(method));
-		    }
-
-		    if (args == null)
-		    {
-			    throw new ArgumentNullException(nameof(args));
-		    }
-
-		    Validate(type, nameof(type), method, args.Length, nameof(args));
-
-		    Type = type;
-		    Method = method;
-		    Args = args;
-	    }
-
-		/// <summary>
-		/// Gets the type that the method to invoke is contained in
-		/// </summary>
-	    public Type Type { get; }
-
-		/// <summary>
-		/// Gets the method that has to be invoked
-		/// </summary>
-	    public MethodInfo Method { get; }
-
-		/// <summary>
-		/// Gets the arguments of the Method
-		/// </summary>
-	    public IReadOnlyList<object> Args { get; }
-
-	    /// <inheritdoc/>
-		public override string ToString()
-	    {
-		    return Name;
-	    }
-
-	    /// <inheritdoc/>
-		public override object Invoke(TaskInvocation invocation)
+		/// <inheritdoc/>
+		public object Invoke(TaskInvocation invocation)
 		{
 			return invocation.InvokeTask(this);
 		}
 
-	    /// <inheritdoc/>
-		public override ITask Clone()
+		/// <inheritdoc/>
+		public ITask Clone()
 		{
-			return new ExpressionTask(Type, Method, Args.ToArray())
+			return new BroadcastTask(Type, Method, Args.ToArray())
 			{
 				State = TaskState.New,
 				IsRecurring = IsRecurring,

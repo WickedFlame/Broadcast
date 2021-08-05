@@ -17,7 +17,7 @@ namespace Broadcast
 			_activationContext = new ActivationContext();
 		}
 
-		public object InvokeTask(ExpressionTask task)
+		public object InvokeTask(BroadcastTask task)
 		{
 			object instance = null;
 			if(!task.Method.IsStatic)
@@ -33,7 +33,7 @@ namespace Broadcast
 			return InvokeMethod(task, instance, arguments);
 		}
 
-		private object[] BuildArguments(ExpressionTask task)
+		private object[] BuildArguments(BroadcastTask task)
 		{
 			if (task == null)
 			{
@@ -61,7 +61,7 @@ namespace Broadcast
 			return result.ToArray();
 		}
 
-		private object InvokeMethod(ExpressionTask task, object instance, object[] arguments)
+		private object InvokeMethod(BroadcastTask task, object instance, object[] arguments)
 		{
 			if (task == null)
 			{

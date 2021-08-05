@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text;
+using Broadcast.Composition;
+using Broadcast.EventSourcing;
 using NUnit.Framework;
+using Polaroider;
 using StackExchange.Redis;
 
 namespace Broadcast.Storage.Redis.Test
@@ -49,6 +54,34 @@ namespace Broadcast.Storage.Redis.Test
 
 			Assert.AreEqual(1, deserialized.Id);
 			Assert.AreEqual("2", deserialized.Value);
+		}
+
+		[Test]
+		[UpdateSnapshot]
+		public void SerializerExtensions_Serialize_Task()
+		{
+			var task = TaskFactory.CreateTask(() => Console.WriteLine("test"));
+			task.Time = TimeSpan.FromSeconds(20);
+
+			var serialized = task.SerializeToRedis();
+
+			serialized.MatchSnapshot();
+		}
+
+		[Test]
+		[UpdateSnapshot]
+		public void SerializerExtensions_Deserialize_Task()
+		{
+			var task = TaskFactory.CreateTask(() => Console.WriteLine("test"));
+			task.Time = TimeSpan.FromSeconds(20);
+			var serialized = task.SerializeToRedis();
+
+			var deserialized = serialized.DeserializeRedis<BroadcastTask>();
+
+
+			var options = SnapshotOptions.Create(o => o.AddFormatter<MethodInfo>(m => $"{m.Name}({string.Join(',', m.GetParameters().Select(x => x.ParameterType.FullName))})"));
+
+			deserialized.MatchSnapshot(options);
 		}
 
 		public class StorageModel

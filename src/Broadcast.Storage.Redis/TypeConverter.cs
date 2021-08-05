@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 
 namespace Broadcast.Storage.Redis
 {
@@ -10,6 +8,23 @@ namespace Broadcast.Storage.Redis
 	/// </summary>
 	public class TypeConverter
 	{
+		/// <summary>
+		/// Convert a object to the type
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static T Convert<T>(string value)
+		{
+			var itm = Convert(typeof(T), value);
+			if (itm == null)
+			{
+				return default(T);
+			}
+
+			return (T)itm;
+		}
+
 		/// <summary>
 		/// Convert a object to the type
 		/// </summary>
@@ -89,6 +104,16 @@ namespace Broadcast.Storage.Redis
 				}
 
 				throw new FormatException($"Value {value} could not be parsed to {type.FullName}. DateTimes have to be in the ISO-8601 format eg. yyyy-MM-dd");
+			}
+
+			if (type == typeof(TimeSpan) || type == typeof(TimeSpan?))
+			{
+				if (TimeSpan.TryParse(value, out var time))
+				{
+					return time;
+				}
+
+				return null;
 			}
 
 			if (type == typeof(Guid))

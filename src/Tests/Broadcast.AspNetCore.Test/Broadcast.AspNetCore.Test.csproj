@@ -4,6 +4,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;REDIS</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <Content Remove="compilerconfig.json" />
   </ItemGroup>

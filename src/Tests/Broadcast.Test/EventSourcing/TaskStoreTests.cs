@@ -362,7 +362,7 @@ namespace Broadcast.Test.EventSourcing
 			var store = new TaskStore(storage.Object);
 			store.DispatchTasks();
 
-			storage.Verify(exp => exp.Get<ITask>(It.IsAny<StorageKey>()), Times.Once);
+			storage.Verify(exp => exp.Get<BroadcastTask>(It.IsAny<StorageKey>()), Times.Once);
 		}
 
 		[Test]
@@ -386,7 +386,7 @@ namespace Broadcast.Test.EventSourcing
 
 			var storage = new Mock<IStorage>();
 			storage.Setup(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
-			storage.Setup(exp => exp.Get<ITask>(It.IsAny<StorageKey>())).Returns(() => new Mock<ITask>().Object);
+			storage.Setup(exp => exp.Get<BroadcastTask>(It.IsAny<StorageKey>())).Returns(() => new BroadcastTask());
 
 			var dispatcher = new Mock<IDispatcher>();
 

@@ -100,7 +100,7 @@ namespace Broadcast.EventSourcing
 			{
 				// eager fetching of the data
 				// first TaskStore to fetch gets to execute the Task
-				var task = _storage.Get<ITask>(new StorageKey($"task:{id}"));
+				var task = _storage.Get<BroadcastTask>(new StorageKey($"task:{id}"));
 
 				// use round robin to get the next set of dispatchers
 				var dispatchers = _dispatchers.GetNext();
@@ -162,14 +162,17 @@ namespace Broadcast.EventSourcing
 		/// <param name="server"></param>
 		public void PropagateServer(ServerModel server)
 		{
-			_registeredServers[server.Id] = server;
-
-			// cleanup dead servers
-			var expiration = DateTime.Now.Subtract(TimeSpan.FromMilliseconds(_options.HeartbeatInterval));
-			var deadServers = _registeredServers.Where(item => item.Value.Heartbeat < expiration).Select(item => item.Key).ToList();
-			foreach (var key in deadServers)
+			lock(_registeredServers)
 			{
-				_registeredServers.Remove(key);
+				_registeredServers[server.Id] = server;
+
+				// cleanup dead servers
+				var expiration = DateTime.Now.Subtract(TimeSpan.FromMilliseconds(_options.HeartbeatInterval));
+				var deadServers = _registeredServers.Where(item => item.Value.Heartbeat < expiration).Select(item => item.Key).ToList();
+				foreach (var key in deadServers)
+				{
+					_registeredServers.Remove(key);
+				}
 			}
 		}
 
@@ -193,7 +196,7 @@ namespace Broadcast.EventSourcing
 
 			foreach (var key in keys)
 			{
-				yield return _storage.Get<ITask>(new StorageKey(key));
+				yield return _storage.Get<BroadcastTask>(new StorageKey(key));
 			}
 		}
     }
