@@ -104,6 +104,24 @@ namespace Broadcast.Test.Processing
 
 			dispatcher.Execute(ctx.Object);
 
+			task.VerifySet(exp => exp.State = TaskState.Processed);
+		}
+
+		[Test]
+		public void TaskExecutionDispatcher_Task_SetValue_State_Values()
+		{
+			var task = new Mock<ITask>();
+			task.Setup(exp => exp.Id).Returns("TestTask");
+			var dispatcher = new TaskExecutionDispatcher(task.Object);
+
+			var storage = new InmemoryStorage();
+			var store = new TaskStore(storage);
+
+			var ctx = new Mock<IProcessorContext>();
+			ctx.Setup(exp => exp.Store).Returns(() => store);
+
+			dispatcher.Execute(ctx.Object);
+
 			var values = storage.Get<DataObject>(new StorageKey($"tasks:values:TestTask"));
 			Assert.AreEqual((TaskState)values["State"], TaskState.Processed);
 		}
@@ -123,12 +141,48 @@ namespace Broadcast.Test.Processing
 
 			dispatcher.Execute(ctx.Object);
 
+			task.VerifySet(exp => exp.State = TaskState.Processed);
+		}
+
+		[Test]
+		public void TaskExecutionDispatcher_Task_SetValue_ProcessedChange_Values()
+		{
+			var task = new Mock<ITask>();
+			task.Setup(exp => exp.Id).Returns("TestTask");
+			var dispatcher = new TaskExecutionDispatcher(task.Object);
+
+			var storage = new InmemoryStorage();
+			var store = new TaskStore(storage);
+
+			var ctx = new Mock<IProcessorContext>();
+			ctx.Setup(exp => exp.Store).Returns(() => store);
+
+			dispatcher.Execute(ctx.Object);
+
 			var values = storage.Get<DataObject>(new StorageKey($"tasks:values:TestTask"));
 			Assert.Greater((DateTime)values["ProcessedAt"], DateTime.MinValue);
 		}
 
 		[Test]
 		public void TaskExecutionDispatcher_Task_SetValue_InProcessChange()
+		{
+			var task = new Mock<ITask>();
+			task.Setup(exp => exp.Id).Returns("TestTask");
+			var dispatcher = new TaskExecutionDispatcher(task.Object);
+
+			var storage = new InmemoryStorage();
+			var store = new TaskStore(storage);
+
+			var ctx = new Mock<IProcessorContext>();
+			ctx.Setup(exp => exp.Store).Returns(() => store);
+
+			dispatcher.Execute(ctx.Object);
+
+			task.VerifySet(exp => exp.State = TaskState.InProcess);
+		}
+
+		[Test]
+		public void TaskExecutionDispatcher_Task_SetValue_InProcessChange_Values()
 		{
 			var task = new Mock<ITask>();
 			task.Setup(exp => exp.Id).Returns("TestTask");

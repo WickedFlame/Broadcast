@@ -48,6 +48,7 @@ namespace Broadcast.Test.Processing
 			context.SetState(task, TaskState.Queued);
 
 			storage.Verify(exp => exp.SetValues(It.Is<StorageKey>(k => k.Key == $"tasks:values:{task.Id}"), It.Is<DataObject>(t => (TaskState)t["State"] == TaskState.Queued && (DateTime)t[$"{TaskState.Queued}At"] > DateTime.MinValue)), Times.Once);
+			storage.Verify(exp => exp.Set(It.Is<StorageKey>(k => k.Key == $"task:{task.Id}"), It.IsAny<ITask>()), Times.Once);
 		}
 
 		[Test]

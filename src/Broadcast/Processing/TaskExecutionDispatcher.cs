@@ -57,7 +57,7 @@ namespace Broadcast.Processing
 			{
 				sw.Stop();
 
-				context.SetValues(_task, new Storage.DataObject
+				context.SetValues(_task, new DataObject
 				{
 					{"ExecutionTime", sw.ElapsedMilliseconds},
 					{"ExecutedAt", DateTime.Now}
