@@ -116,6 +116,6 @@ namespace Broadcast.Storage.Redis
 			_subscription.RegisterSubscription(subscription);
 		}
 
-		private string CreateKey(StorageKey key) => key.ToString();
+		private string CreateKey(StorageKey key) => key.ToString().StartsWith(_options.KeySpacePrefix) ? key.ToString() : $"{_options.KeySpacePrefix}:{key}";
 	}
 }
