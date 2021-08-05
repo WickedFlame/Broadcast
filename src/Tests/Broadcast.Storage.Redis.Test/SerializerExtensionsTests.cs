@@ -57,7 +57,7 @@ namespace Broadcast.Storage.Redis.Test
 		}
 
 		[Test]
-		[UpdateSnapshot]
+		//[UpdateSnapshot]
 		public void SerializerExtensions_Serialize_Task()
 		{
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("test"));
@@ -65,11 +65,16 @@ namespace Broadcast.Storage.Redis.Test
 
 			var serialized = task.SerializeToRedis();
 
-			serialized.MatchSnapshot();
+			var options = SnapshotOptions.Create(o =>
+				o.AddDirective(line => line.ReplaceGuid())
+					.AddDirective(line => line.ReplaceRegex("[0-9]{1,4}-[0-9]{1,2}-[0-9]{1,2}T[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}.[0-9]{1,7}\\+[0-9]{1,2}:[0-9]{1,2}", "0000-00-00T00:00:00.0000"))
+			);
+
+			serialized.MatchSnapshot(options);
 		}
 
 		[Test]
-		[UpdateSnapshot]
+		//[UpdateSnapshot]
 		public void SerializerExtensions_Deserialize_Task()
 		{
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("test"));
@@ -79,7 +84,11 @@ namespace Broadcast.Storage.Redis.Test
 			var deserialized = serialized.DeserializeRedis<BroadcastTask>();
 
 
-			var options = SnapshotOptions.Create(o => o.AddFormatter<MethodInfo>(m => $"{m.Name}({string.Join(',', m.GetParameters().Select(x => x.ParameterType.FullName))})"));
+			var options = SnapshotOptions.Create(o =>
+				o.AddFormatter<MethodInfo>(m => $"{m.Name}({string.Join(',', m.GetParameters().Select(x => x.ParameterType.FullName))})")
+					.AddDirective(line => line.ReplaceGuid())
+					.AddDirective(line => line.ReplaceRegex("[0-9]{1,4}-[0-9]{1,2}-[0-9]{1,2}T[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}.[0-9]{1,7}\\+[0-9]{1,2}:[0-9]{1,2}", "0000-00-00T00:00:00.0000"))
+			);
 
 			deserialized.MatchSnapshot(options);
 		}

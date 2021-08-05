@@ -1,14 +1,14 @@
 ---data
 Args:
   test
-Id: 1be32305-2c28-49a2-aca3-22c973a969ea
+Id: 00000000-0000-0000-0000-000000000000
 IsRecurring: False
 Method: WriteLine(System.String)
 Name: Console.WriteLine
 State: New
 StateChanges:
   Key: New
-  Value: 2021-08-04T07:26:54.7175091+02:00
+  Value: 0000-00-00T00:00:00.0000
 Time:
   00:00:20
 Type: System.Console

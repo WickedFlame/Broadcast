@@ -1,11 +1,11 @@
 ---data
-Id: fd4fbdff-e394-4be9-94d4-e3d126ddd165
+Id: 00000000-0000-0000-0000-000000000000
 Name: Console.WriteLine
 State: New
 Type: System.Console, System.Console
 IsRecurring: False
 Time: 00:00:20
-StateChanges:New: 2021-08-04T07:21:30.7008893+02:00
+StateChanges:New: 0000-00-00T00:00:00.0000
 Method: WriteLine
 ArgsType:0: System.String, System.Private.CoreLib
 ArgsValue:0: test
