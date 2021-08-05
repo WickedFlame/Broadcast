@@ -46,7 +46,7 @@ namespace Broadcast.Storage.Redis.Test
 			var storage = new RedisStorage(_multiplexer.Object, new RedisStorageOptions());
 			storage.Set(new StorageKey("storage", "key"), "value");
 
-			_db.Verify(exp => exp.PublishAsync("BroadcastTaskFetchChannel", "key:storage", CommandFlags.None), Times.Once);
+			_db.Verify(exp => exp.PublishAsync("BroadcastTaskFetchChannel", "{broadcast}:key:storage", CommandFlags.None), Times.Once);
 		}
 
 		[Test]
@@ -88,10 +88,10 @@ namespace Broadcast.Storage.Redis.Test
 			storage.AddToList(new StorageKey("storage", "key"), "one");
 			storage.AddToList(new StorageKey("storage", "key"), "two");
 
-			_db.Verify(exp => exp.ListRightPushAsync(It.Is<RedisKey>(k => k.ToString() == "key:storage"), It.IsAny<RedisValue>(), When.Always, CommandFlags.None), Times.Exactly(2));
+			_db.Verify(exp => exp.ListRightPushAsync(It.Is<RedisKey>(k => k.ToString() == "{broadcast}:key:storage"), It.IsAny<RedisValue>(), When.Always, CommandFlags.None), Times.Exactly(2));
 
-			_db.Verify(exp => exp.ListRightPushAsync(It.Is<RedisKey>(k => k.ToString() == "key:storage"), It.Is<RedisValue>(v => v.ToString() == "one"), When.Always, CommandFlags.None), Times.Once);
-			_db.Verify(exp => exp.ListRightPushAsync(It.Is<RedisKey>(k => k.ToString() == "key:storage"), It.Is<RedisValue>(v => v.ToString() == "two"), When.Always, CommandFlags.None), Times.Once);
+			_db.Verify(exp => exp.ListRightPushAsync(It.Is<RedisKey>(k => k.ToString() == "{broadcast}:key:storage"), It.Is<RedisValue>(v => v.ToString() == "one"), When.Always, CommandFlags.None), Times.Once);
+			_db.Verify(exp => exp.ListRightPushAsync(It.Is<RedisKey>(k => k.ToString() == "{broadcast}:key:storage"), It.Is<RedisValue>(v => v.ToString() == "two"), When.Always, CommandFlags.None), Times.Once);
 		}
 
 		[Test]
@@ -100,7 +100,7 @@ namespace Broadcast.Storage.Redis.Test
 			var storage = new RedisStorage(_multiplexer.Object, new RedisStorageOptions());
 			storage.Delete(new StorageKey("storage", "key"));
 
-			_db.Verify(exp => exp.KeyDeleteAsync(It.Is<RedisKey>(k => k.ToString() == "key:storage"), CommandFlags.None), Times.Once);
+			_db.Verify(exp => exp.KeyDeleteAsync(It.Is<RedisKey>(k => k.ToString() == "{broadcast}:key:storage"), CommandFlags.None), Times.Once);
 		}
 
 
@@ -197,7 +197,7 @@ namespace Broadcast.Storage.Redis.Test
 			
 			storage.RemoveFromList(new StorageKey("storage", "key"), item);
 
-			_db.Verify(exp => exp.ListRemoveAsync(It.Is<RedisKey>(k => k.ToString() == "key:storage"), It.Is<RedisValue>(v => v.ToString() == item), 0, CommandFlags.None), Times.Once);
+			_db.Verify(exp => exp.ListRemoveAsync(It.Is<RedisKey>(k => k.ToString() == "{broadcast}:key:storage"), It.Is<RedisValue>(v => v.ToString() == item), 0, CommandFlags.None), Times.Once);
 		}
 
 		[Test]
@@ -229,7 +229,7 @@ namespace Broadcast.Storage.Redis.Test
 		[Test]
 		public void RedisStorage_GetList_Invalid()
 		{
-			_db.Setup(exp => exp.ListRange(It.Is<RedisKey>(k => k.ToString() == "key:storage"), 0, -1, CommandFlags.None)).Returns(() => new[]
+			_db.Setup(exp => exp.ListRange(It.Is<RedisKey>(k => k.ToString() == "{broadcast}:key:storage"), 0, -1, CommandFlags.None)).Returns(() => new[]
 			{
 				new RedisValue("one"),
 				new RedisValue("two")
@@ -238,14 +238,14 @@ namespace Broadcast.Storage.Redis.Test
 			var storage = new RedisStorage(_multiplexer.Object, new RedisStorageOptions());
 
 			Assert.IsEmpty(storage.GetList(new StorageKey("storage", "invalid")));
-			_db.Verify(exp => exp.ListRange(It.Is<RedisKey>(k => k.ToString() == "invalid:storage"), 0, -1, CommandFlags.None), Times.Once);
+			_db.Verify(exp => exp.ListRange(It.Is<RedisKey>(k => k.ToString() == "{broadcast}:invalid:storage"), 0, -1, CommandFlags.None), Times.Once);
 		}
 
 		[Test]
 		public void RedisStorage_SetValues()
 		{
 			var storage = new RedisStorage(_multiplexer.Object, new RedisStorageOptions());
-			_db.Setup(exp => exp.HashGetAll(It.Is<RedisKey>(k => k.ToString() == "key1"), CommandFlags.None)).Returns(new[] {new HashEntry("one", "1"), new HashEntry("two", "2")});
+			_db.Setup(exp => exp.HashGetAll(It.Is<RedisKey>(k => k.ToString() == "{broadcast}:key1"), CommandFlags.None)).Returns(new[] {new HashEntry("one", "1"), new HashEntry("two", "2")});
 
 			var obj = storage.Get<DataObject>(new StorageKey("key1"));
 
@@ -269,7 +269,7 @@ namespace Broadcast.Storage.Redis.Test
 				{"one", 3}
 			});
 
-			_db.Verify(exp => exp.HashSetAsync(It.Is<RedisKey>(k => k.ToString() == "key1"), It.IsAny<HashEntry[]>(), CommandFlags.None), Times.Exactly(2));
+			_db.Verify(exp => exp.HashSetAsync(It.Is<RedisKey>(k => k.ToString() == "{broadcast}:key1"), It.IsAny<HashEntry[]>(), CommandFlags.None), Times.Exactly(2));
 		}
 
 
@@ -277,7 +277,7 @@ namespace Broadcast.Storage.Redis.Test
 		public void RedisStorage_TryFetchNext()
 		{
 			var storage = new RedisStorage(_multiplexer.Object, new RedisStorageOptions());
-			_db.Setup(exp => exp.ListRightPopLeftPush(It.Is<RedisKey>(k => k.ToString() == "key1"), It.Is<RedisKey>(k => k.ToString() == "key2"), CommandFlags.None)).Returns("key moved");
+			_db.Setup(exp => exp.ListRightPopLeftPush(It.Is<RedisKey>(k => k.ToString() == "{broadcast}:key1"), It.Is<RedisKey>(k => k.ToString() == "{broadcast}:key2"), CommandFlags.None)).Returns("key moved");
 
 			storage.TryFetchNext(new StorageKey("key1"), new StorageKey("key2"), out var item);
 
@@ -288,7 +288,7 @@ namespace Broadcast.Storage.Redis.Test
 		public void RedisStorage_TryFetchNext_True()
 		{
 			var storage = new RedisStorage(_multiplexer.Object, new RedisStorageOptions());
-			_db.Setup(exp => exp.ListRightPopLeftPush(It.Is<RedisKey>(k => k.ToString() == "key1"), It.Is<RedisKey>(k => k.ToString() == "key2"), CommandFlags.None)).Returns("key moved");
+			_db.Setup(exp => exp.ListRightPopLeftPush(It.Is<RedisKey>(k => k.ToString() == "{broadcast}:key1"), It.Is<RedisKey>(k => k.ToString() == "{broadcast}:key2"), CommandFlags.None)).Returns("key moved");
 
 			Assert.IsTrue(storage.TryFetchNext(new StorageKey("key1"), new StorageKey("key2"), out var item));
 		}
