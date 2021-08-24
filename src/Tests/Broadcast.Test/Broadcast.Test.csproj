@@ -11,7 +11,7 @@
     <PackageReference Include="nunit" Version="3.13.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
-    <PackageReference Include="Polaroider" Version="2.0.0" />
+    <PackageReference Include="Polaroider" Version="2.0.1-RC133" />
   </ItemGroup>
 
   <ItemGroup>

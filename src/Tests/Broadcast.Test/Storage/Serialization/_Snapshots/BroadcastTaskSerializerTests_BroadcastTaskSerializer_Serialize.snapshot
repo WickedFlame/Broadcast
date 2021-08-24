@@ -1,0 +1,21 @@
+---data
+Name: Id
+Value: 00000000-0000-0000-0000-000000000000
+Name: Name
+Value: Trace.WriteLine
+Name: State
+Value: New
+Name: Type
+Value: System.Diagnostics.Trace, System.Diagnostics.TraceSource
+Name: IsRecurring
+Value: False
+Name: Time
+Value: null
+Name: StateChanges:New
+Value: 0000-00-00T00:00:00.0000
+Name: Method
+Value: WriteLine
+Name: ArgsType:0
+Value: System.String, System.Private.CoreLib
+Name: ArgsValue:0
+Value: test

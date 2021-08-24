@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace Broadcast.Storage.Redis
+namespace Broadcast.Storage.Serialization
 {
 	/// <summary>
 	/// Converter
@@ -16,6 +16,11 @@ namespace Broadcast.Storage.Redis
 		/// <returns></returns>
 		public static T Convert<T>(string value)
 		{
+			if (value == null)
+			{
+				return default;
+			}
+
 			var itm = Convert(typeof(T), value);
 			if (itm == null)
 			{
