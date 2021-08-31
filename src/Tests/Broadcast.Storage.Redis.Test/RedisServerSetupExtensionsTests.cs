@@ -18,6 +18,8 @@ namespace Broadcast.Storage.Redis.Test
 		{
 			_multiplexer = new Mock<IConnectionMultiplexer>();
 			_multiplexer.Setup(exp => exp.GetSubscriber(null)).Returns(new Mock<ISubscriber>().Object);
+
+			ConnectionFactory.Connect = s => _multiplexer.Object;
 		}
 
 		[Test]

@@ -36,7 +36,7 @@ namespace Broadcast
 				Db = redisOptions.DefaultDatabase ?? 0
 			};
 
-			var connectionMultiplexer = ConnectionMultiplexer.Connect(connectionString);
+			var connectionMultiplexer = ConnectionFactory.Connect(connectionString);
 			return UseRedisStorage(setup, connectionMultiplexer, options);
 		}
 
