@@ -55,7 +55,8 @@ namespace Broadcast.Test.EventSourcing
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers"));
 			store.Add(task);
 
-			Assert.AreSame(task, store.Single());
+			var stored = store.Single();
+			Assert.AreEqual(new { task.Id, task.Name }, new { stored.Id, stored.Name });
 		}
 
 		[Test]
@@ -138,7 +139,7 @@ namespace Broadcast.Test.EventSourcing
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers"));
 			store.Add(task);
 
-			Assert.AreSame(output, task);
+			Assert.AreEqual(new { task.Id, task.Name }, new { output.Id, output.Name });
 		}
 
 		[Test]

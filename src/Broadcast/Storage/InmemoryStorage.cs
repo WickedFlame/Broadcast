@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Broadcast.Storage.Serialization;
 
 namespace Broadcast.Storage
 {
@@ -92,17 +93,6 @@ namespace Broadcast.Storage
 
 		/// <inheritdoc/>
 		public bool TryFetchNext(StorageKey source, StorageKey destination, out string item)
-			=> TryFetchNext<string>(source, destination, out item);
-		
-		/// <summary>
-		/// Fetch the next entry from the store
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="source"></param>
-		/// <param name="destination"></param>
-		/// <param name="item"></param>
-		/// <returns></returns>
-		public bool TryFetchNext<T>(StorageKey source, StorageKey destination, out T item)
 		{
 			lock (_lockHandle)
 			{
@@ -116,7 +106,7 @@ namespace Broadcast.Storage
 							list.Items.Remove(valueItem);
 							AddToList(destination, valueItem);
 
-							item = (T)valueItem.GetValue();
+							item = valueItem.Deserialize<string>();
 							return true;
 						}
 					}
@@ -125,12 +115,12 @@ namespace Broadcast.Storage
 						_store.Remove(source.ToString());
 						_store[destination.ToString()] = valueItem;
 
-						item = (T)valueItem.GetValue();
+						item = valueItem.Deserialize<string>();
 						return true;
 					}
 				}
 
-				item = default(T);
+				item = null;
 				return false;
 			}
 		}
@@ -156,27 +146,13 @@ namespace Broadcast.Storage
 		}
 
 		/// <inheritdoc/>
-		public void SetValues(StorageKey key, DataObject values)
-		{
-			// get original object from storage
-			var stored = Get<DataObject>(key) ?? new DataObject();
-
-			// merge objects
-			foreach (var item in values)
-			{
-				stored[item.Key] = item.Value;
-			}
-
-			// save objects
-			Set(key, stored);
-		}
-
-		/// <inheritdoc/>
 		public void Set<T>(StorageKey key, T value)
 		{
 			lock (_lockHandle)
 			{
-				_store[key.ToString()] = new ValueItem(value);
+				// serialize object to ensure a breake of the references
+				// this simulates the same behaviour we have when using an external storage
+				_store[key.ToString()] = new ValueItem(value.Serialize());
 
 				var stringKey = key.ToString().ToLower();
 				foreach (var dispatcher in _subscriptions.Where(d => stringKey.Contains(d.EventKey.ToLower())))
@@ -193,20 +169,29 @@ namespace Broadcast.Storage
 			{
 				if (_store.ContainsKey(key.ToString()))
 				{
-					var item = _store[key.ToString()].GetValue();
-					if (item != null && item is T item1)
-					{
-						return item1;
-					}
-
-					if (item != null && !(item is List<object>))
-					{
-						throw new InvalidCastException($"Object of type {item.GetType().FullName} cannot be cast to {typeof(T).FullName}");
-					}
+					return _store[key.ToString()].Deserialize<T>();
 				}
 
-				return (T) default;
+				return default;
 			}
+		}
+
+		/// <inheritdoc/>
+		public void SetValues(StorageKey key, DataObject values)
+		{
+			// serialization is done in Get<> or Set
+
+			// get original object from storage
+			var stored = Get<DataObject>(key) ?? new DataObject();
+
+			// merge objects
+			foreach (var item in values)
+			{
+				stored[item.Key] = item.Value;
+			}
+
+			// save objects
+			Set(key, stored);
 		}
 
 		/// <inheritdoc/>

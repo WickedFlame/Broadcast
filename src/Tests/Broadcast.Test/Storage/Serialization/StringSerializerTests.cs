@@ -47,7 +47,7 @@ namespace Broadcast.Test.Storage.Serialization
 		{
 			var serializer = new StringSerializer();
 
-			var value = serializer.Deserialize<StringSerializerTests>(new[] { new HashValue("property", "value") });
+			var value = serializer.Deserialize<string>(new[] { new HashValue("property", "value") });
 			Assert.IsInstanceOf<string>(value);
 		}
 

@@ -31,7 +31,8 @@ namespace Broadcast.Test
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("BroadcastingClient"));
 			client.Enqueue(task);
 
-			Assert.AreSame(task, store.Single());
+			var stored = store.Single();
+			Assert.AreEqual(new {task.Id, task.Name}, new {stored.Id, stored.Name});
 		}
 
 		[Test]
@@ -44,7 +45,8 @@ namespace Broadcast.Test
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("BroadcastingClient"));
 			client.Enqueue(task);
 
-			Assert.AreSame(task, TaskStore.Default.Single());
+			var stored = TaskStore.Default.Single();
+			Assert.AreEqual(new { task.Id, task.Name }, new { stored.Id, stored.Name });
 		}
 	}
 }

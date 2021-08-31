@@ -11,7 +11,8 @@ namespace Broadcast.Storage.Serialization
 	{
 		private static Dictionary<Type, ISerializer> _serializers = new Dictionary<Type, ISerializer>
 		{
-			{typeof(BroadcastTask), new BroadcastTaskSerializer()}
+			{typeof(BroadcastTask), new BroadcastTaskSerializer()},
+			{typeof(DataObject), new DataObjectSerializer()}
 		};
 
 		private static Dictionary<Type, IDeserializer> _deserializers = new Dictionary<Type, IDeserializer>

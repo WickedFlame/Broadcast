@@ -86,7 +86,7 @@ namespace Broadcast.Test.Processing
 
 			var values = storage.Get<DataObject>(new StorageKey($"tasks:values:TestTask"));
 			// there is no task that takes time so sometimes the executiontime is 0...
-			Assert.GreaterOrEqual((long)values["ExecutionTime"], 0);
+			Assert.GreaterOrEqual((int)values["ExecutionTime"], 0);
 		}
 
 		[Test]

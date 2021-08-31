@@ -36,6 +36,20 @@ namespace Broadcast.Test.Storage.Serialization
 		}
 
 		[Test]
+		public void SerializerExtensions_Serialize_DataObject()
+		{
+			var data = new DataObject
+			{
+				{"one", 1},
+				{"two", "two"}
+			};
+
+			var hash = data.Serialize();
+
+			hash.MatchSnapshot();
+		}
+
+		[Test]
 		public void SerializerExtensions_Serialize_String()
 		{
 			var hash = "SerializerExtensions".Serialize();
@@ -56,7 +70,8 @@ namespace Broadcast.Test.Storage.Serialization
 				new HashValue("Time", TimeSpan.FromSeconds(1).ToString()),
 				new HashValue("StateChanges:New", DateTime.Now.ToString("o")),
 				new HashValue($"ArgsType:0", "System.String, System.Private.CoreLib"),
-				new HashValue($"ArgsValue:0", "test")
+				new HashValue($"ArgsValue:0", "test"),
+				new HashValue($"Method", "WriteLine")
 			};
 
 			var value = hash.Deserialize<BroadcastTask>();

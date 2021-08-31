@@ -60,5 +60,29 @@ namespace Broadcast.Test.Storage.Serialization
 			var serializer = new DataObjectSerializer();
 			Assert.IsNull(serializer.Deserialize<BroadcastTask>(hash));
 		}
+
+		[Test]
+		public void DataObjectSerializer_Serialize()
+		{
+			var data = new DataObject
+			{
+				{"one", 1}, 
+				{"two", "two"}
+			};
+
+			var serializer = new DataObjectSerializer();
+			var hash = serializer.Serialize(data);
+
+			hash.MatchSnapshot();
+		}
+
+		[Test]
+		public void DataObjectSerializer_Serialize_WrongType()
+		{
+			var serializer = new DataObjectSerializer();
+			var hash = serializer.Serialize("test");
+
+			Assert.IsNull(hash);
+		}
 	}
 }

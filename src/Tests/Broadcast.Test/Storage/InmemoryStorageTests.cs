@@ -209,7 +209,7 @@ namespace Broadcast.Test.Storage
 			var storage = new InmemoryStorage();
 			storage.Set(new StorageKey("storage", "key"), new StorageModel { Id = 1, Value = "one" });
 
-			Assert.Throws<InvalidCastException>(() => storage.Get<InmemoryStorage>(new StorageKey("storage", "key")));
+			Assert.IsNotNull(storage.Get<InmemoryStorage>(new StorageKey("storage", "key")));
 		}
 
 		[Test]
@@ -222,33 +222,12 @@ namespace Broadcast.Test.Storage
 		}
 
 		[Test]
-		public void InmemoryStorage_TryFetchNext_Simple()
-		{
-			var storage = new InmemoryStorage();
-			storage.Set(new StorageKey("key1"), new StorageModel { Id = 1, Value = "one" });
-
-			storage.TryFetchNext<StorageModel>(new StorageKey("key1"), new StorageKey("key2"), out var item);
-
-			Assert.IsNull(storage.Get<StorageModel>(new StorageKey("key1")));
-			Assert.AreSame(item, storage.Get<StorageModel>(new StorageKey("key2")));
-		}
-
-		[Test]
-		public void InmemoryStorage_TryFetchNext_Simple_True()
-		{
-			var storage = new InmemoryStorage();
-			storage.Set(new StorageKey("key1"), new StorageModel { Id = 1, Value = "one" });
-
-			Assert.IsTrue(storage.TryFetchNext<StorageModel>(new StorageKey("key1"), new StorageKey("key2"), out var item));
-		}
-
-		[Test]
 		public void InmemoryStorage_TryFetchNext_List()
 		{
 			var storage = new InmemoryStorage();
 			storage.AddToList(new StorageKey("key1"), "one");
 
-			storage.TryFetchNext<string>(new StorageKey("key1"), new StorageKey("key2"), out var item);
+			storage.TryFetchNext(new StorageKey("key1"), new StorageKey("key2"), out var item);
 
 			Assert.IsEmpty(storage.GetList(new StorageKey("key1")));
 			Assert.AreSame(item, storage.GetList(new StorageKey("key2")).Single());
@@ -260,7 +239,7 @@ namespace Broadcast.Test.Storage
 			var storage = new InmemoryStorage();
 			storage.AddToList(new StorageKey("key1"), "one");
 
-			Assert.IsTrue(storage.TryFetchNext<string>(new StorageKey("key1"), new StorageKey("key2"), out var item));
+			Assert.IsTrue(storage.TryFetchNext(new StorageKey("key1"), new StorageKey("key2"), out var item));
 		}
 
 		[Test]
