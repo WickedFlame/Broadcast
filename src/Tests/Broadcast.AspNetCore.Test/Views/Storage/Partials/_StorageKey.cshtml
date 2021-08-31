@@ -1,25 +1,36 @@
-﻿@model Broadcast.AspNetCore.Test.Controllers.StorageItem
+﻿@model Broadcast.AspNetCore.Test.Controllers.StorageType
 
 @{
 	ViewData["Title"] = "Custom Dashboard";
 }
 
 
-@foreach (var item in Model.Items.OrderBy(i => i.Key))
+@foreach (var item in Model.Items)
 {
-	<li>
-		<div class="broadcast-toggler-section">
-			@if(item.Items.Any())
-			{
+	<div>
+		<div class="broadcast-storage-type">
+			<div class="broadcast-toggler-section broadcast-storage-type-header">
 				<div class="broadcast-toggler-button"></div>
-			}
-			<div>
-				<div data-value="@item.Value" class="@(!string.IsNullOrEmpty(item.Value) ? "broadcast-storage-btn" : "")">@item.Key</div>
-				@*<span>@item.Value</span>*@
+				<span>@item.Key</span>
+			</div>
+			<div class="broadcast-toggle-wrapper broadcast-storage-type-content">
+				@foreach (var property in item.Values)
+				{
+					@if (string.IsNullOrEmpty(property.Key))
+					{
+						<div class="broadcast-storage-type-row-single">
+							<div class="broadcast-storage-type-value">@property.Value</div>
+						</div>
+					}
+					else
+					{
+						<div class="broadcast-storage-type-row">
+							<div class="broadcast-storage-type-key">@property.Key</div>
+							<div class="broadcast-storage-type-value">@property.Value</div>
+						</div>
+					}
+				}
 			</div>
 		</div>
-		<ul class="broadcast-toggle-wrapper">
-			<partial name="Partials/_StorageKey" for="@item" />
-		</ul>
-	</li>
+	</div>
 }

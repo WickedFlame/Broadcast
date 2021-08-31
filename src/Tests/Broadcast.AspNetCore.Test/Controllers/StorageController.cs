@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Broadcast.EventSourcing;
+using Broadcast.Server;
+using Broadcast.Storage;
 using Broadcast.Storage.Inmemory;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,91 +29,104 @@ namespace Broadcast.AspNetCore.Test.Controllers
 
 			_store.Storage(s =>
 			{
-				model.Items = new List<StorageItem>();
+				model.Items = new List<StorageType>();
 
-				var keys = s.GetKeys(new Storage.StorageKey("")).ToList();
-				foreach (var key in keys)
+
+
+				// {broadcast}:tasks:recurring:
+
+				// lists
+				// {broadcast}:tasks:dequeued
+				// {broadcast}:tasks:enqueued
+
+				
+				model.Items.Add(GetData("Servers", "{broadcast}:server:", s));
+				model.Items.Add(GetData("Tasks", "{broadcast}:task:", s));
+				model.Items.Add(GetData("Recurring tasks", "{broadcast}:tasks:recurring:", s));
+
+				var storageType = new StorageType
 				{
-					StorageItem current = null;
-
-					var parts = key.Split(":");
-					foreach (var part in parts)
-					{
-						if (current == null)
-						{
-							current = model.Items.FirstOrDefault(i => i.Key == part);
-							if (current == null)
-							{
-								current = new StorageItem {Key = part};
-								model.Items.Add(current);
-							}
-						}
-						else
-						{
-							var next = current.Items.FirstOrDefault(i => i.Key == part);
-							if (next == null)
-							{
-								next = new StorageItem {Key = part};
-								current.Items.Add(next);
-							}
-
-							current = next;
-						}
-					}
-
-
-					var item = s.Get<object>(new Storage.StorageKey(key));
-					if (item != null)
-					{
-						current.Key = key;
-						if (item is ITask task)
-						{
-							var itm = new
-							{
-								task.Id,
-								task.Name,
-								task.IsRecurring,
-								task.State,
-								task.StateChanges,
-								task.Time
-							};
-							//model.Items.Add(new StorageItem { Key = key, Value = Newtonsoft.Json.JsonConvert.SerializeObject(itm) });
-							current.Value = Newtonsoft.Json.JsonConvert.SerializeObject(itm);
-						}
-						else
-						{
-							//model.Items.Add(new StorageItem { Key = key, Value = Newtonsoft.Json.JsonConvert.SerializeObject(item) });
-							current.Value = Newtonsoft.Json.JsonConvert.SerializeObject(item);
-						}
-
-						continue;
-					}
-
-					var items = s.GetList(new Storage.StorageKey(key));
-					if (items != null)
-					{
-						//model.Items.Add(new StorageItem {Key = key, Value = JsonSerializer.Serialize(items)});
-						current.Value = $"[{string.Join(',', items)}]";
-						continue;
-					}
-				}
+					Key = "Processing"
+				};
+				storageType.Items.Add(GetList("{broadcast}:tasks:dequeued", s));
+				storageType.Items.Add(GetList("{broadcast}:tasks:enqueued", s));
+				model.Items.Add(storageType);
 			});
 
 			return View(model);
+		}
+
+		private StorageType GetData(string type, string storeKey, IStorage store)
+		{
+			var storageType = new StorageType
+			{
+				Key = type
+			};
+
+			foreach (var key in store.GetKeys(new Storage.StorageKey(storeKey)).ToList())
+			{
+				var data = store.Get<DataObject>(new StorageKey(key));
+
+				var item = new StorageItem
+				{
+					Key = key,
+					Values = data.Select(d => new StorageProperty(d.Key, d.Value))
+				};
+
+				storageType.Items.Add(item);
+			}
+
+			return storageType;
+		}
+
+		public StorageItem GetList(string storeKey, IStorage store)
+		{
+			var data = store.GetList(new StorageKey(storeKey));
+
+			var item = new StorageItem
+			{
+				Key = storeKey,
+				Values = data.Select(d => new StorageProperty("", d))
+			};
+
+			return item;
 		}
 	}
 
 	public class StorageModel
 	{
-		public List<StorageItem> Items { get; set; }
+		public List<StorageType> Items { get; set; }
+	}
+
+	public class StorageType
+	{
+		public string Key{ get; set; }
+
+		public List<StorageItem> Items { get; set; } = new List<StorageItem>();
 	}
 
 	public class StorageItem
 	{
 		public string Key { get; set; }
 
-		public string Value{ get; set; }
+		public IEnumerable<StorageProperty> Values { get; set; }
+	}
 
-		public List<StorageItem> Items { get; } = new List<StorageItem>();
+	public class StorageProperty
+	{
+		public StorageProperty(string key, object value)  
+			: this(key, value.ToString())
+		{
+		}
+
+		public StorageProperty(string key, string value)
+		{
+			Key = key;
+			Value = value;
+		}
+
+		public string Key { get; set; }
+
+		public string Value { get; set; }
 	}
 }
