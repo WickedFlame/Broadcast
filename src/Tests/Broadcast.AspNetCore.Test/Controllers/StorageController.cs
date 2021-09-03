@@ -31,25 +31,28 @@ namespace Broadcast.AspNetCore.Test.Controllers
 			{
 				model.Items = new List<StorageType>();
 
+				//model.Items.Add(GetData("Servers", "{broadcast}:server:", s));
+				//model.Items.Add(GetData("Tasks", "{broadcast}:task:", s));
+				//model.Items.Add(GetData("Recurring tasks", "{broadcast}:tasks:recurring:", s));
 
+				//var storageType = new StorageType
+				//{
+				//	Key = "Processing"
+				//};
+				//storageType.Items.Add(GetList("{broadcast}:tasks:dequeued", s));
+				//storageType.Items.Add(GetList("{broadcast}:tasks:enqueued", s));
+				//model.Items.Add(storageType);
 
-				// {broadcast}:tasks:recurring:
-
-				// lists
-				// {broadcast}:tasks:dequeued
-				// {broadcast}:tasks:enqueued
-
-				
-				model.Items.Add(GetData("Servers", "{broadcast}:server:", s));
-				model.Items.Add(GetData("Tasks", "{broadcast}:task:", s));
-				model.Items.Add(GetData("Recurring tasks", "{broadcast}:tasks:recurring:", s));
+				model.Items.Add(GetData("Servers", "server:", s));
+				model.Items.Add(GetData("Tasks", "task:", s));
+				model.Items.Add(GetData("Recurring tasks", "tasks:recurring:", s));
 
 				var storageType = new StorageType
 				{
 					Key = "Processing"
 				};
-				storageType.Items.Add(GetList("{broadcast}:tasks:dequeued", s));
-				storageType.Items.Add(GetList("{broadcast}:tasks:enqueued", s));
+				storageType.Items.Add(GetList("tasks:dequeued", s));
+				storageType.Items.Add(GetList("tasks:enqueued", s));
 				model.Items.Add(storageType);
 			});
 
