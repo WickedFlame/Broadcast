@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Moq" Version="4.16.1" />
-    <PackageReference Include="Polaroider" Version="2.0.0" />
+    <PackageReference Include="Polaroider" Version="2.0.1" />
     <PackageReference Include="StackExchange.Redis" Version="2.2.62" />
   </ItemGroup>
 

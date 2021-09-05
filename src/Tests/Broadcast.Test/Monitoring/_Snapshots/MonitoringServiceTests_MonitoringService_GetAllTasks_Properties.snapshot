@@ -1,0 +1,7 @@
+---data
+Id: 00000000-0000-0000-0000-000000000000
+IsRecurring: False
+Name: Trace.WriteLine
+Server: TestServer
+State: New
+Time:
