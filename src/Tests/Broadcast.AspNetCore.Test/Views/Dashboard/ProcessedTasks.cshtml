@@ -10,14 +10,15 @@
 	<div>
 		<table class="table">
 			<thead>
-			<tr>
-				<th scope="col">Id</th>
-				<th scope="col">Name</th>
-				<th scope="col">State</th>
-				<th scope="col">Processes at</th>
-				<th scope="col">IsRecurring</th>
-				<th scope="col">Interval</th>
-			</tr>
+				<tr>
+					<th scope="col">Id</th>
+					<th scope="col">Name</th>
+					<th scope="col">State</th>
+					<th scope="col">Processes at</th>
+					<th scope="col">IsRecurring</th>
+					<th scope="col">Interval</th>
+					<th scope="col">Server</th>
+				</tr>
 			</thead>
 			<tbody>
 			@foreach (var task in Model.Monitor.Tasks.Where(t => t.State == TaskState.Processed))
@@ -29,6 +30,7 @@
 					<td>TODO</td>
 					<td>@task.IsRecurring</td>
 					<td>@task.Time</td>
+					<td>@task.Server</td>
 				</tr>
 			}
 			</tbody>

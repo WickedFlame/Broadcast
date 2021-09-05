@@ -31,20 +31,28 @@ namespace Broadcast.AspNetCore.Test.Controllers
 			{
 				model.Items = new List<StorageType>();
 
-				//model.Items.Add(GetData("Servers", "{broadcast}:server:", s));
-				//model.Items.Add(GetData("Tasks", "{broadcast}:task:", s));
-				//model.Items.Add(GetData("Recurring tasks", "{broadcast}:tasks:recurring:", s));
-
-				//var storageType = new StorageType
-				//{
-				//	Key = "Processing"
-				//};
-				//storageType.Items.Add(GetList("{broadcast}:tasks:dequeued", s));
-				//storageType.Items.Add(GetList("{broadcast}:tasks:enqueued", s));
-				//model.Items.Add(storageType);
-
 				model.Items.Add(GetData("Servers", "server:", s));
-				model.Items.Add(GetData("Tasks", "task:", s));
+				var tasks = GetData("Tasks", "task:", s);
+				foreach (var task in tasks.Items)
+				{
+					var id = task.Values.FirstOrDefault(t => t.Key == "Id");
+					if (id == null)
+					{
+						continue;
+					}
+
+					var data = s.Get<DataObject>(new StorageKey($"tasks:values:{id.Value}"));
+					if (data == null)
+					{
+						continue;
+					}
+
+					var values = task.Values.ToList();
+					values.AddRange(data.Select(d => new StorageProperty(d.Key, d.Value)));
+					task.Values = values;
+				}
+
+				model.Items.Add(tasks);
 				model.Items.Add(GetData("Recurring tasks", "tasks:recurring:", s));
 
 				var storageType = new StorageType
