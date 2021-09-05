@@ -63,9 +63,11 @@ namespace Broadcast.Processing
 		/// <param name="task">The task to process</param>
 		public void Process(ITask task)
 		{
-			_logger.Write($"Enqueued task {task.Id}");
+			_logger.Write($"Enqueued task {task.Id} for processing on Server {_context.Options.ServerName}");
 
 			_queue.Enqueue(task);
+
+			_context.AssignServer(task);
 	        _context.SetState(task, TaskState.Queued);
 
 			// check if a thread is allready processing the queue

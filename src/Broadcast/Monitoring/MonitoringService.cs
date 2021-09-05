@@ -42,14 +42,27 @@ namespace Broadcast.Monitoring
 		/// <returns></returns>
 		public IEnumerable<TaskDescription> GetAllTasks()
 		{
-			return _store.Select(t => new TaskDescription
+			var tasks = _store.Select(t => new TaskDescription
 			{
 				Id = t.Id,
 				Name = t.Name,
 				IsRecurring = t.IsRecurring,
 				State = t.State,
 				Time = t.Time
-			});
+			}).ToList();
+
+			foreach (var task in tasks)
+			{
+				var data = _store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:values:{task.Id}")));
+				if (data == null)
+				{
+					continue;
+				}
+
+				task.Server = data["Server"]?.ToString();
+			}
+
+			return tasks;
 		}
 
 		/// <summary>
@@ -58,12 +71,11 @@ namespace Broadcast.Monitoring
 		/// <returns></returns>
 		public IEnumerable<RecurringTaskDescription> GetRecurringTasks()
 		{
-			IEnumerable<RecurringTaskDescription> recurring = null;
-			_store.Storage(s =>
+			var recurring = _store.Storage(s =>
 			{
 				var keys = s.GetKeys(new StorageKey($"tasks:recurring:"));
 
-				recurring = keys.Select(k => s.Get<RecurringTask>(new StorageKey(k)))
+				return keys.Select(k => s.Get<RecurringTask>(new StorageKey(k)))
 					.Select(m => new RecurringTaskDescription
 					{
 						ReferenceId = m.ReferenceId,

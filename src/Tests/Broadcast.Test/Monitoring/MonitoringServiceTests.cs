@@ -105,7 +105,8 @@ namespace Broadcast.Test.Monitoring
 			storage.Setup(exp => exp.Get<RecurringTask>(It.IsAny<StorageKey>())).Returns<StorageKey>(s => new RecurringTask
 			{
 				ReferenceId = s.ToString(),
-				Name = s.ToString()
+				Name = s.ToString(),
+				Interval = TimeSpan.FromSeconds(10)
 			});
 
 			var store = new TaskStore(storage.Object);

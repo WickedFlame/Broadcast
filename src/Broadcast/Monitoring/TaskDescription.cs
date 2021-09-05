@@ -33,5 +33,9 @@ namespace Broadcast.Monitoring
 		/// </summary>
 		public TimeSpan? Time { get; set; }
 
+		/// <summary>
+		/// Gets the name of the server that executed the task
+		/// </summary>
+		public string Server { get; set; }
 	}
 }
