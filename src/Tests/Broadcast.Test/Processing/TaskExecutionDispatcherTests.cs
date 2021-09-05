@@ -66,7 +66,8 @@ namespace Broadcast.Test.Processing
 
 			dispatcher.Execute(ctx.Object);
 
-			store.Verify(exp => exp.Storage(It.IsAny<Action<IStorage>>()), Times.Exactly(4));
+			store.Verify(exp => exp.Storage(It.IsAny<Action<IStorage>>()), Times.Exactly(3));
+			store.Verify(exp => exp.Storage<bool>(It.IsAny<Func<IStorage, bool>>()), Times.Exactly(1));
 		}
 
 		[Test]

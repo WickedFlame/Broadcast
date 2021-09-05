@@ -267,6 +267,22 @@ namespace Broadcast.Test.EventSourcing
 		}
 
 		[Test]
+		public void TaskStore_Storage_Func_Default_Type()
+		{
+			var store = new TaskStore();
+
+			Assert.IsAssignableFrom<InmemoryStorage>(store.Storage(s => s));
+		}
+
+		[Test]
+		public void TaskStore_Storage_Func_ReturnValue()
+		{
+			var store = new TaskStore();
+
+			Assert.IsTrue(store.Storage(s => true));
+		}
+
+		[Test]
 		public void TaskStore_PropagateServer()
 		{
 			var server = new ServerModel

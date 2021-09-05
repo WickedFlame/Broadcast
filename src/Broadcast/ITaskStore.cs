@@ -56,6 +56,15 @@ namespace Broadcast
 		void Storage(Action<IStorage> action);
 
 		/// <summary>
+		/// Executes a delegate that allows accessing the connected <see cref="IStorage"/>.
+		/// This is used when a component needs to store data in the <see cref="IStorage"/>.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="action"></param>
+		/// <returns></returns>
+		T Storage<T>(Func<IStorage, T> action);
+
+		/// <summary>
 		/// Propagate the Server to the TaskStore.
 		/// Poropagation is done during registration and heartbeat.
 		/// </summary>

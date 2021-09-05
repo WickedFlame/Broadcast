@@ -156,6 +156,18 @@ namespace Broadcast.EventSourcing
 		}
 
 		/// <summary>
+		/// Executes a delegate that allows accessing the connected <see cref="IStorage"/>.
+		/// This is used when a component needs to store data in the <see cref="IStorage"/>.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="action"></param>
+		/// <returns></returns>
+		public T Storage<T>(Func<IStorage, T> action)
+		{
+			return action(_storage);
+		}
+
+		/// <summary>
 		/// Propagate the Server to the TaskStore.
 		/// Poropagation is done during registration and heartbeat.
 		/// </summary>
