@@ -133,7 +133,7 @@ namespace Broadcast.Test.Server
 
 			dispatcher.Execute(task);
 
-			storage.Verify(exp => exp.Set(It.Is<StorageKey>(k => k.Key == $"tasks:recurring:{task.Name}"), It.Is<RecurringTask>(t => t.Name == task.Name && t.Id == task.Id)), Times.Once);
+			storage.Verify(exp => exp.Set(It.Is<StorageKey>(k => k.Key == $"tasks:recurring:{task.Name}"), It.Is<RecurringTask>(t => t.Name == task.Name && t.ReferenceId == task.Id)), Times.Once);
 		}
 	}
 }

@@ -66,8 +66,10 @@ namespace Broadcast.Monitoring
 				recurring = keys.Select(k => s.Get<RecurringTask>(new StorageKey(k)))
 					.Select(m => new RecurringTaskDescription
 					{
+						ReferenceId = m.ReferenceId,
 						Name = m.Name,
-						NextExecution = m.NextExecution
+						NextExecution = m.NextExecution,
+						Interval = m.Interval
 					});
 			});
 

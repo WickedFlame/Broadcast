@@ -86,7 +86,7 @@ namespace Broadcast.Test.Monitoring
 		{
 			var storage = new Mock<IStorage>();
 			storage.Setup(exp => exp.GetKeys(It.IsAny<StorageKey>())).Returns(() => new List<string> {"test:1", "test:2"});
-			storage.Setup(exp => exp.Get<RecurringTask>(It.IsAny<StorageKey>())).Returns<StorageKey>(s => new RecurringTask{Id = s.ToString()});
+			storage.Setup(exp => exp.Get<RecurringTask>(It.IsAny<StorageKey>())).Returns<StorageKey>(s => new RecurringTask{ReferenceId = s.ToString()});
 
 			var store = new TaskStore(storage.Object);
 
@@ -104,7 +104,7 @@ namespace Broadcast.Test.Monitoring
 			storage.Setup(exp => exp.GetKeys(It.IsAny<StorageKey>())).Returns(() => new List<string> { "test:1", "test:2" });
 			storage.Setup(exp => exp.Get<RecurringTask>(It.IsAny<StorageKey>())).Returns<StorageKey>(s => new RecurringTask
 			{
-				Id = s.ToString(),
+				ReferenceId = s.ToString(),
 				Name = s.ToString()
 			});
 

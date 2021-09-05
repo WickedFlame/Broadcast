@@ -34,9 +34,10 @@ namespace Broadcast.Server
 			{
 				_store.Storage(s => s.Set(new StorageKey($"tasks:recurring:{task.Name}"), new RecurringTask
 				{
-					Id = task.Id,
+					ReferenceId = task.Id,
 					Name = task.Name, 
-					NextExecution = DateTime.Now.Add(task.Time.Value)
+					NextExecution = DateTime.Now.Add(task.Time.Value),
+					Interval = task.Time
 				}));
 
 				_broadcaster.Scheduler.Enqueue(() =>

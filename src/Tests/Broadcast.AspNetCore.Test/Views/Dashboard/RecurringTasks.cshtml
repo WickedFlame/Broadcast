@@ -10,17 +10,21 @@
 	<div>
 		<table class="table">
 			<thead>
-			<tr>
-				<th scope="col">Name</th>
-				<th scope="col">NextExecution</th>
-			</tr>
+				<tr>
+					<th scope="col">Name</th>
+					<th scope="col">Referenced TaskId</th>
+					<th scope="col">NextExecution</th>
+					<th scope="col">Interval</th>
+				</tr>
 			</thead>
 			<tbody>
 			@foreach (var task in Model.Monitor.RecurringTasks)
 			{
 				<tr>
 					<td>@task.Name</td>
+					<td>@task.ReferenceId</td>
 					<td>@task.NextExecution</td>
+					<td>@task.Interval</td>
 				</tr>
 			}
 			</tbody>
