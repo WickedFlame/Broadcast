@@ -2,6 +2,8 @@
 ------------------------------
 [![Build Status](https://travis-ci.org/WickedFlame/Broadcast.svg?branch=master)](https://travis-ci.org/WickedFlame/Broadcast)
 [![Build status](https://ci.appveyor.com/api/projects/status/ybdr1oa8p4x8h9h6/branch/master?svg=true)](https://ci.appveyor.com/project/chriswalpen/broadcast/branch/master)
+[![Build status](https://img.shields.io/appveyor/build/chriswalpen/broadcast/master?label=Master&logo=appveyor&style=for-the-badge)](https://ci.appveyor.com/project/chriswalpen/broadcast/branch/master)
+[![Build status](https://img.shields.io/appveyor/build/chriswalpen/broadcast/dev?label=Dev&logo=appveyor&style=for-the-badge)](https://ci.appveyor.com/project/chriswalpen/broadcast/branch/dev)
 [![NuGet Version](https://img.shields.io/nuget/v/broadcast.svg?style=for-the-badge&label=Latest)](https://www.nuget.org/packages/broadcast/)
 [![NuGet Version](https://img.shields.io/nuget/vpre/broadcast.svg?style=for-the-badge&label=RC)](https://www.nuget.org/packages/broadcast/)
 
