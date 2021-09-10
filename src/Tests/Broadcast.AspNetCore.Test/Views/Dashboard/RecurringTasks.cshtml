@@ -24,7 +24,7 @@
 					<td>@task.Name</td>
 					<td>@task.ReferenceId</td>
 					<td>@task.NextExecution</td>
-					<td>@task.Interval</td>
+					<td>@(task.Interval != null ? TimeSpan.FromMilliseconds(task.Interval.Value).ToString() : string.Empty)</td>
 				</tr>
 			}
 			</tbody>

@@ -4,7 +4,7 @@ using Broadcast.EventSourcing;
 namespace Broadcast.Monitoring
 {
 	/// <summary>
-	/// Descibes a task
+	/// Descibes the inner values of a task for monitoring
 	/// </summary>
 	public class TaskDescription
 	{
@@ -29,13 +29,23 @@ namespace Broadcast.Monitoring
 		public TaskState State { get; set; }
 
 		/// <summary>
-		/// Gets the time for scheduling
+		/// Gets the milliseconds for scheduling at
 		/// </summary>
-		public TimeSpan? Time { get; set; }
+		public double? Time { get; set; }
 
 		/// <summary>
 		/// Gets the name of the server that executed the task
 		/// </summary>
 		public string Server { get; set; }
+
+		/// <summary>
+		/// Durationtime of the execution
+		/// </summary>
+		public double? Duration { get; set; }
+
+		/// <summary>
+		/// Starttime of the execution
+		/// </summary>
+		public DateTime? Start { get; set; }
 	}
 }

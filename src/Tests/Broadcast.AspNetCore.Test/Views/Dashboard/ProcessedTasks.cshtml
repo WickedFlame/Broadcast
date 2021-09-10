@@ -14,10 +14,11 @@
 					<th scope="col">Id</th>
 					<th scope="col">Name</th>
 					<th scope="col">State</th>
-					<th scope="col">Processes at</th>
 					<th scope="col">IsRecurring</th>
 					<th scope="col">Interval</th>
 					<th scope="col">Server</th>
+					<th scope="col">Started</th>
+					<th scope="col">Duration</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -27,10 +28,11 @@
 					<td>@task.Id</td>
 					<td>@task.Name</td>
 					<td>@task.State</td>
-					<td>TODO</td>
 					<td>@task.IsRecurring</td>
-					<td>@task.Time</td>
+					<td>@(task.Time != null ? TimeSpan.FromMilliseconds(task.Time.Value).ToString() : string.Empty)</td>
 					<td>@task.Server</td>
+					<td>@task.Start</td>
+					<td>@(task.Duration != null ? TimeSpan.FromMilliseconds(task.Duration.Value).ToString() : string.Empty)</td>
 				</tr>
 			}
 			</tbody>

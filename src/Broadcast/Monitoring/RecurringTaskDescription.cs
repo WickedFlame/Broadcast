@@ -25,6 +25,6 @@ namespace Broadcast.Monitoring
 		/// <summary>
 		/// Gets the <see cref="TimeSpan"/> that defines the interval at which the task is executed
 		/// </summary>
-		public TimeSpan? Interval { get; set; }
+		public double? Interval { get; set; }
 	}
 }

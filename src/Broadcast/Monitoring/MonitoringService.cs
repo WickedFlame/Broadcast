@@ -48,7 +48,7 @@ namespace Broadcast.Monitoring
 				Name = t.Name,
 				IsRecurring = t.IsRecurring,
 				State = t.State,
-				Time = t.Time
+				Time = t.Time?.TotalMilliseconds
 			}).ToList();
 
 			foreach (var task in tasks)
@@ -60,6 +60,15 @@ namespace Broadcast.Monitoring
 				}
 
 				task.Server = data["Server"]?.ToString();
+				if(long.TryParse(data["ExecutionTime"]?.ToString(), out var duration))
+				{
+					task.Duration = TimeSpan.FromTicks(duration).TotalMilliseconds;
+				}
+
+				if(DateTime.TryParse(data["InProcessAt"]?.ToString(), out var start))
+				{
+					task.Start = start;
+				}
 			}
 
 			return tasks;
@@ -81,7 +90,7 @@ namespace Broadcast.Monitoring
 						ReferenceId = m.ReferenceId,
 						Name = m.Name,
 						NextExecution = m.NextExecution,
-						Interval = m.Interval
+						Interval = m.Interval?.TotalMilliseconds
 					});
 			});
 
