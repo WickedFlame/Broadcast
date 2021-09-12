@@ -71,7 +71,7 @@ namespace Broadcast.Monitoring
 				}
 			}
 
-			return tasks;
+			return tasks.OrderByDescending(t => t.Start == null).ThenByDescending(t => t.Start);
 		}
 
 		/// <summary>

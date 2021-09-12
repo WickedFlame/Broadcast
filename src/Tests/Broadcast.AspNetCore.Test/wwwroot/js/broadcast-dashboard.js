@@ -58,6 +58,8 @@ export class BroadcastDashboard {
 		this.updateElement(document.querySelector('#broadcast-servers-count'), data.monitor.servers.length);
 		this.updateElement(document.querySelector('#broadcast-recurring-count'), data.monitor.recurringTasks.length);
 
+		var tasklist = document.querySelector('#tasklist');
+
 		var cnt = 0;
 		var processedCnt = 0;
 		var failedCnt = 0;
@@ -69,10 +71,59 @@ export class BroadcastDashboard {
 			} else if (t.state === 5) {
 				failedCnt = failedCnt + 1;
 			}
+
+			if (tasklist) {
+				var taskRow = document.querySelector(`#task_${t.id}`);
+				var state = t.state === 0
+					? 'New'
+					: t.state === 1
+					? 'Queued'
+					: t.state === 2
+					? 'Dequeued'
+					: t.state === 3
+					? 'InProcess'
+					: t.state === 4
+					? 'Processed'
+					: t.state === 5
+					? 'Faulted'
+					: 'Unknown';
+
+				if (taskRow) {
+					taskRow.querySelector(`#state_${t.id}`).innerText = state;
+					taskRow.querySelector(`#server_${t.id}`).innerText = t.server;
+					taskRow.querySelector(`#start_${t.id}`).innerText = t.start;
+					taskRow.querySelector(`#duration_${t.id}`).innerText = t.duration;
+				} else {
+					// add new row
+
+					if (!tasklist.classList.contains('processed') || t.state === 4) {
+						var row = tasklist.querySelector('tbody').insertRow(0);
+						row.id = `task_${t.id}`;
+
+						this.addCell(row, 0, null, t.id);
+						this.addCell(row, 1, null, t.name);
+						this.addCell(row, 2, `state_${t.id}`, state);
+						this.addCell(row, 3, null, t.isRecurring);
+						this.addCell(row, 4, null, t.time);
+						this.addCell(row, 5, `server_${t.id}`, t.server);
+						this.addCell(row, 6, `start_${t.id}`, t.start);
+						this.addCell(row, 7, `duration_${t.id}`, t.duration);
+					}
+				}
+			}
+
 		});
 		this.updateElement(document.querySelector('#broadcast-enqueued-count'), cnt);
 		this.updateElement(document.querySelector('#broadcast-processed-count'), processedCnt);
 		this.updateElement(document.querySelector('#broadcast-failed-count'), failedCnt);
+	}
+
+	addCell(row, index, id, value) {
+		var cell = row.insertCell(index);
+		cell.innerText = value;
+		if (id !== null) {
+			cell.id = id;
+		}
 	}
 
 	updateElement(elem, data) {
