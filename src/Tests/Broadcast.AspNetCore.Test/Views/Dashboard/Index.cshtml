@@ -28,7 +28,7 @@
 	</div>
 	<div>
 		<h3>Recurring Tasks</h3>
-		<table class="table">
+		<table class="table" id="recurringlist">
 			<thead>
 				<tr>
 					<th scope="col">Name</th>
@@ -40,9 +40,10 @@
 			<tbody>
 			@foreach (var task in Model.Monitor.RecurringTasks)
 			{
-				<tr>
+				var name = task.Name.Replace(".", "_");
+				<tr id="recurring_@(name)">
 					<td>@task.Name</td>
-					<td>@task.ReferenceId</td>
+					<td id="referenceid_@(name)">@task.ReferenceId</td>
 					<td>@task.NextExecution</td>
 					<td>@(task.Interval != null ? TimeSpan.FromMilliseconds(task.Interval.Value).ToString() : string.Empty)</td>
 				</tr>

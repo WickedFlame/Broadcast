@@ -58,6 +58,28 @@ export class BroadcastDashboard {
 		this.updateElement(document.querySelector('#broadcast-servers-count'), data.monitor.servers.length);
 		this.updateElement(document.querySelector('#broadcast-recurring-count'), data.monitor.recurringTasks.length);
 
+		var recurringlist = document.querySelector('#recurringlist');
+		if (recurringlist) {
+			data.monitor.recurringTasks.forEach(t => {
+				var name = t.name.replace('.', '_');
+				var taskRow = recurringlist.querySelector(`#recurring_${name}`);
+
+				if (taskRow) {
+					taskRow.querySelector(`#referenceid_${name}`).innerText = t.referenceId;
+				} else {
+					// add new row
+					var row = recurringlist.querySelector('tbody').insertRow(0);
+					row.id = `recurring_${name}`;
+
+					this.addCell(row, 0, null, t.name);
+					this.addCell(row, 1, `referenceid_${name}`, t.referenceId);
+					this.addCell(row, 2, null, t.nextExecution);
+					this.addCell(row, 3, null, t.interval);
+				}
+			});
+		}
+
+
 		var tasklist = document.querySelector('#tasklist');
 
 		var cnt = 0;
@@ -116,6 +138,8 @@ export class BroadcastDashboard {
 		this.updateElement(document.querySelector('#broadcast-enqueued-count'), cnt);
 		this.updateElement(document.querySelector('#broadcast-processed-count'), processedCnt);
 		this.updateElement(document.querySelector('#broadcast-failed-count'), failedCnt);
+
+
 	}
 
 	addCell(row, index, id, value) {

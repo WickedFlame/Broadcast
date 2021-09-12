@@ -8,7 +8,7 @@
 
 <div class="broadcast-main">
 	<div>
-		<table class="table">
+		<table class="table" id="recurringlist">
 			<thead>
 				<tr>
 					<th scope="col">Name</th>
@@ -18,15 +18,16 @@
 				</tr>
 			</thead>
 			<tbody>
-			@foreach (var task in Model.Monitor.RecurringTasks)
-			{
-				<tr>
-					<td>@task.Name</td>
-					<td>@task.ReferenceId</td>
-					<td>@task.NextExecution</td>
-					<td>@(task.Interval != null ? TimeSpan.FromMilliseconds(task.Interval.Value).ToString() : string.Empty)</td>
-				</tr>
-			}
+				@foreach (var task in Model.Monitor.RecurringTasks)
+				{
+					var name = task.Name.Replace(".", "_");
+					<tr id="recurring_@(name)">
+						<td>@task.Name</td>
+						<td id="referenceid_@(name)">@task.ReferenceId</td>
+						<td>@task.NextExecution</td>
+						<td>@(task.Interval != null ? TimeSpan.FromMilliseconds(task.Interval.Value).ToString() : string.Empty)</td>
+					</tr>
+				}
 			</tbody>
 		</table>
 	</div>
