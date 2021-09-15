@@ -28,12 +28,13 @@ namespace Broadcast.Monitoring
 		/// <returns></returns>
 		public IEnumerable<ServerDescription> GetServers()
 		{
+			// ensure it is a copy with ToList()
 			return _store.Servers.Select(s => new ServerDescription
 			{
 				Id = s.Id,
 				Name = s.Name,
 				Heartbeat = s.Heartbeat
-			});
+			}).ToList();
 		}
 
 		/// <summary>
@@ -71,6 +72,7 @@ namespace Broadcast.Monitoring
 				}
 			}
 
+			// ensure it is a copy with ToList()
 			return tasks.OrderByDescending(t => t.Start == null).ThenByDescending(t => t.Start);
 		}
 
@@ -84,6 +86,7 @@ namespace Broadcast.Monitoring
 			{
 				var keys = s.GetKeys(new StorageKey($"tasks:recurring:"));
 
+				// ensure it is a copy with ToList()
 				return keys.Select(k => s.Get<RecurringTask>(new StorageKey(k)))
 					.Select(m => new RecurringTaskDescription
 					{
@@ -91,7 +94,7 @@ namespace Broadcast.Monitoring
 						Name = m.Name,
 						NextExecution = m.NextExecution,
 						Interval = m.Interval?.TotalMilliseconds
-					});
+					}).ToList();
 			});
 
 			return recurring;
