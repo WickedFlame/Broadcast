@@ -52,9 +52,17 @@ export class BroadcastDashboard {
 	}
 
 	updateDashboard(data, dashboard) {
+		// servers
 		this.updateElement(document.querySelector('#broadcast-servers-count'), data.monitor.servers.length);
-		this.updateElement(document.querySelector('#broadcast-recurring-count'), data.monitor.recurringTasks.length);
+		var serverList = document.querySelector('#serverlist');
+		if (serverList) {
+			data.monitor.servers.forEach(s => {
+				serverList.querySelector(`#serverheartbeat_${s.id}`).innerText = this.formatDate(new Date(s.heartbeat));
+			});
+		}
 
+		// recurring tasks
+		this.updateElement(document.querySelector('#broadcast-recurring-count'), data.monitor.recurringTasks.length);
 		var recurringlist = document.querySelector('#recurringlist');
 		if (recurringlist) {
 			data.monitor.recurringTasks.forEach(t => {
@@ -77,7 +85,7 @@ export class BroadcastDashboard {
 			});
 		}
 
-
+		// tasks
 		var tasklist = document.querySelector('#tasklist');
 
 		var cnt = 0;

@@ -8,7 +8,7 @@
 
 <div class="broadcast-main">
 	<div>
-		<table>
+		<table id="serverlist">
 			<thead>
 			<tr>
 				<th scope="col">Name</th>
@@ -20,7 +20,7 @@
 			{
 				<tr>
 					<td><span>@server.Name</span>:<span>@server.Id</span> </td>
-					<td> <span>@server.Heartbeat.ToString("yyyy-MM-dd HH:mm:ss")</span></td>
+					<td id="serverheartbeat_@server.Id">@server.Heartbeat.ToString("yyyy-MM-dd HH:mm:ss")</td>
 				</tr>
 			}
 			</tbody>
