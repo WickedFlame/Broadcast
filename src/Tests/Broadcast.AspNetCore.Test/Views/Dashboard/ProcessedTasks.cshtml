@@ -29,10 +29,10 @@
 					<td>@task.Name</td>
 					<td id="state_@(task.Id)">@task.State</td>
 					<td>@task.IsRecurring</td>
-					<td>@(task.Time != null ? TimeSpan.FromMilliseconds(task.Time.Value).ToString() : string.Empty)</td>
+					<td>@(task.Time != null ? TimeSpan.FromMilliseconds(task.Time.Value).ToString("hh\\:mm\\:ss\\.fff") : string.Empty)</td>
 					<td id="server_@(task.Id)">@task.Server</td>
-					<td id="start_@(task.Id)">@task.Start</td>
-					<td id="duration_@(task.Id)">@(task.Duration != null ? TimeSpan.FromMilliseconds(task.Duration.Value).ToString() : string.Empty)</td>
+					<td id="start_@(task.Id)">@task.Start?.ToString("yyyy-MM-dd HH:mm:ss")</td>
+					<td id="duration_@(task.Id)">@task.Duration</td>
 				</tr>
 			}
 			</tbody>

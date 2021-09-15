@@ -24,8 +24,8 @@
 					<tr id="recurring_@(name)">
 						<td>@task.Name</td>
 						<td id="referenceid_@(name)">@task.ReferenceId</td>
-						<td>@task.NextExecution</td>
-						<td>@(task.Interval != null ? TimeSpan.FromMilliseconds(task.Interval.Value).ToString() : string.Empty)</td>
+						<td id="nextexecution_@(name)">@task.NextExecution.ToString("yyyy-MM-dd HH:mm:ss")</td>
+						<td>@(task.Interval != null ? TimeSpan.FromMilliseconds(task.Interval.Value).ToString("hh\\:mm\\:ss\\.fff") : string.Empty)</td>
 					</tr>
 				}
 			</tbody>
