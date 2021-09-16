@@ -96,6 +96,16 @@ main{
 			height: 100%;
 			padding: 20px;
 
+			.broadcast-table {
+				.broadcast-table-row {
+					cursor: pointer;
+
+					&:hover {
+						background-color: #f6f6f6;
+					}
+				}
+			}
+
 			table {
 				width: 100%;
 				border-collapse: collapse;
@@ -119,6 +129,99 @@ main{
 					&:first-child {
 						td {
 							padding-top: 5px;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	.broadcast-data-overlay {
+		position: fixed;
+		display: none;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		/*background-color: rgba(0,0,0,0.5);*/
+		background-color: rgba(255,255,255,.5);
+		z-index: 2;
+		/*cursor: pointer;*/
+		min-height: 100vh;
+
+		.broadcast-data-overlay-container {
+			float: right;
+			width: 70%;
+			box-shadow: 0 0 10px 0 rgba(119,111,94,.5);
+			height: 100%;
+			display: inline-block;
+			background-color: #fff;
+			padding: 20px;
+
+			.broadcast-storage-type {
+				.broadcast-storage-type-header {
+					display: grid;
+					grid-template-columns: auto 1fr;
+					padding-bottom: 50px;
+
+					.broadcast-overlay-title {
+						padding-left: 50px;
+
+						h3{
+							margin-top: 5px;
+						}
+					}
+
+					.broadcast-overlay-close-btn {
+						/*position: absolute;
+						left: 32px;
+						top: 32px;*/
+						width: 32px;
+						height: 32px;
+						opacity: 0.3;
+
+						&:hover {
+							opacity: 1;
+						}
+
+						&:before, &:after {
+							position: absolute;
+							margin-left: 16px;
+							/*left: 15px;*/
+							content: ' ';
+							height: 33px;
+							width: 2px;
+							background-color: #333;
+						}
+
+						&:before {
+							transform: rotate(45deg);
+						}
+
+						&:after {
+							transform: rotate(-45deg);
+						}
+					}
+				}
+
+				.broadcast-storage-type-content {
+					.broadcast-storage-type-row-single {
+						display: grid;
+					}
+
+					.broadcast-storage-type-row {
+						display: grid;
+						grid-template-columns: 1fr 3fr;
+
+						.broadcast-storage-type-key {
+							text-align: right;
+							font-weight: 600;
+						}
+
+						.broadcast-storage-type-value {
+							padding-left: 10px;
 						}
 					}
 				}

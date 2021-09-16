@@ -84,7 +84,8 @@ namespace Broadcast.Monitoring
 		{
 			var recurring = _store.Storage(s =>
 			{
-				var keys = s.GetKeys(new StorageKey($"tasks:recurring:"));
+				// ensure it is a copy with ToList()
+				var keys = s.GetKeys(new StorageKey($"tasks:recurring:")).ToList();
 
 				// ensure it is a copy with ToList()
 				return keys.Select(k => s.Get<RecurringTask>(new StorageKey(k)))

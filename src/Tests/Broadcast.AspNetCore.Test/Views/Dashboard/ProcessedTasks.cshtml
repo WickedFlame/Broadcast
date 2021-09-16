@@ -8,7 +8,7 @@
 
 <div class="broadcast-main">
 	<div>
-		<table class="table processed" id="tasklist">
+		<table class="table processed broadcast-table" id="tasklist">
 			<thead>
 				<tr>
 					<th scope="col">Id</th>
@@ -24,7 +24,7 @@
 			<tbody>
 			@foreach (var task in Model.Monitor.Tasks.Where(t => t.State == TaskState.Processed))
 			{
-				<tr id="task_@(task.Id)">
+				<tr class="broadcast-table-row" data-task-id="@task.Id" id="task_@(task.Id)">
 					<td>@task.Id</td>
 					<td>@task.Name</td>
 					<td id="state_@(task.Id)">@task.State</td>

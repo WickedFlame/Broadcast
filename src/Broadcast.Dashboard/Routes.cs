@@ -13,6 +13,8 @@ namespace Broadcast.Dashboard
 			RouteCollection = new RouteCollection();
 
 			RouteCollection.Add("/dashboard/metrics", new ConsoleMetricsDispatcher());
+			RouteCollection.Add("/dashboard/data/task/(?<id>.+)", new DashboardTaskDataDispatcher());
+			//RouteCollection.Add("/dashboard/data/task", new DashboardTaskDataDispatcher());
 
 			RouteCollection.Add("/js/broadcast-base", new EmbeddedResourceDispatcher("application/javascript", GetExecutingAssembly(), GetContentResourceName("js", "broadcast-base.js")));
 			RouteCollection.Add("/js/broadcast-console", new EmbeddedResourceDispatcher("application/javascript", GetExecutingAssembly(), GetContentResourceName("js", "broadcast-console.js")));

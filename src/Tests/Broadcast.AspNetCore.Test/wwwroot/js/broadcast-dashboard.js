@@ -1,9 +1,26 @@
 ﻿
 export class BroadcastDashboard {
 	constructor(config) {
+		this.config = config;
 		setTimeout(() => {
 			this.startPolling(config, (data) => this.updateDashboard(data, this));
 		}, 3000);
+
+		var tasklist = document.querySelector('#tasklist');
+		if (tasklist) {
+			tasklist.addEventListener('click',
+				e => {
+					var row = e.target.closest('tr');
+					if (row) {
+						this.showTaskDetail(config, row.dataset.taskId);
+					}
+				});
+
+			document.querySelector('#broadcast-overlay-close-btn').addEventListener('click',
+				e => {
+					e.target.closest('#broadcast-data-overlay').style.display = 'none';
+				});
+		}
 	}
 
 	poll(fn, interval) {
@@ -57,7 +74,7 @@ export class BroadcastDashboard {
 		var serverList = document.querySelector('#serverlist');
 		if (serverList) {
 			data.monitor.servers.forEach(s => {
-				serverList.querySelector(`#serverheartbeat_${s.id}`).innerText = this.formatDate(new Date(s.heartbeat));
+				this.updateElement(serverList.querySelector(`#serverheartbeat_${s.id}`), this.formatDate(new Date(s.heartbeat)));
 			});
 		}
 
@@ -70,12 +87,13 @@ export class BroadcastDashboard {
 				var taskRow = recurringlist.querySelector(`#recurring_${name}`);
 
 				if (taskRow) {
-					taskRow.querySelector(`#referenceid_${name}`).innerText = t.referenceId;
-					taskRow.querySelector(`#nextexecution_${name}`).innerText = this.formatDate(new Date(t.nextExecution));
+					this.updateElement(taskRow.querySelector(`#referenceid_${name}`), t.referenceId);
+					this.updateElement(taskRow.querySelector(`#nextexecution_${name}`), this.formatDate(new Date(t.nextExecution)));
 				} else {
 					// add new row
 					var row = recurringlist.querySelector('tbody').insertRow(0);
 					row.id = `recurring_${name}`;
+					row.classList.add('broadcast-table-row');
 
 					this.addCell(row, 0, null, t.name);
 					this.addCell(row, 1, `referenceid_${name}`, t.referenceId);
@@ -117,15 +135,20 @@ export class BroadcastDashboard {
 					: 'Unknown';
 
 				if (taskRow) {
-					taskRow.querySelector(`#state_${t.id}`).innerText = state;
-					taskRow.querySelector(`#server_${t.id}`).innerText = t.server;
-					taskRow.querySelector(`#start_${t.id}`).innerText = t.start ? this.formatDate(new Date(t.start)) : '';
-					taskRow.querySelector(`#duration_${t.id}`).innerText = t.duration;
+					var stateElem = taskRow.querySelector(`#state_${t.id}`);
+					if (stateElem.innerText !== state) {
+						this.updateElement(stateElem, state);
+						this.updateElement(taskRow.querySelector(`#server_${t.id}`), t.server);
+						this.updateElement(taskRow.querySelector(`#start_${t.id}`), t.start ? this.formatDate(new Date(t.start)) : '');
+						this.updateElement(taskRow.querySelector(`#duration_${t.id}`), t.duration);
+					}
 				} else {
 					// add new row
 					if (!tasklist.classList.contains('processed') || t.state === 4) {
 						var row = tasklist.querySelector('tbody').insertRow(0);
 						row.id = `task_${t.id}`;
+						row.setAttribute('data-task-id', t.id);
+						row.classList.add('broadcast-table-row');
 
 						this.addCell(row, 0, null, t.id);
 						this.addCell(row, 1, null, t.name);
@@ -142,8 +165,6 @@ export class BroadcastDashboard {
 		this.updateElement(document.querySelector('#broadcast-enqueued-count'), cnt);
 		this.updateElement(document.querySelector('#broadcast-processed-count'), processedCnt);
 		this.updateElement(document.querySelector('#broadcast-failed-count'), failedCnt);
-
-
 	}
 
 	addCell(row, index, id, value) {
@@ -185,11 +206,55 @@ export class BroadcastDashboard {
 	updateElement(elem, data) {
 		elem.innerText = data;
 	}
+
+	showTaskDetail(config, id) {
+		fetch(`${config.dataUrl}/task/${id}`,
+			{
+				method: "GET",
+				headers: { 'content-type': 'application/json;  charset=utf-8' }
+			}
+		).then(function(response) {
+			if (!response.ok) {
+				throw Error(response.statusText);
+			}
+			return response.json();
+		}).then(function(response) {
+			//
+
+			var rows = '';
+
+			response.values.forEach(p => {
+				if (p.key === '') {
+					rows = rows +
+						`<div class="broadcast-storage-type-row-single">
+							<div class="broadcast-storage-type-value">${p.value}</div>
+						</div>`;
+				} else {
+					rows = rows +
+						`<div class="broadcast-storage-type-row">
+							<div class="broadcast-storage-type-key">${p.key}</div>
+							<div class="broadcast-storage-type-value">${p.value}</div>
+						</div>`;
+				}
+			});
+
+			var overlay = document.querySelector('#broadcast-data-overlay');
+			overlay.querySelector('#broadcast-data-title').innerText = response.title;
+			overlay.querySelector('#broadcast-data-key').innerText = response.key;
+
+			overlay.querySelector('#broadcast-data-table').innerHTML = rows;
+
+			overlay.style.display = 'block';
+
+		});
+	}
 }
 
 if (dashboardConfig === undefined) {
 	dashboardConfig = {
 		pollUrl: "/dashboard/metrics",
+		//TODO: /broadcast/ has to be able to be appended as configuration
+		dataUrl: "/broadcast/dashboard/data",
 		pollInterval: 2000
 	};
 }

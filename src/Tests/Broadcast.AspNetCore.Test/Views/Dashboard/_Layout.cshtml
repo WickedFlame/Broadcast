@@ -20,7 +20,23 @@
 				</main>
 			</div>
 		</div>
-
+		
+		<div id="broadcast-data-overlay" class="broadcast-data-overlay">
+			<div class="broadcast-data-overlay-container">
+				<div class="broadcast-storage-type">
+					<div class="broadcast-storage-type-header">
+						<div id="broadcast-overlay-close-btn" class="broadcast-overlay-close-btn"></div>
+						@*<span class="broadcast-overlay-title" id="broadcast-data-key">Add the name of the task here (key)</span>*@
+						<div class="broadcast-overlay-title">
+							<h3><span id="broadcast-data-title">Title</span> : <span id="broadcast-data-key">Key</span></h3>
+						</div>
+						</div>
+					<div class="broadcast-storage-type-content" id="broadcast-data-table">
+				
+					</div>
+				</div>
+			</div>
+		</div>
 
 	</div>
 
@@ -30,6 +46,8 @@
 	var dashboardConfig = {
 		@*pollUrl: "@(Url.To("/dashboard/metrics"))",*@
 		pollUrl: "/dashboard/metrics",
+		//TODO: /broadcast/ has to be able to be appended as configuration
+		dataUrl: "/broadcast/dashboard/data",
 		pollInterval: 2000
 	}
 </script>
