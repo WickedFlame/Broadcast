@@ -219,24 +219,42 @@ export class BroadcastDashboard {
 			}
 			return response.json();
 		}).then(function(response) {
-			//
-
 			var rows = '';
-
-			response.values.forEach(p => {
-				if (p.key === '') {
-					rows = rows +
-						`<div class="broadcast-storage-type-row-single">
+			
+			response.groups.forEach(g => {
+				if (g.values.length > 0) {
+					rows = rows + `<div class="broadcast-storage-type-row"><span></span><h4>${g.title}</h4></div>`;
+					g.values.forEach(p => {
+						if (p.key === '') {
+							rows = rows +
+								`<div class="broadcast-storage-type-row-single">
 							<div class="broadcast-storage-type-value">${p.value}</div>
 						</div>`;
-				} else {
-					rows = rows +
-						`<div class="broadcast-storage-type-row">
+						} else {
+							rows = rows +
+								`<div class="broadcast-storage-type-row">
 							<div class="broadcast-storage-type-key">${p.key}</div>
 							<div class="broadcast-storage-type-value">${p.value}</div>
 						</div>`;
+						}
+					});
 				}
 			});
+			
+			//response.values.forEach(p => {
+			//	if (p.key === '') {
+			//		rows = rows +
+			//			`<div class="broadcast-storage-type-row-single">
+			//				<div class="broadcast-storage-type-value">${p.value}</div>
+			//			</div>`;
+			//	} else {
+			//		rows = rows +
+			//			`<div class="broadcast-storage-type-row">
+			//				<div class="broadcast-storage-type-key">${p.key}</div>
+			//				<div class="broadcast-storage-type-value">${p.value}</div>
+			//			</div>`;
+			//	}
+			//});
 
 			var overlay = document.querySelector('#broadcast-data-overlay');
 			overlay.querySelector('#broadcast-data-title').innerText = response.title;

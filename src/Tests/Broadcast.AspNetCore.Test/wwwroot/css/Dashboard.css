@@ -109,7 +109,7 @@ main {
       .broadcast-dashboard .broadcast-data-overlay .broadcast-data-overlay-container .broadcast-storage-type .broadcast-storage-type-header {
         display: grid;
         grid-template-columns: auto 1fr;
-        padding-bottom: 50px; }
+        padding-bottom: 10px; }
         .broadcast-dashboard .broadcast-data-overlay .broadcast-data-overlay-container .broadcast-storage-type .broadcast-storage-type-header .broadcast-overlay-title {
           padding-left: 50px; }
           .broadcast-dashboard .broadcast-data-overlay .broadcast-data-overlay-container .broadcast-storage-type .broadcast-storage-type-header .broadcast-overlay-title h3 {
