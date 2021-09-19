@@ -73,7 +73,7 @@ namespace Broadcast.Monitoring
 			}
 
 			// ensure it is a copy with ToList()
-			return tasks.OrderByDescending(t => t.Start == null).ThenByDescending(t => t.Start);
+			return tasks.OrderBy(t => t.Start == null).ThenBy(t => t.Start);
 		}
 
 		/// <summary>

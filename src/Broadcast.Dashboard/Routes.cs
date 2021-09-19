@@ -14,15 +14,17 @@ namespace Broadcast.Dashboard
 
 			RouteCollection.Add("/dashboard/metrics", new ConsoleMetricsDispatcher());
 			RouteCollection.Add("/dashboard/data/task/(?<id>.+)", new DashboardTaskDataDispatcher());
-			//RouteCollection.Add("/dashboard/data/task", new DashboardTaskDataDispatcher());
+			RouteCollection.Add("/dashboard/index", new EmbeddedResourceDispatcher("text/html", GetExecutingAssembly(), GetContentResourceName("views", "dashboard.html")));
 
 			RouteCollection.Add("/js/broadcast-base", new EmbeddedResourceDispatcher("application/javascript", GetExecutingAssembly(), GetContentResourceName("js", "broadcast-base.js")));
 			RouteCollection.Add("/js/broadcast-console", new EmbeddedResourceDispatcher("application/javascript", GetExecutingAssembly(), GetContentResourceName("js", "broadcast-console.js")));
+			RouteCollection.Add("/js/broadcast-dashboard", new EmbeddedResourceDispatcher("application/javascript", GetExecutingAssembly(), GetContentResourceName("js", "broadcast-dashboard.js")));
 
 			//RouteCollection.Add("/js/broadcast-base.js", new EmbeddedResourceDispatcher("application/javascript", GetExecutingAssembly(), GetContentResourceName("js", "broadcast-base.js")));
 			//RouteCollection.Add("/js/broadcast-console.js", new EmbeddedResourceDispatcher("application/javascript", GetExecutingAssembly(), GetContentResourceName("js", "broadcast-console.js")));
 
 			RouteCollection.Add("/css/broadcast-console", new EmbeddedResourceDispatcher("text/css", GetExecutingAssembly(), GetContentResourceName("css", "broadcast-console.min.css")));
+			RouteCollection.Add("/css/broadcast-dashboard", new EmbeddedResourceDispatcher("text/css", GetExecutingAssembly(), GetContentResourceName("css", "broadcast-dashboard.min.css")));
 		}
 
 		/// <summary>

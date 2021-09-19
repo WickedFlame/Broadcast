@@ -34,14 +34,39 @@
 
   <ItemGroup>
     <None Remove="Assets\css\broadcast-console.min.css" />
+    <None Remove="Assets\css\broadcast-dashboard.css" />
+    <None Remove="Assets\css\broadcast-dashboard.min.css" />
+    <None Remove="Assets\css\broadcast-dashboard.scss" />
     <None Remove="Assets\js\broadcast-base.js" />
     <None Remove="Assets\js\broadcast-console.js" />
+    <None Remove="Assets\js\broadcast-dashboard.js" />
+    <None Remove="Assets\views\Dashboard.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\css\broadcast-dashboard.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <EmbeddedResource Include="Assets\js\broadcast-dashboard.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Assets\css\broadcast-dashboard.min.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <Content Include="Assets\css\broadcast-dashboard.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Assets\css\broadcast-console.min.css" />
     <EmbeddedResource Include="Assets\js\broadcast-base.js" />
     <EmbeddedResource Include="Assets\js\broadcast-console.js" />
+    <EmbeddedResource Include="Assets\views\dashboard.html" />
   </ItemGroup>
 
   <ItemGroup>
