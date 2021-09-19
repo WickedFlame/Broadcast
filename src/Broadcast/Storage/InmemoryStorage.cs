@@ -199,7 +199,7 @@ namespace Broadcast.Storage
 		{
 			lock (_lockHandle)
 			{
-				return _store.Keys.Where(k => k.StartsWith(key.ToString()));
+				return _store.Keys.Where(k => k.StartsWith(key.ToString())).ToList();
 			}
 		}
 

@@ -98,9 +98,18 @@ namespace Broadcast.EventSourcing
 		{
 			while (_storage.TryFetchNext(new StorageKey("tasks:enqueued"), new StorageKey("tasks:dequeued"), out var id))
 			{
+				_logger.Write($"Dequeued task {id} for dispatchers", LogLevel.Info, Category.Log);
+
 				// eager fetching of the data
 				// first TaskStore to fetch gets to execute the Task
 				var task = _storage.Get<BroadcastTask>(new StorageKey($"task:{id}"));
+
+				if (task == null)
+				{
+					_logger.Write($"Could not fetch task {id} for dispatchers because the task is not in the storage", LogLevel.Warning, Category.Log);
+					continue;
+				}
+				
 
 				// use round robin to get the next set of dispatchers
 				var dispatchers = _dispatchers.GetNext();
