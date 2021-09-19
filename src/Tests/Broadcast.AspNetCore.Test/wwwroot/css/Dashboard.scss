@@ -18,62 +18,10 @@ main{
 
 .broadcast-dashboard {
 	display: grid;
-	grid-template-columns: 1fr 5fr;
+	/*grid-template-columns: 1fr 5fr;*/
 	height: 100%;
 	//font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
 	font-family: "Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
-
-	.broadcast-nav {
-		border-right: 1px solid #bbb;
-		height: 100%;
-		background-color: #f6f6f6;
-
-		.broadcast-nav-header {
-			border-bottom: 1px solid #bbb;
-			padding: 10px 20px;
-			font-size: 18px;
-			font-weight: 500;
-			color: #777;
-
-			a {
-				text-decoration: none;
-				color: inherit;
-			}
-		}
-
-		.broadcast-nav-item {
-			border-bottom: 1px solid #bbb;
-			padding: 10px 20px;
-			color: #343a40;
-			font-size: 14px;
-
-			a {
-				text-decoration: none;
-				color: inherit;
-			}
-
-			.broadcast-nav-button {
-				display: grid;
-				grid-template-columns: 5fr 1fr;
-			}
-
-			&:last-child {
-				border-bottom: 0;
-			}
-
-			.right {
-				float: right;
-			}
-
-			&:hover {
-				background-color: #eee;
-			}
-
-			&.selected {
-				background-color: #eee;
-			}
-		}
-	}
 
 	.broadcast-header {
 		height: 50px;
@@ -86,7 +34,7 @@ main{
 
 		.broadcast-main-header {
 			border-bottom: 1px solid #bbb;
-			padding: 10px 20px;
+			padding: 10px 15%;
 			font-size: 18px;
 			font-weight: 500;
 			color: #777;
@@ -94,41 +42,85 @@ main{
 
 		.broadcast-main {
 			height: 100%;
-			padding: 20px;
+			padding: 20px 15%;
 
-			.broadcast-table {
-				.broadcast-table-row {
-					cursor: pointer;
+			.broadcast-section {
+				padding-bottom: 30px;
 
-					&:hover {
-						background-color: #f6f6f6;
+				.broadcast-section-header {
+					display: grid;
+					grid-template-columns: auto 1fr;
+					padding-top: 20px;
+					padding-bottom: 20px;
+
+					> div {
+						h3 {
+							margin: 0;
+						}
+
+						padding-right: 20px;
+
+						span {
+							display: inline-block;
+							vertical-align: middle;
+							line-height: normal;
+						}
 					}
 				}
-			}
 
-			table {
-				width: 100%;
-				border-collapse: collapse;
-				font-size: 14px;
+				.broadcast-recap-section {
+					display: flex;
 
-				th {
-					border-bottom: 1.5px solid #bbb;
-					text-align: start;
-					padding-top: 5px;
-					padding-bottom: 5px;
+					.broadcast-recap-section-item {
+						display: grid;
+						grid-template-rows: 1fr 1fr;
+						text-align: center;
+						padding: 10px;
+						border: 1.5px solid #bbb;
+						margin-right: 10px;
+						/*margin-bottom: 20px;*/
+						min-width: 120px;
+
+						h4 {
+							margin: 0;
+						}
+					}
 				}
 
-				tr {
+				.broadcast-table {
+					.broadcast-table-row {
+						cursor: pointer;
+
+						&:hover {
+							background-color: #f6f6f6;
+						}
+					}
+				}
+
+				table {
+					width: 100%;
+					border-collapse: collapse;
 					font-size: 14px;
 
-					td {
-						padding-top: 2px;
-						padding-bottom: 2px;
+					th {
+						border-bottom: 1.5px solid #bbb;
+						text-align: start;
+						padding-top: 5px;
+						padding-bottom: 5px;
 					}
-					/*padding-bottom: 5px;*/
-					&:first-child {
+
+					tr {
+						font-size: 14px;
+
 						td {
-							padding-top: 5px;
+							padding-top: 2px;
+							padding-bottom: 2px;
+						}
+						/*padding-bottom: 5px;*/
+						&:first-child {
+							td {
+								padding-top: 5px;
+							}
 						}
 					}
 				}
@@ -169,7 +161,7 @@ main{
 					.broadcast-overlay-title {
 						padding-left: 50px;
 
-						h3{
+						h3 {
 							margin-top: 5px;
 						}
 					}
@@ -181,6 +173,7 @@ main{
 						width: 32px;
 						height: 32px;
 						opacity: 0.3;
+						cursor: pointer;
 
 						&:hover {
 							opacity: 1;

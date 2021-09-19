@@ -105,7 +105,7 @@ export class BroadcastDashboard {
 
 		// tasks
 		var tasklist = document.querySelector('#tasklist');
-
+		this.updateElement(document.querySelector('#broadcast-tasks-count'), data.monitor.tasks.length);
 		var cnt = 0;
 		var processedCnt = 0;
 		var failedCnt = 0;
