@@ -126,7 +126,7 @@ namespace Broadcast.AspNetCore.Test.Controllers
 	public class StorageProperty
 	{
 		public StorageProperty(string key, object value)  
-			: this(key, value.ToString())
+			: this(key, value?.ToString())
 		{
 		}
 
