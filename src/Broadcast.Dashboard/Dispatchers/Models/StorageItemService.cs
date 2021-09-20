@@ -99,5 +99,42 @@ namespace Broadcast.Dashboard.Dispatchers.Models
 
 			return task;
 		}
+
+		/// <summary>
+		/// Get all data of a Server as a <see cref="StorageItem"/>
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		public StorageItem GetServer(string id)
+		{
+			var server = _store.Storage(s =>
+			{
+				var key = s.GetKeys(new StorageKey($"server:")).FirstOrDefault(k => k.EndsWith(id));
+				if (string.IsNullOrEmpty(key))
+				{
+					return null;
+				}
+
+				var data = s.Get<DataObject>(new StorageKey(key));
+				return new StorageItem
+				{
+					Key = id.ToString(),
+					Title = data["Name"]?.ToString(),
+					Groups = new List<StoragePropertyGroup>{ new StoragePropertyGroup
+					{
+						Title = "Server",
+						Values = new List<StorageProperty>
+						{
+							new StorageProperty("Id", data["Id"]),
+							new StorageProperty("Name", data["Name"]),
+							new StorageProperty("Heartbeat", data["Heartbeat"]?.ToFormattedDateTime())
+						}
+					}
+					}
+				};
+			});
+
+			return server;
+		}
 	}
 }

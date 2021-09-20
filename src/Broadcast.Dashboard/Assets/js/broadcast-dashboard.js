@@ -10,21 +10,26 @@ export class BroadcastDashboard extends BroadcastBase {
 		//}, 3000);
 		this.startPolling(config, (data) => this.updateDashboard(data, this));
 
-		var tasklist = document.querySelector('#tasklist');
-		if (tasklist) {
-			tasklist.addEventListener('click',
-				e => {
-					var row = e.target.closest('tr');
-					if (row) {
-						this.showTaskDetail(config, row.dataset.taskId);
-					}
-				});
+		document.querySelector('#tasklist').addEventListener('click',
+			e => {
+				var row = e.target.closest('tr');
+				if (row) {
+					this.showDetail(`${config.dataUrl}/task/${row.dataset.taskId}`);
+				}
+			});
 
-			document.querySelector('#broadcast-overlay-close-btn').addEventListener('click',
-				e => {
-					e.target.closest('#broadcast-data-overlay').style.display = 'none';
-				});
-		}
+		document.querySelector('#serverlist').addEventListener('click',
+			e => {
+				var row = e.target.closest('tr');
+				if (row) {
+					this.showDetail(`${config.dataUrl}/server/${row.dataset.serverId}`);
+				}
+			});
+
+		document.querySelector('#broadcast-overlay-close-btn').addEventListener('click',
+			e => {
+				e.target.closest('#broadcast-data-overlay').style.display = 'none';
+			});
 	}
 
 	updateDashboard(data, dashboard) {
@@ -37,6 +42,7 @@ export class BroadcastDashboard extends BroadcastBase {
 				this.updateElement(serverElem, this.formatDate(new Date(s.heartbeat)));
 			} else {
 				var row = serverList.querySelector('tbody').insertRow(0);
+				row.setAttribute('data-server-id', s.id);
 				row.classList.add('broadcast-table-row');
 
 				this.addCell(row, 0, null, `${s.name}:${s.id}`);
@@ -59,6 +65,7 @@ export class BroadcastDashboard extends BroadcastBase {
 					// add new row
 					var row = recurringlist.querySelector('tbody').insertRow(0);
 					row.id = `recurring_${name}`;
+					row.setAttribute('data-recurring-id', t.id);
 					row.classList.add('broadcast-table-row');
 
 					this.addCell(row, 0, null, t.name);
@@ -76,11 +83,11 @@ export class BroadcastDashboard extends BroadcastBase {
 		var processedCnt = 0;
 		var failedCnt = 0;
 		data.tasks.forEach(t => {
-			if (t.state !== 4 && t.state !== 5) {
+			if (t.state !== 'processed' && t.state !== 'faulted') {
 				cnt = cnt + 1;
-			}else if (t.state === 4) {
+			} else if (t.state === 'processed') {
 				processedCnt = processedCnt + 1;
-			} else if (t.state === 5) {
+			} else if (t.state === 'faulted') {
 				failedCnt = failedCnt + 1;
 			}
 
@@ -93,7 +100,7 @@ export class BroadcastDashboard extends BroadcastBase {
 					: t.state === 'dequeued'
 					? 'Dequeued'
 					: t.state === 'inProcess'
-					? 'InProcess'
+					? 'Processing'
 					: t.state === 'processed'
 					? 'Processed'
 					: t.state === 'faulted'
@@ -175,8 +182,8 @@ export class BroadcastDashboard extends BroadcastBase {
 		}
 	}
 
-	showTaskDetail(config, id) {
-		fetch(`${config.dataUrl}/task/${id}`,
+	showDetail(url) {
+		fetch(url,
 			{
 				method: "GET",
 				headers: { 'content-type': 'application/json;  charset=utf-8' }

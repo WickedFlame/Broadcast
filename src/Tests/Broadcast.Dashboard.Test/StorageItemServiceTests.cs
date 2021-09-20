@@ -95,7 +95,7 @@ namespace Broadcast.Dashboard.Test
 		}
 
 		[Test]
-		public void StorageItemService_GetTask_NoTaskData()
+		public void StorageItemService_GetTask_NoData()
 		{
 			var storage = new Mock<IStorage>();
 
@@ -106,6 +106,48 @@ namespace Broadcast.Dashboard.Test
 			var task = service.GetTask("E09105CE-8A21-4C51-B2A2-5E6A6B63889A");
 
 			Assert.IsNull(task);
+		}
+
+
+
+		[Test]
+		public void StorageItemService_GetServer()
+		{
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.GetKeys(It.IsAny<StorageKey>())).Returns(new List<string>
+			{
+				"server:server2:6CA24559-DE30-4EF2-9F02-2595FC9D6C7F",
+				"server:server1:E09105CE-8A21-4C51-B2A2-5E6A6B63889A"
+			});
+			storage.Setup(exp => exp.Get<DataObject>(It.Is<StorageKey>(k => k.Key.EndsWith("server:server1:E09105CE-8A21-4C51-B2A2-5E6A6B63889A")))).Returns(() => new DataObject
+			{
+				{"Id", "E09105CE-8A21-4C51-B2A2-5E6A6B63889A"},
+				{"Name", "server1"},
+				{"Heartbeat", "2021/12/21T12:12:12"}
+			});
+
+			var store = new TaskStore(storage.Object);
+
+			var service = new StorageItemService(store);
+
+			var task = service.GetServer("E09105CE-8A21-4C51-B2A2-5E6A6B63889A");
+
+			task.MatchSnapshot(SnapshotOptions.Create(o => o.MockDateTimes()));
+		}
+
+
+		[Test]
+		public void StorageItemService_GetServer_NoData()
+		{
+			var storage = new Mock<IStorage>();
+
+			var store = new TaskStore(storage.Object);
+
+			var service = new StorageItemService(store);
+
+			var data = service.GetServer("E09105CE-8A21-4C51-B2A2-5E6A6B63889A");
+
+			Assert.IsNull(data);
 		}
 	}
 }
