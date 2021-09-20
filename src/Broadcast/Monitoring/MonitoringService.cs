@@ -63,7 +63,7 @@ namespace Broadcast.Monitoring
 				task.Server = data["Server"]?.ToString();
 				if(long.TryParse(data["ExecutionTime"]?.ToString(), out var duration))
 				{
-					task.Duration = TimeSpan.FromTicks(duration).TotalMilliseconds;
+					task.Duration = duration;
 				}
 
 				if(DateTime.TryParse(data["InProcessAt"]?.ToString(), out var start))

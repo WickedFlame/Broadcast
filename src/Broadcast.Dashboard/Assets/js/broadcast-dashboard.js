@@ -113,7 +113,7 @@ export class BroadcastDashboard extends BroadcastBase {
 						this.updateElement(stateElem, state);
 						this.updateElement(taskRow.querySelector(`#server_${t.id}`), t.server);
 						this.updateElement(taskRow.querySelector(`#start_${t.id}`), t.start ? this.formatDate(new Date(t.start)) : '');
-						this.updateElement(taskRow.querySelector(`#duration_${t.id}`), t.duration);
+						this.updateElement(taskRow.querySelector(`#duration_${t.id}`), t.duration ? this.millisecondsToTime(t.duration, true) : '');
 					}
 				} else {
 					// add new row
@@ -130,7 +130,7 @@ export class BroadcastDashboard extends BroadcastBase {
 						this.addCell(row, 4, null, this.millisecondsToTime(t.time));
 						this.addCell(row, 5, `server_${t.id}`, t.server);
 						this.addCell(row, 6, `start_${t.id}`, t.start ? this.formatDate(new Date(t.start)) : '');
-						this.addCell(row, 7, `duration_${t.id}`, t.duration);
+						this.addCell(row, 7, `duration_${t.id}`, t.duration ? this.millisecondsToTime(t.duration, true) : '');
 					}
 				}
 			}
@@ -148,7 +148,7 @@ export class BroadcastDashboard extends BroadcastBase {
 		}
 	}
 
-	millisecondsToTime(s) {
+	millisecondsToTime(s, short) {
 
 		// Pad to 2 or 3 digits, default is 2
 		function pad(n, z) {
@@ -162,7 +162,9 @@ export class BroadcastDashboard extends BroadcastBase {
 		s = (s - secs) / 60;
 		var mins = s % 60;
 		var hrs = (s - mins) / 60;
-
+		if (short) {
+			return `${pad(mins)}:${pad(secs)}.${pad(ms, 3)}`;
+		}
 		return `${pad(hrs)}:${pad(mins)}:${pad(secs)}.${pad(ms, 3)}`;
 	}
 
