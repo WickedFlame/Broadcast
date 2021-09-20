@@ -19,6 +19,9 @@ namespace Broadcast
 		/// </summary>
 		ITaskProcessor Processor { get; }
 
+		/// <summary>
+		/// Gets the <see cref="ITaskStore"/>
+		/// </summary>
 		ITaskStore Store { get; }
 
 		/// <summary>

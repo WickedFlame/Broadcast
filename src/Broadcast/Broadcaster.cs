@@ -39,11 +39,22 @@ namespace Broadcast
 		{
 		}
 
+		/// <summary>
+		/// Creates a new Broadcaster
+		/// </summary>
+		/// <param name="store"></param>
+		/// <param name="options"></param>
 		public Broadcaster(ITaskStore store, Options options)
 			: this(store, new TaskProcessor(store, options), new Scheduler(), options)
 		{
 		}
 
+		/// <summary>
+		/// Creates a new Broadcaster
+		/// </summary>
+		/// <param name="store"></param>
+		/// <param name="processor"></param>
+		/// <param name="scheduler"></param>
 		public Broadcaster(ITaskStore store, ITaskProcessor processor, IScheduler scheduler)
 			: this(store, processor, scheduler, new Options())
 		{
@@ -87,8 +98,14 @@ namespace Broadcast
         /// </summary>
         public IScheduler Scheduler{ get; }
 
+		/// <summary>
+		/// Gets the <see cref="ITaskProcessor"/>
+		/// </summary>
         public ITaskProcessor Processor { get; }
 
+		/// <summary>
+		/// Gets the <see cref="ITaskStore"/>
+		/// </summary>
 		public ITaskStore Store { get; }
 
         /// <summary>
