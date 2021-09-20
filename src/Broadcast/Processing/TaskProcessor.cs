@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Broadcast.Configuration;
 using Broadcast.Diagnostics;
 using Broadcast.EventSourcing;
@@ -53,7 +54,8 @@ namespace Broadcast.Processing
 		/// Wait for all threads in the taskprocessor to end
 		/// </summary>
         public void WaitAll()
-        {
+		{
+			_queue.WaitAll();
 	        _server.WaitAll();
         }
 

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using Broadcast.EventSourcing;
 
 namespace Broadcast
@@ -10,6 +12,7 @@ namespace Broadcast
 	{
 		private readonly object _syncRoot = new object();
 		private readonly Queue<ITask> _queue;
+		private readonly CountdownEvent _counter;
 
 		/// <summary>
 		/// creates a new queue
@@ -17,6 +20,7 @@ namespace Broadcast
 		public TaskQueue()
 		{
 			_queue = new Queue<ITask>();
+			_counter = new CountdownEvent(0);
 		}
 
 		/// <summary>
@@ -42,6 +46,7 @@ namespace Broadcast
 			lock (_syncRoot)
 			{
 				_queue.Enqueue(@event);
+				_counter.Reset(_queue.Count);
 			}
 		}
 
@@ -57,13 +62,26 @@ namespace Broadcast
 				if (_queue.Count > 0)
 				{
 					value = _queue.Dequeue();
+					_counter.Signal();
 
 					return true;
 				}
 
 				value = default(ITask);
+				_counter.Reset();
 
 				return false;
+			}
+		}
+
+		/// <summary>
+		/// Wait for all tasks in the queue to be processed
+		/// </summary>
+		public void WaitAll()
+		{
+			while (Count > 0)
+			{
+				_counter.WaitHandle.WaitOne(TimeSpan.Zero);
 			}
 		}
 	}
