@@ -25,9 +25,11 @@ namespace Broadcast.Test
 
             Task.Delay(1000).Wait();
 
+			broadcaster.WaitAll();
+
             var store = broadcaster.Store;
-            Assert.IsTrue(store.Count(t => t.State == TaskState.Processed) == 1, $"Store Count is {store.Count()}, processed Count is {store.Count(t => t.State == TaskState.Processed)}");
-            Assert.IsTrue(store.Count(t => t.State == TaskState.Faulted) == 1, $"Store Count is {store.Count()}, processed Count is {store.Count(t => t.State == TaskState.Faulted)}");
+            Assert.IsTrue(store.Count(t => t.State == TaskState.Processed) == 1, $"Store Count is {store.Count()}, processed Count is {store.Count(t => t.State == TaskState.Processed)}{Environment.NewLine}  States: {string.Join(',', broadcaster.Store.Select(s => s.State.ToString()))}");
+            Assert.IsTrue(store.Count(t => t.State == TaskState.Faulted) == 1, $"Store Count is {store.Count()}, processed Count is {store.Count(t => t.State == TaskState.Faulted)}{Environment.NewLine}  States: {string.Join(',', broadcaster.Store.Select(s => s.State.ToString()))}");
 		}
 
     }

@@ -46,6 +46,8 @@ namespace Broadcast.Test.Api
 			// serializeable
 			BackgroundTaskClient.Send(() => Trace.WriteLine("test"));
 
+			BackgroundTaskClient.Client.Store.WaitAll();
+
 			_processor.Verify(exp => exp.Process(It.IsAny<ITask>()), Times.Once);
 		}
 
@@ -68,6 +70,8 @@ namespace Broadcast.Test.Api
 			// serializeable
 			BackgroundTaskClient.Send(() => TestMethod(1));
 
+			BackgroundTaskClient.Client.Store.WaitAll();
+
 			_processor.Verify(exp => exp.Process(It.IsAny<ITask>()), Times.Once);
 		}
 
@@ -89,6 +93,8 @@ namespace Broadcast.Test.Api
 			// execute a generic method
 			// serializeable
 			BackgroundTaskClient.Send(() => GenericMethod(1));
+
+			BackgroundTaskClient.Client.Store.WaitAll();
 
 			_processor.Verify(exp => exp.Process(It.IsAny<ITask>()), Times.Once);
 		}
@@ -167,7 +173,9 @@ namespace Broadcast.Test.Api
 			// serializeable
 			BackgroundTaskClient.Recurring(() => TestMethod(1), TimeSpan.FromSeconds(0.5));
 
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
+			Task.Delay(1000).Wait();
+
+			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.AtLeastOnce);
 		}
 
 		[Test]
@@ -177,7 +185,9 @@ namespace Broadcast.Test.Api
 			// serializeable
 			BackgroundTaskClient.Recurring(() => GenericMethod(1), TimeSpan.FromSeconds(0.5));
 
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
+			Task.Delay(1000).Wait();
+
+			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.AtLeastOnce);
 		}
 
 		[Test]

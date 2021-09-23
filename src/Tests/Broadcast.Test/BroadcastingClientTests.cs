@@ -23,7 +23,7 @@ namespace Broadcast.Test
 		}
 
 		[Test]
-		public void BroadcastingClient_TaskStore()
+		public void BroadcastingClient_EnsureUsedStore()
 		{
 			var store = new TaskStore();
 			var client = new BroadcastingClient(store);
@@ -47,6 +47,15 @@ namespace Broadcast.Test
 
 			var stored = TaskStore.Default.Single();
 			Assert.AreEqual(new { task.Id, task.Name }, new { stored.Id, stored.Name });
+		}
+
+		[Test]
+		public void BroadcastingClient_TaskStore()
+		{
+			var store = new TaskStore();
+			var client = new BroadcastingClient(store);
+
+			Assert.AreSame(store, client.Store);
 		}
 	}
 }

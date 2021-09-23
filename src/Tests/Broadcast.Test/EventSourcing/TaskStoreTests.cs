@@ -139,6 +139,8 @@ namespace Broadcast.Test.EventSourcing
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers"));
 			store.Add(task);
 
+			store.WaitAll();
+
 			Assert.AreEqual(new { task.Id, task.Name }, new { output.Id, output.Name });
 		}
 
@@ -154,15 +156,19 @@ namespace Broadcast.Test.EventSourcing
 
 			// dispatching tasks uses a round robin implementation to select the set of dispatchers
 			store.Add(TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers")));
+			store.WaitAll();
 			Assert.AreEqual(1, number);
 
 			store.Add(TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers")));
+			store.WaitAll();
 			Assert.AreEqual(2, number);
 
 			store.Add(TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers")));
+			store.WaitAll();
 			Assert.AreEqual(3, number);
 
 			store.Add(TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers")));
+			store.WaitAll();
 			Assert.AreEqual(1, number);
 		}
 
@@ -178,6 +184,7 @@ namespace Broadcast.Test.EventSourcing
 			store.RegisterDispatchers("id", new IDispatcher[] { new TestDispatcher(t => cnt += 1) });
 
 			store.Add(TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers")));
+			store.WaitAll();
 
 			Assert.AreEqual(1, cnt);
 		}
@@ -207,6 +214,7 @@ namespace Broadcast.Test.EventSourcing
 
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("TaskStore"));
 			store.Add(task);
+			store.WaitAll();
 
 			dispatcher.Verify(exp => exp.Execute(It.IsAny<ITask>()), Times.Once);
 		}
@@ -340,6 +348,8 @@ namespace Broadcast.Test.EventSourcing
 
 			store.DispatchTasks();
 
+			store.WaitAll();
+
 			storage.Verify(exp => exp.Get<string>(It.IsAny<StorageKey>()), Times.Never);
 		}
 
@@ -351,6 +361,8 @@ namespace Broadcast.Test.EventSourcing
 
 			store.DispatchTasks();
 
+			store.WaitAll();
+
 			storage.Verify(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out It.Ref<string>.IsAny), Times.Once);
 		}
 
@@ -361,9 +373,12 @@ namespace Broadcast.Test.EventSourcing
 
 			var storage = new Mock<IStorage>();
 			storage.Setup(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
+			storage.Setup(exp => exp.GetList(It.IsAny<StorageKey>())).Returns(() => id == null ? Enumerable.Empty<string>() : new List<string> { "test" });
 
 			var store = new TaskStore(storage.Object);
 			store.DispatchTasks();
+
+			store.WaitAll();
 
 			storage.Verify(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out It.Ref<string>.IsAny), Times.Exactly(2));
 		}
@@ -375,9 +390,12 @@ namespace Broadcast.Test.EventSourcing
 
 			var storage = new Mock<IStorage>();
 			storage.Setup(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
+			storage.Setup(exp => exp.GetList(It.IsAny<StorageKey>())).Returns(() => id == null ? Enumerable.Empty<string>() : new List<string> { "test" });
 
 			var store = new TaskStore(storage.Object);
 			store.DispatchTasks();
+			
+			store.WaitAll();
 
 			storage.Verify(exp => exp.Get<BroadcastTask>(It.IsAny<StorageKey>()), Times.Once);
 		}
@@ -393,6 +411,8 @@ namespace Broadcast.Test.EventSourcing
 			var store = new TaskStore(storage.Object);
 			store.DispatchTasks();
 
+			store.WaitAll();
+
 			storage.Verify(exp => exp.Get<string>(It.IsAny<StorageKey>()), Times.Never);
 		}
 
@@ -404,6 +424,7 @@ namespace Broadcast.Test.EventSourcing
 			var storage = new Mock<IStorage>();
 			storage.Setup(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
 			storage.Setup(exp => exp.Get<BroadcastTask>(It.IsAny<StorageKey>())).Returns(() => new BroadcastTask());
+			storage.Setup(exp => exp.GetList(It.IsAny<StorageKey>())).Returns(() => id == null ? Enumerable.Empty<string>() : new List<string> {"test"});
 
 			var dispatcher = new Mock<IDispatcher>();
 
@@ -411,6 +432,8 @@ namespace Broadcast.Test.EventSourcing
 			store.RegisterDispatchers("1", new[] { dispatcher.Object });
 
 			store.DispatchTasks();
+
+			store.WaitAll();
 
 			dispatcher.Verify(exp => exp.Execute(It.IsAny<ITask>()), Times.Once);
 		}
@@ -429,6 +452,8 @@ namespace Broadcast.Test.EventSourcing
 			store.RegisterDispatchers("1", new[] { dispatcher.Object });
 
 			store.DispatchTasks();
+
+			store.WaitAll();
 
 			dispatcher.Verify(exp => exp.Execute(It.IsAny<ITask>()), Times.Never);
 		}

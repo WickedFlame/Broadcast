@@ -81,7 +81,7 @@ namespace Broadcast
 		{
 			while (Count > 0)
 			{
-				_counter.WaitHandle.WaitOne(TimeSpan.Zero);
+				_counter.WaitHandle.WaitOne(50);
 			}
 		}
 	}

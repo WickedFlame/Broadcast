@@ -4,7 +4,9 @@ using Broadcast.Storage;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Broadcast.Diagnostics;
+using Broadcast.Processing;
 using Broadcast.Server;
 
 namespace Broadcast.EventSourcing
@@ -22,10 +24,15 @@ namespace Broadcast.EventSourcing
         private static readonly ItemFactory<ITaskStore> ItemFactory = new ItemFactory<ITaskStore>(() => new TaskStore());
         private readonly ILogger _logger;
 
-        /// <summary>
+        private readonly ManualResetEventSlim _event;
+        private readonly BackgroundServerProcess<IStorageContext> _process;
+        private readonly DispatcherLock _dispatcherLock;
+        private readonly object _processorLock = new object();
+
+		/// <summary>
 		/// Gets the default instance of the <see cref="ITaskStore"/>
 		/// </summary>
-        public static ITaskStore Default => ItemFactory.Factory();
+		public static ITaskStore Default => ItemFactory.Factory();
 
 		/// <summary>
 		/// Setup a new instance for the default <see cref="ITaskStore"/>
@@ -70,12 +77,31 @@ namespace Broadcast.EventSourcing
 
             _logger = LoggerFactory.Create();
 			_logger.Write("Starting new Storage");
-		}
+
+			_event = new ManualResetEventSlim();
+			_event.Set();
+
+			_dispatcherLock = new DispatcherLock();
+			var context = new StorageDispatcherContext
+			{
+				Dispatchers = _dispatchers,
+				ResetEvent = _event
+			};
+			_process = new BackgroundServerProcess<IStorageContext>(context);
+        }
 
 		/// <summary>
 		/// Gets a enumeration of all registered <see cref="IBroadcaster"/> servers
 		/// </summary>
 		public IEnumerable<ServerModel> Servers => _registeredServers.Values;
+
+		/// <summary>
+		/// Gets a <see cref="System.Threading.WaitHandle"/> that is used to wait for the event to be set.
+		/// </summary>
+		/// <remarks>
+		/// <see cref="WaitHandle"/> should only be used if it's needed for integration with code bases that rely on having a WaitHandle.
+		/// </remarks>
+		public WaitHandle WaitHandle => _event.WaitHandle;
 
 		/// <summary>
 		/// Adds a new Task to the queue to be processed
@@ -88,6 +114,9 @@ namespace Broadcast.EventSourcing
 			// serializeable tasks are propagated to all registered servers through the storage
 			_storage.AddToList(new StorageKey("tasks:enqueued"), task.Id);
 			_storage.Set(new StorageKey($"task:{task.Id}"), task);
+
+			// reset the event to be signaled
+			_event.Reset();
 		}
 
 		/// <summary>
@@ -96,27 +125,16 @@ namespace Broadcast.EventSourcing
 		/// </summary>
 		public void DispatchTasks()
 		{
-			while (_storage.TryFetchNext(new StorageKey("tasks:enqueued"), new StorageKey("tasks:dequeued"), out var id))
+			// check if a thread is allready processing the queue
+			lock (_processorLock)
 			{
-				_logger.Write($"Dequeued task {id} for dispatchers", LogLevel.Info, Category.Log);
-
-				// eager fetching of the data
-				// first TaskStore to fetch gets to execute the Task
-				var task = _storage.Get<BroadcastTask>(new StorageKey($"task:{id}"));
-
-				if (task == null)
+				if (_dispatcherLock.IsLocked())
 				{
-					_logger.Write($"Could not fetch task {id} for dispatchers because the task is not in the storage", LogLevel.Warning, Category.Log);
-					continue;
+					return;
 				}
-				
 
-				// use round robin to get the next set of dispatchers
-				var dispatchers = _dispatchers.GetNext();
-				foreach (var dispatcher in dispatchers)
-				{
-					dispatcher.Execute(task);
-				}
+				// start new background thread to process all queued tasks
+				_process.StartNew(new TaskStoreDispatcher(_dispatcherLock, _storage));
 			}
 		}
 		
@@ -152,6 +170,8 @@ namespace Broadcast.EventSourcing
 			{
 				_storage.Delete(new StorageKey(key));
 			}
+
+			_event.Reset();
 		}
 
 		/// <summary>
@@ -195,6 +215,26 @@ namespace Broadcast.EventSourcing
 					_registeredServers.Remove(key);
 				}
 			}
+		}
+
+		/// <summary>
+		/// Wait for all enqueued Tasks to be passed to the dispatchers
+		/// </summary>
+		/// <returns></returns>
+		public bool WaitAll()
+		{
+			// first we wait for all enqueued tasks to change state to dequeued
+			while (this.GetEnqueuedTasks().Any())
+			{
+				WaitHandle.WaitOne();
+			}
+
+			// then we wait for all dequeued tasks to be dispatched to all dispatchers
+			// all tasks are passed to the dispatchers in a own thread
+			// so we wait for these to end
+			_process.WaitAll();
+
+			return true;
 		}
 
 		/// <summary>

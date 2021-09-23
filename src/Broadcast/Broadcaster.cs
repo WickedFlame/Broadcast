@@ -1,6 +1,7 @@
 ﻿using Broadcast.EventSourcing;
 using Broadcast.Processing;
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using Broadcast.Composition;
@@ -118,10 +119,11 @@ namespace Broadcast
         }
 
         /// <summary>
-		/// Wait for all threads to end
+		/// Wait for all tasks to be processed and all threads end
 		/// </summary>
         public void WaitAll()
         {
+	        Store.WaitAll();
 	        Processor.WaitAll();
 		}
 		

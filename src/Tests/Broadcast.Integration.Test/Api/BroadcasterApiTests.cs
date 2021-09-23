@@ -167,13 +167,6 @@ namespace Broadcast.Integration.Test.Api
 			Assert.GreaterOrEqual(broadcaster.GetProcessedTasks().Count(), 1);
 		}
 
-
-
-
-
-
-
-
 		[Test]
 		public void Broadcaster_Api_Recurring_StaticTrace()
 		{
@@ -185,7 +178,7 @@ namespace Broadcast.Integration.Test.Api
 
 			Task.Delay(2000).Wait();
 
-			Assert.GreaterOrEqual(broadcaster.GetProcessedTasks().Count(), 2);
+			Assert.GreaterOrEqual(broadcaster.GetProcessedTasks().Count(), 1);
 		}
 
 		[Test]
@@ -195,7 +188,7 @@ namespace Broadcast.Integration.Test.Api
 
 			// execute a local method
 			// serializeable
-			broadcaster.Recurring(() => TestMethod(1), TimeSpan.FromSeconds(0.5));
+			broadcaster.Recurring(() => TestMethod(1), TimeSpan.FromSeconds(0.1));
 
 			Task.Delay(2000).Wait();
 

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Broadcast.EventSourcing;
 using Broadcast.Processing;
 using Moq;
@@ -38,6 +39,8 @@ namespace Broadcast.Test.Api
 			// serializeable
 			broadcaster.Send(() => Trace.WriteLine("test"));
 
+			broadcaster.WaitAll();
+
 			_processor.Verify(exp => exp.Process(It.IsAny<ITask>()), Times.Once);
 		}
 
@@ -62,6 +65,8 @@ namespace Broadcast.Test.Api
 			// execute a local method
 			// serializeable
 			broadcaster.Send(() => TestMethod(1));
+
+			broadcaster.WaitAll();
 
 			_processor.Verify(exp => exp.Process(It.IsAny<ITask>()), Times.Once);
 		}
@@ -88,6 +93,8 @@ namespace Broadcast.Test.Api
 			// serializeable
 			broadcaster.Send(() => GenericMethod(1));
 
+			broadcaster.WaitAll();
+
 			_processor.Verify(exp => exp.Process(It.IsAny<ITask>()), Times.Once);
 		}
 
@@ -113,6 +120,7 @@ namespace Broadcast.Test.Api
 			// execute a static method
 			// serializeable
 			broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
+			broadcaster.WaitAll();
 
 			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
@@ -125,6 +133,7 @@ namespace Broadcast.Test.Api
 			// execute a local method
 			// serializeable
 			broadcaster.Schedule(() => TestMethod(1), TimeSpan.FromSeconds(0.5));
+			broadcaster.WaitAll();
 
 			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
@@ -137,6 +146,7 @@ namespace Broadcast.Test.Api
 			// execute a generic method
 			// serializeable
 			broadcaster.Schedule(() => GenericMethod(1), TimeSpan.FromSeconds(0.5));
+			broadcaster.WaitAll();
 
 			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
@@ -153,6 +163,7 @@ namespace Broadcast.Test.Api
 			// execute a static method
 			// serializeable
 			broadcaster.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
+			Task.Delay(1000).Wait();
 
 			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
@@ -165,6 +176,7 @@ namespace Broadcast.Test.Api
 			// execute a local method
 			// serializeable
 			broadcaster.Recurring(() => TestMethod(1), TimeSpan.FromSeconds(0.5));
+			Task.Delay(1000).Wait();
 
 			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
@@ -177,6 +189,7 @@ namespace Broadcast.Test.Api
 			// execute a generic method
 			// serializeable
 			broadcaster.Recurring(() => GenericMethod(1), TimeSpan.FromSeconds(0.5));
+			Task.Delay(1000).Wait();
 
 			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
 		}

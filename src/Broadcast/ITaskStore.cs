@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Broadcast.EventSourcing;
 using Broadcast.Server;
 using Broadcast.Storage;
@@ -16,11 +17,11 @@ namespace Broadcast
 		/// </summary>
 		IEnumerable<ServerModel> Servers { get; }
 
-        /// <summary>
-        /// Adds a new Task to the queue to be processed
-        /// </summary>
-        /// <param name="task"></param>
-        void Add(ITask task);
+		/// <summary>
+		/// Adds a new Task to the queue to be processed
+		/// </summary>
+		/// <param name="task"></param>
+		void Add(ITask task);
 
 		/// <summary>
 		/// Dispatch the task to all <see cref="IDispatcher"/>.
@@ -70,5 +71,11 @@ namespace Broadcast
 		/// </summary>
 		/// <param name="server"></param>
 		void PropagateServer(ServerModel server);
+
+		/// <summary>
+		/// Wait for all enqueued Tasks to be passed to the dispatchers
+		/// </summary>
+		/// <returns></returns>
+		bool WaitAll();
     }
 }

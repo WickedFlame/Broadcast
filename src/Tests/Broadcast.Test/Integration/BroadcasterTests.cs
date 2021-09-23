@@ -76,10 +76,12 @@ namespace Broadcast.Test
                 //Assert.IsTrue(broadcaster.GetProcessedTasks().Last().State == TaskState.Processed);
             }
 
-            broadcaster.WaitAll();
             //TODO: has to work without sleep!
-            Task.Delay(2000).Wait();
-			Assert.AreEqual(10, broadcaster.GetProcessedTasks().Count(), $"Expected: {10}{Environment.NewLine}  Actual: {broadcaster.GetProcessedTasks().Count()}{Environment.NewLine}  Total: {broadcaster.Store.Count()}{Environment.NewLine}  States: {string.Join(',', broadcaster.Store.Select(s => s.State.ToString()))}");
+            Task.Delay(1000).Wait();
+
+            broadcaster.WaitAll();
+            
+			Assert.AreEqual(10, broadcaster.GetProcessedTasks().Count(), $"Expected: {10}{Environment.NewLine}  Actual: {broadcaster.GetProcessedTasks().Count()}{Environment.NewLine}  Total: {broadcaster.Store.Count()}{Environment.NewLine}  States: {string.Join(',', broadcaster.Store.Select(s => s.State.ToString()))}{Environment.NewLine}  Queue: {string.Join(',', broadcaster.Store.GetEnqueuedTasks())}{Environment.NewLine}  Dequeue: {string.Join(',', broadcaster.Store.GetDequeuedTasks())}");
         }
 
         [Test]
@@ -93,9 +95,12 @@ namespace Broadcast.Test
                 //Assert.IsTrue(broadcaster.GetProcessedTasks().Last().State == TaskState.Processed);
             }
 
-            broadcaster.WaitAll();
-            Task.Delay(2000).Wait();
-            Assert.AreEqual(10, broadcaster.GetProcessedTasks().Count(), $"Expected: {10}{Environment.NewLine}  Actual: {broadcaster.GetProcessedTasks().Count()}{Environment.NewLine}  Total: {broadcaster.Store.Count()}{Environment.NewLine}  States: {string.Join(',', broadcaster.Store.Select(s => s.State.ToString()))}");
+            //TODO: has to work without sleep!
+			Task.Delay(1000).Wait();
+
+			broadcaster.WaitAll();
+
+            Assert.AreEqual(10, broadcaster.GetProcessedTasks().Count(), $"Expected: {10}{Environment.NewLine}  Actual: {broadcaster.GetProcessedTasks().Count()}{Environment.NewLine}  Total: {broadcaster.Store.Count()}{Environment.NewLine}  States: {string.Join(',', broadcaster.Store.Select(s => s.State.ToString()))}{Environment.NewLine}  Queue: {string.Join(',', broadcaster.Store.GetEnqueuedTasks())}{Environment.NewLine}  Dequeue: {string.Join(',', broadcaster.Store.GetDequeuedTasks())}");
         }
 
         [Test]
@@ -111,7 +116,7 @@ namespace Broadcast.Test
 
             broadcaster.WaitAll();
 
-			Assert.AreEqual(10, broadcaster.GetProcessedTasks().Count(), $"Expected: {10}{Environment.NewLine}  Actual: {broadcaster.GetProcessedTasks().Count()}{Environment.NewLine}  Total: {broadcaster.Store.Count()}{Environment.NewLine}  States: {string.Join(',', broadcaster.Store.Select(s => s.State.ToString()))}");
+			Assert.AreEqual(10, broadcaster.GetProcessedTasks().Count(), $"Expected: {10}{Environment.NewLine}  Actual: {broadcaster.GetProcessedTasks().Count()}{Environment.NewLine}  Total: {broadcaster.Store.Count()}{Environment.NewLine}  States: {string.Join(',', broadcaster.Store.Select(s => s.State.ToString()))}{Environment.NewLine}  Queue: {string.Join(',', broadcaster.Store.GetEnqueuedTasks())}{Environment.NewLine}  Dequeue: {string.Join(',', broadcaster.Store.GetDequeuedTasks())}");
         }
 
         [Test]
@@ -126,7 +131,7 @@ namespace Broadcast.Test
 
             broadcaster.WaitAll();
             Task.Delay(2000).Wait();
-			Assert.AreEqual(10, broadcaster.GetProcessedTasks().Count(), $"Expected: {10}{Environment.NewLine}  Actual: {broadcaster.GetProcessedTasks().Count()}{Environment.NewLine}  Total: {broadcaster.Store.Count()}{Environment.NewLine}  States: {string.Join(',', broadcaster.Store.Select(s => s.State.ToString()))}");
+			Assert.AreEqual(10, broadcaster.GetProcessedTasks().Count(), $"Expected: {10}{Environment.NewLine}  Actual: {broadcaster.GetProcessedTasks().Count()}{Environment.NewLine}  Total: {broadcaster.Store.Count()}{Environment.NewLine}  States: {string.Join(',', broadcaster.Store.Select(s => s.State.ToString()))}{Environment.NewLine}  Queue: {string.Join(',', broadcaster.Store.GetEnqueuedTasks())}{Environment.NewLine}  Dequeue: {string.Join(',', broadcaster.Store.GetDequeuedTasks())}");
         }
 
         [Test]
@@ -141,7 +146,7 @@ namespace Broadcast.Test
 
             broadcaster.WaitAll();
 
-			Assert.AreEqual(10, broadcaster.GetProcessedTasks().Count(), $"Expected: {10}{Environment.NewLine}  Actual: {broadcaster.GetProcessedTasks().Count()}{Environment.NewLine}  Total: {broadcaster.Store.Count()}{Environment.NewLine}  States: {string.Join(',', broadcaster.Store.Select(s => s.State.ToString()))}");
+			Assert.AreEqual(10, broadcaster.GetProcessedTasks().Count(), $"Expected: {10}{Environment.NewLine}  Actual: {broadcaster.GetProcessedTasks().Count()}{Environment.NewLine}  Total: {broadcaster.Store.Count()}{Environment.NewLine}  States: {string.Join(',', broadcaster.Store.Select(s => s.State.ToString()))}{Environment.NewLine}  Queue: {string.Join(',', broadcaster.Store.GetEnqueuedTasks())}{Environment.NewLine}  Dequeue: {string.Join(',', broadcaster.Store.GetDequeuedTasks())}");
         }
 
 
@@ -158,7 +163,7 @@ namespace Broadcast.Test
 			}
 
 			broadcaster.WaitAll();
-			Assert.AreEqual(10, broadcaster.GetProcessedTasks().Count(), $"Expected: {10}{Environment.NewLine}  Actual: {broadcaster.GetProcessedTasks().Count()}{Environment.NewLine}  Total: {broadcaster.Store.Count()}{Environment.NewLine}  States: {string.Join(',', broadcaster.Store.Select(s => s.State.ToString()))}");
+			Assert.AreEqual(10, broadcaster.GetProcessedTasks().Count(), $"Expected: {10}{Environment.NewLine}  Actual: {broadcaster.GetProcessedTasks().Count()}{Environment.NewLine}  Total: {broadcaster.Store.Count()}{Environment.NewLine}  States: {string.Join(',', broadcaster.Store.Select(s => s.State.ToString()))}{Environment.NewLine}  Queue: {string.Join(',', broadcaster.Store.GetEnqueuedTasks())}{Environment.NewLine}  Dequeue: {string.Join(',', broadcaster.Store.GetDequeuedTasks())}");
         }
 
         [Test]
@@ -173,7 +178,7 @@ namespace Broadcast.Test
 			
             broadcaster.WaitAll();
 
-            Assert.AreEqual(10, broadcaster.GetProcessedTasks().Count(), $"Expected: {10}{Environment.NewLine}  Actual: {broadcaster.GetProcessedTasks().Count()}{Environment.NewLine}  Total: {broadcaster.Store.Count()}{Environment.NewLine}  States: {string.Join(',', broadcaster.Store.Select(s => s.State.ToString()))}");
+            Assert.AreEqual(10, broadcaster.GetProcessedTasks().Count(), $"Expected: {10}{Environment.NewLine}  Actual: {broadcaster.GetProcessedTasks().Count()}{Environment.NewLine}  Total: {broadcaster.Store.Count()}{Environment.NewLine}  States: {string.Join(',', broadcaster.Store.Select(s => s.State.ToString()))}{Environment.NewLine}  Queue: {string.Join(',', broadcaster.Store.GetEnqueuedTasks())}{Environment.NewLine}  Dequeue: {string.Join(',', broadcaster.Store.GetDequeuedTasks())}");
         }
 
         [Test]
@@ -187,7 +192,7 @@ namespace Broadcast.Test
             }
 
             broadcaster.WaitAll();
-			Assert.AreEqual(10, broadcaster.GetProcessedTasks().Count(), $"Expected: {10}{Environment.NewLine}  Actual: {broadcaster.GetProcessedTasks().Count()}{Environment.NewLine}  Total: {broadcaster.Store.Count()}{Environment.NewLine}  States: {string.Join(',', broadcaster.Store.Select(s => s.State.ToString()))}");
+			Assert.AreEqual(10, broadcaster.GetProcessedTasks().Count(), $"Expected: {10}{Environment.NewLine}  Actual: {broadcaster.GetProcessedTasks().Count()}{Environment.NewLine}  Total: {broadcaster.Store.Count()}{Environment.NewLine}  States: {string.Join(',', broadcaster.Store.Select(s => s.State.ToString()))}{Environment.NewLine}  Queue: {string.Join(',', broadcaster.Store.GetEnqueuedTasks())}{Environment.NewLine}  Dequeue: {string.Join(',', broadcaster.Store.GetDequeuedTasks())}");
         }
 
         [Test]
@@ -202,7 +207,7 @@ namespace Broadcast.Test
             }
 
 			broadcaster.WaitAll();
-			Assert.AreEqual(10, broadcaster.GetProcessedTasks().Count(), $"Expected: {10}{Environment.NewLine}  Actual: {broadcaster.GetProcessedTasks().Count()}{Environment.NewLine}  Total: {broadcaster.Store.Count()}{Environment.NewLine}  States: {string.Join(',', broadcaster.Store.Select(s => s.State.ToString()))}");
+			Assert.AreEqual(10, broadcaster.GetProcessedTasks().Count(), $"Expected: {10}{Environment.NewLine}  Actual: {broadcaster.GetProcessedTasks().Count()}{Environment.NewLine}  Total: {broadcaster.Store.Count()}{Environment.NewLine}  States: {string.Join(',', broadcaster.Store.Select(s => s.State.ToString()))}{Environment.NewLine}  Queue: {string.Join(',', broadcaster.Store.GetEnqueuedTasks())}{Environment.NewLine}  Dequeue: {string.Join(',', broadcaster.Store.GetDequeuedTasks())}");
         }
 
         [Test]
@@ -220,7 +225,7 @@ namespace Broadcast.Test
 
             broadcaster.WaitAll();
 
-            Assert.IsTrue(broadcaster.GetProcessedTasks().Count() == 100);
+            Assert.AreEqual(100, broadcaster.GetProcessedTasks().Count(), $"Expected: {100}{Environment.NewLine}  Actual: {broadcaster.GetProcessedTasks().Count()}{Environment.NewLine}  Total: {broadcaster.Store.Count()}{Environment.NewLine}  States: {string.Join(',', broadcaster.Store.Select(s => s.State.ToString()))}{Environment.NewLine}  Queue: {string.Join(',', broadcaster.Store.GetEnqueuedTasks())}{Environment.NewLine}  Dequeue: {string.Join(',', broadcaster.Store.GetDequeuedTasks())}");
 
             int v = 1;
             foreach (var value in taskValues)
@@ -228,7 +233,7 @@ namespace Broadcast.Test
                 Assert.IsTrue(v == value);
                 v++;
             }
-        }
+		}
         
         [Test]
         [Ignore("Fails when NUnit runs second time")]
