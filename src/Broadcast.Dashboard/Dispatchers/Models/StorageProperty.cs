@@ -36,5 +36,14 @@ namespace Broadcast.Dashboard.Dispatchers.Models
 		/// Gets the value of the property
 		/// </summary>
 		public string Value { get; set; }
+
+		/// <summary>
+		/// Retruns the string value of the instance
+		/// </summary>
+		/// <returns></returns>
+		public override string ToString()
+		{
+			return $"{Key}: {Value}";
+		}
 	}
 }

@@ -47,5 +47,15 @@ namespace Broadcast.Monitoring
 		/// Starttime of the execution
 		/// </summary>
 		public DateTime? Start { get; set; }
+
+		/// <summary>
+		/// Gets if the <see cref="ITask"/> is in a queued state. This is only true when a task is added new to the storage and before the <see cref="TaskStoreDispatcher"/> assigns a Server and moves the task to the queue.
+		/// </summary>
+		public bool Queued { get; set; }
+
+		/// <summary>
+		/// Gets if the <see cref="ITask"/> is allready assigned to a server and is added to the queue for further processing
+		/// </summary>
+		public bool Fetched { get; set; }
 	}
 }

@@ -114,6 +114,8 @@ export class BroadcastDashboard extends BroadcastBase {
 						this.updateElement(taskRow.querySelector(`#server_${t.id}`), t.server);
 						this.updateElement(taskRow.querySelector(`#start_${t.id}`), t.start ? this.formatDate(new Date(t.start)) : '');
 						this.updateElement(taskRow.querySelector(`#duration_${t.id}`), t.duration ? this.millisecondsToTime(t.duration, true) : '');
+						this.updateElement(taskRow.querySelector(`#enqueued_${t.id}`), t.queued ? 'true' : '');
+						this.updateElement(taskRow.querySelector(`#fetched_${t.id}`), t.fetched ? 'true' : '');
 					}
 				} else {
 					// add new row
@@ -126,11 +128,13 @@ export class BroadcastDashboard extends BroadcastBase {
 						this.addCell(row, 0, null, t.id);
 						this.addCell(row, 1, null, t.name);
 						this.addCell(row, 2, `state_${t.id}`, state);
-						this.addCell(row, 3, null, t.isRecurring);
-						this.addCell(row, 4, null, this.millisecondsToTime(t.time));
-						this.addCell(row, 5, `server_${t.id}`, t.server);
-						this.addCell(row, 6, `start_${t.id}`, t.start ? this.formatDate(new Date(t.start)) : '');
-						this.addCell(row, 7, `duration_${t.id}`, t.duration ? this.millisecondsToTime(t.duration, true) : '');
+						//this.addCell(row, 3, null, t.isRecurring);
+						this.addCell(row, 3, null, this.millisecondsToTime(t.time));
+						this.addCell(row, 4, `server_${t.id}`, t.server);
+						this.addCell(row, 5, `start_${t.id}`, t.start ? this.formatDate(new Date(t.start)) : '');
+						this.addCell(row, 6, `duration_${t.id}`, t.duration ? this.millisecondsToTime(t.duration, true) : '');
+						this.addCell(row, 7, `enqueued_${t.id}`, t.queued ? 'true' : '');
+						this.addCell(row, 8, `fetched_${t.id}`, t.fetched ? 'true' : '');
 					}
 				}
 			}

@@ -52,8 +52,14 @@ namespace Broadcast.Monitoring
 				Time = t.Time?.TotalMilliseconds
 			}).ToList();
 
+			var queued = _store.Storage(s => s.GetList(new StorageKey("tasks:enqueued")));
+			var fetched = _store.Storage(s => s.GetList(new StorageKey("tasks:dequeued")));
+
 			foreach (var task in tasks)
 			{
+				task.Queued = queued.Any(t => t == task.Id);
+				task.Fetched = fetched.Any(t => t == task.Id);
+
 				var data = _store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:values:{task.Id}")));
 				if (data == null)
 				{

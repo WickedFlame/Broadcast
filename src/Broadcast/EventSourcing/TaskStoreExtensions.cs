@@ -15,12 +15,12 @@ namespace Broadcast.EventSourcing
 			return storage.GetList(new StorageKey("tasks:enqueued"));
 		}
 
-		public static IEnumerable<string> GetDequeuedTasks(this ITaskStore store)
+		public static IEnumerable<string> GetFetchedTasks(this ITaskStore store)
 		{
-			return store.Storage(s => s.GetDequeuedTasks());
+			return store.Storage(s => s.GetFetchedTasks());
 		}
 
-		public static IEnumerable<string> GetDequeuedTasks(this IStorage storage)
+		public static IEnumerable<string> GetFetchedTasks(this IStorage storage)
 		{
 			return storage.GetList(new StorageKey("tasks:dequeued"));
 		}

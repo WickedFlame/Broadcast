@@ -57,19 +57,27 @@ namespace Broadcast.Dashboard.Dispatchers.Models
 						{
 							values.FirstOrDefault(v => v.Key == "Id"),
 							values.FirstOrDefault(v => v.Key == "Name"),
+							values.FirstOrDefault(v => v.Key == "Type"),
+							values.FirstOrDefault(v => v.Key == "Method")
+						}.Where(t => t != null && !string.IsNullOrEmpty(t.Value))
+					},
+					new StoragePropertyGroup
+					{
+						Title = "State",
+						Values = new List<StorageProperty>
+						{
 							values.FirstOrDefault(v => v.Key == "State"),
-							values.FirstOrDefault(v => v.Key == "Server"),
-							new StorageProperty("Executed", values.FirstOrDefault(v => v.Key == "ExecutedAt")?.Value.ToFormattedDateTime()),
 							new StorageProperty("Duration", values.FirstOrDefault(v => v.Key == "ExecutionTime")?.Value.ToDuration())
 						}.Where(t => t != null && !string.IsNullOrEmpty(t.Value))
 					},
 					new StoragePropertyGroup
 					{
-						Title = "Task Execution",
+						Title = "Processing",
 						Values = new List<StorageProperty>
 						{
-							values.FirstOrDefault(v => v.Key == "Type"),
-							values.FirstOrDefault(v => v.Key == "Method")
+							values.FirstOrDefault(v => v.Key == "Server"),
+							new StorageProperty("Start", values.FirstOrDefault(v => v.Key == "InProcessAt")?.Value.ToFormattedDateTime()),
+							new StorageProperty("End", values.FirstOrDefault(v => v.Key == "ExecutedAt")?.Value.ToFormattedDateTime())
 						}.Where(t => t != null && !string.IsNullOrEmpty(t.Value))
 					},
 					new StoragePropertyGroup
