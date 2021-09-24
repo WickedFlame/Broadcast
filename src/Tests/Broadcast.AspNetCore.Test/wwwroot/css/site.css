@@ -72,4 +72,6 @@ th {
   padding-bottom: 2px; }
 
 ul {
-  list-style: none; }
+  list-style: none;
+  text-align: left;
+  padding-left: 150px; }

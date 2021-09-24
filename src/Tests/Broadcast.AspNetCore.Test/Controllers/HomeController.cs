@@ -54,6 +54,14 @@ namespace Broadcast.AspNetCore.Test.Controllers
 			return Redirect("Index");
 		}
 
+		public IActionResult ScheduleTask()
+		{
+			var service = new TaskService();
+			BackgroundTaskClient.Schedule(() => service.Schedule(), TimeSpan.FromSeconds(15));
+
+			return Redirect("Index");
+		}
+
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 		public IActionResult Error()
 		{
@@ -88,6 +96,13 @@ namespace Broadcast.AspNetCore.Test.Controllers
 		public void FailingMethod()
 		{
 			throw new Exception("This is a failing task");
+		}
+
+		public void Schedule()
+		{
+			Console.WriteLine("Scheduled Task started");
+			Thread.Sleep(TimeSpan.FromSeconds(10));
+			Console.WriteLine("Scheduled Task ended");
 		}
 	}
 }
