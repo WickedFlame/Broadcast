@@ -12,21 +12,21 @@ namespace Broadcast.Dashboard.Test
 		public void StorageValueExtensions_ToDuration()
 		{
 			var ms = "31".ToDuration();
-			Assert.AreEqual("0.0031 ms", ms);
+			Assert.AreEqual("0.031 s", ms);
 		}
 
 		[Test]
 		public void StorageValueExtensions_ToDuration_Int()
 		{
 			var ms = 31.ToDuration();
-			Assert.AreEqual("0.0031 ms", ms);
+			Assert.AreEqual("0.031 s", ms);
 		}
 
 		[Test]
 		public void StorageValueExtensions_ToDuration_Decimal()
 		{
 			var ms = (31.0).ToDuration();
-			Assert.AreEqual("0.0031 ms", ms);
+			Assert.AreEqual("0.031 s", ms);
 		}
 
 		[Test]

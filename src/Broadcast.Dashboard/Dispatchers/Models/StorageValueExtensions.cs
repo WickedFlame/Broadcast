@@ -16,7 +16,7 @@ namespace Broadcast.Dashboard.Dispatchers.Models
 		{
 			if (long.TryParse(value?.ToString(), out var duration))
 			{
-				return $"{TimeSpan.FromTicks(duration).TotalMilliseconds} ms";
+				return $"{TimeSpan.FromMilliseconds(duration).TotalSeconds} s";
 			}
 
 			return null;

@@ -6,14 +6,16 @@ Groups:
     Value: 0fcd82f9-d797-420e-8d7a-2e392735a677
     Key: Name
     Value: Trace.WriteLine
-    Key: State
-    Value: New
-  Title: Task Execution
-  Values:
     Key: Type
     Value: System.Diagnostics.Trace, System.Diagnostics.TraceSource
     Key: Method
     Value: WriteLine
+  Title: State
+  Values:
+    Key: State
+    Value: New
+  Title: Processing
+  Values:
   Title: Statechanges
   Values:
     Key: Created at
