@@ -76,8 +76,6 @@ namespace Broadcast.Storage.Redis
 		public void Set<T>(StorageKey key, T value)
 		{
 			_database.HashSetAsync(CreateKey(key), value.SerializeToRedis());
-
-			_database.PublishAsync(RedisSubscription.Channel, CreateKey(key));
 		}
 
 		/// <inheritdoc/>
@@ -114,6 +112,12 @@ namespace Broadcast.Storage.Redis
 		public void RegisterSubscription(ISubscription subscription)
 		{
 			_subscription.RegisterSubscription(subscription);
+		}
+
+		/// <inheritdoc/>
+		public void PropagateEvent(StorageKey key)
+		{
+			_database.PublishAsync(RedisSubscription.Channel, CreateKey(key));
 		}
 
 		private string CreateKey(StorageKey key) => key.ToString().StartsWith(_options.KeySpacePrefix) ? key.ToString() : $"{_options.KeySpacePrefix}:{key}";

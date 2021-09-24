@@ -41,10 +41,10 @@ namespace Broadcast.Storage.Redis.Test
 		}
 
 		[Test]
-		public void RedisStorage_Set_Publish()
+		public void RedisStorage_PropagateEvent_Publish()
 		{
 			var storage = new RedisStorage(_multiplexer.Object, new RedisStorageOptions());
-			storage.Set(new StorageKey("storage", "key"), "value");
+			storage.PropagateEvent(new StorageKey("storage", "key"));
 
 			_db.Verify(exp => exp.PublishAsync("BroadcastTaskFetchChannel", "{broadcast}:key:storage", CommandFlags.None), Times.Once);
 		}

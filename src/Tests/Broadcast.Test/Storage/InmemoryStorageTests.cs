@@ -34,7 +34,7 @@ namespace Broadcast.Test.Storage
 		}
 
 		[Test]
-		public void InmemoryStorage_Set_Subscription()
+		public void InmemoryStorage_PropagateEvent_Subscription()
 		{
 			var subscription = new Mock<ISubscription>();
 			subscription.Setup(exp => exp.EventKey).Returns(() => "key");
@@ -42,13 +42,13 @@ namespace Broadcast.Test.Storage
 			var storage = new InmemoryStorage();
 			storage.RegisterSubscription(subscription.Object);
 
-			storage.Set(new StorageKey("key:one"), "value");
+			storage.PropagateEvent(new StorageKey("key:one"));
 
 			subscription.Verify(exp => exp.RaiseEvent(), Times.Once);
 		}
 
 		[Test]
-		public void InmemoryStorage_Set_Subscription_CaseInsensitive()
+		public void InmemoryStorage_PropagateEvent_Subscription_CaseInsensitive()
 		{
 			var subscription = new Mock<ISubscription>();
 			subscription.Setup(exp => exp.EventKey).Returns(() => "KEY");
@@ -56,7 +56,7 @@ namespace Broadcast.Test.Storage
 			var storage = new InmemoryStorage();
 			storage.RegisterSubscription(subscription.Object);
 
-			storage.Set(new StorageKey("kEy:OnE"), "value");
+			storage.PropagateEvent(new StorageKey("kEy:OnE"));
 
 			subscription.Verify(exp => exp.RaiseEvent(), Times.Once);
 		}

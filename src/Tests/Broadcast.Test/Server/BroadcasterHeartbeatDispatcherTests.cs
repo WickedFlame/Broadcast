@@ -77,5 +77,29 @@ namespace Broadcast.Test.Server
 
 			storage.Verify(exp => exp.Set(It.Is<StorageKey>(k => k.Key == $"server:{options.ServerName}:{context.Id}"), It.Is<ServerModel>(s => s.Id == context.Id && s.Name == options.ServerName)), Times.Once);
 		}
+
+		[Test]
+		public void BroadcasterHeartbeatDispatcher_Execute_PropagateEvent()
+		{
+			var options = new Options
+			{
+				ServerName = "BroadcasterHeartbeatDispatcher",
+				HeartbeatInterval = 1
+			};
+			var context = new BroadcasterConterxt
+			{
+				IsRunning = true,
+				Id = "1"
+			};
+			var storage = new Mock<IStorage>();
+
+			var store = new TaskStore(storage.Object);
+			storage.Setup(exp => exp.Set(It.IsAny<StorageKey>(), It.IsAny<ServerModel>())).Callback(() => context.IsRunning = false);
+
+			var dispatcher = new BroadcasterHeartbeatDispatcher(store, options);
+			dispatcher.Execute(context);
+
+			storage.Verify(exp => exp.PropagateEvent(It.Is<StorageKey>(k => k.Key == $"server:{options.ServerName}:{context.Id}")), Times.Once);
+		}
 	}
 }

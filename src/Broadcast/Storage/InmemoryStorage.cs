@@ -153,12 +153,6 @@ namespace Broadcast.Storage
 				// serialize object to ensure a breake of the references
 				// this simulates the same behaviour we have when using an external storage
 				_store[key.ToString()] = new ValueItem(value.Serialize());
-
-				var stringKey = key.ToString().ToLower();
-				foreach (var dispatcher in _subscriptions.Where(d => stringKey.Contains(d.EventKey.ToLower())))
-				{
-					dispatcher.RaiseEvent();
-				}
 			}
 		}
 
@@ -226,6 +220,19 @@ namespace Broadcast.Storage
 		public void RegisterSubscription(ISubscription subscription)
 		{
 			_subscriptions.Add(subscription);
+		}
+
+		/// <summary>
+		/// Propagate events to all dispatchers that are registered to the storage and have a subscription to the key event
+		/// </summary>
+		/// <param name="key"></param>
+		public void PropagateEvent(StorageKey key)
+		{
+			var stringKey = key.ToString().ToLower();
+			foreach (var dispatcher in _subscriptions.Where(d => stringKey.Contains(d.EventKey.ToLower())))
+			{
+				dispatcher.RaiseEvent();
+			}
 		}
 	}
 }

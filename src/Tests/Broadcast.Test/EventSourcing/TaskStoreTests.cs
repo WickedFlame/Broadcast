@@ -84,6 +84,18 @@ namespace Broadcast.Test.EventSourcing
 		}
 
 		[Test]
+		public void TaskStore_Add_Storage_PropagateEvent()
+		{
+			var storage = new Mock<IStorage>();
+			var store = new TaskStore(storage.Object);
+
+			var task = TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers"));
+			store.Add(task);
+
+			storage.Verify(exp => exp.PropagateEvent(It.IsAny<StorageKey>()), Times.Once);
+		}
+
+		[Test]
 		public void TaskStore_AddMultiple()
 		{
 			var store = new TaskStore();

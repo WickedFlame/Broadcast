@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Broadcast.Configuration;
-using Broadcast.EventSourcing;
 using Broadcast.Storage;
 
 namespace Broadcast.Server
@@ -32,6 +31,8 @@ namespace Broadcast.Server
 		/// <param name="context"></param>
 		public async void Execute(IBroadcasterConterxt context)
 		{
+			// the dispatcher is created per running broadcaster
+
 			while (context.IsRunning)
 			{
 				var model = new ServerModel
@@ -40,7 +41,11 @@ namespace Broadcast.Server
 					Id = context.Id,
 					Heartbeat = DateTime.Now
 				};
-				_store.Storage(s => s.Set(new StorageKey($"server:{_options.ServerName}:{context.Id}"), model));
+				_store.Storage(s =>
+				{
+					s.Set(new StorageKey($"server:{_options.ServerName}:{context.Id}"), model);
+					s.PropagateEvent(new StorageKey($"server:{_options.ServerName}:{context.Id}"));
+				});
 
 				// don't run again for at least 
 				await Task.Delay(_options.HeartbeatInterval);

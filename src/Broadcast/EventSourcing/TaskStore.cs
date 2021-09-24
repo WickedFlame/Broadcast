@@ -114,6 +114,7 @@ namespace Broadcast.EventSourcing
 			// serializeable tasks are propagated to all registered servers through the storage
 			_storage.AddToList(new StorageKey("tasks:enqueued"), task.Id);
 			_storage.Set(new StorageKey($"task:{task.Id}"), task);
+			_storage.PropagateEvent(new StorageKey($"task:{task.Id}"));
 
 			// reset the event to be signaled
 			_event.Reset();

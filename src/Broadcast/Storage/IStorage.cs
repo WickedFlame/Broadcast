@@ -88,5 +88,11 @@ namespace Broadcast.Storage
 		/// </summary>
 		/// <param name="subscription"></param>
 		void RegisterSubscription(ISubscription subscription);
+
+		/// <summary>
+		/// Propagate events to all dispatchers that are registered to the storage and have a subscription to the key event
+		/// </summary>
+		/// <param name="key"></param>
+		void PropagateEvent(StorageKey key);
 	}
 }
