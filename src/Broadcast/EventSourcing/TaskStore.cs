@@ -227,7 +227,8 @@ namespace Broadcast.EventSourcing
 			// first we wait for all enqueued tasks to change state to dequeued
 			while (this.GetEnqueuedTasks().Any())
 			{
-				WaitHandle.WaitOne();
+				System.Diagnostics.Trace.WriteLine("Wait for TaskStore");
+				WaitHandle.WaitOne(50);
 			}
 
 			// then we wait for all dequeued tasks to be dispatched to all dispatchers

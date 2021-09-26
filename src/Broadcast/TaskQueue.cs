@@ -81,6 +81,7 @@ namespace Broadcast
 		{
 			while (Count > 0)
 			{
+				System.Diagnostics.Trace.WriteLine("Wait for TaskQueue");
 				_counter.WaitHandle.WaitOne(50);
 			}
 		}
