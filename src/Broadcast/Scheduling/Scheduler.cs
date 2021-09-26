@@ -44,7 +44,7 @@ namespace Broadcast.Scheduling
 			};
 
 			_backgroundProcess = new BackgroundServerProcess<ISchedulerContext>(_context);
-			_backgroundProcess.StartNew(new SchedulerTaskDispatcher(_scheduleQueue));
+			_backgroundProcess.StartNew(new SchedulerBackgroundProcess(_scheduleQueue));
 
 			_schedulerCount++;
 
@@ -59,11 +59,12 @@ namespace Broadcast.Scheduling
         /// <summary>
         /// Enqueues and schedules a new task
         /// </summary>
+        /// <param name="id">The id of the task</param>
         /// <param name="task">The task to schedule</param>
         /// <param name="time">The time to execute the task at</param>
-        public void Enqueue(Action task, TimeSpan time)
+        public void Enqueue(string id, Action<string> task, TimeSpan time)
         {
-	        _scheduleQueue.Enqueue(new SchedulerTask(task, _context.Elapsed + time));
+	        _scheduleQueue.Enqueue(new SchedulerTask(id, task, _context.Elapsed + time));
         }
 
 		/// <summary>

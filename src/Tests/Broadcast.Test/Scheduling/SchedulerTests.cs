@@ -46,7 +46,7 @@ namespace Broadcast.Test.Scheduling
 	        var queue = new Mock<IScheduleQueue>();
 
 	        using var scheduler = new Scheduler(queue.Object);
-	        scheduler.Enqueue(() => { }, TimeSpan.Zero);
+	        scheduler.Enqueue("id", id => { }, TimeSpan.Zero);
 
 	        queue.Verify(exp => exp.Enqueue(It.IsAny<SchedulerTask>()), Times.Once);
         }
@@ -55,8 +55,8 @@ namespace Broadcast.Test.Scheduling
         public void Scheduler_ScheduledTasks()
         {
 	        using var scheduler = new Scheduler();
-	        scheduler.Enqueue(() => { }, TimeSpan.FromMinutes(10));
-	        scheduler.Enqueue(() => { }, TimeSpan.FromMinutes(10));
+	        scheduler.Enqueue("id", id => { }, TimeSpan.FromMinutes(10));
+	        scheduler.Enqueue("id", id => { }, TimeSpan.FromMinutes(10));
 
 	        Assert.AreEqual(2, scheduler.ScheduledTasks().Count());
         }
@@ -67,8 +67,8 @@ namespace Broadcast.Test.Scheduling
 	        var queue = new ScheduleQueue();
 
 	        using var scheduler = new Scheduler(queue);
-	        scheduler.Enqueue(() => { }, TimeSpan.FromMinutes(10));
-	        scheduler.Enqueue(() => { }, TimeSpan.FromMinutes(10));
+	        scheduler.Enqueue("id", id => { }, TimeSpan.FromMinutes(10));
+	        scheduler.Enqueue("id", id => { }, TimeSpan.FromMinutes(10));
 
 	        Assert.AreEqual(queue.ToList().Count(), scheduler.ScheduledTasks().Count());
         }
@@ -77,8 +77,8 @@ namespace Broadcast.Test.Scheduling
         public void Scheduler_ScheduledTasks_DelayWithProcessed()
         {
 	        using var scheduler = new Scheduler();
-	        scheduler.Enqueue(() => { }, TimeSpan.Zero);
-	        scheduler.Enqueue(() => { }, TimeSpan.FromMinutes(10));
+	        scheduler.Enqueue("id", id => { }, TimeSpan.Zero);
+	        scheduler.Enqueue("id", id => { }, TimeSpan.FromMinutes(10));
 
 	        Task.Delay(1000).Wait();
 

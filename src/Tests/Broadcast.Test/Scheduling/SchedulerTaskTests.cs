@@ -11,20 +11,26 @@ namespace Broadcast.Test.Scheduling
 		[Test]
 		public void SchedulerTask_ctor()
 		{
-			Assert.DoesNotThrow(() => new SchedulerTask(() => { }, TimeSpan.Zero));
+			Assert.DoesNotThrow(() => new SchedulerTask("id", id => { }, TimeSpan.Zero));
 		}
 
 		[Test]
 		public void SchedulerTask_ctor_Null_Action()
 		{
-			Assert.Throws<ArgumentNullException>(() => new SchedulerTask(null, TimeSpan.Zero));
+			Assert.Throws<ArgumentNullException>(() => new SchedulerTask("id", null, TimeSpan.Zero));
+		}
+
+		[Test]
+		public void SchedulerTask_ctor_Null_Id()
+		{
+			Assert.Throws<ArgumentNullException>(() => new SchedulerTask(null, id => { }, TimeSpan.Zero));
 		}
 
 		[Test]
 		public void SchedulerTask_Action_Set()
 		{
-			Action action = () => { };
-			var task = new SchedulerTask(action, TimeSpan.Zero);
+			Action<string> action = id => { };
+			var task = new SchedulerTask("id", action, TimeSpan.Zero);
 
 			Assert.AreSame(action, task.Task);
 		}
@@ -33,7 +39,7 @@ namespace Broadcast.Test.Scheduling
 		public void SchedulerTask_Time_Set()
 		{
 			TimeSpan time = TimeSpan.Zero;
-			var task = new SchedulerTask(() => { }, time);
+			var task = new SchedulerTask("id", id => { }, time);
 
 			Assert.AreEqual(time, task.Time);
 		}

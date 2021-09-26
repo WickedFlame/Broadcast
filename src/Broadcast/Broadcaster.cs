@@ -81,7 +81,7 @@ namespace Broadcast
 			store.RegisterDispatchers(_id, new IDispatcher[]
 			{
 				new RecurringTaskDispatcher(this, store),
-				new ScheduleTaskDispatcher(this),
+				new ScheduleTaskDispatcher(this, store),
 				new ProcessTaskDispatcher(this)
 			});
 

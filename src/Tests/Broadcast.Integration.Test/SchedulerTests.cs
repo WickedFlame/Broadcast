@@ -32,9 +32,9 @@ namespace Broadcast.Integration.Test
         public void Scheduler_ExecutionCheck()
         {
             var scheduler = new Scheduler();
-            scheduler.Enqueue(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
-            scheduler.Enqueue(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
-            scheduler.Enqueue(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
+            scheduler.Enqueue("id", id => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
+            scheduler.Enqueue("id", id => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
+            scheduler.Enqueue("id", id => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
 
             Task.Delay(1000).Wait();
 
@@ -46,9 +46,9 @@ namespace Broadcast.Integration.Test
         {
             int cnt = 0;
             var scheduler = new Scheduler();
-            scheduler.Enqueue(() => { cnt++; }, TimeSpan.FromSeconds(0.01));
-            scheduler.Enqueue(() => { cnt++; }, TimeSpan.FromSeconds(0.01));
-            scheduler.Enqueue(() => { cnt++; }, TimeSpan.FromSeconds(0.01));
+            scheduler.Enqueue("id", id => { cnt++; }, TimeSpan.FromSeconds(0.01));
+            scheduler.Enqueue("id", id => { cnt++; }, TimeSpan.FromSeconds(0.01));
+            scheduler.Enqueue("id", id => { cnt++; }, TimeSpan.FromSeconds(0.01));
             //Assert.That(cnt == 0);
 
             Task.Delay(1000).Wait();

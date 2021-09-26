@@ -119,7 +119,7 @@ namespace Broadcast.Test.Api
 			BackgroundTaskClient.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(1));
 			BackgroundTaskClient.Client.Store.WaitAll();
 
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
+			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<string>(), It.IsAny<Action<string>>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
 
 		[Test]
@@ -130,7 +130,7 @@ namespace Broadcast.Test.Api
 			BackgroundTaskClient.Schedule(() => TestMethod(1), TimeSpan.FromSeconds(1));
 			BackgroundTaskClient.Client.Store.WaitAll();
 
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
+			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<string>(), It.IsAny<Action<string>>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
 
 		[Test]
@@ -141,7 +141,7 @@ namespace Broadcast.Test.Api
 			BackgroundTaskClient.Schedule(() => GenericMethod(1), TimeSpan.FromSeconds(1));
 			BackgroundTaskClient.Client.Store.WaitAll();
 
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
+			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<string>(), It.IsAny<Action<string>>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
 		
 		[Test]
@@ -153,7 +153,7 @@ namespace Broadcast.Test.Api
 
 			Task.Delay(1000).Wait();
 
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
+			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<string>(), It.IsAny<Action<string>>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
 
 		[Test]
@@ -165,7 +165,7 @@ namespace Broadcast.Test.Api
 
 			Task.Delay(1000).Wait();
 
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
+			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<string>(), It.IsAny<Action<string>>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
 
 		[Test]
@@ -177,7 +177,7 @@ namespace Broadcast.Test.Api
 
 			Task.Delay(1000).Wait();
 
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
+			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<string>(), It.IsAny<Action<string>>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
 
 		[Test]

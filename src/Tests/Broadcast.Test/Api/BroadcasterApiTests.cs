@@ -122,7 +122,7 @@ namespace Broadcast.Test.Api
 			broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
 			broadcaster.WaitAll();
 
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
+			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<string>(), It.IsAny<Action<string>>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
 
 		[Test]
@@ -135,7 +135,7 @@ namespace Broadcast.Test.Api
 			broadcaster.Schedule(() => TestMethod(1), TimeSpan.FromSeconds(0.5));
 			broadcaster.WaitAll();
 
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
+			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<string>(), It.IsAny<Action<string>>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
 
 		[Test]
@@ -148,7 +148,7 @@ namespace Broadcast.Test.Api
 			broadcaster.Schedule(() => GenericMethod(1), TimeSpan.FromSeconds(0.5));
 			broadcaster.WaitAll();
 
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
+			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<string>(), It.IsAny<Action<string>>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
 		
 
@@ -165,7 +165,7 @@ namespace Broadcast.Test.Api
 			broadcaster.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
 			Task.Delay(1000).Wait();
 
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
+			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<string>(), It.IsAny<Action<string>>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
 
 		[Test]
@@ -178,7 +178,7 @@ namespace Broadcast.Test.Api
 			broadcaster.Recurring(() => TestMethod(1), TimeSpan.FromSeconds(0.5));
 			Task.Delay(1000).Wait();
 
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
+			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<string>(), It.IsAny<Action<string>>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
 
 		[Test]
@@ -191,7 +191,7 @@ namespace Broadcast.Test.Api
 			broadcaster.Recurring(() => GenericMethod(1), TimeSpan.FromSeconds(0.5));
 			Task.Delay(1000).Wait();
 
-			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<Action>(), It.IsAny<TimeSpan>()), Times.Once);
+			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<string>(), It.IsAny<Action<string>>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
 		
 

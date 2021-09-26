@@ -40,13 +40,16 @@ namespace Broadcast.Server
 					Interval = task.Time
 				}));
 
-				_broadcaster.Scheduler.Enqueue(() =>
+				_broadcaster.Scheduler.Enqueue(task.Id, id =>
 				{
+					// reload the task to get all changes since being enqueued in the scheduler
+					var stored = _store.Storage(s => s.Get<BroadcastTask>(new StorageKey($"task:{id}")));
+
 					// execute the task
-					_broadcaster.Process(task);
+					_broadcaster.Process(stored);
 
 					// clone the task for rescheduling
-					_store.Add(task.Clone());
+					_store.Add(stored.Clone());
 				}, task.Time ?? TimeSpan.Zero);
 			}
 		}

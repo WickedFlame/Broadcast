@@ -46,13 +46,6 @@ namespace Broadcast.Storage.Serialization
 					cnt = cnt + 1;
 				}
 
-				//for (var i = 0; i< task.Args.Count; i++)
-				//{
-				//	var type = task.Args[i].GetType();
-				//	hashes.Add(new HashValue($"Args:{i}:Type", $"{type.FullName}, {type.Assembly.GetName().Name}"));
-				//	hashes.Add(new HashValue($"Args:{i}:Value", task.Args[i].ToString()));
-				//}
-
 				return hashes.ToArray();
 			}
 

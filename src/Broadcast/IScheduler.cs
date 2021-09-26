@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using Broadcast.Scheduling;
 
 namespace Broadcast
 {
@@ -12,8 +10,9 @@ namespace Broadcast
 		/// <summary>
 		/// Enqueues and schedules a new task
 		/// </summary>
+		/// <param name="id">The id of the <see cref="Broadcast.EventSourcing.ITask"/></param>
 		/// <param name="task">The task to schedule</param>
 		/// <param name="time">The time to execute the task at</param>
-		void Enqueue(Action task, TimeSpan time);
+		void Enqueue(string id, Action<string> task, TimeSpan time);
 	}
 }

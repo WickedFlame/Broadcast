@@ -18,7 +18,7 @@ namespace Broadcast.Test.Scheduling
 		[Test]
 		public void ScheduleQueue_Enqueue()
 		{
-			var task = new SchedulerTask(() => { }, TimeSpan.Zero);
+			var task = new SchedulerTask("id", id => { }, TimeSpan.Zero);
 
 			var queue = new ScheduleQueue();
 			queue.Enqueue(task);
@@ -29,7 +29,7 @@ namespace Broadcast.Test.Scheduling
 		[Test]
 		public void ScheduleQueue_Enqueue_SameTaskMultipleTimes()
 		{
-			var task = new SchedulerTask(() => { }, TimeSpan.Zero);
+			var task = new SchedulerTask("id", id => { }, TimeSpan.Zero);
 
 			var queue = new ScheduleQueue();
 			queue.Enqueue(task);
@@ -41,7 +41,7 @@ namespace Broadcast.Test.Scheduling
 		[Test]
 		public void ScheduleQueue_Dequeue()
 		{
-			var task = new SchedulerTask(() => { }, TimeSpan.Zero);
+			var task = new SchedulerTask("id", id => { }, TimeSpan.Zero);
 
 			var queue = new ScheduleQueue();
 			queue.Enqueue(task);
@@ -53,7 +53,7 @@ namespace Broadcast.Test.Scheduling
 		[Test]
 		public void ScheduleQueue_Dequeue_Invalid()
 		{
-			var task = new SchedulerTask(() => { }, TimeSpan.Zero);
+			var task = new SchedulerTask("id", id => { }, TimeSpan.Zero);
 
 			var queue = new ScheduleQueue();
 			queue.Dequeue(task);
@@ -64,7 +64,7 @@ namespace Broadcast.Test.Scheduling
 		[Test]
 		public void ScheduleQueue_ToList()
 		{
-			var task = new SchedulerTask(() => { }, TimeSpan.Zero);
+			var task = new SchedulerTask("id", id => { }, TimeSpan.Zero);
 
 			var queue = new ScheduleQueue();
 			queue.Enqueue(task);
@@ -76,8 +76,8 @@ namespace Broadcast.Test.Scheduling
 		public void ScheduleQueue_ToList_Count()
 		{
 			var queue = new ScheduleQueue();
-			queue.Enqueue(new SchedulerTask(() => { }, TimeSpan.Zero));
-			queue.Enqueue(new SchedulerTask(() => { }, TimeSpan.Zero));
+			queue.Enqueue(new SchedulerTask("id", id => { }, TimeSpan.Zero));
+			queue.Enqueue(new SchedulerTask("id", id => { }, TimeSpan.Zero));
 
 			Assert.AreEqual(2, queue.ToList().Count());
 		}
