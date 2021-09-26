@@ -2,6 +2,9 @@
 using System;
 using System.Linq.Expressions;
 using Broadcast.Configuration;
+using Broadcast.EventSourcing;
+using Broadcast.Server;
+using Broadcast.Storage;
 
 namespace Broadcast
 {
@@ -52,6 +55,12 @@ namespace Broadcast
 			if (!string.IsNullOrEmpty(name))
 			{
 				task.Name = name;
+			}
+
+			var existing = Client.Store.Storage(s => s.Get<RecurringTask>(new Storage.StorageKey($"tasks:recurring:{task.Name}")));
+			if (existing != null)
+			{
+				Client.Store.Delete(existing.ReferenceId);
 			}
 
 			Client.Enqueue(task);

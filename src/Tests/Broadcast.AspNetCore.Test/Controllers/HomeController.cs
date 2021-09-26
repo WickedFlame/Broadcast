@@ -62,6 +62,14 @@ namespace Broadcast.AspNetCore.Test.Controllers
 			return Redirect("Index");
 		}
 
+		public IActionResult RcurringTask()
+		{
+			var service = new TaskService();
+			BackgroundTaskClient.Recurring(() => service.Recurring(DateTime.Now.ToString("o")), TimeSpan.FromSeconds(30));
+
+			return Redirect("Index");
+		}
+
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 		public IActionResult Error()
 		{
@@ -103,6 +111,11 @@ namespace Broadcast.AspNetCore.Test.Controllers
 			Console.WriteLine("Scheduled Task started");
 			Thread.Sleep(TimeSpan.FromSeconds(10));
 			Console.WriteLine("Scheduled Task ended");
+		}
+
+		public void Recurring(string sceduleTime)
+		{
+			Console.WriteLine($"Recurring Task from {sceduleTime}");
 		}
 	}
 }
