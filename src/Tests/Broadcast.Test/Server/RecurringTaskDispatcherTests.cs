@@ -61,6 +61,20 @@ namespace Broadcast.Test.Server
 		}
 
 		[Test]
+		public void RecurringTaskDispatcher_Execute_Deleted()
+		{
+			var dispatcher = new RecurringTaskDispatcher(_broadcaster.Object, _store.Object);
+			var task = TaskFactory.CreateTask(() => Console.WriteLine("RecurringTaskDispatcher"));
+			task.IsRecurring = true;
+			task.Time = TimeSpan.Zero;
+			task.State = TaskState.Deleted;
+			
+			dispatcher.Execute(task);
+
+			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<string>(), It.IsAny<Action<string>>(), It.IsAny<TimeSpan>()), Times.Never);
+		}
+
+		[Test]
 		public void RecurringTaskDispatcher_Execute_Broadcaster()
 		{
 			var dispatcher = new RecurringTaskDispatcher(_broadcaster.Object, _store.Object);
@@ -73,6 +87,39 @@ namespace Broadcast.Test.Server
 			dispatcher.Execute(task);
 
 			_broadcaster.Verify(exp => exp.Process(It.Is<ITask>(t => t == task)), Times.Once);
+		}
+
+		[Test]
+		public void RecurringTaskDispatcher_Execute_Scheduled_Null()
+		{
+			var dispatcher = new RecurringTaskDispatcher(_broadcaster.Object, _store.Object);
+			var task = TaskFactory.CreateTask(() => Console.WriteLine("RecurringTaskDispatcher"));
+			task.IsRecurring = true;
+			task.Time = TimeSpan.Zero;
+
+			_store.Setup(exp => exp.Storage<BroadcastTask>(It.IsAny<Func<IStorage, BroadcastTask>>())).Returns(() => (BroadcastTask)null);
+
+			dispatcher.Execute(task);
+
+			_broadcaster.Verify(exp => exp.Process(It.Is<ITask>(t => t == task)), Times.Never);
+		}
+
+		[Test]
+		public void RecurringTaskDispatcher_Execute_Scheduled_Deleted()
+		{
+			var dispatcher = new RecurringTaskDispatcher(_broadcaster.Object, _store.Object);
+			var task = TaskFactory.CreateTask(() => Console.WriteLine("RecurringTaskDispatcher"));
+			task.IsRecurring = true;
+			task.Time = TimeSpan.Zero;
+
+			var t2 = task.Clone();
+			t2.State = TaskState.Deleted;
+
+			_store.Setup(exp => exp.Storage<BroadcastTask>(It.IsAny<Func<IStorage, BroadcastTask>>())).Returns(() => (BroadcastTask)t2);
+
+			dispatcher.Execute(task);
+
+			_broadcaster.Verify(exp => exp.Process(It.Is<ITask>(t => t == task)), Times.Never);
 		}
 
 		[Test]

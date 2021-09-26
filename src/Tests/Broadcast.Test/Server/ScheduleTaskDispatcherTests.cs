@@ -51,6 +51,20 @@ namespace Broadcast.Test.Server
 		}
 
 		[Test]
+		public void ScheduleTaskDispatcher_Execute_Scheduler_Deleted()
+		{
+			var dispatcher = new ScheduleTaskDispatcher(_broadcaster.Object, _store.Object);
+			var task = TaskFactory.CreateTask(() => Console.WriteLine("ScheduleTaskDispatcher"));
+			task.Time = TimeSpan.Zero;
+			task.State = TaskState.Deleted;
+
+			dispatcher.Execute(task);
+			dispatcher.Execute(task);
+
+			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<string>(), It.IsAny<Action<string>>(), It.IsAny<TimeSpan>()), Times.Never);
+		}
+
+		[Test]
 		public void ScheduleTaskDispatcher_Execute_Broadcaster()
 		{
 			var dispatcher = new ScheduleTaskDispatcher(_broadcaster.Object, _store.Object);
@@ -62,6 +76,37 @@ namespace Broadcast.Test.Server
 			dispatcher.Execute(task);
 
 			_broadcaster.Verify(exp => exp.Process(It.Is<ITask>(t => t.Id == task.Id)), Times.Once);
+		}
+
+		[Test]
+		public void ScheduleTaskDispatcher_Execute_Task_Null()
+		{
+			var dispatcher = new ScheduleTaskDispatcher(_broadcaster.Object, _store.Object);
+			var task = TaskFactory.CreateTask(() => Console.WriteLine("ScheduleTaskDispatcher"));
+			task.Time = TimeSpan.Zero;
+
+			_store.Setup(exp => exp.Storage<BroadcastTask>(It.IsAny<Func<IStorage, BroadcastTask>>())).Returns(() => (BroadcastTask)null);
+
+			dispatcher.Execute(task);
+
+			_broadcaster.Verify(exp => exp.Process(It.Is<ITask>(t => t.Id == task.Id)), Times.Never);
+		}
+
+		[Test]
+		public void ScheduleTaskDispatcher_Execute_Task_Deleted()
+		{
+			var dispatcher = new ScheduleTaskDispatcher(_broadcaster.Object, _store.Object);
+			var task = TaskFactory.CreateTask(() => Console.WriteLine("ScheduleTaskDispatcher"));
+			task.Time = TimeSpan.Zero;
+
+			var t2 = task.Clone();
+			t2.State = TaskState.Deleted;
+
+			_store.Setup(exp => exp.Storage<BroadcastTask>(It.IsAny<Func<IStorage, BroadcastTask>>())).Returns(() => (BroadcastTask)t2);
+
+			dispatcher.Execute(task);
+
+			_broadcaster.Verify(exp => exp.Process(It.Is<ITask>(t => t.Id == task.Id)), Times.Never);
 		}
 
 		[Test]

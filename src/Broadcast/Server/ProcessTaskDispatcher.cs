@@ -1,4 +1,5 @@
 ﻿using System;
+using Broadcast.Diagnostics;
 using Broadcast.EventSourcing;
 
 namespace Broadcast.Server
@@ -9,6 +10,7 @@ namespace Broadcast.Server
 	public class ProcessTaskDispatcher : IDispatcher
 	{
 		private readonly IBroadcaster _broadcaster;
+		private readonly ILogger _logger;
 
 		/// <summary>
 		/// Creates a new instance of the ProcessTaskDispatcher
@@ -17,6 +19,7 @@ namespace Broadcast.Server
 		public ProcessTaskDispatcher(IBroadcaster broadcaster)
 		{
 			_broadcaster = broadcaster ?? throw new ArgumentNullException(nameof(broadcaster));
+			_logger = LoggerFactory.Create();
 		}
 
 		/// <summary>
@@ -28,6 +31,12 @@ namespace Broadcast.Server
 		{
 			if(task.Time == null && !task.IsRecurring)
 			{
+				if (task.State == TaskState.Deleted)
+				{
+					_logger.Write($"Task {task.Id} is marked as deleted and will not be processed by the ProcessTaskDipatcher", LogLevel.Warning);
+					return;
+				}
+
 				_broadcaster.Process(task);
 			}
 		}

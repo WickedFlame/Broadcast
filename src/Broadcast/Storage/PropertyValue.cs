@@ -26,5 +26,14 @@ namespace Broadcast.Storage
 		/// Gets or sets the value of the property
 		/// </summary>
 		public object Value { get; set; }
+
+		/// <summary>
+		/// Gets the stringvalue representing the insance
+		/// </summary>
+		/// <returns></returns>
+		public override string ToString()
+		{
+			return $"{Key}: {Value}";
+		}
 	}
 }

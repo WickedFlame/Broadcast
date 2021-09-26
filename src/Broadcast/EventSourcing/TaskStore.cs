@@ -121,6 +121,41 @@ namespace Broadcast.EventSourcing
 		}
 
 		/// <summary>
+		/// Delete a Task from the queue and mark it as deleted in the storage
+		/// </summary>
+		/// <param name="id"></param>
+		public void Delete(string id)
+		{
+			_logger.Write($"Delete task {id} from storage");
+
+			// to delete the task we just mark it as deleted
+			var taskKey = new StorageKey($"task:{id}");
+			var task = _storage.Get<DataObject>(taskKey);
+			task["State"] = TaskState.Deleted;
+			_storage.Set<DataObject>(taskKey, task);
+
+			// remove from queue!
+			_storage.RemoveFromList(new StorageKey("tasks:enqueued"), id);
+			_storage.RemoveFromList(new StorageKey("tasks:dequeued"), id);
+
+			if (task["IsRecurring"].ToBool())
+			{
+				// remove the recurring task that is associated with this task
+				var recurringTasks = _storage.GetKeys(new StorageKey("tasks:recurring:"));
+				foreach (var recurringKey in recurringTasks)
+				{
+					// get the recurring task that references the task that is to be deleted
+					var recurring = _storage.Get<RecurringTask>(new StorageKey(recurringKey));
+					if (recurring?.ReferenceId == id)
+					{
+						_storage.Delete(new StorageKey(recurringKey));
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
 		/// Start dispatching all new tasks.
 		/// Uses a round robin implementation to select the <see cref="IBroadcaster"/> that processes the tasks
 		/// </summary>

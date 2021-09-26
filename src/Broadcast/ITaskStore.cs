@@ -24,6 +24,12 @@ namespace Broadcast
 		void Add(ITask task);
 
 		/// <summary>
+		/// Delete a Task from the queue and mark it as deleted in the storage
+		/// </summary>
+		/// <param name="id"></param>
+		void Delete(string id);
+
+		/// <summary>
 		/// Dispatch the task to all <see cref="IDispatcher"/>.
 		/// Uses a round robin implementation to select the <see cref="IBroadcaster"/> that the task is dispatched to
 		/// </summary>

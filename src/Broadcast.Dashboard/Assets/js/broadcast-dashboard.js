@@ -83,7 +83,7 @@ export class BroadcastDashboard extends BroadcastBase {
 		var processedCnt = 0;
 		var failedCnt = 0;
 		data.tasks.forEach(t => {
-			if (t.state !== 'processed' && t.state !== 'faulted') {
+			if (t.state !== 'processed' && t.state !== 'faulted' && t.state !== 'deleted') {
 				cnt = cnt + 1;
 			} else if (t.state === 'processed') {
 				processedCnt = processedCnt + 1;
@@ -105,6 +105,8 @@ export class BroadcastDashboard extends BroadcastBase {
 					? 'Processed'
 					: t.state === 'faulted'
 					? 'Faulted'
+					: t.state === 'deleted'
+					? 'Deleted'
 					: 'Unknown';
 
 				if (taskRow) {

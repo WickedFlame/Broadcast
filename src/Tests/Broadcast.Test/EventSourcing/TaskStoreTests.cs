@@ -119,6 +119,139 @@ namespace Broadcast.Test.EventSourcing
 
 			Assert.AreEqual(3, store.Count());
 		}
+		
+		[Test]
+		public void TaskStore_Delete_ReloadTask()
+		{
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.Get<DataObject>(It.IsAny<StorageKey>())).Returns(new DataObject
+			{
+				{"State", "New"}
+			});
+			var store = new TaskStore(storage.Object);
+
+			store.Delete("id");
+
+			storage.Verify(exp => exp.Get<DataObject>(It.IsAny<StorageKey>()), Times.Once);
+		}
+
+		[Test]
+		public void TaskStore_Delete_SetState()
+		{
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.Get<DataObject>(It.IsAny<StorageKey>())).Returns(new DataObject
+			{
+				{"State", "New"}
+			});
+			var store = new TaskStore(storage.Object);
+
+			store.Delete("id");
+
+			storage.Verify(exp => exp.Set<DataObject>(It.IsAny<StorageKey>(), It.Is<DataObject>(d => (TaskState)d["State"] == TaskState.Deleted)), Times.Once);
+		}
+
+		[Test]
+		public void TaskStore_Delete_RemoveEnqueue()
+		{
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.Get<DataObject>(It.IsAny<StorageKey>())).Returns(new DataObject
+			{
+				{"State", "New"}
+			});
+			var store = new TaskStore(storage.Object);
+
+			store.Delete("id");
+
+			storage.Verify(exp => exp.RemoveFromList(It.Is<StorageKey>(s => s.ToString() == "tasks:enqueued"), "id"), Times.Once);
+		}
+
+		[Test]
+		public void TaskStore_Delete_RemoveDequeue()
+		{
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.Get<DataObject>(It.IsAny<StorageKey>())).Returns(new DataObject
+			{
+				{"State", "New"}
+			});
+			var store = new TaskStore(storage.Object);
+
+			store.Delete("id");
+
+			storage.Verify(exp => exp.RemoveFromList(It.Is<StorageKey>(s => s.ToString() == "tasks:dequeued"), "id"), Times.Once);
+		}
+
+		[Test]
+		public void TaskStore_Delete_NotRecurring()
+		{
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.Get<DataObject>(It.IsAny<StorageKey>())).Returns(new DataObject
+			{
+				{"State", "New"}
+			});
+			var store = new TaskStore(storage.Object);
+
+			store.Delete("id");
+
+			storage.Verify(exp => exp.GetKeys(It.Is<StorageKey>(s => s.ToString() == "tasks:recurring:")), Times.Never);
+		}
+
+		[Test]
+		public void TaskStore_Delete_Recurring()
+		{
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.Get<DataObject>(It.IsAny<StorageKey>())).Returns(new DataObject
+			{
+				{"State", "New"},
+				{"IsRecurring", true}
+			});
+			var store = new TaskStore(storage.Object);
+
+			store.Delete("id");
+
+			storage.Verify(exp => exp.GetKeys(It.Is<StorageKey>(s => s.ToString() == "tasks:recurring:")), Times.Once);
+		}
+
+		[Test]
+		public void TaskStore_Delete_Recurring_GetRecurring()
+		{
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.Get<DataObject>(It.IsAny<StorageKey>())).Returns(new DataObject
+			{
+				{"State", "New"},
+				{"IsRecurring", true}
+			});
+			storage.Setup(exp => exp.GetKeys(It.IsAny<StorageKey>())).Returns(() => new List<string> {"one", "two"});
+			storage.Setup(exp => exp.Get<RecurringTask>(It.Is<StorageKey>(k => k.ToString() == "two"))).Returns(() => new RecurringTask
+			{
+				ReferenceId = "id"
+			});
+			var store = new TaskStore(storage.Object);
+
+			store.Delete("id");
+
+			storage.Verify(exp => exp.Get<RecurringTask>(It.IsAny<StorageKey>()), Times.Exactly(2));
+		}
+
+		[Test]
+		public void TaskStore_Delete_Recurring_Delete()
+		{
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.Get<DataObject>(It.IsAny<StorageKey>())).Returns(new DataObject
+			{
+				{"State", "New"},
+				{"IsRecurring", true}
+			});
+			storage.Setup(exp => exp.GetKeys(It.IsAny<StorageKey>())).Returns(() => new List<string> { "one", "two" });
+			storage.Setup(exp => exp.Get<RecurringTask>(It.Is<StorageKey>(k => k.ToString() == "two"))).Returns(() => new RecurringTask
+			{
+				ReferenceId = "id"
+			});
+			var store = new TaskStore(storage.Object);
+
+			store.Delete("id");
+
+			storage.Verify(exp => exp.Delete(It.IsAny<StorageKey>()), Times.Once);
+		}
 
 		[Test]
 		public void TaskStore_Subscriptions_ServerHeartbeatSubscriber()

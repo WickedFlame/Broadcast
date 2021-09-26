@@ -43,6 +43,18 @@ namespace Broadcast.Test.Server
 		}
 
 		[Test]
+		public void ProcessTaskDispatcher_Execute_Deleted()
+		{
+			var dispatcher = new ProcessTaskDispatcher(_broadcaster.Object);
+			var task = TaskFactory.CreateTask(() => Console.WriteLine("ProcessTaskDispatcher"));
+			task.State = TaskState.Deleted;
+
+			dispatcher.Execute(task);
+
+			_broadcaster.Verify(exp => exp.Process(It.Is<ITask>(t => t == task)), Times.Never);
+		}
+
+		[Test]
 		public void ProcessTaskDispatcher_Execute_IsRecurring()
 		{
 			var dispatcher = new ProcessTaskDispatcher(_broadcaster.Object);

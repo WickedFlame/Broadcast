@@ -34,6 +34,11 @@ namespace Broadcast.EventSourcing
 		/// <summary>
 		/// Task is failed
 		/// </summary>
-        Faulted
+        Faulted,
+
+		/// <summary>
+		/// Task is deleted
+		/// </summary>
+		Deleted
     }
 }
