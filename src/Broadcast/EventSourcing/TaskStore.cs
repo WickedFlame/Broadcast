@@ -260,7 +260,7 @@ namespace Broadcast.EventSourcing
 		public bool WaitAll()
 		{
 			// first we wait for all enqueued tasks to change state to dequeued
-			while (this.GetEnqueuedTasks().Any())
+			while (_dispatcherLock.IsLocked())
 			{
 				System.Diagnostics.Trace.WriteLine("Wait for TaskStore");
 				WaitHandle.WaitOne(50);
