@@ -7,9 +7,9 @@ using Newtonsoft.Json.Serialization;
 namespace Broadcast.Dashboard.Dispatchers
 {
 	/// <summary>
-	/// Dispatcher for the data of server
+	/// Dispatcher for the data of recurringtasks
 	/// </summary>
-	public class DashboardServerDataDispatcher : IDashboardDispatcher
+	public class DashboardRecurringTaskDataDispatcher : IDashboardDispatcher
 	{
 		/// <summary>
 		/// Execution of the dispatcher
@@ -21,7 +21,7 @@ namespace Broadcast.Dashboard.Dispatchers
 			var id = context.UriMatch.Groups["id"];
 
 			var service = new StorageItemService(context.TaskStore);
-			var task = service.GetServer(id.Value);
+			var task = service.GetRecurringTask(id.Value);
 
 			var settings = new JsonSerializerSettings
 			{

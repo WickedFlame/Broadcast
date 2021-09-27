@@ -6,8 +6,16 @@ using Newtonsoft.Json.Serialization;
 
 namespace Broadcast.Dashboard.Dispatchers
 {
+	/// <summary>
+	/// Dispatcher for the data of tasks
+	/// </summary>
 	public class DashboardTaskDataDispatcher : IDashboardDispatcher
 	{
+		/// <summary>
+		/// Execution of the dispatcher
+		/// </summary>
+		/// <param name="context"></param>
+		/// <returns></returns>
 		public async Task Dispatch(IDashboardContext context)
 		{
 			var id = context.UriMatch.Groups["id"];

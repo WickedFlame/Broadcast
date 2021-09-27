@@ -18,6 +18,14 @@ export class BroadcastDashboard extends BroadcastBase {
 				}
 			});
 
+		document.querySelector('#recurringlist').addEventListener('click',
+			e => {
+				var row = e.target.closest('tr');
+				if (row) {
+					this.showDetail(`${config.dataUrl}/recurringtask/${row.dataset.recurringId}`);
+				}
+			});
+
 		document.querySelector('#serverlist').addEventListener('click',
 			e => {
 				var row = e.target.closest('tr');
@@ -65,7 +73,7 @@ export class BroadcastDashboard extends BroadcastBase {
 					// add new row
 					var row = recurringlist.querySelector('tbody').insertRow(0);
 					row.id = `recurring_${name}`;
-					row.setAttribute('data-recurring-id', t.id);
+					row.setAttribute('data-recurring-id', t.name);
 					row.classList.add('broadcast-table-row');
 
 					this.addCell(row, 0, null, t.name);

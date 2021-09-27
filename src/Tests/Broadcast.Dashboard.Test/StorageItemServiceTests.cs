@@ -149,5 +149,40 @@ namespace Broadcast.Dashboard.Test
 
 			Assert.IsNull(data);
 		}
+
+		[Test]
+		public void StorageItemService_GetRecurringTask()
+		{
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.Get<DataObject>(It.Is<StorageKey>(k => k.Key.EndsWith("tasks:recurring:Task.Name")))).Returns(() => new DataObject
+			{
+				{"Name", "Task.Name"},
+				{"ReferenceId", "BA9B34C9-469A-4E34-BE1D-B9E5510D82B3"},
+				{"NextExecution", "2021/12/21T12:12:12"},
+				{"Interval", "2021/12/21T12:12:12"}
+			});
+
+			var store = new TaskStore(storage.Object);
+
+			var service = new StorageItemService(store);
+
+			var task = service.GetRecurringTask("Task.Name");
+
+			task.MatchSnapshot(SnapshotOptions.Create(o => o.MockDateTimes()));
+		}
+		
+		[Test]
+		public void StorageItemService_GetRecurringTask_NoData()
+		{
+			var storage = new Mock<IStorage>();
+
+			var store = new TaskStore(storage.Object);
+
+			var service = new StorageItemService(store);
+
+			var data = service.GetRecurringTask("Task.Name");
+
+			Assert.IsNull(data);
+		}
 	}
 }

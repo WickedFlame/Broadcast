@@ -128,21 +128,57 @@ namespace Broadcast.Dashboard.Dispatchers.Models
 				{
 					Key = id.ToString(),
 					Title = data["Name"]?.ToString(),
-					Groups = new List<StoragePropertyGroup>{ new StoragePropertyGroup
+					Groups = new List<StoragePropertyGroup>
 					{
-						Title = "Server",
-						Values = new List<StorageProperty>
+						new StoragePropertyGroup
 						{
-							new StorageProperty("Id", data["Id"]),
-							new StorageProperty("Name", data["Name"]),
-							new StorageProperty("Heartbeat", data["Heartbeat"]?.ToFormattedDateTime())
+							Title = "Server",
+							Values = new List<StorageProperty>
+							{
+								new StorageProperty("Id", data["Id"]),
+								new StorageProperty("Name", data["Name"]),
+								new StorageProperty("Heartbeat", data["Heartbeat"]?.ToFormattedDateTime())
+							}.Where(t => t != null && !string.IsNullOrEmpty(t.Value))
 						}
-					}
 					}
 				};
 			});
 
 			return server;
+		}
+
+		public StorageItem GetRecurringTask(string id)
+		{
+			var recurringTask = _store.Storage(s =>
+			{
+				var data = s.Get<DataObject>(new StorageKey($"tasks:recurring:{id}"));
+				if (data == null)
+				{
+					return null;
+				}
+
+				return new StorageItem
+				{
+					Key = id,
+					Title = data["Name"]?.ToString(),
+					Groups = new List<StoragePropertyGroup>
+					{
+						new StoragePropertyGroup
+						{
+							Title = "Recurring Task",
+							Values = new List<StorageProperty>
+							{
+								new StorageProperty("Name", data["Name"]),
+								new StorageProperty("ReferenceId", data["ReferenceId"]),
+								new StorageProperty("Next execution", data["NextExecution"]?.ToFormattedDateTime()),
+								new StorageProperty("Interval", data["Interval"]?.ToDuration())
+							}.Where(t => t != null && !string.IsNullOrEmpty(t.Value))
+						}
+					}
+				};
+			});
+
+			return recurringTask;
 		}
 	}
 }

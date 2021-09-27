@@ -19,6 +19,11 @@ namespace Broadcast.Dashboard.Dispatchers.Models
 				return $"{TimeSpan.FromMilliseconds(duration).TotalSeconds} s";
 			}
 
+			if (value is DateTime time)
+			{
+				return $"{time.TimeOfDay}.000";
+			}
+
 			return null;
 		}
 
