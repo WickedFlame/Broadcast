@@ -180,5 +180,10 @@ namespace Broadcast.Dashboard.Dispatchers.Models
 
 			return recurringTask;
 		}
+
+		public void DeleteTask(string id)
+		{
+			_store.Delete(id);
+		}
 	}
 }

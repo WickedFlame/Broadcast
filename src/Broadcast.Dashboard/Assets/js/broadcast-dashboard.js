@@ -12,17 +12,29 @@ export class BroadcastDashboard extends BroadcastBase {
 
 		document.querySelector('#tasklist').addEventListener('click',
 			e => {
+				var trash = e.target.closest('.trash-button');
+				if (trash) {
+					this.deleteTask(`${config.dashboardUrl}/task/${trash.dataset.taskId}/delete`);
+					return;
+				}
+
 				var row = e.target.closest('tr');
 				if (row) {
-					this.showDetail(`${config.dataUrl}/task/${row.dataset.taskId}`);
+					this.showDetail(`${config.dashboardUrl}/data/task/${row.dataset.taskId}`);
 				}
 			});
 
 		document.querySelector('#recurringlist').addEventListener('click',
 			e => {
+				var trash = e.target.closest('.trash-button');
+				if (trash) {
+					this.deleteTask(`${config.dashboardUrl}/task/${trash.dataset.recurringId}/delete`);
+					return;
+				}
+
 				var row = e.target.closest('tr');
 				if (row) {
-					this.showDetail(`${config.dataUrl}/recurringtask/${row.dataset.recurringId}`);
+					this.showDetail(`${config.dashboardUrl}/data/recurringtask/${row.dataset.recurringId}`);
 				}
 			});
 
@@ -30,7 +42,7 @@ export class BroadcastDashboard extends BroadcastBase {
 			e => {
 				var row = e.target.closest('tr');
 				if (row) {
-					this.showDetail(`${config.dataUrl}/server/${row.dataset.serverId}`);
+					this.showDetail(`${config.dashboardUrl}/data/server/${row.dataset.serverId}`);
 				}
 			});
 
@@ -74,12 +86,14 @@ export class BroadcastDashboard extends BroadcastBase {
 					var row = recurringlist.querySelector('tbody').insertRow(0);
 					row.id = `recurring_${name}`;
 					row.setAttribute('data-recurring-id', t.name);
+					row.setAttribute('data-recurring-reference-id', t.referenceId);
 					row.classList.add('broadcast-table-row');
 
 					this.addCell(row, 0, null, t.name);
 					this.addCell(row, 1, `referenceid_${name}`, t.referenceId);
 					this.addCell(row, 2, null, this.formatDate(new Date(t.nextExecution)));
 					this.addCell(row, 3, null, this.millisecondsToTime(t.interval));
+					this.addCell(row, 4, null, '').innerHTML = `<div class="trash-box"><i class="trash-button" data-recurring-id="${t.referenceId}"></i></div>`;
 				}
 			});
 		}
@@ -126,6 +140,9 @@ export class BroadcastDashboard extends BroadcastBase {
 						this.updateElement(taskRow.querySelector(`#duration_${t.id}`), t.duration ? this.millisecondsToTime(t.duration, true) : '');
 						this.updateElement(taskRow.querySelector(`#enqueued_${t.id}`), t.queued ? 'true' : '');
 						this.updateElement(taskRow.querySelector(`#fetched_${t.id}`), t.fetched ? 'true' : '');
+						if (t.state !== 'new' && t.state !== 'queueud' && t.state !== 'dequeueud') {
+							taskRow.querySelector(`#trash_${t.id}`).innerHTML = '';
+						}
 					}
 				} else {
 					// add new row
@@ -145,6 +162,10 @@ export class BroadcastDashboard extends BroadcastBase {
 						this.addCell(row, 6, `duration_${t.id}`, t.duration ? this.millisecondsToTime(t.duration, true) : '');
 						this.addCell(row, 7, `enqueued_${t.id}`, t.queued ? 'true' : '');
 						this.addCell(row, 8, `fetched_${t.id}`, t.fetched ? 'true' : '');
+						var trash = this.addCell(row, 9, `trash_${t.id}`, '');
+						if (t.state === 'new' || t.state === 'queueud' || t.state === 'dequeueud') {
+							trash.innerHTML = `<div class="trash-box"><i class="trash-button" data-task-id="${t.id}"></i></div>`;
+						}
 					}
 				}
 			}
@@ -160,6 +181,8 @@ export class BroadcastDashboard extends BroadcastBase {
 		if (id !== null) {
 			cell.id = id;
 		}
+
+		return cell;
 	}
 
 	millisecondsToTime(s, short) {
@@ -232,21 +255,6 @@ export class BroadcastDashboard extends BroadcastBase {
 				}
 			});
 			
-			//response.values.forEach(p => {
-			//	if (p.key === '') {
-			//		rows = rows +
-			//			`<div class="broadcast-storage-type-row-single">
-			//				<div class="broadcast-storage-type-value">${p.value}</div>
-			//			</div>`;
-			//	} else {
-			//		rows = rows +
-			//			`<div class="broadcast-storage-type-row">
-			//				<div class="broadcast-storage-type-key">${p.key}</div>
-			//				<div class="broadcast-storage-type-value">${p.value}</div>
-			//			</div>`;
-			//	}
-			//});
-
 			var overlay = document.querySelector('#broadcast-data-overlay');
 			overlay.querySelector('#broadcast-data-title').innerText = response.title;
 			overlay.querySelector('#broadcast-data-key').innerText = response.key;
@@ -257,6 +265,34 @@ export class BroadcastDashboard extends BroadcastBase {
 
 		});
 	}
+
+	deleteTask(url) {
+		fetch(url,
+			{
+				method: "POST",
+				//headers: { 'content-type': 'application/json;  charset=utf-8' }
+			}
+		).then(function(response) {
+			if (!response.ok) {
+				throw Error(response.statusText);
+			}
+
+			return response.json();
+		}).then(function (response) {
+			//TODO: remove task
+
+			// delete the recurring item if it is arecurring task
+			var recurringlist = document.querySelector('#recurringlist');
+			if (recurringlist) {
+				var recurring = recurringlist.querySelector(`tr[data-recurring-reference-id="${response.id}"]`);
+				if (recurring) {
+					var i = recurring.rowIndex;
+					recurringlist.deleteRow(i);
+				}
+			}
+			
+		});
+	}
 }
 
 if (dashboardConfig === undefined) {
@@ -264,7 +300,7 @@ if (dashboardConfig === undefined) {
 		//TODO: /broadcast/ has to be able to be appended as configuration
 		pollUrl: "/broadcast/dashboard/metrics",
 		//TODO: /broadcast/ has to be able to be appended as configuration
-		dataUrl: "/broadcast/dashboard/data",
+		dashboardUrl: "/broadcast/dashboard",
 		pollInterval: 2000
 	};
 }
