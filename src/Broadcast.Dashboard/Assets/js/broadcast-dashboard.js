@@ -146,7 +146,7 @@ export class BroadcastDashboard extends BroadcastBase {
 					}
 				} else {
 					// add new row
-					if (t.state !== 'deleted') {
+					if (t.state !== 'deleted' && !(t.isRecurring && t.state === 'new')) {
 						var row = tasklist.querySelector('tbody').insertRow(0);
 						row.id = `task_${t.id}`;
 						row.setAttribute('data-task-id', t.id);
