@@ -146,7 +146,7 @@ export class BroadcastDashboard extends BroadcastBase {
 					}
 				} else {
 					// add new row
-					if (!tasklist.classList.contains('processed') || t.state === 4) {
+					if (t.state !== 'deleted') {
 						var row = tasklist.querySelector('tbody').insertRow(0);
 						row.id = `task_${t.id}`;
 						row.setAttribute('data-task-id', t.id);
@@ -280,14 +280,19 @@ export class BroadcastDashboard extends BroadcastBase {
 			return response.json();
 		}).then(function (response) {
 			//TODO: remove task
-
+			var tasklist = document.querySelector('#tasklist');
+			if (tasklist) {
+				var task = tasklist.querySelector(`tr[data-task-id="${response.id}"]`);
+				if (task) {
+					tasklist.deleteRow(task.rowIndex);
+				}
+			}
 			// delete the recurring item if it is arecurring task
 			var recurringlist = document.querySelector('#recurringlist');
 			if (recurringlist) {
 				var recurring = recurringlist.querySelector(`tr[data-recurring-reference-id="${response.id}"]`);
 				if (recurring) {
-					var i = recurring.rowIndex;
-					recurringlist.deleteRow(i);
+					recurringlist.deleteRow(recurring.rowIndex);
 				}
 			}
 			
