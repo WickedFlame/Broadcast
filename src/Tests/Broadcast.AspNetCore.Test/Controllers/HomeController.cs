@@ -70,6 +70,15 @@ namespace Broadcast.AspNetCore.Test.Controllers
 			return Redirect("Index");
 		}
 
+		public IActionResult DeleteTask()
+		{
+			var service = new TaskService();
+			var taskId = BackgroundTaskClient.Schedule(() => service.Schedule(), TimeSpan.FromSeconds(15));
+			BackgroundTaskClient.DeleteTask(taskId);
+
+			return Redirect("Index");
+		}
+
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 		public IActionResult Error()
 		{

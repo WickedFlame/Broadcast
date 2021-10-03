@@ -131,6 +131,9 @@ namespace Broadcast.EventSourcing
 			// to delete the task we just mark it as deleted
 			var taskKey = new StorageKey($"task:{id}");
 			var task = _storage.Get<DataObject>(taskKey);
+
+			//TODO: Is it correct that tasks in State 'Processing' can be deleted?
+
 			task["State"] = TaskState.Deleted;
 			_storage.Set<DataObject>(taskKey, task);
 

@@ -97,5 +97,15 @@ namespace Broadcast
 
 			return task.Id;
 		}
+
+		/// <summary>
+		/// Deltete a <see cref="ITask"/> from the Executionpipeline.
+		/// If a task is allready in the state of <see cref="TaskState.InProcess"/> the delete will be ignored.
+		/// </summary>
+		/// <param name="taskId"></param>
+		public static void DeleteTask(string taskId)
+		{
+			Client.Store.Delete(taskId);
+		}
 	}
 }

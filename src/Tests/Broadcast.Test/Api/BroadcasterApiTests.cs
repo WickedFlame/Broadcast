@@ -217,7 +217,21 @@ namespace Broadcast.Test.Api
 
 			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<string>(), It.IsAny<Action<string>>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
-		
+
+		[Test]
+		public void Broadcaster_Api_DeleteTask()
+		{
+			var broadcaster = new Broadcaster(new TaskStore(), _processor.Object, _scheduler.Object);
+
+			// execute a generic method
+			// serializeable
+			var id = broadcaster.Send(() => GenericMethod(1));
+			broadcaster.DeleteTask(id);
+
+			Assert.That(broadcaster.Store.Count(t => t.State == TaskState.Deleted), Is.EqualTo(1));
+			Assert.That(broadcaster.Store.All(t => t.State == TaskState.Deleted));
+		}
+
 
 
 

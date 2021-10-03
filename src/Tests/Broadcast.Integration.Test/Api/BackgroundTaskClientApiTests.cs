@@ -152,6 +152,18 @@ namespace Broadcast.Integration.Test.Api
 		}
 
 
+		[Test]
+		public void BackgroundTaskClient_Api_Delete()
+		{
+			// execute a generic method
+			// serializeable
+			var id = BackgroundTaskClient.Schedule(() => GenericMethod(1), TimeSpan.FromSeconds(15));
+			BackgroundTaskClient.DeleteTask(id);
+
+			Assert.That(BroadcastServer.Server.Store.Count(t => t.State == TaskState.Deleted), Is.GreaterThan(0));
+			Assert.That(BroadcastServer.Server.Store.All(t => t.State == TaskState.Deleted));
+		}
+
 
 		public void TestMethod(int i) { }
 

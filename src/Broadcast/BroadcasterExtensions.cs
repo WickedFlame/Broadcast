@@ -76,7 +76,18 @@ namespace Broadcast
 		/// <param name="broadcaster"></param>
 		public static IEnumerable<ITask> GetProcessedTasks(this IBroadcaster broadcaster)
 		{
-				return broadcaster.Store.Where(s => s.State == TaskState.Processed);
+			return broadcaster.Store.Where(s => s.State == TaskState.Processed);
+		}
+
+		/// <summary>
+		/// Deltete a <see cref="ITask"/> from the Executionpipeline.
+		/// If a task is allready in the state of <see cref="TaskState.InProcess"/> the delete will be ignored
+		/// </summary>
+		/// <param name="broadcaster"></param>
+		/// <param name="taskId"></param>
+		public static void DeleteTask(this IBroadcaster broadcaster, string taskId)
+		{
+			broadcaster.Store.Delete(taskId);
 		}
 	}
 }
