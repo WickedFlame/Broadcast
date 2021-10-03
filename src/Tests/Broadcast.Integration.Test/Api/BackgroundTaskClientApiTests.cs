@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Broadcast.EventSourcing;
+using Broadcast.Storage;
 using NUnit.Framework;
 
 namespace Broadcast.Integration.Test.Api
@@ -162,6 +163,30 @@ namespace Broadcast.Integration.Test.Api
 
 			Assert.That(BroadcastServer.Server.Store.Count(t => t.State == TaskState.Deleted), Is.GreaterThan(0));
 			Assert.That(BroadcastServer.Server.Store.All(t => t.State == TaskState.Deleted));
+		}
+
+		[Test]
+		public void BackgroundTaskClient_Api_DeleteRecurring()
+		{
+			// execute a generic method
+			// serializeable
+			BackgroundTaskClient.Recurring("recurring_delete", () => GenericMethod(1), TimeSpan.FromSeconds(15));
+			BackgroundTaskClient.DeleteRecurringTask("recurring_delete");
+
+			Assert.IsNull(BroadcastServer.Server.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:recurring_delete"))));
+		}
+
+		[Test]
+		public void BackgroundTaskClient_Api_DeleteRecurring_ReferencedTask_Deleted()
+		{
+			// execute a generic method
+			// serializeable
+			BackgroundTaskClient.Recurring("recurring_delete", () => GenericMethod(1), TimeSpan.FromSeconds(0.5));
+			Task.Delay(2000).Wait();
+
+			BackgroundTaskClient.DeleteRecurringTask("recurring_delete");
+
+			Assert.That(BroadcastServer.Server.Store.Count(t => t.State == TaskState.Deleted), Is.GreaterThanOrEqualTo(1));
 		}
 
 

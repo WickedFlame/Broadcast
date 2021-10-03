@@ -35,7 +35,7 @@ namespace Broadcast
 		/// </summary>
 		/// <param name="expression"></param>
 		/// <param name="time"></param>
-		/// <returns>The Id of the task</returns>
+		/// <returns>The Id of the task. This is not the same as the name of the RecurringTask</returns>
 		public static string Recurring(Expression<Action> expression, TimeSpan time)
 			=> Recurring(null, expression, time);
 
@@ -45,7 +45,7 @@ namespace Broadcast
 		/// <param name="name"></param>
 		/// <param name="expression"></param>
 		/// <param name="time"></param>
-		/// <returns>The Id of the task</returns>
+		/// <returns>The Id of the task. This is not the same as the name of the RecurringTask</returns>
 		public static string Recurring(string name, Expression<Action> expression, TimeSpan time)
 		{
 			var task = TaskFactory.CreateTask(expression);
@@ -106,6 +106,19 @@ namespace Broadcast
 		public static void DeleteTask(string taskId)
 		{
 			Client.Store.Delete(taskId);
+		}
+
+		/// <summary>
+		/// Delete a recurring task with the associated task execution
+		/// </summary>
+		/// <param name="name">The name of the recurring Task</param>
+		public static void DeleteRecurringTask(string name)
+		{
+			var recurring = Client.Store.Storage(s => s.Get<RecurringTask>(new Storage.StorageKey($"tasks:recurring:{name}")));
+			if (recurring != null)
+			{
+				Client.Store.Delete(recurring.ReferenceId);
+			}
 		}
 	}
 }

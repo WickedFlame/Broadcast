@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Broadcast.EventSourcing;
 using Broadcast.Processing;
+using Broadcast.Storage;
 using Moq;
 using NUnit.Framework;
 
@@ -219,6 +220,20 @@ namespace Broadcast.Test.Api
 		}
 
 		[Test]
+		public void Broadcaster_Api_Recurring_Name()
+		{
+			var broadcaster = new Broadcaster(new TaskStore(), _processor.Object, _scheduler.Object);
+
+			// execute a static method
+			// serializeable
+			broadcaster.Recurring("Broadcaster_Api_Recurring", () => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
+
+			Task.Delay(2000).Wait();
+
+			Assert.IsTrue(broadcaster.GetProcessedTasks().All(t => t.Name == "Broadcaster_Api_Recurring"));
+		}
+
+		[Test]
 		public void Broadcaster_Api_DeleteTask()
 		{
 			var broadcaster = new Broadcaster(new TaskStore(), _processor.Object, _scheduler.Object);
@@ -227,6 +242,34 @@ namespace Broadcast.Test.Api
 			// serializeable
 			var id = broadcaster.Send(() => GenericMethod(1));
 			broadcaster.DeleteTask(id);
+
+			Assert.That(broadcaster.Store.Count(t => t.State == TaskState.Deleted), Is.EqualTo(1));
+			Assert.That(broadcaster.Store.All(t => t.State == TaskState.Deleted));
+		}
+
+		[Test]
+		public void Broadcaster_Api_DeleteRecurringTask()
+		{
+			var broadcaster = new Broadcaster(new TaskStore(), _processor.Object, _scheduler.Object);
+
+			// execute a generic method
+			// serializeable
+			broadcaster.Recurring("delete_task_name", () => GenericMethod(1), TimeSpan.FromSeconds(30));
+			broadcaster.DeleteRecurringTask("delete_task_name");
+
+			Assert.IsNull(broadcaster.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:delete_task_name"))));
+		}
+
+		[Test]
+		public void Broadcaster_Api_DeleteRecurringTask_DeleteReferencedTask()
+		{
+			var broadcaster = new Broadcaster(new TaskStore(), _processor.Object, _scheduler.Object);
+
+			// execute a generic method
+			// serializeable
+			broadcaster.Recurring("delete_task_name", () => GenericMethod(1), TimeSpan.FromSeconds(0.5));
+			Task.Delay(1000).Wait();
+			broadcaster.DeleteRecurringTask("delete_task_name");
 
 			Assert.That(broadcaster.Store.Count(t => t.State == TaskState.Deleted), Is.EqualTo(1));
 			Assert.That(broadcaster.Store.All(t => t.State == TaskState.Deleted));

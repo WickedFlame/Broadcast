@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using Broadcast.Composition;
 using Broadcast.EventSourcing;
+using Broadcast.Server;
 
 namespace Broadcast
 {
@@ -62,10 +63,25 @@ namespace Broadcast
 		/// <param name="expression">The task to execute</param>
 		/// <param name="time">The interval time to execute the task at</param>
 		public static void Recurring(this IBroadcaster broadcaster, Expression<Action> expression, TimeSpan time)
+			=> Recurring(broadcaster, null, expression, time);
+
+		/// <summary>
+		/// Create a recurring task
+		/// </summary>
+		/// <param name="broadcaster"></param>
+		/// <param name="name"></param>
+		/// <param name="expression">The task to execute</param>
+		/// <param name="time">The interval time to execute the task at</param>
+		public static void Recurring(this IBroadcaster broadcaster, string name, Expression<Action> expression, TimeSpan time)
 		{
 			var task = TaskFactory.CreateTask(expression);
 			task.Time = time;
 			task.IsRecurring = true;
+
+			if (!string.IsNullOrEmpty(name))
+			{
+				task.Name = name;
+			}
 
 			broadcaster.Store.Add(task);
 		}
@@ -88,6 +104,20 @@ namespace Broadcast
 		public static void DeleteTask(this IBroadcaster broadcaster, string taskId)
 		{
 			broadcaster.Store.Delete(taskId);
+		}
+
+		/// <summary>
+		/// Delete a recurring task with the associated task execution
+		/// </summary>
+		/// <param name="broadcaster"></param>
+		/// <param name="name">The name of the recurring Task</param>
+		public static void DeleteRecurringTask(this IBroadcaster broadcaster, string name)
+		{
+			var recurring = broadcaster.Store.Storage(s => s.Get<RecurringTask>(new Storage.StorageKey($"tasks:recurring:{name}")));
+			if (recurring != null)
+			{
+				broadcaster.Store.Delete(recurring.ReferenceId);
+			}
 		}
 	}
 }
