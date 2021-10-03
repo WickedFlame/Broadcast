@@ -127,7 +127,7 @@ export class BroadcastDashboard {
 					: t.state === 2
 					? 'Dequeued'
 					: t.state === 3
-					? 'InProcess'
+					? 'Processing'
 					: t.state === 4
 					? 'Processed'
 					: t.state === 5

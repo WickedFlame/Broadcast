@@ -76,7 +76,7 @@ namespace Broadcast.Dashboard.Dispatchers.Models
 						Values = new List<StorageProperty>
 						{
 							values.FirstOrDefault(v => v.Key == "Server"),
-							new StorageProperty("Start", values.FirstOrDefault(v => v.Key == "InProcessAt")?.Value.ToFormattedDateTime()),
+							new StorageProperty("Start", values.FirstOrDefault(v => v.Key == "ProcessingAt")?.Value.ToFormattedDateTime()),
 							new StorageProperty("End", values.FirstOrDefault(v => v.Key == "ExecutedAt")?.Value.ToFormattedDateTime())
 						}.Where(t => t != null && !string.IsNullOrEmpty(t.Value))
 					},
@@ -88,7 +88,7 @@ namespace Broadcast.Dashboard.Dispatchers.Models
 							new StorageProperty("Created at", values.FirstOrDefault(v => v.Key == "StateChanges:New")?.Value.ToFormattedDateTime()),
 							new StorageProperty("Enqueued at", values.FirstOrDefault(v => v.Key == "StateChanges:Queued")?.Value.ToFormattedDateTime()),
 							new StorageProperty("Dequeue at", values.FirstOrDefault(v => v.Key == "StateChanges:Dequeued")?.Value.ToFormattedDateTime()),
-							new StorageProperty("Start processing at", values.FirstOrDefault(v => v.Key == "StateChanges:InProcess")?.Value.ToFormattedDateTime()),
+							new StorageProperty("Start processing at", values.FirstOrDefault(v => v.Key == "StateChanges:Processing")?.Value.ToFormattedDateTime()),
 							new StorageProperty("End processing at", values.FirstOrDefault(v => v.Key == "StateChanges:Processed")?.Value.ToFormattedDateTime())
 						}.Where(t => t != null && !string.IsNullOrEmpty(t.Value))
 					}

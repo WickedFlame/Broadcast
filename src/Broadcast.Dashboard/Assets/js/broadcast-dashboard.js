@@ -121,7 +121,7 @@ export class BroadcastDashboard extends BroadcastBase {
 					? 'Queued'
 					: t.state === 'dequeued'
 					? 'Dequeued'
-					: t.state === 'inProcess'
+					: t.state === 'processing'
 					? 'Processing'
 					: t.state === 'processed'
 					? 'Processed'

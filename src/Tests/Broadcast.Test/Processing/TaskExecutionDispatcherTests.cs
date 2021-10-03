@@ -26,7 +26,7 @@ namespace Broadcast.Test.Processing
 		}
 
 		[Test]
-		public void TaskExecutionDispatcher_Task_InProcess()
+		public void TaskExecutionDispatcher_Task_Processing()
 		{
 			var task = new Mock<ITask>();
 			var dispatcher = new TaskExecutionDispatcher(task.Object);
@@ -36,7 +36,7 @@ namespace Broadcast.Test.Processing
 
 			dispatcher.Execute(ctx.Object);
 
-			task.VerifySet(exp => exp.State = TaskState.InProcess);
+			task.VerifySet(exp => exp.State = TaskState.Processing);
 		}
 
 		[Test]
@@ -165,7 +165,7 @@ namespace Broadcast.Test.Processing
 		}
 
 		[Test]
-		public void TaskExecutionDispatcher_Task_SetValue_InProcessChange()
+		public void TaskExecutionDispatcher_Task_SetValue_ProcessingChange()
 		{
 			var task = new Mock<ITask>();
 			task.Setup(exp => exp.Id).Returns("TestTask");
@@ -179,11 +179,11 @@ namespace Broadcast.Test.Processing
 
 			dispatcher.Execute(ctx.Object);
 
-			task.VerifySet(exp => exp.State = TaskState.InProcess);
+			task.VerifySet(exp => exp.State = TaskState.Processing);
 		}
 
 		[Test]
-		public void TaskExecutionDispatcher_Task_SetValue_InProcessChange_Values()
+		public void TaskExecutionDispatcher_Task_SetValue_ProcessingChange_Values()
 		{
 			var task = new Mock<ITask>();
 			task.Setup(exp => exp.Id).Returns("TestTask");
@@ -198,7 +198,7 @@ namespace Broadcast.Test.Processing
 			dispatcher.Execute(ctx.Object);
 
 			var values = storage.Get<DataObject>(new StorageKey($"tasks:values:TestTask"));
-			Assert.Greater((DateTime)values["InProcessAt"], DateTime.MinValue);
+			Assert.Greater((DateTime)values["ProcessingAt"], DateTime.MinValue);
 		}
 
 		[Test]

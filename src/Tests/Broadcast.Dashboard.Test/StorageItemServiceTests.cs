@@ -39,7 +39,7 @@ namespace Broadcast.Dashboard.Test
 				{"StateChanges:New", "2021/12/21T12:12:12"},
 				{"StateChanges:Queued", "2021/12/21T12:12:12"},
 				{"StateChanges:Dequeued", "2021/12/21T12:12:12"},
-				{"StateChanges:InProcess", "2021/12/21T12:12:12"},
+				{"StateChanges:Processing", "2021/12/21T12:12:12"},
 				{"StateChanges:Processed", "2021/12/21T12:12:12"},
 				{"Method", "WriteLine"},
 				{"ArgsType:0","System.String, System.Private.CoreLib"},
@@ -51,7 +51,7 @@ namespace Broadcast.Dashboard.Test
 			{
 				{"QueuedAt","2021/12/21T12:12:12"},
 				{"DequeuedAt","2021/12/21T12:12:12"},
-				{"InProcessAt","2021/12/21T12:12:12"},
+				{"ProcessingAt","2021/12/21T12:12:12"},
 				{"State","Processed"},
 				{"ProcessedAt","2021/12/21T12:12:12"},
 				{"ExecutionTime","25"},

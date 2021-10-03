@@ -72,7 +72,7 @@ namespace Broadcast.Monitoring
 					task.Duration = duration;
 				}
 
-				if(DateTime.TryParse(data["InProcessAt"]?.ToString(), out var start))
+				if(DateTime.TryParse(data["ProcessingAt"]?.ToString(), out var start))
 				{
 					task.Start = start;
 				}

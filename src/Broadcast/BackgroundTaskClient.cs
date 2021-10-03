@@ -100,7 +100,7 @@ namespace Broadcast
 
 		/// <summary>
 		/// Deltete a <see cref="ITask"/> from the Executionpipeline.
-		/// If a task is allready in the state of <see cref="TaskState.InProcess"/> the delete will be ignored.
+		/// If a task is allready in the state of <see cref="TaskState.Processing"/> the delete will be ignored.
 		/// </summary>
 		/// <param name="taskId"></param>
 		public static void DeleteTask(string taskId)

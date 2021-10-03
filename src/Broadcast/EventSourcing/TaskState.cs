@@ -24,7 +24,7 @@ namespace Broadcast.EventSourcing
 		/// <summary>
 		/// Task is being processed
 		/// </summary>
-        InProcess = 3,
+        Processing = 3,
 
 		/// <summary>
 		/// Task is processed
