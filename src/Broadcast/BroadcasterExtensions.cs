@@ -30,11 +30,13 @@ namespace Broadcast
 		/// </summary>
 		/// <param name="broadcaster"></param>
 		/// <param name="action">The Task to process</param>
-		public static void Send(this IBroadcaster broadcaster, Expression<Action> action)
+		public static string Send(this IBroadcaster broadcaster, Expression<Action> action)
 		{
 			var task = TaskFactory.CreateTask(action);
 
 			broadcaster.Store.Add(task);
+
+			return task.Id;
 		}
 
 		/// <summary>
@@ -43,12 +45,14 @@ namespace Broadcast
 		/// <param name="broadcaster"></param>
 		/// <param name="expression">The task to execute</param>
 		/// <param name="time">The time to execute the task at</param>
-		public static void Schedule(this IBroadcaster broadcaster, Expression<Action> expression, TimeSpan time)
+		public static string Schedule(this IBroadcaster broadcaster, Expression<Action> expression, TimeSpan time)
 		{
 			var task = TaskFactory.CreateTask(expression);
 			task.Time = time;
 
 			broadcaster.Store.Add(task);
+
+			return task.Id;
 		}
 
 		/// <summary>

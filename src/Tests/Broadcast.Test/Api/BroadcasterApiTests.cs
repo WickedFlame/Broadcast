@@ -84,6 +84,18 @@ namespace Broadcast.Test.Api
 		}
 
 		[Test]
+		public void Broadcaster_Api_Send_ReturnId()
+		{
+			var broadcaster = new Broadcaster(_store.Object, _processor.Object, _scheduler.Object);
+
+			// execute a local method
+			// serializeable
+			var id = broadcaster.Send(() => TestMethod(1));
+
+			_store.Verify(exp => exp.Add(It.Is<ITask>(t => t.Id == id)), Times.Once);
+		}
+
+		[Test]
 		public void Broadcaster_Api_Send_GenericMethod()
 		{
 			var store = new TaskStore();
@@ -150,7 +162,19 @@ namespace Broadcast.Test.Api
 
 			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<string>(), It.IsAny<Action<string>>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
-		
+
+		[Test]
+		public void Broadcaster_Api_Schedule_ReturnId()
+		{
+			var broadcaster = new Broadcaster(_store.Object, _processor.Object, _scheduler.Object);
+
+			// execute a local method
+			// serializeable
+			var id = broadcaster.Schedule(() => TestMethod(1), TimeSpan.FromSeconds(30));
+
+			_store.Verify(exp => exp.Add(It.Is<ITask>(t => t.Id == id)), Times.Once);
+		}
+
 
 
 
