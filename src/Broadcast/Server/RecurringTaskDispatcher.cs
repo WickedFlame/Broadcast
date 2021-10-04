@@ -49,6 +49,21 @@ namespace Broadcast.Server
 					Interval = task.Time
 				}));
 
+				//TODO: Update Recurring - set the servername where the queue is working on
+				//this is equal to the queuename
+				//Queue: [servername]
+				_store.Storage(s =>
+				{
+					// set the servername where the queue is working on
+					s.SetValues(new StorageKey($"tasks:values:{task.Id}"), new DataObject
+					{
+						{"Queue", _broadcaster.Name}
+					});
+
+					// assign the task to the queue
+					s.AddToList(new StorageKey($"queue:{_broadcaster.Name}"), task.Id);
+				});
+
 				_broadcaster.Scheduler.Enqueue(task.Id, id =>
 				{
 					// reload the task to get all changes since being enqueued in the scheduler
@@ -67,6 +82,9 @@ namespace Broadcast.Server
 
 					// execute the task
 					_broadcaster.Process(stored);
+
+					// remove the task from the queue
+					_store.Storage(s => s.RemoveFromList(new StorageKey($"queue:{_broadcaster.Name}"), id));
 
 					// clone the task for rescheduling
 					_store.Add(stored.Clone());

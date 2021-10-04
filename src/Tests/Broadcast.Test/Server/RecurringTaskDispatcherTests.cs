@@ -173,7 +173,7 @@ namespace Broadcast.Test.Server
 
 			dispatcher.Execute(task);
 
-			_store.Verify(exp => exp.Storage(It.IsAny<Action<IStorage>>()), Times.Once);
+			_store.Verify(exp => exp.Storage(It.IsAny<Action<IStorage>>()), Times.Exactly(2));
 		}
 
 		[Test]
@@ -191,6 +191,63 @@ namespace Broadcast.Test.Server
 			dispatcher.Execute(task);
 
 			storage.Verify(exp => exp.Set(It.Is<StorageKey>(k => k.Key == $"tasks:recurring:{task.Name}"), It.Is<RecurringTask>(t => t.Name == task.Name && t.ReferenceId == task.Id)), Times.Once);
+		}
+
+
+
+
+		[Test]
+		public void RecurringTaskDispatcher_Execute_SetQueue_Task()
+		{
+			var storage = new Mock<IStorage>();
+			_broadcaster.Setup(exp => exp.Name).Returns("testqueue");
+			var dispatcher = new RecurringTaskDispatcher(_broadcaster.Object, new TaskStore(storage.Object));
+			var task = TaskFactory.CreateTask(() => Console.WriteLine("RecurringTaskDispatcher"));
+			task.Name = "testTask";
+			task.IsRecurring = true;
+			task.Time = TimeSpan.Zero;
+
+			storage.Setup(exp => exp.Get<BroadcastTask>(It.IsAny<StorageKey>())).Returns(() => (BroadcastTask)task);
+
+			dispatcher.Execute(task);
+
+			storage.Verify(exp => exp.SetValues(It.Is<StorageKey>(k => k.Key == $"tasks:values:{task.Id}"), It.Is<DataObject>(d => d["Queue"].ToString() == "testqueue")), Times.Once);
+		}
+
+		[Test]
+		public void RecurringTaskDispatcher_Execute_SetTaskToQueue()
+		{
+			var storage = new Mock<IStorage>();
+			_broadcaster.Setup(exp => exp.Name).Returns("testqueue");
+			var dispatcher = new RecurringTaskDispatcher(_broadcaster.Object, new TaskStore(storage.Object));
+			var task = TaskFactory.CreateTask(() => Console.WriteLine("RecurringTaskDispatcher"));
+			task.Name = "testTask";
+			task.IsRecurring = true;
+			task.Time = TimeSpan.Zero;
+
+			storage.Setup(exp => exp.Get<BroadcastTask>(It.IsAny<StorageKey>())).Returns(() => (BroadcastTask)task);
+
+			dispatcher.Execute(task);
+
+			storage.Verify(exp => exp.AddToList(It.Is<StorageKey>(k => k.Key == $"queue:testqueue"), task.Id), Times.Once);
+		}
+
+		[Test]
+		public void RecurringTaskDispatcher_Execute_RemoveTaskFromQueue()
+		{
+			var storage = new Mock<IStorage>();
+			_broadcaster.Setup(exp => exp.Name).Returns("testqueue");
+			var dispatcher = new RecurringTaskDispatcher(_broadcaster.Object, new TaskStore(storage.Object));
+			var task = TaskFactory.CreateTask(() => Console.WriteLine("RecurringTaskDispatcher"));
+			task.Name = "testTask";
+			task.IsRecurring = true;
+			task.Time = TimeSpan.Zero;
+
+			storage.Setup(exp => exp.Get<BroadcastTask>(It.IsAny<StorageKey>())).Returns(() => (BroadcastTask)task);
+
+			dispatcher.Execute(task);
+
+			storage.Verify(exp => exp.RemoveFromList(It.Is<StorageKey>(k => k.Key == $"queue:testqueue"), task.Id), Times.Once);
 		}
 	}
 }

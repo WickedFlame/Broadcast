@@ -65,8 +65,9 @@ export class BroadcastDashboard extends BroadcastBase {
 				row.setAttribute('data-server-id', s.id);
 				row.classList.add('broadcast-table-row');
 
-				this.addCell(row, 0, null, `${s.name}:${s.id}`);
-				this.addCell(row, 1, `serverheartbeat_${s.id}`, this.formatDate(new Date(s.heartbeat)));
+				this.addCell(row, 0, null, `${s.name}`);
+				this.addCell(row, 1, null, `${s.id}`);
+				this.addCell(row, 2, `serverheartbeat_${s.id}`, this.formatDate(new Date(s.heartbeat)));
 			}
 		});
 

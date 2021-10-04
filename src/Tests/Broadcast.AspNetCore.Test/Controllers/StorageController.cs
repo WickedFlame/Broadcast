@@ -61,6 +61,12 @@ namespace Broadcast.AspNetCore.Test.Controllers
 				};
 				storageType.Items.Add(GetList("tasks:dequeued", s));
 				storageType.Items.Add(GetList("tasks:enqueued", s));
+				var queues = s.GetKeys(new StorageKey("queue:"));
+				foreach (var queue in queues)
+				{
+					storageType.Items.Add(GetList(queue, s));
+				}
+
 				model.Items.Add(storageType);
 			});
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using Broadcast.Configuration;
 using Broadcast.EventSourcing;
 using Broadcast.Processing;
 
@@ -23,6 +24,11 @@ namespace Broadcast
 		/// Gets the <see cref="ITaskStore"/>
 		/// </summary>
 		ITaskStore Store { get; }
+
+		/// <summary>
+		/// Gets the name of the instance. This is equal to the <see cref="Options.ServerName"/>
+		/// </summary>
+		string Name { get; }
 
 		/// <summary>
 		/// Process the task

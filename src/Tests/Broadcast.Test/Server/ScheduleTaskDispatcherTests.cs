@@ -132,5 +132,47 @@ namespace Broadcast.Test.Server
 
 			_broadcaster.Verify(exp => exp.Process(It.IsAny<ITask>()), Times.Never);
 		}
+
+		[Test]
+		public void ScheduleTaskDispatcher_Execute_SetQueue_Task()
+		{
+			_broadcaster.Setup(exp => exp.Name).Returns("testqueue");
+			var storage = new Mock<IStorage>();
+			var dispatcher = new ScheduleTaskDispatcher(_broadcaster.Object, new TaskStore(storage.Object));
+			var task = TaskFactory.CreateTask(() => Console.WriteLine("ScheduleTaskDispatcher"));
+			task.Time = TimeSpan.Zero;
+
+			dispatcher.Execute(task);
+
+			storage.Verify(exp => exp.SetValues(It.Is<StorageKey>(k => k.Key == $"tasks:values:{task.Id}"), It.Is<DataObject>(d => d["Queue"].ToString() == "testqueue")), Times.Once);
+		}
+
+		[Test]
+		public void ScheduleTaskDispatcher_Execute_SetTaskToQueue()
+		{
+			_broadcaster.Setup(exp => exp.Name).Returns("testqueue");
+			var storage = new Mock<IStorage>();
+			var dispatcher = new ScheduleTaskDispatcher(_broadcaster.Object, new TaskStore(storage.Object));
+			var task = TaskFactory.CreateTask(() => Console.WriteLine("ScheduleTaskDispatcher"));
+			task.Time = TimeSpan.Zero;
+
+			dispatcher.Execute(task);
+
+			storage.Verify(exp => exp.AddToList(It.Is<StorageKey>(k => k.Key == $"queue:testqueue"), task.Id), Times.Once);
+		}
+
+		//[Test]
+		//public void ScheduleTaskDispatcher_Execute_RemoveTaskFromQueue()
+		//{
+		//	_broadcaster.Setup(exp => exp.Name).Returns("testqueue");
+		//	var storage = new Mock<IStorage>();
+		//	var dispatcher = new ScheduleTaskDispatcher(_broadcaster.Object, new TaskStore(storage.Object));
+		//	var task = TaskFactory.CreateTask(() => Console.WriteLine("ScheduleTaskDispatcher"));
+		//	task.Time = TimeSpan.Zero;
+
+		//	dispatcher.Execute(task);
+
+		//	storage.Verify(exp => exp.RemoveFromList(It.Is<StorageKey>(k => k.Key == $"queue:testqueue"), task.Id), Times.Once);
+		//}
 	}
 }

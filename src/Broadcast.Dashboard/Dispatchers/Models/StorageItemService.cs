@@ -76,6 +76,7 @@ namespace Broadcast.Dashboard.Dispatchers.Models
 						Values = new List<StorageProperty>
 						{
 							values.FirstOrDefault(v => v.Key == "Server"),
+							new StorageProperty("Queue", values.FirstOrDefault(v => v.Key == "Queue")?.Value),
 							new StorageProperty("Start", values.FirstOrDefault(v => v.Key == "ProcessingAt")?.Value.ToFormattedDateTime()),
 							new StorageProperty("End", values.FirstOrDefault(v => v.Key == "ExecutedAt")?.Value.ToFormattedDateTime())
 						}.Where(t => t != null && !string.IsNullOrEmpty(t.Value))
@@ -135,10 +136,15 @@ namespace Broadcast.Dashboard.Dispatchers.Models
 							Title = "Server",
 							Values = new List<StorageProperty>
 							{
-								new StorageProperty("Id", data["Id"]),
 								new StorageProperty("Name", data["Name"]),
+								new StorageProperty("Id", data["Id"]),
 								new StorageProperty("Heartbeat", data["Heartbeat"]?.ToFormattedDateTime())
 							}.Where(t => t != null && !string.IsNullOrEmpty(t.Value))
+						},
+						new StoragePropertyGroup
+						{
+							Title = "Queued Tasks",
+							Values = s.GetList(new StorageKey($"queue:{data["Name"]}")).Select(t => new StorageProperty(" ", t))
 						}
 					}
 				};

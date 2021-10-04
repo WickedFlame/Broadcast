@@ -82,7 +82,7 @@ namespace Broadcast
 			{
 				new RecurringTaskDispatcher(this, store),
 				new ScheduleTaskDispatcher(this, store),
-				new ProcessTaskDispatcher(this)
+				new ProcessTaskDispatcher(this, store)
 			});
 
 			_context = new BroadcasterConterxt
@@ -109,11 +109,16 @@ namespace Broadcast
 		/// </summary>
 		public ITaskStore Store { get; }
 
-        /// <summary>
-        /// Process the task
-        /// </summary>
-        /// <param name="task"></param>
-        public void Process(ITask task)
+		/// <summary>
+		/// Gets the name of the instance. This is equal to the <see cref="Options.ServerName"/>
+		/// </summary>
+		public string Name => _options.ServerName;
+
+		/// <summary>
+		/// Process the task
+		/// </summary>
+		/// <param name="task"></param>
+		public void Process(ITask task)
         {
 	        Processor.Process(task);
         }
