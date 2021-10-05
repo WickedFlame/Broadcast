@@ -152,6 +152,85 @@ namespace Broadcast.Integration.Test.Api
 			Assert.IsTrue(BroadcastServer.Server.GetProcessedTasks().All(t => t.Name == "BackgroundTaskClient_Api_Recurring"));
 		}
 
+		[Test]
+		public void BackgroundTaskClient_Api_Recurring_Update()
+		{
+			// execute a static method
+			// serializeable
+			BackgroundTaskClient.Recurring("Updateable", () => Trace.WriteLine("test"), TimeSpan.FromSeconds(30));
+			Task.Delay(1000).Wait();
+
+			var originalRecurring = BroadcastServer.Server.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
+			var originalTask = BroadcastServer.Server.Store.FirstOrDefault(t => t.Id == originalRecurring["ReferenceId"].ToString());
+
+			BackgroundTaskClient.Recurring("Updateable", () => Trace.WriteLine("succeeded"), TimeSpan.FromSeconds(30));
+			Task.Delay(1000).Wait();
+
+			var updatedRecurring = BroadcastServer.Server.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
+			var updatedTask = BroadcastServer.Server.Store.FirstOrDefault(t => t.Id == updatedRecurring["ReferenceId"].ToString()) as BroadcastTask;
+
+			Assert.That(updatedTask.Args.Single().ToString(), Is.EqualTo("succeeded"));
+		}
+
+
+		[Test]
+		public void BackgroundTaskClient_Api_Recurring_Update_MethodChanged()
+		{
+			// execute a static method
+			// serializeable
+			BackgroundTaskClient.Recurring("Updateable", () => Trace.WriteLine("test"), TimeSpan.FromSeconds(30));
+			Task.Delay(1000).Wait();
+
+			var originalRecurring = BroadcastServer.Server.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
+			var originalTask = BroadcastServer.Server.Store.FirstOrDefault(t => t.Id == originalRecurring["ReferenceId"].ToString()) as BroadcastTask;
+
+			BackgroundTaskClient.Recurring("Updateable", () => Trace.WriteLine("succeeded"), TimeSpan.FromSeconds(30));
+			Task.Delay(1000).Wait();
+
+			var updatedRecurring = BroadcastServer.Server.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
+			var updatedTask = BroadcastServer.Server.Store.FirstOrDefault(t => t.Id == updatedRecurring["ReferenceId"].ToString()) as BroadcastTask;
+
+			Assert.That(originalTask.Args.Single(), Is.Not.EqualTo(updatedTask.Args.Single()));
+		}
+
+		[Test]
+		public void BackgroundTaskClient_Api_Recurring_Update_SameId_Task()
+		{
+			// execute a static method
+			// serializeable
+			BackgroundTaskClient.Recurring("Updateable", () => Trace.WriteLine("test"), TimeSpan.FromSeconds(30));
+			Task.Delay(1000).Wait();
+
+			var originalRecurring = BroadcastServer.Server.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
+			var originalTask = BroadcastServer.Server.Store.FirstOrDefault(t => t.Id == originalRecurring["ReferenceId"].ToString());
+
+			BackgroundTaskClient.Recurring("Updateable", () => Trace.WriteLine("succeeded"), TimeSpan.FromSeconds(30));
+			Task.Delay(1000).Wait();
+
+			var updatedRecurring = BroadcastServer.Server.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
+			var updatedTask = BroadcastServer.Server.Store.FirstOrDefault(t => t.Id == updatedRecurring["ReferenceId"].ToString()) as BroadcastTask;
+
+			Assert.That(originalTask.Id, Is.EqualTo(updatedTask.Id));
+		}
+
+		[Test]
+		public void BackgroundTaskClient_Api_Recurring_Update_SameId_Reference()
+		{
+			// execute a static method
+			// serializeable
+			BackgroundTaskClient.Recurring("Updateable", () => Trace.WriteLine("test"), TimeSpan.FromSeconds(30));
+			Task.Delay(1000).Wait();
+
+			var originalRecurring = BroadcastServer.Server.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
+			
+			BackgroundTaskClient.Recurring("Updateable", () => Trace.WriteLine("succeeded"), TimeSpan.FromSeconds(30));
+			Task.Delay(1000).Wait();
+
+			var updatedRecurring = BroadcastServer.Server.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
+			
+			Assert.That(originalRecurring["ReferenceId"].ToString(), Is.EqualTo(updatedRecurring["ReferenceId"].ToString()));
+		}
+
 
 		[Test]
 		public void BackgroundTaskClient_Api_Delete()

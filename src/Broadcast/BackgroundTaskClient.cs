@@ -31,7 +31,9 @@ namespace Broadcast
 		}
 
 		/// <summary>
-		/// Adds a recurring task
+		/// Create or update a recurring task.
+		/// The name of the Recurring Task is generated based on the <see cref="Expression"/>.
+		/// If multiple Recurring Tasks have the same signature, this could cause some confusion
 		/// </summary>
 		/// <param name="expression"></param>
 		/// <param name="time"></param>
@@ -40,9 +42,10 @@ namespace Broadcast
 			=> Recurring(null, expression, time);
 
 		/// <summary>
-		/// Adds a recurring task
+		/// Create or update a recurring task. 
+		/// Recurring Tasks are referenced by the name. 
 		/// </summary>
-		/// <param name="name"></param>
+		/// <param name="name">Unitque name of the recurring Task</param>
 		/// <param name="expression"></param>
 		/// <param name="time"></param>
 		/// <returns>The Id of the task. This is not the same as the name of the RecurringTask</returns>
@@ -57,12 +60,17 @@ namespace Broadcast
 				task.Name = name;
 			}
 
+			// check if the recurring task is already registered
 			var existing = Client.Store.Storage(s => s.Get<RecurringTask>(new Storage.StorageKey($"tasks:recurring:{task.Name}")));
 			if (existing != null)
 			{
-				Client.Store.Delete(existing.ReferenceId);
+				// update the existing recurring and the task by setting the id of the old task
+				// this way all properties get overridden with th enew values
+				task.Id = existing.ReferenceId;
 			}
 
+			// add the task to the store
+			// the store will propagate the task to the registered servers
 			Client.Enqueue(task);
 
 			return task.Id;

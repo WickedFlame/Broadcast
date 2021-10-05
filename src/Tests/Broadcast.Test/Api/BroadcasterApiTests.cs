@@ -278,6 +278,94 @@ namespace Broadcast.Test.Api
 
 
 
+
+		[Test]
+		public void Broadcaster_Api_Recurring_Update()
+		{
+			// execute a static method
+			// serializeable
+			var broadcaster = new Broadcaster(new TaskStore(), _processor.Object, _scheduler.Object);
+			broadcaster.Recurring("Updateable", () => Trace.WriteLine("test"), TimeSpan.FromSeconds(30));
+			Task.Delay(1000).Wait();
+
+			var originalRecurring = broadcaster.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
+			var originalTask = broadcaster.Store.FirstOrDefault(t => t.Id == originalRecurring["ReferenceId"].ToString());
+
+			broadcaster.Recurring("Updateable", () => Trace.WriteLine("succeeded"), TimeSpan.FromSeconds(30));
+			Task.Delay(1000).Wait();
+
+			var updatedRecurring = broadcaster.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
+			var updatedTask = broadcaster.Store.FirstOrDefault(t => t.Id == updatedRecurring["ReferenceId"].ToString()) as BroadcastTask;
+
+			Assert.That(updatedTask.Args.Single().ToString(), Is.EqualTo("succeeded"));
+		}
+
+
+		[Test]
+		public void Broadcaster_Api_Recurring_Update_MethodChanged()
+		{
+			// execute a static method
+			// serializeable
+			var broadcaster = new Broadcaster(new TaskStore(), _processor.Object, _scheduler.Object);
+			broadcaster.Recurring("Updateable", () => Trace.WriteLine("test"), TimeSpan.FromSeconds(30));
+			Task.Delay(1000).Wait();
+
+			var originalRecurring = broadcaster.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
+			var originalTask = broadcaster.Store.FirstOrDefault(t => t.Id == originalRecurring["ReferenceId"].ToString()) as BroadcastTask;
+
+			broadcaster.Recurring("Updateable", () => Trace.WriteLine("succeeded"), TimeSpan.FromSeconds(30));
+			Task.Delay(1000).Wait();
+
+			var updatedRecurring = broadcaster.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
+			var updatedTask = broadcaster.Store.FirstOrDefault(t => t.Id == updatedRecurring["ReferenceId"].ToString()) as BroadcastTask;
+
+			Assert.That(originalTask.Args.Single(), Is.Not.EqualTo(updatedTask.Args.Single()));
+		}
+
+		[Test]
+		public void Broadcaster_Api_Recurring_Update_SameId_Task()
+		{
+			// execute a static method
+			// serializeable
+			var broadcaster = new Broadcaster(new TaskStore(), _processor.Object, _scheduler.Object);
+			broadcaster.Recurring("Updateable", () => Trace.WriteLine("test"), TimeSpan.FromSeconds(30));
+			Task.Delay(1000).Wait();
+
+			var originalRecurring = broadcaster.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
+			var originalTask = broadcaster.Store.FirstOrDefault(t => t.Id == originalRecurring["ReferenceId"].ToString());
+
+			broadcaster.Recurring("Updateable", () => Trace.WriteLine("succeeded"), TimeSpan.FromSeconds(30));
+			Task.Delay(1000).Wait();
+
+			var updatedRecurring = broadcaster.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
+			var updatedTask = broadcaster.Store.FirstOrDefault(t => t.Id == updatedRecurring["ReferenceId"].ToString()) as BroadcastTask;
+
+			Assert.That(originalTask.Id, Is.EqualTo(updatedTask.Id));
+		}
+
+		[Test]
+		public void Broadcaster_Api_Recurring_Update_SameId_Reference()
+		{
+			// execute a static method
+			// serializeable
+			var broadcaster = new Broadcaster(new TaskStore(), _processor.Object, _scheduler.Object);
+			broadcaster.Recurring("Updateable", () => Trace.WriteLine("test"), TimeSpan.FromSeconds(30));
+			Task.Delay(1000).Wait();
+
+			var originalRecurring = broadcaster.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
+
+			broadcaster.Recurring("Updateable", () => Trace.WriteLine("succeeded"), TimeSpan.FromSeconds(30));
+			Task.Delay(1000).Wait();
+
+			var updatedRecurring = broadcaster.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
+
+			Assert.That(originalRecurring["ReferenceId"].ToString(), Is.EqualTo(updatedRecurring["ReferenceId"].ToString()));
+		}
+
+
+
+
+
 		public void TestMethod(int i) { }
 
 		public void GenericMethod<T>(T value) { }
