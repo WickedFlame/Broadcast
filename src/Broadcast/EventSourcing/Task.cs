@@ -16,7 +16,7 @@ namespace Broadcast.EventSourcing
 		/// Id of the Task
 		/// This is regenerated for each new Taskenqueu. Recurring tasks are cloned and enqueued multiple times
 		/// </summary>
-		string Id { get; }
+		string Id { get; set; }
 
 		/// <summary>
 		/// Gets the current <see cref="TaskState"/> of the task
