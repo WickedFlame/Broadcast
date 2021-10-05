@@ -18,7 +18,7 @@ namespace Broadcast.EventSourcing
     {
         private readonly IStorage _storage;
         private readonly Options _options;
-        private readonly DispatcherStorage _dispatchers;
+        private readonly IDispatcherStorage _dispatchers;
 		private readonly IDictionary<string, ServerModel> _registeredServers;
 
         private static readonly ItemFactory<ITaskStore> ItemFactory = new ItemFactory<ITaskStore>(() => new TaskStore());

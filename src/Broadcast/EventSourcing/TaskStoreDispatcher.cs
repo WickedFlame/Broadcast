@@ -60,9 +60,20 @@ namespace Broadcast.EventSourcing
 					continue;
 				}
 
+				//
+				// Tasks can be assigned to a certain queue/server
+				// that means the task has to be dipatched to the assigned queue instead of using the roundrobin to find a queue
+				//
+				// Check if the task is already assigned to a queue
+				var serverId = _storage.GetServerIdFromQueue(task.Id);
 
-				// use round robin to get the next set of dispatchers
-				var dispatchers = context.Dispatchers.GetNext();
+				var dispatchers = string.IsNullOrEmpty(serverId) ?
+					// use round robin to get the next set of dispatchers
+					context.Dispatchers.GetNext() : 
+					// get the dispatchers that are assigned to the server
+					// based on the queue that the task is assigned to
+					context.Dispatchers.GetNext(serverId);
+
 				foreach (var dispatcher in dispatchers)
 				{
 					dispatcher.Execute(task);

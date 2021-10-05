@@ -37,7 +37,6 @@ namespace Broadcast.Test.EventSourcing
 
 			var storage = new Mock<IStorage>();
 			storage.Setup(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
-			storage.Setup(exp => exp.GetList(It.IsAny<StorageKey>())).Returns(() => id == null ? Enumerable.Empty<string>() : new List<string> { "test" });
 			storage.Setup(exp => exp.Get<BroadcastTask>(It.IsAny<StorageKey>())).Returns(() => new BroadcastTask());
 
 			var dispatcher = new TaskStoreDispatcher(new DispatcherLock(), storage.Object);
@@ -60,7 +59,6 @@ namespace Broadcast.Test.EventSourcing
 
 			var storage = new Mock<IStorage>();
 			storage.Setup(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
-			storage.Setup(exp => exp.GetList(It.IsAny<StorageKey>())).Returns(() => id == null ? Enumerable.Empty<string>() : new List<string> { "test" });
 			storage.Setup(exp => exp.Get<BroadcastTask>(It.IsAny<StorageKey>())).Returns(() => new BroadcastTask());
 
 			var locker = new DispatcherLock();
@@ -85,7 +83,6 @@ namespace Broadcast.Test.EventSourcing
 
 			var storage = new Mock<IStorage>();
 			storage.Setup(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
-			storage.Setup(exp => exp.GetList(It.IsAny<StorageKey>())).Returns(() => id == null ? Enumerable.Empty<string>() : new List<string> { "test" });
 			storage.Setup(exp => exp.Get<BroadcastTask>(It.IsAny<StorageKey>())).Returns(() => null);
 
 			var dispatcher = new TaskStoreDispatcher(new DispatcherLock(), storage.Object);
@@ -112,7 +109,6 @@ namespace Broadcast.Test.EventSourcing
 
 			var storage = new Mock<IStorage>();
 			storage.Setup(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
-			storage.Setup(exp => exp.GetList(It.IsAny<StorageKey>())).Returns(() => id == null ? Enumerable.Empty<string>() : new List<string> { "test" });
 			storage.Setup(exp => exp.Get<BroadcastTask>(It.IsAny<StorageKey>())).Returns(() => null);
 
 			var dispatcher = new TaskStoreDispatcher(new DispatcherLock(), storage.Object);
@@ -135,7 +131,6 @@ namespace Broadcast.Test.EventSourcing
 
 			var storage = new Mock<IStorage>();
 			storage.Setup(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
-			storage.Setup(exp => exp.GetList(It.IsAny<StorageKey>())).Returns(() => id == null ? Enumerable.Empty<string>() : new List<string> { "test" });
 			storage.Setup(exp => exp.Get<BroadcastTask>(It.IsAny<StorageKey>())).Returns(() => null);
 
 			var dispatcher = new TaskStoreDispatcher(new DispatcherLock(), storage.Object);
@@ -159,7 +154,6 @@ namespace Broadcast.Test.EventSourcing
 
 			var storage = new Mock<IStorage>();
 			storage.Setup(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
-			storage.Setup(exp => exp.GetList(It.IsAny<StorageKey>())).Returns(() => id == null ? Enumerable.Empty<string>() : new List<string> { "test" });
 			storage.Setup(exp => exp.Get<BroadcastTask>(It.IsAny<StorageKey>())).Returns(() => new BroadcastTask());
 
 			var dispatcher = new TaskStoreDispatcher(new DispatcherLock(), storage.Object);
@@ -186,7 +180,6 @@ namespace Broadcast.Test.EventSourcing
 
 			var storage = new Mock<IStorage>();
 			storage.Setup(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
-			storage.Setup(exp => exp.GetList(It.IsAny<StorageKey>())).Returns(() => id == null ? Enumerable.Empty<string>() : new List<string> { "test" });
 			storage.Setup(exp => exp.Get<BroadcastTask>(It.IsAny<StorageKey>())).Returns(() => new BroadcastTask());
 
 			var dispatcher = new TaskStoreDispatcher(new DispatcherLock(), storage.Object);
@@ -202,6 +195,71 @@ namespace Broadcast.Test.EventSourcing
 			dispatcher.Execute(context);
 
 			Assert.That(resetEvent.IsSet);
+		}
+
+		[Test]
+		public void TaskStoreDispatcher_Execute_Dispatchers_GetNext()
+		{
+			var id = "1";
+
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
+			storage.Setup(exp => exp.Get<BroadcastTask>(It.IsAny<StorageKey>())).Returns(() => new BroadcastTask());
+
+			var dispatcherStorage = new Mock<IDispatcherStorage>();
+
+			var dispatcher = new TaskStoreDispatcher(new DispatcherLock(), storage.Object);
+
+			var context = new StorageDispatcherContext
+			{
+				Dispatchers = dispatcherStorage.Object,
+				ResetEvent = new System.Threading.ManualResetEventSlim()
+			};
+
+			dispatcher.Execute(context);
+
+			dispatcherStorage.Verify(exp => exp.GetNext(), Times.Once);
+		}
+
+		[Test]
+		public void TaskStoreDispatcher_Execute_Dispatchers_GetNext_Queue()
+		{
+			var id = "1";
+			var task = new BroadcastTask
+			{
+				Id = id
+			};
+
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
+			storage.Setup(exp => exp.Get<BroadcastTask>(It.IsAny<StorageKey>())).Returns(() => task);
+
+			// get the queue assigned to the extravalues of the task
+			storage.Setup(exp => exp.Get<DataObject>(It.Is<StorageKey>(k => k.Key == $"tasks:values:{task.Id}"))).Returns(() => new DataObject
+			{
+				{"Queue", "server1"}
+			});
+			// get the key of the server containing the queue
+			storage.Setup(exp => exp.GetKeys(It.Is<StorageKey>(k => k.Key == "server:server1:"))).Returns(() => new[] {"server:server1:serverid"});
+			// get the id of the server
+			storage.Setup(exp => exp.Get<DataObject>(It.Is<StorageKey>(k => k.Key == "server:server1:serverid"))).Returns(() => new DataObject
+			{
+				{"Id", "serverid"}
+			});
+
+			var dispatcherStorage = new Mock<IDispatcherStorage>();
+
+			var dispatcher = new TaskStoreDispatcher(new DispatcherLock(), storage.Object);
+
+			var context = new StorageDispatcherContext
+			{
+				Dispatchers = dispatcherStorage.Object,
+				ResetEvent = new System.Threading.ManualResetEventSlim()
+			};
+
+			dispatcher.Execute(context);
+
+			dispatcherStorage.Verify(exp => exp.GetNext("serverid"), Times.Once);
 		}
 	}
 }

@@ -121,6 +121,49 @@ namespace Broadcast.Test.EventSourcing
 		}
 
 		[Test]
+		public void DispatcherStorage_GetNext_NamedQueue()
+		{
+			var storage = new DispatcherStorage();
+			var firstSet = new[]
+			{
+				new Mock<IDispatcher>().Object
+			};
+			storage.Add("id1", firstSet);
+
+			var secondSet = new[]
+			{
+				new Mock<IDispatcher>().Object
+			};
+			storage.Add("id2", secondSet);
+
+			// get first
+			Assert.AreSame(firstSet.Single(), storage.GetNext("id1").Single());
+			// get first
+			Assert.AreSame(secondSet.Single(), storage.GetNext("id2").Single());
+		}
+
+		[Test]
+		public void DispatcherStorage_GetNext_NamedQueue_NotRegisteredQueue()
+		{
+			var storage = new DispatcherStorage();
+			var firstSet = new[]
+			{
+				new Mock<IDispatcher>().Object
+			};
+			storage.Add("id1", firstSet);
+
+			var secondSet = new[]
+			{
+				new Mock<IDispatcher>().Object
+			};
+			storage.Add("id2", secondSet);
+
+			// if the queue does not exist we use round robin to get the next queue
+			var queue = storage.GetNext("unregistered").Single();
+			Assert.That(queue, Is.SameAs(firstSet.Single()).Or.SameAs(secondSet.Single()));
+		}
+
+		[Test]
 		public void DispatcherStorage_Remove_Unadded()
 		{
 			var storage = new DispatcherStorage();

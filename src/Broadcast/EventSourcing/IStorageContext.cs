@@ -11,7 +11,7 @@ namespace Broadcast.EventSourcing
 		/// <summary>
 		/// Gets the instance of the <see cref="DispatcherStorage"/> registered in the <see cref="ITaskStore"/>
 		/// </summary>
-		DispatcherStorage Dispatchers { get; }
+		IDispatcherStorage Dispatchers { get; }
 
 		/// <summary>
 		/// Gets the event that is set when a task is dispatched

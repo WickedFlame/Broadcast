@@ -24,5 +24,28 @@ namespace Broadcast.EventSourcing
 		{
 			return storage.GetList(new StorageKey("tasks:dequeued"));
 		}
+
+		/// <summary>
+		/// Get the Server Id based on the queue that is registered to the task
+		/// </summary>
+		/// <param name="storage"></param>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		internal static string GetServerIdFromQueue(this IStorage storage, string id)
+		{
+			var queue = storage.Get<DataObject>(new StorageKey($"tasks:values:{id}"))?["Queue"];
+			
+			if (!string.IsNullOrEmpty(queue?.ToString()))
+			{
+				// Get the Id of the server
+				var key = storage.GetKeys(new StorageKey($"server:{queue}:")).FirstOrDefault();
+				if (key != null)
+				{
+					return storage.Get<DataObject>(new StorageKey(key))["Id"]?.ToString();
+				}
+			}
+
+			return null;
+		}
 	}
 }
