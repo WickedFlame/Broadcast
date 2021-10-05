@@ -45,6 +45,12 @@ namespace Broadcast.Storage
 				throw new InvalidOperationException($"{internalKey} is not a list");
 			}
 
+			if (lst.Any(i => i.GetValue() == value.GetValue()))
+			{
+				// item is already contained in the list
+				return;
+			}
+
 			lst.Set(value);
 		}
 

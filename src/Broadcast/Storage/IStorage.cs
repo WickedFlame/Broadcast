@@ -8,7 +8,7 @@ namespace Broadcast.Storage
 	public interface IStorage
 	{
 		/// <summary>
-		/// Add a value to a list in the storage
+		/// Add a value to a list in the storage.
 		/// </summary>
 		/// <param name="key"></param>
 		/// <param name="value"></param>

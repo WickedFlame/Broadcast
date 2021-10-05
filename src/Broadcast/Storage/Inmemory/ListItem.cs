@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Broadcast.Storage.Inmemory
@@ -6,7 +7,7 @@ namespace Broadcast.Storage.Inmemory
 	/// <summary>
 	/// ListItem for the inmemory storage
 	/// </summary>
-	public class ListItem : IStorageItem
+	public class ListItem : IStorageItem, IEnumerable<IStorageItem>
 	{
 		private readonly object _lockHandle = new object();
 
@@ -46,6 +47,20 @@ namespace Broadcast.Storage.Inmemory
 			{
 				return Items.Select(s => s.GetValue()).ToList();
 			}
+		}
+
+		/// <summary>
+		/// Gets the enumerator for the list
+		/// </summary>
+		/// <returns></returns>
+		public IEnumerator<IStorageItem> GetEnumerator()
+		{
+			return Items.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
 		}
 	}
 }

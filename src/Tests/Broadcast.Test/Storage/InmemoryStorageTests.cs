@@ -158,11 +158,21 @@ namespace Broadcast.Test.Storage
 		}
 
 		[Test]
-		public void InmemoryStorage_RemoveRange()
+		public void InmemoryStorage_List_Distinct()
 		{
 			var storage = new InmemoryStorage();
 			storage.AddToList(new StorageKey("storage", "key"), "one");
 			storage.AddToList(new StorageKey("storage", "key"), "one");
+
+			Assert.That(storage.GetList(new StorageKey("storage", "key")).Count(), Is.EqualTo(1));
+		}
+
+		[Test]
+		public void InmemoryStorage_RemoveRange()
+		{
+			var storage = new InmemoryStorage();
+			storage.AddToList(new StorageKey("storage", "key"), "one");
+			storage.AddToList(new StorageKey("storage", "key"), "two");
 
 			Assert.AreEqual(2, storage.GetList(new StorageKey("storage", "key")).Count());
 
