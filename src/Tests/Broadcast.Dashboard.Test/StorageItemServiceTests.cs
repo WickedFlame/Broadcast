@@ -121,8 +121,8 @@ namespace Broadcast.Dashboard.Test
 			});
 			storage.Setup(exp => exp.Get<DataObject>(It.Is<StorageKey>(k => k.Key.EndsWith("server:server1:E09105CE-8A21-4C51-B2A2-5E6A6B63889A")))).Returns(() => new DataObject
 			{
-				{"Id", "E09105CE-8A21-4C51-B2A2-5E6A6B63889A"},
 				{"Name", "server1"},
+				{"Id", "E09105CE-8A21-4C51-B2A2-5E6A6B63889A"},
 				{"Heartbeat", "2021/12/21T12:12:12"}
 			});
 
