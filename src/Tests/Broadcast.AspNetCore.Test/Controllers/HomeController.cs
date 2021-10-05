@@ -65,7 +65,15 @@ namespace Broadcast.AspNetCore.Test.Controllers
 		public IActionResult RcurringTask()
 		{
 			var service = new TaskService();
-			BackgroundTaskClient.Recurring(() => service.Recurring(DateTime.Now.ToString("o")), TimeSpan.FromSeconds(30));
+			var random = new Random();
+			if(random.Next(4) < 2)
+			{
+				BackgroundTaskClient.Recurring("recurring", () => service.Recurring(DateTime.Now.ToString("o")), TimeSpan.FromMinutes(1));
+			}
+			else
+			{
+				BackgroundTaskClient.Recurring("recurring", () => service.Recurring2(DateTime.Now.ToString("o")), TimeSpan.FromMinutes(1));
+			}
 
 			return Redirect("Index");
 		}
@@ -123,6 +131,11 @@ namespace Broadcast.AspNetCore.Test.Controllers
 		}
 
 		public void Recurring(string sceduleTime)
+		{
+			Console.WriteLine($"Recurring Task from {sceduleTime}");
+		}
+
+		public void Recurring2(string sceduleTime)
 		{
 			Console.WriteLine($"Recurring Task from {sceduleTime}");
 		}

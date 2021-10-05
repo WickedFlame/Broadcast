@@ -57,5 +57,10 @@ namespace Broadcast.Monitoring
 		/// Gets if the <see cref="ITask"/> is allready assigned to a server and is added to the queue for further processing
 		/// </summary>
 		public bool Fetched { get; set; }
+
+		/// <summary>
+		/// Gets the queue the task is processed in
+		/// </summary>
+		public string Queue { get; set; }
 	}
 }

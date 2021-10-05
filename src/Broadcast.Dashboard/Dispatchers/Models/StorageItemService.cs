@@ -153,6 +153,11 @@ namespace Broadcast.Dashboard.Dispatchers.Models
 			return server;
 		}
 
+		/// <summary>
+		/// Gets the recurring task
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
 		public StorageItem GetRecurringTask(string id)
 		{
 			var recurringTask = _store.Storage(s =>

@@ -54,7 +54,7 @@ namespace Broadcast.Monitoring
 
 			var queued = _store.Storage(s => s.GetList(new StorageKey("tasks:enqueued")));
 			var fetched = _store.Storage(s => s.GetList(new StorageKey("tasks:dequeued")));
-
+			
 			foreach (var task in tasks)
 			{
 				task.Queued = queued.Any(t => t == task.Id);
@@ -76,6 +76,8 @@ namespace Broadcast.Monitoring
 				{
 					task.Start = start;
 				}
+
+				task.Queue = data["Queue"]?.ToString();
 			}
 
 			// ensure it is a copy with ToList()

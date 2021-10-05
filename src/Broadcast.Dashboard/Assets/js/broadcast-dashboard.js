@@ -139,15 +139,16 @@ export class BroadcastDashboard extends BroadcastBase {
 						this.updateElement(taskRow.querySelector(`#server_${t.id}`), t.server);
 						this.updateElement(taskRow.querySelector(`#start_${t.id}`), t.start ? this.formatDate(new Date(t.start)) : '');
 						this.updateElement(taskRow.querySelector(`#duration_${t.id}`), t.duration ? this.millisecondsToTime(t.duration, true) : '');
-						this.updateElement(taskRow.querySelector(`#enqueued_${t.id}`), t.queued ? 'true' : '');
-						this.updateElement(taskRow.querySelector(`#fetched_${t.id}`), t.fetched ? 'true' : '');
+						//this.updateElement(taskRow.querySelector(`#enqueued_${t.id}`), t.queued ? 'true' : '');
+						//this.updateElement(taskRow.querySelector(`#fetched_${t.id}`), t.fetched ? 'true' : '');
+						this.updateElement(taskRow.querySelector(`#queue_${t.id}`), t.queue);
 						if (t.state !== 'new' && t.state !== 'queueud' && t.state !== 'dequeueud') {
 							taskRow.querySelector(`#trash_${t.id}`).innerHTML = '';
 						}
 					}
 				} else {
 					// add new row
-					if (t.state !== 'deleted' && !(t.isRecurring && t.state === 'new')) {
+					if (t.state !== 'deleted'){// && !(t.isRecurring && t.state === 'new')) {
 						var row = tasklist.querySelector('tbody').insertRow(0);
 						row.id = `task_${t.id}`;
 						row.setAttribute('data-task-id', t.id);
@@ -161,9 +162,10 @@ export class BroadcastDashboard extends BroadcastBase {
 						this.addCell(row, 4, `server_${t.id}`, t.server);
 						this.addCell(row, 5, `start_${t.id}`, t.start ? this.formatDate(new Date(t.start)) : '');
 						this.addCell(row, 6, `duration_${t.id}`, t.duration ? this.millisecondsToTime(t.duration, true) : '');
-						this.addCell(row, 7, `enqueued_${t.id}`, t.queued ? 'true' : '');
-						this.addCell(row, 8, `fetched_${t.id}`, t.fetched ? 'true' : '');
-						var trash = this.addCell(row, 9, `trash_${t.id}`, '');
+						//this.addCell(row, 7, `enqueued_${t.id}`, t.queued ? 'true' : '');
+						//this.addCell(row, 8, `fetched_${t.id}`, t.fetched ? 'true' : '');
+						this.addCell(row, 7, `queue_${t.id}`, t.queue);
+						var trash = this.addCell(row, 8, `trash_${t.id}`, '');
 						if (t.state === 'new' || t.state === 'queueud' || t.state === 'dequeueud') {
 							trash.innerHTML = `<div class="trash-box"><i class="trash-button" data-task-id="${t.id}"></i></div>`;
 						}
