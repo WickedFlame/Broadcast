@@ -65,10 +65,10 @@ namespace Broadcast.Test.Scheduling
 			{
 				IsRunning = true
 			};
-			queue.Enqueue(new SchedulerTask("id", id => { }, TimeSpan.FromMinutes(10)));
-			queue.Enqueue(new SchedulerTask("id", id => { }, TimeSpan.Zero));
-			queue.Enqueue(new SchedulerTask("id", id => { }, TimeSpan.Zero));
-			queue.Enqueue(new SchedulerTask("id", id => { ctx.IsRunning = false; }, TimeSpan.Zero));
+			queue.Enqueue(new SchedulerTask("id1", id => { }, TimeSpan.FromMinutes(10)));
+			queue.Enqueue(new SchedulerTask("id2", id => { }, TimeSpan.Zero));
+			queue.Enqueue(new SchedulerTask("id3", id => { }, TimeSpan.Zero));
+			queue.Enqueue(new SchedulerTask("id4", id => { ctx.IsRunning = false; }, TimeSpan.Zero));
 
 			dispatcher.Execute(ctx);
 

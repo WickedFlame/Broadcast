@@ -35,7 +35,8 @@ namespace Broadcast.Test.Scheduling
 			queue.Enqueue(task);
 			Assert.DoesNotThrow(() => queue.Enqueue(task));
 
-			Assert.AreEqual(2, queue.ToList().Count());
+			// the first task is replcaed
+			Assert.AreEqual(1, queue.ToList().Count());
 		}
 
 		[Test]
@@ -76,8 +77,8 @@ namespace Broadcast.Test.Scheduling
 		public void ScheduleQueue_ToList_Count()
 		{
 			var queue = new ScheduleQueue();
-			queue.Enqueue(new SchedulerTask("id", id => { }, TimeSpan.Zero));
-			queue.Enqueue(new SchedulerTask("id", id => { }, TimeSpan.Zero));
+			queue.Enqueue(new SchedulerTask("id1", id => { }, TimeSpan.Zero));
+			queue.Enqueue(new SchedulerTask("id2", id => { }, TimeSpan.Zero));
 
 			Assert.AreEqual(2, queue.ToList().Count());
 		}

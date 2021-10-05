@@ -46,9 +46,9 @@ namespace Broadcast.Integration.Test
         {
             int cnt = 0;
             var scheduler = new Scheduler();
-            scheduler.Enqueue("id", id => { cnt++; }, TimeSpan.FromSeconds(0.01));
-            scheduler.Enqueue("id", id => { cnt++; }, TimeSpan.FromSeconds(0.01));
-            scheduler.Enqueue("id", id => { cnt++; }, TimeSpan.FromSeconds(0.01));
+            scheduler.Enqueue("id1", id => { cnt++; }, TimeSpan.FromSeconds(0.01));
+            scheduler.Enqueue("id2", id => { cnt++; }, TimeSpan.FromSeconds(0.01));
+            scheduler.Enqueue("id3", id => { cnt++; }, TimeSpan.FromSeconds(0.01));
             //Assert.That(cnt == 0);
 
             Task.Delay(1000).Wait();

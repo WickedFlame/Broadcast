@@ -55,13 +55,23 @@ namespace Broadcast.Test.Scheduling
         public void Scheduler_ScheduledTasks()
         {
 	        using var scheduler = new Scheduler();
-	        scheduler.Enqueue("id", id => { }, TimeSpan.FromMinutes(10));
-	        scheduler.Enqueue("id", id => { }, TimeSpan.FromMinutes(10));
+	        scheduler.Enqueue("id1", id => { }, TimeSpan.FromMinutes(10));
+	        scheduler.Enqueue("id2", id => { }, TimeSpan.FromMinutes(10));
 
 	        Assert.AreEqual(2, scheduler.ScheduledTasks().Count());
         }
 
         [Test]
+        public void Scheduler_ScheduledTasks_SameId()
+        {
+	        using var scheduler = new Scheduler();
+	        scheduler.Enqueue("id", id => { }, TimeSpan.FromMinutes(10));
+	        scheduler.Enqueue("id", id => { }, TimeSpan.FromMinutes(10));
+
+	        Assert.AreEqual(1, scheduler.ScheduledTasks().Count());
+        }
+
+		[Test]
         public void Scheduler_ScheduledTasks_CountQueue()
         {
 	        var queue = new ScheduleQueue();
