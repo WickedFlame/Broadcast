@@ -92,7 +92,7 @@ export class BroadcastDashboard extends BroadcastBase {
 
 					this.addCell(row, 0, null, t.name);
 					this.addCell(row, 1, `referenceid_${name}`, t.referenceId);
-					this.addCell(row, 2, null, this.formatDate(new Date(t.nextExecution)));
+					this.addCell(row, 2, `nextexecution_${name}`, this.formatDate(new Date(t.nextExecution)));
 					this.addCell(row, 3, null, this.millisecondsToTime(t.interval));
 					this.addCell(row, 4, null, '').innerHTML = `<div class="trash-box"><i class="trash-button" data-recurring-id="${t.referenceId}"></i></div>`;
 				}
@@ -259,11 +259,9 @@ export class BroadcastDashboard extends BroadcastBase {
 			var overlay = document.querySelector('#broadcast-data-overlay');
 			overlay.querySelector('#broadcast-data-title').innerText = response.title;
 			overlay.querySelector('#broadcast-data-key').innerText = response.key;
-
 			overlay.querySelector('#broadcast-data-table').innerHTML = rows;
 
 			overlay.style.display = 'block';
-
 		});
 	}
 
