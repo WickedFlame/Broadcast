@@ -47,5 +47,37 @@ namespace Broadcast.EventSourcing
 
 			return null;
 		}
+
+		/// <summary>
+		/// Assign the task to the queue it is processed on
+		/// </summary>
+		/// <param name="store"></param>
+		/// <param name="taskId"></param>
+		/// <param name="queue">The name of the Server that the task is processed on</param>
+		internal static void AssignTaskToQueue(this ITaskStore store, string taskId, string queue)
+		{
+			store.Storage(s =>
+			{
+				// set the servername where the queue is working on
+				s.SetValues(new StorageKey($"tasks:values:{taskId}"), new DataObject
+				{
+					{"Queue", queue}
+				});
+
+				// assign the task to the queue
+				s.AddToList(new StorageKey($"queue:{queue}"), taskId);
+			});
+		}
+
+		/// <summary>
+		/// Removes the task from list of tasks that are processed in the queue. The assignment on the task will not be removed.
+		/// </summary>
+		/// <param name="store"></param>
+		/// <param name="taskId"></param>
+		/// <param name="queue">The name of the Server that the task was processed on</param>
+		internal static void RemoveTaskFromQueue(this ITaskStore store, string taskId, string queue)
+		{
+			store.Storage(s => s.RemoveFromList(new StorageKey($"queue:{queue}"), taskId));
+		}
 	}
 }

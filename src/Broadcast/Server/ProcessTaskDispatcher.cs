@@ -41,25 +41,13 @@ namespace Broadcast.Server
 					return;
 				}
 
-				//TODO: Update Recurring - set the servername where the queue is working on
-				//this is equal to the queuename
-				//Queue: [servername]
-				_store.Storage(s =>
-				{
-					// set the servername where the queue is working on
-					s.SetValues(new StorageKey($"tasks:values:{task.Id}"), new DataObject
-					{
-						{"Queue", _broadcaster.Name}
-					});
-
-					// assign the task to the queue
-					s.AddToList(new StorageKey($"queue:{_broadcaster.Name}"), task.Id);
-				});
+				// Set the queue/server to where the task is working on
+				_store.AssignTaskToQueue(task.Id, _broadcaster.Name);
 
 				_broadcaster.Process(task);
 
 				// remove the task from the queue
-				_store.Storage(s => s.RemoveFromList(new StorageKey($"queue:{_broadcaster.Name}"), task.Id));
+				_store.RemoveTaskFromQueue(task.Id, _broadcaster.Name);
 			}
 		}
 
