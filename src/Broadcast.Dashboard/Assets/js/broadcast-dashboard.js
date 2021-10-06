@@ -20,7 +20,7 @@ export class BroadcastDashboard extends BroadcastBase {
 
 				var row = e.target.closest('tr');
 				if (row) {
-					this.showDetail(`${config.dashboardUrl}/data/task/${row.dataset.taskId}`);
+					this.showDetail(`${config.dashboardUrl}/data/task/${row.dataset.taskId}`, row.dataset.taskId);
 				}
 			});
 
@@ -28,13 +28,13 @@ export class BroadcastDashboard extends BroadcastBase {
 			e => {
 				var trash = e.target.closest('.trash-button');
 				if (trash) {
-					this.deleteTask(`${config.dashboardUrl}/task/${trash.dataset.recurringId}/delete`);
+					this.deleteTask(`${config.dashboardUrl}/task/${trash.dataset.recurringId}/delete`, trash.dataset.recurringId);
 					return;
 				}
 
 				var row = e.target.closest('tr');
 				if (row) {
-					this.showDetail(`${config.dashboardUrl}/data/recurringtask/${row.dataset.recurringId}`);
+					this.showDetail(`${config.dashboardUrl}/data/recurringtask/${row.dataset.recurringId}`, row.dataset.recurringId);
 				}
 			});
 
@@ -224,7 +224,7 @@ export class BroadcastDashboard extends BroadcastBase {
 		}
 	}
 
-	showDetail(url) {
+	showDetail(url, id) {
 		fetch(url,
 			{
 				method: "GET",
@@ -259,12 +259,54 @@ export class BroadcastDashboard extends BroadcastBase {
 			});
 			
 			var overlay = document.querySelector('#broadcast-data-overlay');
+
+			overlay.setAttribute('data_item_id', id);
+
 			overlay.querySelector('#broadcast-data-title').innerText = response.title;
 			overlay.querySelector('#broadcast-data-key').innerText = response.key;
 			overlay.querySelector('#broadcast-data-table').innerHTML = rows;
 
 			overlay.style.display = 'block';
 		});
+
+		setTimeout(() => {
+			var config = { pollUrl: url };
+			this.startPolling(config, (data) => this.updateDetail(data));
+		}, 3000);
+	}
+
+	updateDetail(data) {
+		var overlay = document.querySelector('#broadcast-data-overlay');
+		if (overlay.style.display === 'none') {
+			// end the polling by returning true
+			return true;
+		}
+
+		var rows = '';
+
+		data.groups.forEach(g => {
+			if (g.values.length > 0) {
+				rows = rows + `<div class="broadcast-storage-type-row"><span></span><h4>${g.title}</h4></div>`;
+				g.values.forEach(p => {
+					if (p.key === '') {
+						rows = rows +
+							`<div class="broadcast-storage-type-row-single">
+							<div class="broadcast-storage-type-value">${p.value}</div>
+						</div>`;
+					} else {
+						rows = rows +
+							`<div class="broadcast-storage-type-row">
+							<div class="broadcast-storage-type-key">${p.key}</div>
+							<div class="broadcast-storage-type-value">${p.value}</div>
+						</div>`;
+					}
+				});
+			}
+		});
+
+		overlay.querySelector('#broadcast-data-table').innerHTML = rows;
+
+		return false;
 	}
 
 	deleteTask(url) {
@@ -280,7 +322,7 @@ export class BroadcastDashboard extends BroadcastBase {
 
 			return response.json();
 		}).then(function (response) {
-			//TODO: remove task
+			// remove the task from the list
 			var tasklist = document.querySelector('#tasklist');
 			if (tasklist) {
 				var task = tasklist.querySelector(`tr[data-task-id="${response.id}"]`);
@@ -288,7 +330,7 @@ export class BroadcastDashboard extends BroadcastBase {
 					tasklist.deleteRow(task.rowIndex);
 				}
 			}
-			// delete the recurring item if it is arecurring task
+			// delete the recurring item if it is a recurring task
 			var recurringlist = document.querySelector('#recurringlist');
 			if (recurringlist) {
 				var recurring = recurringlist.querySelector(`tr[data-recurring-reference-id="${response.id}"]`);

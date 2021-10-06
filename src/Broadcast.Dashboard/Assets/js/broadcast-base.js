@@ -30,7 +30,10 @@ export class BroadcastBase {
 							}
 							return response.json();
 						}).then(function (response) {
-							func(response);
+							if (func(response)) {
+								// end the polling if the function returns true
+								return false;
+							}
 							resolve(false);
 						}).catch(function (error) {
 							console.log(error);
