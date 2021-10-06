@@ -33,14 +33,27 @@ namespace Broadcast.Storage.Redis
 		/// <inheritdoc/>
 		public void AddToList(StorageKey key, string value)
 		{
-			_database.ListRightPushAsync(CreateKey(key), value);
+			var redisKey = CreateKey(key);
+			if (_database.ListRange(redisKey).Any(itm => itm == value))
+			{
+				return;
+			}
+
+			_database.ListRightPushAsync(redisKey, value);
 		}
 
 		/// <inheritdoc/>
 		public IEnumerable<string> GetList(StorageKey key)
 		{
-			var list = _database.ListRange(CreateKey(key));
-			return list.Select(l => l.ToString());
+			try
+			{
+				var list = _database.ListRange(CreateKey(key));
+				return list.Select(l => l.ToString());
+			}
+			catch (RedisServerException)
+			{
+				return Enumerable.Empty<string>();
+			}
 		}
 
 		/// <inheritdoc/>
@@ -81,9 +94,16 @@ namespace Broadcast.Storage.Redis
 		/// <inheritdoc/>
 		public T Get<T>(StorageKey key)
 		{
-			var hash = _database.HashGetAll(CreateKey(key));
+			try
+			{
+				var hash = _database.HashGetAll(CreateKey(key));
 
-			return hash.DeserializeRedis<T>();
+				return hash.DeserializeRedis<T>();
+			}
+			catch (RedisServerException)
+			{
+				return default;
+			}
 		}
 
 		/// <inheritdoc/>
