@@ -74,7 +74,9 @@ build:
 test:
   # assemblies to test - optional
   assemblies:
-    - '**\*.Test.dll'
+    - '**\Broadcast.Test.dll'
+    - '**\Broadcast.Storage.Redis.Test.dll'
+    - '**\Broadcast.Dashboard.Test.dll'
 
 #  categories:
 #    - UI

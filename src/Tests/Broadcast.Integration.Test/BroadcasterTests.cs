@@ -8,10 +8,11 @@ using System.Threading;
 using System;
 using System.Linq.Expressions;
 
-namespace Broadcast.Test
+namespace Broadcast.Integration.Test
 {
     [TestFixture]
-    public class BroadcasterTests
+    [Category("Integration")]
+	public class BroadcasterTests
     {
 	    [Test]
 	    public void Broadcaster_Process()

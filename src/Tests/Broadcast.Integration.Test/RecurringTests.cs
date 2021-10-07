@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 namespace Broadcast.Integration.Test
 {
     [TestFixture]
-    public class RecurringTests
+    [Category("Integration")]
+	public class RecurringTests
     {
         [Test]
         public void Recurring_Simple()

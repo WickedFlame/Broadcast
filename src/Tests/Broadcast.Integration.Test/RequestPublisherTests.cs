@@ -2,10 +2,11 @@
 using System.Threading.Tasks;
 using NUnit.Framework;
 
-namespace Broadcast.Test
+namespace Broadcast.Integration.Test
 {
     [TestFixture]
-    public class RequestPublisherTests
+    [Category("Integration")]
+	public class RequestPublisherTests
     {
         [Test]
         public void RequestHandlerTest()
