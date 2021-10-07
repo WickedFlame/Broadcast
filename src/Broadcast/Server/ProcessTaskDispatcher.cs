@@ -1,5 +1,7 @@
 ﻿using System;
+using Broadcast.Diagnostics;
 using Broadcast.EventSourcing;
+using Broadcast.Storage;
 
 namespace Broadcast.Server
 {
@@ -9,14 +11,19 @@ namespace Broadcast.Server
 	public class ProcessTaskDispatcher : IDispatcher
 	{
 		private readonly IBroadcaster _broadcaster;
+		private readonly ILogger _logger;
+		private ITaskStore _store;
 
 		/// <summary>
 		/// Creates a new instance of the ProcessTaskDispatcher
 		/// </summary>
 		/// <param name="broadcaster"></param>
-		public ProcessTaskDispatcher(IBroadcaster broadcaster)
+		/// <param name="store"></param>
+		public ProcessTaskDispatcher(IBroadcaster broadcaster, ITaskStore store)
 		{
 			_broadcaster = broadcaster ?? throw new ArgumentNullException(nameof(broadcaster));
+			_store = store ?? throw new ArgumentNullException(nameof(store));
+			_logger = LoggerFactory.Create();
 		}
 
 		/// <summary>
@@ -28,7 +35,19 @@ namespace Broadcast.Server
 		{
 			if(task.Time == null && !task.IsRecurring)
 			{
+				if (task.State == TaskState.Deleted)
+				{
+					_logger.Write($"Task {task.Id} is marked as deleted and will not be processed by the ProcessTaskDipatcher", LogLevel.Warning);
+					return;
+				}
+
+				// Set the queue/server to where the task is working on
+				_store.AssignTaskToQueue(task.Id, _broadcaster.Name);
+
 				_broadcaster.Process(task);
+
+				// remove the task from the queue
+				_store.RemoveTaskFromQueue(task.Id, _broadcaster.Name);
 			}
 		}
 

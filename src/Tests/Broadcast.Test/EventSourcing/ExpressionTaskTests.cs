@@ -18,7 +18,7 @@ namespace Broadcast.Test.EventSourcing
 			var task = TaskFactory.CreateTask(exp);
 			var clone = task.Clone();
 
-			Assert.AreEqual(((ExpressionTask) task).Args, ((ExpressionTask) clone).Args);
+			Assert.AreEqual(((BroadcastTask) task).Args, ((BroadcastTask) clone).Args);
 		}
 	}
 }

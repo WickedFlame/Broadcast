@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Broadcast.EventSourcing;
 using Broadcast.Server;
 using Broadcast.Storage;
@@ -16,11 +17,17 @@ namespace Broadcast
 		/// </summary>
 		IEnumerable<ServerModel> Servers { get; }
 
-        /// <summary>
-        /// Adds a new Task to the queue to be processed
-        /// </summary>
-        /// <param name="task"></param>
-        void Add(ITask task);
+		/// <summary>
+		/// Adds a new Task to the queue to be processed
+		/// </summary>
+		/// <param name="task"></param>
+		void Add(ITask task);
+
+		/// <summary>
+		/// Delete a Task from the queue and mark it as deleted in the storage
+		/// </summary>
+		/// <param name="id"></param>
+		void Delete(string id);
 
 		/// <summary>
 		/// Dispatch the task to all <see cref="IDispatcher"/>.
@@ -56,10 +63,25 @@ namespace Broadcast
 		void Storage(Action<IStorage> action);
 
 		/// <summary>
+		/// Executes a delegate that allows accessing the connected <see cref="IStorage"/>.
+		/// This is used when a component needs to store data in the <see cref="IStorage"/>.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="action"></param>
+		/// <returns></returns>
+		T Storage<T>(Func<IStorage, T> action);
+
+		/// <summary>
 		/// Propagate the Server to the TaskStore.
 		/// Poropagation is done during registration and heartbeat.
 		/// </summary>
 		/// <param name="server"></param>
 		void PropagateServer(ServerModel server);
+
+		/// <summary>
+		/// Wait for all enqueued Tasks to be passed to the dispatchers
+		/// </summary>
+		/// <returns></returns>
+		bool WaitAll();
     }
 }

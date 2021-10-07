@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Broadcast.Storage;
+﻿using Broadcast.Storage;
 
 namespace Broadcast.EventSourcing
 {

@@ -1,0 +1,13 @@
+---data
+Groups:
+  Title: Recurring Task
+  Values:
+    Key: Name
+    Value: Task.Name
+    Key: ReferenceId
+    Value: BA9B34C9-469A-4E34-BE1D-B9E5510D82B3
+    Key: Next execution
+    Value: 2021/12/21 12:12:12.000
+Key: Task.Name
+Title: Task.Name
+Values:

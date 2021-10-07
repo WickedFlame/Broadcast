@@ -1,6 +1,4 @@
-﻿using System;
-using Broadcast.Configuration;
-using Broadcast.EventSourcing;
+﻿using Broadcast.EventSourcing;
 
 namespace Broadcast
 {
@@ -19,6 +17,11 @@ namespace Broadcast
 			: this(TaskStore.Default)
 		{
 		}
+
+		/// <summary>
+		/// Gets the associated <see cref="ITaskStore"/>
+		/// </summary>
+		public ITaskStore Store => _taskStore;
 
 		/// <summary>
 		/// Creates a new instance of the BroadcastingClient.

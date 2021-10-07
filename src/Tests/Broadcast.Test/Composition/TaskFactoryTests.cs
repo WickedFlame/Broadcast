@@ -14,7 +14,7 @@ namespace Broadcast.Test.Composition
 		public void TaskFactory_CreateTask_Args_VerifyGenericMethod()
 		{
 			Expression<Action> expr = () => GenericMethod<int>(5);
-			var task = TaskFactory.CreateTask(expr) as ExpressionTask;
+			var task = TaskFactory.CreateTask(expr) as BroadcastTask;
 			Assert.AreEqual(task.Args[0], 5);
 		}
 
@@ -22,16 +22,9 @@ namespace Broadcast.Test.Composition
 		public void TaskFactory_CreateTask_ExpressionAction()
 		{
 			Expression<Action> expr = () => GenericMethod<int>(5);
-			Assert.IsAssignableFrom<ExpressionTask>(TaskFactory.CreateTask(expr));
+			Assert.IsAssignableFrom<BroadcastTask>(TaskFactory.CreateTask(expr));
 		}
 
-		[Test]
-		public void TaskFactory_CreateTask_Action()
-		{
-			Action expr = () => GenericMethod<int>(5);
-			Assert.IsAssignableFrom<ActionTask>(TaskFactory.CreateTask(expr));
-		}
-		
 		public void GenericMethod<T>(T input)
 		{
 			Console.WriteLine(input);

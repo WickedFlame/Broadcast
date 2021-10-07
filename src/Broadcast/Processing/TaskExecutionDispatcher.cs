@@ -40,7 +40,7 @@ namespace Broadcast.Processing
 			try
 			{
 				_logger.Write($"Start processing task {_task.Id}");
-				context.SetState(_task, TaskState.InProcess);
+				context.SetState(_task, TaskState.Processing);
 
 				//TODO: INotification is bad design. any object should be useable
 				var invocation = new TaskInvocation();
@@ -57,7 +57,7 @@ namespace Broadcast.Processing
 			{
 				sw.Stop();
 
-				context.SetValues(_task, new Storage.DataObject
+				context.SetValues(_task, new DataObject
 				{
 					{"ExecutionTime", sw.ElapsedMilliseconds},
 					{"ExecutedAt", DateTime.Now}
@@ -65,7 +65,7 @@ namespace Broadcast.Processing
 				_logger.Write($"End processing task {_task.Id}. Duration {sw.ElapsedMilliseconds} ms");
 
 				// remove the id from the list of enqueued
-				context.Store.Storage(s => s.RemoveFromList<string>(new StorageKey("tasks:dequeued"), _task.Id));
+				context.Store.Storage(s => s.RemoveFromList(new StorageKey("tasks:dequeued"), _task.Id));
 			}
 		}
 	}

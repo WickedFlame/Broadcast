@@ -55,7 +55,8 @@ namespace Broadcast.Test.EventSourcing
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers"));
 			store.Add(task);
 
-			Assert.AreSame(task, store.Single());
+			var stored = store.Single();
+			Assert.AreEqual(new { task.Id, task.Name }, new { stored.Id, stored.Name });
 		}
 
 		[Test]
@@ -83,6 +84,18 @@ namespace Broadcast.Test.EventSourcing
 		}
 
 		[Test]
+		public void TaskStore_Add_Storage_PropagateEvent()
+		{
+			var storage = new Mock<IStorage>();
+			var store = new TaskStore(storage.Object);
+
+			var task = TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers"));
+			store.Add(task);
+
+			storage.Verify(exp => exp.PropagateEvent(It.IsAny<StorageKey>()), Times.Once);
+		}
+
+		[Test]
 		public void TaskStore_AddMultiple()
 		{
 			var store = new TaskStore();
@@ -105,6 +118,139 @@ namespace Broadcast.Test.EventSourcing
 			};
 
 			Assert.AreEqual(3, store.Count());
+		}
+		
+		[Test]
+		public void TaskStore_Delete_ReloadTask()
+		{
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.Get<DataObject>(It.IsAny<StorageKey>())).Returns(new DataObject
+			{
+				{"State", "New"}
+			});
+			var store = new TaskStore(storage.Object);
+
+			store.Delete("id");
+
+			storage.Verify(exp => exp.Get<DataObject>(It.IsAny<StorageKey>()), Times.Once);
+		}
+
+		[Test]
+		public void TaskStore_Delete_SetState()
+		{
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.Get<DataObject>(It.IsAny<StorageKey>())).Returns(new DataObject
+			{
+				{"State", "New"}
+			});
+			var store = new TaskStore(storage.Object);
+
+			store.Delete("id");
+
+			storage.Verify(exp => exp.Set<DataObject>(It.IsAny<StorageKey>(), It.Is<DataObject>(d => (TaskState)d["State"] == TaskState.Deleted)), Times.Once);
+		}
+
+		[Test]
+		public void TaskStore_Delete_RemoveEnqueue()
+		{
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.Get<DataObject>(It.IsAny<StorageKey>())).Returns(new DataObject
+			{
+				{"State", "New"}
+			});
+			var store = new TaskStore(storage.Object);
+
+			store.Delete("id");
+
+			storage.Verify(exp => exp.RemoveFromList(It.Is<StorageKey>(s => s.ToString() == "tasks:enqueued"), "id"), Times.Once);
+		}
+
+		[Test]
+		public void TaskStore_Delete_RemoveDequeue()
+		{
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.Get<DataObject>(It.IsAny<StorageKey>())).Returns(new DataObject
+			{
+				{"State", "New"}
+			});
+			var store = new TaskStore(storage.Object);
+
+			store.Delete("id");
+
+			storage.Verify(exp => exp.RemoveFromList(It.Is<StorageKey>(s => s.ToString() == "tasks:dequeued"), "id"), Times.Once);
+		}
+
+		[Test]
+		public void TaskStore_Delete_NotRecurring()
+		{
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.Get<DataObject>(It.IsAny<StorageKey>())).Returns(new DataObject
+			{
+				{"State", "New"}
+			});
+			var store = new TaskStore(storage.Object);
+
+			store.Delete("id");
+
+			storage.Verify(exp => exp.GetKeys(It.Is<StorageKey>(s => s.ToString() == "tasks:recurring:")), Times.Never);
+		}
+
+		[Test]
+		public void TaskStore_Delete_Recurring()
+		{
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.Get<DataObject>(It.IsAny<StorageKey>())).Returns(new DataObject
+			{
+				{"State", "New"},
+				{"IsRecurring", true}
+			});
+			var store = new TaskStore(storage.Object);
+
+			store.Delete("id");
+
+			storage.Verify(exp => exp.GetKeys(It.Is<StorageKey>(s => s.ToString() == "tasks:recurring:")), Times.Once);
+		}
+
+		[Test]
+		public void TaskStore_Delete_Recurring_GetRecurring()
+		{
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.Get<DataObject>(It.IsAny<StorageKey>())).Returns(new DataObject
+			{
+				{"State", "New"},
+				{"IsRecurring", true}
+			});
+			storage.Setup(exp => exp.GetKeys(It.IsAny<StorageKey>())).Returns(() => new List<string> {"one", "two"});
+			storage.Setup(exp => exp.Get<RecurringTask>(It.Is<StorageKey>(k => k.ToString() == "two"))).Returns(() => new RecurringTask
+			{
+				ReferenceId = "id"
+			});
+			var store = new TaskStore(storage.Object);
+
+			store.Delete("id");
+
+			storage.Verify(exp => exp.Get<RecurringTask>(It.IsAny<StorageKey>()), Times.Exactly(2));
+		}
+
+		[Test]
+		public void TaskStore_Delete_Recurring_Delete()
+		{
+			var storage = new Mock<IStorage>();
+			storage.Setup(exp => exp.Get<DataObject>(It.IsAny<StorageKey>())).Returns(new DataObject
+			{
+				{"State", "New"},
+				{"IsRecurring", true}
+			});
+			storage.Setup(exp => exp.GetKeys(It.IsAny<StorageKey>())).Returns(() => new List<string> { "one", "two" });
+			storage.Setup(exp => exp.Get<RecurringTask>(It.Is<StorageKey>(k => k.ToString() == "two"))).Returns(() => new RecurringTask
+			{
+				ReferenceId = "id"
+			});
+			var store = new TaskStore(storage.Object);
+
+			store.Delete("id");
+
+			storage.Verify(exp => exp.Delete(It.IsAny<StorageKey>()), Times.Once);
 		}
 
 		[Test]
@@ -138,7 +284,9 @@ namespace Broadcast.Test.EventSourcing
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers"));
 			store.Add(task);
 
-			Assert.AreSame(output, task);
+			store.WaitAll();
+
+			Assert.AreEqual(new { task.Id, task.Name }, new { output.Id, output.Name });
 		}
 
 		[Test]
@@ -153,15 +301,19 @@ namespace Broadcast.Test.EventSourcing
 
 			// dispatching tasks uses a round robin implementation to select the set of dispatchers
 			store.Add(TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers")));
+			store.WaitAll();
 			Assert.AreEqual(1, number);
 
 			store.Add(TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers")));
+			store.WaitAll();
 			Assert.AreEqual(2, number);
 
 			store.Add(TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers")));
+			store.WaitAll();
 			Assert.AreEqual(3, number);
 
 			store.Add(TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers")));
+			store.WaitAll();
 			Assert.AreEqual(1, number);
 		}
 
@@ -177,6 +329,7 @@ namespace Broadcast.Test.EventSourcing
 			store.RegisterDispatchers("id", new IDispatcher[] { new TestDispatcher(t => cnt += 1) });
 
 			store.Add(TaskFactory.CreateTask(() => Console.WriteLine("TaskStore_Dispatchers")));
+			store.WaitAll();
 
 			Assert.AreEqual(1, cnt);
 		}
@@ -206,6 +359,7 @@ namespace Broadcast.Test.EventSourcing
 
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("TaskStore"));
 			store.Add(task);
+			store.WaitAll();
 
 			dispatcher.Verify(exp => exp.Execute(It.IsAny<ITask>()), Times.Once);
 		}
@@ -266,6 +420,22 @@ namespace Broadcast.Test.EventSourcing
 		}
 
 		[Test]
+		public void TaskStore_Storage_Func_Default_Type()
+		{
+			var store = new TaskStore();
+
+			Assert.IsAssignableFrom<InmemoryStorage>(store.Storage(s => s));
+		}
+
+		[Test]
+		public void TaskStore_Storage_Func_ReturnValue()
+		{
+			var store = new TaskStore();
+
+			Assert.IsTrue(store.Storage(s => true));
+		}
+
+		[Test]
 		public void TaskStore_PropagateServer()
 		{
 			var server = new ServerModel
@@ -323,6 +493,8 @@ namespace Broadcast.Test.EventSourcing
 
 			store.DispatchTasks();
 
+			store.WaitAll();
+
 			storage.Verify(exp => exp.Get<string>(It.IsAny<StorageKey>()), Times.Never);
 		}
 
@@ -334,7 +506,9 @@ namespace Broadcast.Test.EventSourcing
 
 			store.DispatchTasks();
 
-			storage.Verify(exp => exp.TryFetchNext<string>(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out It.Ref<string>.IsAny), Times.Once);
+			store.WaitAll();
+
+			storage.Verify(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out It.Ref<string>.IsAny), Times.Once);
 		}
 
 		[Test]
@@ -343,12 +517,15 @@ namespace Broadcast.Test.EventSourcing
 			var id = "1";
 
 			var storage = new Mock<IStorage>();
-			storage.Setup(exp => exp.TryFetchNext<string>(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
+			storage.Setup(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
+			storage.Setup(exp => exp.GetList(It.IsAny<StorageKey>())).Returns(() => id == null ? Enumerable.Empty<string>() : new List<string> { "test" });
 
 			var store = new TaskStore(storage.Object);
 			store.DispatchTasks();
 
-			storage.Verify(exp => exp.TryFetchNext<string>(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out It.Ref<string>.IsAny), Times.Exactly(2));
+			store.WaitAll();
+
+			storage.Verify(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out It.Ref<string>.IsAny), Times.Exactly(2));
 		}
 
 		[Test]
@@ -357,12 +534,15 @@ namespace Broadcast.Test.EventSourcing
 			var id = "1";
 
 			var storage = new Mock<IStorage>();
-			storage.Setup(exp => exp.TryFetchNext<string>(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
+			storage.Setup(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
+			storage.Setup(exp => exp.GetList(It.IsAny<StorageKey>())).Returns(() => id == null ? Enumerable.Empty<string>() : new List<string> { "test" });
 
 			var store = new TaskStore(storage.Object);
 			store.DispatchTasks();
+			
+			store.WaitAll();
 
-			storage.Verify(exp => exp.Get<ITask>(It.IsAny<StorageKey>()), Times.Once);
+			storage.Verify(exp => exp.Get<BroadcastTask>(It.IsAny<StorageKey>()), Times.Once);
 		}
 
 		[Test]
@@ -371,10 +551,12 @@ namespace Broadcast.Test.EventSourcing
 			string id = null;
 
 			var storage = new Mock<IStorage>();
-			storage.Setup(exp => exp.TryFetchNext<string>(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => false);
+			storage.Setup(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => false);
 
 			var store = new TaskStore(storage.Object);
 			store.DispatchTasks();
+
+			store.WaitAll();
 
 			storage.Verify(exp => exp.Get<string>(It.IsAny<StorageKey>()), Times.Never);
 		}
@@ -385,8 +567,9 @@ namespace Broadcast.Test.EventSourcing
 			var id = "1";
 
 			var storage = new Mock<IStorage>();
-			storage.Setup(exp => exp.TryFetchNext<string>(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
-			storage.Setup(exp => exp.Get<ITask>(It.IsAny<StorageKey>())).Returns(() => new Mock<ITask>().Object);
+			storage.Setup(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => id != null).Callback(() => id = null);
+			storage.Setup(exp => exp.Get<BroadcastTask>(It.IsAny<StorageKey>())).Returns(() => new BroadcastTask());
+			storage.Setup(exp => exp.GetList(It.IsAny<StorageKey>())).Returns(() => id == null ? Enumerable.Empty<string>() : new List<string> {"test"});
 
 			var dispatcher = new Mock<IDispatcher>();
 
@@ -394,6 +577,8 @@ namespace Broadcast.Test.EventSourcing
 			store.RegisterDispatchers("1", new[] { dispatcher.Object });
 
 			store.DispatchTasks();
+
+			store.WaitAll();
 
 			dispatcher.Verify(exp => exp.Execute(It.IsAny<ITask>()), Times.Once);
 		}
@@ -404,7 +589,7 @@ namespace Broadcast.Test.EventSourcing
 			string id = null;
 
 			var storage = new Mock<IStorage>();
-			storage.Setup(exp => exp.TryFetchNext<string>(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => false);
+			storage.Setup(exp => exp.TryFetchNext(It.IsAny<StorageKey>(), It.IsAny<StorageKey>(), out id)).Returns(() => false);
 
 			var dispatcher = new Mock<IDispatcher>();
 
@@ -412,6 +597,8 @@ namespace Broadcast.Test.EventSourcing
 			store.RegisterDispatchers("1", new[] { dispatcher.Object });
 
 			store.DispatchTasks();
+
+			store.WaitAll();
 
 			dispatcher.Verify(exp => exp.Execute(It.IsAny<ITask>()), Times.Never);
 		}

@@ -9,31 +9,36 @@ namespace Broadcast.EventSourcing
 		/// <summary>
 		/// New Task
 		/// </summary>
-        New,
+        New = 0,
 
 		/// <summary>
 		/// Task is queued
 		/// </summary>
-        Queued,
+        Queued = 1,
 
 		/// <summary>
 		/// Task is dequeued
 		/// </summary>
-        Dequeued,
+        Dequeued = 2,
 
 		/// <summary>
 		/// Task is being processed
 		/// </summary>
-        InProcess,
+        Processing = 3,
 
 		/// <summary>
 		/// Task is processed
 		/// </summary>
-        Processed,
+        Processed = 4,
 
 		/// <summary>
 		/// Task is failed
 		/// </summary>
-        Faulted
+        Faulted = 5,
+
+		/// <summary>
+		/// Task is deleted
+		/// </summary>
+		Deleted = 6
     }
 }

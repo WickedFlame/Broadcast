@@ -13,7 +13,7 @@ namespace Broadcast.Storage
 		/// <param name="key"></param>
 		public StorageKey(string key)
 		{
-			Key = key ?? throw new ArgumentNullException(key);
+			Key = key ?? throw new ArgumentNullException(nameof(key));
 		}
 
 		/// <summary>

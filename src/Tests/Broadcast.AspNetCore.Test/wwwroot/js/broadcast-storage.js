@@ -12,10 +12,10 @@ export class BroadcastStorage {
 					elem.classList.toggle('is-open');
 				}
 
-				if (e.target.closest('[data-value]')) {
-					var elem = document.querySelector('#broadcast-storage-content');
-					elem.innerHTML = e.target.getAttribute('data-value');
-				}
+				//if (e.target.closest('[data-value]')) {
+				//	var elem = document.querySelector('#broadcast-storage-content');
+				//	elem.innerHTML = e.target.getAttribute('data-value');
+				//}
 			});
 	}
 }

@@ -1,0 +1,41 @@
+---data
+Groups:
+  Title: Task
+  Values:
+    Key: Id
+    Value: 0fcd82f9-d797-420e-8d7a-2e392735a677
+    Key: Name
+    Value: Trace.WriteLine
+    Key: Type
+    Value: System.Diagnostics.Trace, System.Diagnostics.TraceSource
+    Key: Method
+    Value: WriteLine
+  Title: State
+  Values:
+    Key: State
+    Value: Processed
+    Key: Duration
+    Value: 0.025 s
+  Title: Processing
+  Values:
+    Key: Server
+    Value: OCH-SB-CWA-N
+    Key: Start
+    Value: 2021/12/21 12:12:12.000
+    Key: End
+    Value: 2021/12/21 12:12:12.000
+  Title: Statechanges
+  Values:
+    Key: Created at
+    Value: 2021/12/21 12:12:12.000
+    Key: Enqueued at
+    Value: 2021/12/21 12:12:12.000
+    Key: Dequeue at
+    Value: 2021/12/21 12:12:12.000
+    Key: Start processing at
+    Value: 2021/12/21 12:12:12.000
+    Key: End processing at
+    Value: 2021/12/21 12:12:12.000
+Key: E09105CE-8A21-4C51-B2A2-5E6A6B63889A
+Title: Trace.WriteLine
+Values:

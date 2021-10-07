@@ -23,7 +23,7 @@ namespace Broadcast.Test
 		}
 
 		[Test]
-		public void BroadcastingClient_TaskStore()
+		public void BroadcastingClient_EnsureUsedStore()
 		{
 			var store = new TaskStore();
 			var client = new BroadcastingClient(store);
@@ -31,7 +31,8 @@ namespace Broadcast.Test
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("BroadcastingClient"));
 			client.Enqueue(task);
 
-			Assert.AreSame(task, store.Single());
+			var stored = store.Single();
+			Assert.AreEqual(new {task.Id, task.Name}, new {stored.Id, stored.Name});
 		}
 
 		[Test]
@@ -44,7 +45,17 @@ namespace Broadcast.Test
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("BroadcastingClient"));
 			client.Enqueue(task);
 
-			Assert.AreSame(task, TaskStore.Default.Single());
+			var stored = TaskStore.Default.Single();
+			Assert.AreEqual(new { task.Id, task.Name }, new { stored.Id, stored.Name });
+		}
+
+		[Test]
+		public void BroadcastingClient_TaskStore()
+		{
+			var store = new TaskStore();
+			var client = new BroadcastingClient(store);
+
+			Assert.AreSame(store, client.Store);
 		}
 	}
 }

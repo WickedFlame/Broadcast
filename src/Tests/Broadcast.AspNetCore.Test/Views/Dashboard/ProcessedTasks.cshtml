@@ -8,27 +8,31 @@
 
 <div class="broadcast-main">
 	<div>
-		<table class="table">
+		<table class="table processed broadcast-table" id="tasklist">
 			<thead>
-			<tr>
-				<th scope="col">Id</th>
-				<th scope="col">Name</th>
-				<th scope="col">State</th>
-				<th scope="col">Processes at</th>
-				<th scope="col">IsRecurring</th>
-				<th scope="col">Interval</th>
-			</tr>
+				<tr>
+					<th scope="col">Id</th>
+					<th scope="col">Name</th>
+					<th scope="col">State</th>
+					<th scope="col">IsRecurring</th>
+					<th scope="col">Interval</th>
+					<th scope="col">Server</th>
+					<th scope="col">Started</th>
+					<th scope="col">Duration</th>
+				</tr>
 			</thead>
 			<tbody>
 			@foreach (var task in Model.Monitor.Tasks.Where(t => t.State == TaskState.Processed))
 			{
-				<tr>
+				<tr class="broadcast-table-row" data-task-id="@task.Id" id="task_@(task.Id)">
 					<td>@task.Id</td>
 					<td>@task.Name</td>
-					<td>@task.State</td>
-					<td>TODO</td>
+					<td id="state_@(task.Id)">@task.State</td>
 					<td>@task.IsRecurring</td>
-					<td>@task.Time</td>
+					<td>@(task.Time != null ? TimeSpan.FromMilliseconds(task.Time.Value).ToString("hh\\:mm\\:ss\\.fff") : string.Empty)</td>
+					<td id="server_@(task.Id)">@task.Server</td>
+					<td id="start_@(task.Id)">@task.Start?.ToString("yyyy-MM-dd HH:mm:ss")</td>
+					<td id="duration_@(task.Id)">@task.Duration</td>
 				</tr>
 			}
 			</tbody>

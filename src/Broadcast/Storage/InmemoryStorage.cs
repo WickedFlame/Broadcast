@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Broadcast.Storage.Serialization;
 
 namespace Broadcast.Storage
 {
@@ -22,7 +23,7 @@ namespace Broadcast.Storage
 		}
 
 		/// <inheritdoc/>
-		public void AddToList<T>(StorageKey key, T value)
+		public void AddToList(StorageKey key, string value)
 		{
 			lock (_lockHandle)
 			{
@@ -44,11 +45,17 @@ namespace Broadcast.Storage
 				throw new InvalidOperationException($"{internalKey} is not a list");
 			}
 
+			if (lst.Any(i => i.GetValue() == value.GetValue()))
+			{
+				// item is already contained in the list
+				return;
+			}
+
 			lst.Set(value);
 		}
 
 		/// <inheritdoc/>
-		public IEnumerable<T> GetList<T>(StorageKey key)
+		public IEnumerable<string> GetList(StorageKey key)
 		{
 			lock (_lockHandle)
 			{
@@ -56,16 +63,42 @@ namespace Broadcast.Storage
 				{
 					if (_store[key.ToString()].GetValue() is List<object> items)
 					{
-						return items.Cast<T>();
+						return items.Cast<string>();
 					}
 				}
 
-				return Enumerable.Empty<T>();
+				return Enumerable.Empty<string>();
 			}
 		}
 
 		/// <inheritdoc/>
-		public bool TryFetchNext<T>(StorageKey source, StorageKey destination, out T item)
+		public bool RemoveFromList(StorageKey key, string item)
+		{
+			lock (_lockHandle)
+			{
+				if (_store.ContainsKey(key.ToString()))
+				{
+					if (!(_store[key.ToString()] is ListItem list))
+					{
+						return false;
+					}
+
+					var stored = list.Items.FirstOrDefault(i => ((string)i.GetValue()).Equals(item));
+					if (stored == null)
+					{
+						return false;
+					}
+
+					list.Items.Remove(stored);
+					return true;
+				}
+
+				return false;
+			}
+		}
+
+		/// <inheritdoc/>
+		public bool TryFetchNext(StorageKey source, StorageKey destination, out string item)
 		{
 			lock (_lockHandle)
 			{
@@ -79,7 +112,7 @@ namespace Broadcast.Storage
 							list.Items.Remove(valueItem);
 							AddToList(destination, valueItem);
 
-							item = (T)valueItem.GetValue();
+							item = valueItem.Deserialize<string>();
 							return true;
 						}
 					}
@@ -88,38 +121,12 @@ namespace Broadcast.Storage
 						_store.Remove(source.ToString());
 						_store[destination.ToString()] = valueItem;
 
-						item = (T)valueItem.GetValue();
+						item = valueItem.Deserialize<string>();
 						return true;
 					}
 				}
 
-				item = default(T);
-				return false;
-			}
-		}
-
-		/// <inheritdoc/>
-		public bool RemoveFromList<T>(StorageKey key, T item)
-		{
-			lock (_lockHandle)
-			{
-				if (_store.ContainsKey(key.ToString()))
-				{
-					if (!(_store[key.ToString()] is ListItem list))
-					{
-						return false;
-					}
-
-					var stored = list.Items.FirstOrDefault(i => ((T) i.GetValue()).Equals(item));
-					if (stored == null)
-					{
-						return false;
-					}
-					
-					list.Items.Remove(stored);
-					return true;
-				}
-
+				item = null;
 				return false;
 			}
 		}
@@ -145,8 +152,35 @@ namespace Broadcast.Storage
 		}
 
 		/// <inheritdoc/>
+		public void Set<T>(StorageKey key, T value)
+		{
+			lock (_lockHandle)
+			{
+				// serialize object to ensure a breake of the references
+				// this simulates the same behaviour we have when using an external storage
+				_store[key.ToString()] = new ValueItem(value.Serialize());
+			}
+		}
+
+		/// <inheritdoc/>
+		public T Get<T>(StorageKey key)
+		{
+			lock (_lockHandle)
+			{
+				if (_store.ContainsKey(key.ToString()))
+				{
+					return _store[key.ToString()].Deserialize<T>();
+				}
+
+				return default;
+			}
+		}
+
+		/// <inheritdoc/>
 		public void SetValues(StorageKey key, DataObject values)
 		{
+			// serialization is done in Get<> or Set
+
 			// get original object from storage
 			var stored = Get<DataObject>(key) ?? new DataObject();
 
@@ -161,49 +195,11 @@ namespace Broadcast.Storage
 		}
 
 		/// <inheritdoc/>
-		public void Set<T>(StorageKey key, T value)
-		{
-			lock (_lockHandle)
-			{
-				_store[key.ToString()] = new ValueItem(value);
-
-				var stringKey = key.ToString().ToLower();
-				foreach (var dispatcher in _subscriptions.Where(d => stringKey.Contains(d.EventKey.ToLower())))
-				{
-					dispatcher.RaiseEvent();
-				}
-			}
-		}
-
-		/// <inheritdoc/>
-		public T Get<T>(StorageKey key)
-		{
-			lock (_lockHandle)
-			{
-				if (_store.ContainsKey(key.ToString()))
-				{
-					var item = _store[key.ToString()].GetValue();
-					if (item != null && item is T item1)
-					{
-						return item1;
-					}
-
-					if (item != null && !(item is List<object>))
-					{
-						throw new InvalidCastException($"Object of type {item.GetType().FullName} cannot be cast to {typeof(T).FullName}");
-					}
-				}
-
-				return (T) default;
-			}
-		}
-
-		/// <inheritdoc/>
 		public IEnumerable<string> GetKeys(StorageKey key)
 		{
 			lock (_lockHandle)
 			{
-				return _store.Keys.Where(k => k.StartsWith(key.ToString()));
+				return _store.Keys.Where(k => k.StartsWith(key.ToString())).ToList();
 			}
 		}
 
@@ -230,6 +226,19 @@ namespace Broadcast.Storage
 		public void RegisterSubscription(ISubscription subscription)
 		{
 			_subscriptions.Add(subscription);
+		}
+
+		/// <summary>
+		/// Propagate events to all dispatchers that are registered to the storage and have a subscription to the key event
+		/// </summary>
+		/// <param name="key"></param>
+		public void PropagateEvent(StorageKey key)
+		{
+			var stringKey = key.ToString().ToLower();
+			foreach (var dispatcher in _subscriptions.Where(d => stringKey.Contains(d.EventKey.ToLower())))
+			{
+				dispatcher.RaiseEvent();
+			}
 		}
 	}
 }

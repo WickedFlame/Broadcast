@@ -9,7 +9,7 @@ namespace Broadcast.EventSourcing
 	/// <see cref="IDispatcher"/> are stored per Id of the <see cref="IBroadcaster"/>.
 	/// Uses a round robin implementation to get the next set of <see cref="IDispatcher"/> for processing
 	/// </summary>
-	public class DispatcherStorage
+	public class DispatcherStorage : IDispatcherStorage
 	{
 		private readonly object _lockObject = new object();
 
@@ -84,6 +84,32 @@ namespace Broadcast.EventSourcing
 				}
 
 				return _dispatchers[_ids[_currentIndex]];
+			}
+		}
+
+		/// <summary>
+		/// Get the set of <see cref="IDispatcher"/> that are registered for the server/queue
+		/// </summary>
+		/// <param name="id">The id of the server that the dispatchers are registered for</param>
+		/// <returns></returns>
+		public IEnumerable<IDispatcher> GetNext(string id)
+		{
+			if (!_dispatchers.Any())
+			{
+				return Enumerable.Empty<IDispatcher>();
+			}
+
+			if (!_dispatchers.Keys.Contains(id))
+			{
+				//TODO: Check why this happens
+				// this should not happen
+				// some tests fail because the id of the server is not contained in the dispatchers
+				return GetNext();
+			}
+
+			lock (_lockObject)
+			{
+				return _dispatchers[id];
 			}
 		}
 

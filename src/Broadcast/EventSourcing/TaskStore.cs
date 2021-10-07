@@ -4,7 +4,9 @@ using Broadcast.Storage;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Broadcast.Diagnostics;
+using Broadcast.Processing;
 using Broadcast.Server;
 
 namespace Broadcast.EventSourcing
@@ -16,16 +18,21 @@ namespace Broadcast.EventSourcing
     {
         private readonly IStorage _storage;
         private readonly Options _options;
-        private readonly DispatcherStorage _dispatchers;
+        private readonly IDispatcherStorage _dispatchers;
 		private readonly IDictionary<string, ServerModel> _registeredServers;
 
         private static readonly ItemFactory<ITaskStore> ItemFactory = new ItemFactory<ITaskStore>(() => new TaskStore());
         private readonly ILogger _logger;
 
-        /// <summary>
+        private readonly ManualResetEventSlim _event;
+        private readonly BackgroundServerProcess<IStorageContext> _process;
+        private readonly DispatcherLock _dispatcherLock;
+        private readonly object _processorLock = new object();
+
+		/// <summary>
 		/// Gets the default instance of the <see cref="ITaskStore"/>
 		/// </summary>
-        public static ITaskStore Default => ItemFactory.Factory();
+		public static ITaskStore Default => ItemFactory.Factory();
 
 		/// <summary>
 		/// Setup a new instance for the default <see cref="ITaskStore"/>
@@ -70,12 +77,31 @@ namespace Broadcast.EventSourcing
 
             _logger = LoggerFactory.Create();
 			_logger.Write("Starting new Storage");
-		}
+
+			_event = new ManualResetEventSlim();
+			_event.Set();
+
+			_dispatcherLock = new DispatcherLock();
+			var context = new StorageDispatcherContext
+			{
+				Dispatchers = _dispatchers,
+				ResetEvent = _event
+			};
+			_process = new BackgroundServerProcess<IStorageContext>(context);
+        }
 
 		/// <summary>
 		/// Gets a enumeration of all registered <see cref="IBroadcaster"/> servers
 		/// </summary>
 		public IEnumerable<ServerModel> Servers => _registeredServers.Values;
+
+		/// <summary>
+		/// Gets a <see cref="System.Threading.WaitHandle"/> that is used to wait for the event to be set.
+		/// </summary>
+		/// <remarks>
+		/// <see cref="WaitHandle"/> should only be used if it's needed for integration with code bases that rely on having a WaitHandle.
+		/// </remarks>
+		public WaitHandle WaitHandle => _event.WaitHandle;
 
 		/// <summary>
 		/// Adds a new Task to the queue to be processed
@@ -88,6 +114,48 @@ namespace Broadcast.EventSourcing
 			// serializeable tasks are propagated to all registered servers through the storage
 			_storage.AddToList(new StorageKey("tasks:enqueued"), task.Id);
 			_storage.Set(new StorageKey($"task:{task.Id}"), task);
+			_storage.PropagateEvent(new StorageKey($"task:{task.Id}"));
+
+			// reset the event to be signaled
+			_event.Reset();
+		}
+
+		/// <summary>
+		/// Delete a Task from the queue and mark it as deleted in the storage
+		/// </summary>
+		/// <param name="id"></param>
+		public void Delete(string id)
+		{
+			_logger.Write($"Delete task {id} from storage");
+
+			// to delete the task we just mark it as deleted
+			var taskKey = new StorageKey($"task:{id}");
+			var task = _storage.Get<DataObject>(taskKey);
+
+			//TODO: Is it correct that tasks in State 'Processing' can be deleted?
+
+			task["State"] = TaskState.Deleted;
+			_storage.Set<DataObject>(taskKey, task);
+
+			// remove from queue!
+			_storage.RemoveFromList(new StorageKey("tasks:enqueued"), id);
+			_storage.RemoveFromList(new StorageKey("tasks:dequeued"), id);
+
+			if (task["IsRecurring"].ToBool())
+			{
+				// remove the recurring task that is associated with this task
+				var recurringTasks = _storage.GetKeys(new StorageKey("tasks:recurring:"));
+				foreach (var recurringKey in recurringTasks)
+				{
+					// get the recurring task that references the task that is to be deleted
+					var recurring = _storage.Get<RecurringTask>(new StorageKey(recurringKey));
+					if (recurring?.ReferenceId == id)
+					{
+						_storage.Delete(new StorageKey(recurringKey));
+						break;
+					}
+				}
+			}
 		}
 
 		/// <summary>
@@ -96,18 +164,16 @@ namespace Broadcast.EventSourcing
 		/// </summary>
 		public void DispatchTasks()
 		{
-			while (_storage.TryFetchNext(new StorageKey("tasks:enqueued"), new StorageKey("tasks:dequeued"), out string id))
+			// check if a thread is allready processing the queue
+			lock (_processorLock)
 			{
-				// eager fetching of the data
-				// first TaskStore to fetch gets to execute the Task
-				var task = _storage.Get<ITask>(new StorageKey($"task:{id}"));
-
-				// use round robin to get the next set of dispatchers
-				var dispatchers = _dispatchers.GetNext();
-				foreach (var dispatcher in dispatchers)
+				if (_dispatcherLock.IsLocked())
 				{
-					dispatcher.Execute(task);
+					return;
 				}
+
+				// start new background thread to process all queued tasks
+				_process.StartNew(new TaskStoreDispatcher(_dispatcherLock, _storage));
 			}
 		}
 		
@@ -143,6 +209,8 @@ namespace Broadcast.EventSourcing
 			{
 				_storage.Delete(new StorageKey(key));
 			}
+
+			_event.Reset();
 		}
 
 		/// <summary>
@@ -156,21 +224,57 @@ namespace Broadcast.EventSourcing
 		}
 
 		/// <summary>
+		/// Executes a delegate that allows accessing the connected <see cref="IStorage"/>.
+		/// This is used when a component needs to store data in the <see cref="IStorage"/>.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="action"></param>
+		/// <returns></returns>
+		public T Storage<T>(Func<IStorage, T> action)
+		{
+			return action(_storage);
+		}
+
+		/// <summary>
 		/// Propagate the Server to the TaskStore.
 		/// Poropagation is done during registration and heartbeat.
 		/// </summary>
 		/// <param name="server"></param>
 		public void PropagateServer(ServerModel server)
 		{
-			_registeredServers[server.Id] = server;
-
-			// cleanup dead servers
-			var expiration = DateTime.Now.Subtract(TimeSpan.FromMilliseconds(_options.HeartbeatInterval));
-			var deadServers = _registeredServers.Where(item => item.Value.Heartbeat < expiration).Select(item => item.Key).ToList();
-			foreach (var key in deadServers)
+			lock(_registeredServers)
 			{
-				_registeredServers.Remove(key);
+				_registeredServers[server.Id] = server;
+
+				// cleanup dead servers
+				var expiration = DateTime.Now.Subtract(TimeSpan.FromMilliseconds(_options.HeartbeatInterval));
+				var deadServers = _registeredServers.Where(item => item.Value.Heartbeat < expiration).Select(item => item.Key).ToList();
+				foreach (var key in deadServers)
+				{
+					_registeredServers.Remove(key);
+				}
 			}
+		}
+
+		/// <summary>
+		/// Wait for all enqueued Tasks to be passed to the dispatchers
+		/// </summary>
+		/// <returns></returns>
+		public bool WaitAll()
+		{
+			// first we wait for all enqueued tasks to change state to dequeued
+			while (_dispatcherLock.IsLocked())
+			{
+				System.Diagnostics.Trace.WriteLine("Wait for TaskStore");
+				WaitHandle.WaitOne(50);
+			}
+
+			// then we wait for all dequeued tasks to be dispatched to all dispatchers
+			// all tasks are passed to the dispatchers in a own thread
+			// so we wait for these to end
+			_process.WaitAll();
+
+			return true;
 		}
 
 		/// <summary>
@@ -193,7 +297,7 @@ namespace Broadcast.EventSourcing
 
 			foreach (var key in keys)
 			{
-				yield return _storage.Get<ITask>(new StorageKey(key));
+				yield return _storage.Get<BroadcastTask>(new StorageKey(key));
 			}
 		}
     }

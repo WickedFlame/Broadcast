@@ -4,6 +4,7 @@ using Broadcast.Dashboard.Owin;
 using Broadcast.EventSourcing;
 using Broadcast.Processing;
 using Broadcast.Scheduling;
+using Broadcast.Setup;
 using Broadcast.Storage;
 using Microsoft.Owin.Infrastructure;
 using Owin;
@@ -21,7 +22,7 @@ namespace Broadcast.Dashboard
 		/// <param name="builder"></param>
 		/// <param name="config"></param>
 		/// <returns></returns>
-		public static IAppBuilder UseBroadcastServer(this IAppBuilder builder, Action<ServerSetup> config)
+		public static IAppBuilder UseBroadcastServer(this IAppBuilder builder, Action<IServerSetup> config)
 		{
 			if (builder == null)
 			{
@@ -48,7 +49,6 @@ namespace Broadcast.Dashboard
 					.AddTaskStore(store)
 			);
 
-			TaskServerClient.Setup(() => new BroadcastingClient(store));
 			BackgroundTaskClient.Setup(() => new BroadcastingClient(store));
 			
 			return builder;

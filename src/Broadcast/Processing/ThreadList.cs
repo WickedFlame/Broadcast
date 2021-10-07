@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,12 +23,12 @@ namespace Broadcast.Processing
 			lock(_taskList)
 			{
 				_taskList.Add(task);
-				task.ContinueWith(t => Remove(t));
-			}
-
-			if (task.IsCompleted || task.IsFaulted || task.IsCanceled)
-			{
-				Remove(task);
+				task.ContinueWith(t =>
+				{
+					// make sure the thread is completed
+					t.ConfigureAwait(false).GetAwaiter().GetResult();
+					Remove(t);
+				});
 			}
 		}
 
@@ -44,6 +42,8 @@ namespace Broadcast.Processing
 			{
 				if (_taskList.Contains(task))
 				{
+					Trace.WriteLine($"Remove Thread with state: {task.Status}");
+					task.Dispose();
 					_taskList.Remove(task);
 				}
 			}

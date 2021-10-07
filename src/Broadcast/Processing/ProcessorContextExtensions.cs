@@ -12,6 +12,22 @@ namespace Broadcast.Processing
 	public static class ProcessorContextExtensions
 	{
 		/// <summary>
+		/// Set the server that executes the task to the task
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="task"></param>
+		public static void AssignServer(this IProcessorContext context, ITask task)
+		{
+			context.Store.Storage(s =>
+			{
+				var values = new DataObject
+				{
+					{"Server", context.Options.ServerName}
+				};
+				s.SetValues(new StorageKey($"tasks:values:{task.Id}"), values);
+			});
+		}
+		/// <summary>
 		/// Set the state of the <see cref="ITask"/>.
 		/// Propagates the state and the change event to the storage
 		/// </summary>
@@ -20,8 +36,9 @@ namespace Broadcast.Processing
 		/// <param name="state"></param>
 		public static void SetState(this IProcessorContext context, ITask task, TaskState state)
 		{
+			// setting the state also adds the timestamp and the state to the statechanges dictionary
 			task.State = state;
-
+			
 			context.Store.Storage(s =>
 			{
 				var values = new DataObject
@@ -30,6 +47,8 @@ namespace Broadcast.Processing
 					{$"{state}At", DateTime.Now}
 				};
 				s.SetValues(new StorageKey($"tasks:values:{task.Id}"), values);
+
+				s.Set(new StorageKey($"task:{task.Id}"), task);
 			});
 		}
 

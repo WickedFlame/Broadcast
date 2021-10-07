@@ -11,25 +11,9 @@ namespace Broadcast.Composition
 	/// </summary>
 	public static class TaskFactory
 	{
-		/// <summary>
-		/// Creates a task from an action
-		/// </summary>
-		/// <param name="task"></param>
-		/// <returns></returns>
-		public static ITask CreateTask(Action task)
-		{
-			if (task == null)
-			{
-				throw new ArgumentNullException(nameof(task));
-			}
+		public static ITask CreateTask(Expression<Action> expression)
+			=> CreateTask((LambdaExpression)expression);
 
-			return new ActionTask
-			{
-				Task = task,
-				State = TaskState.New
-			};
-		}
-		
 		/// <summary>
 		/// Create a task from a labdaexpression
 		/// </summary>
@@ -71,9 +55,10 @@ namespace Broadcast.Composition
 					callExpression.Method.GetParameters().Select(x => x.ParameterType).ToArray());
 			}
 
-			return new ExpressionTask(type, method, GetExpressionValues(callExpression.Arguments))
+			return new BroadcastTask(type, method, GetExpressionValues(callExpression.Arguments))
 			{
-				Name = $"{type.ToGenericTypeString()}.{method.Name}"
+				Name = $"{type.ToGenericTypeString()}.{method.Name}",
+				State = TaskState.New
 			};
 		}
 

@@ -24,7 +24,7 @@ namespace Broadcast.AspNet.Test
 			});
 			app.UseBroadcastDashboard();
 
-			TaskServerClient.Recurring(() => Trace.WriteLine("Broadcast Server task set from Startup"), TimeSpan.FromSeconds(20));
+			BackgroundTaskClient.Recurring(() => Trace.WriteLine("Broadcast Server task set from Startup"), TimeSpan.FromSeconds(20));
 			BackgroundTaskClient.Recurring("Action", () => Trace.WriteLine("Broadcast task set from Startup"), TimeSpan.FromSeconds(30));
 		}
 	}

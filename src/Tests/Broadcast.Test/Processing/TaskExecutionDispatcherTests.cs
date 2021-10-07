@@ -26,7 +26,7 @@ namespace Broadcast.Test.Processing
 		}
 
 		[Test]
-		public void TaskExecutionDispatcher_Task_InProcess()
+		public void TaskExecutionDispatcher_Task_Processing()
 		{
 			var task = new Mock<ITask>();
 			var dispatcher = new TaskExecutionDispatcher(task.Object);
@@ -36,7 +36,7 @@ namespace Broadcast.Test.Processing
 
 			dispatcher.Execute(ctx.Object);
 
-			task.VerifySet(exp => exp.State = TaskState.InProcess);
+			task.VerifySet(exp => exp.State = TaskState.Processing);
 		}
 
 		[Test]
@@ -66,7 +66,8 @@ namespace Broadcast.Test.Processing
 
 			dispatcher.Execute(ctx.Object);
 
-			store.Verify(exp => exp.Storage(It.IsAny<Action<IStorage>>()), Times.Exactly(4));
+			store.Verify(exp => exp.Storage(It.IsAny<Action<IStorage>>()), Times.Exactly(3));
+			store.Verify(exp => exp.Storage<bool>(It.IsAny<Func<IStorage, bool>>()), Times.Exactly(1));
 		}
 
 		[Test]
@@ -86,11 +87,29 @@ namespace Broadcast.Test.Processing
 
 			var values = storage.Get<DataObject>(new StorageKey($"tasks:values:TestTask"));
 			// there is no task that takes time so sometimes the executiontime is 0...
-			Assert.GreaterOrEqual((long)values["ExecutionTime"], 0);
+			Assert.GreaterOrEqual((int)values["ExecutionTime"], 0);
 		}
 
 		[Test]
 		public void TaskExecutionDispatcher_Task_SetValue_State()
+		{
+			var task = new Mock<ITask>();
+			task.Setup(exp => exp.Id).Returns("TestTask");
+			var dispatcher = new TaskExecutionDispatcher(task.Object);
+
+			var storage = new InmemoryStorage();
+			var store = new TaskStore(storage);
+
+			var ctx = new Mock<IProcessorContext>();
+			ctx.Setup(exp => exp.Store).Returns(() => store);
+
+			dispatcher.Execute(ctx.Object);
+
+			task.VerifySet(exp => exp.State = TaskState.Processed);
+		}
+
+		[Test]
+		public void TaskExecutionDispatcher_Task_SetValue_State_Values()
 		{
 			var task = new Mock<ITask>();
 			task.Setup(exp => exp.Id).Returns("TestTask");
@@ -123,12 +142,11 @@ namespace Broadcast.Test.Processing
 
 			dispatcher.Execute(ctx.Object);
 
-			var values = storage.Get<DataObject>(new StorageKey($"tasks:values:TestTask"));
-			Assert.Greater((DateTime)values["ProcessedAt"], DateTime.MinValue);
+			task.VerifySet(exp => exp.State = TaskState.Processed);
 		}
 
 		[Test]
-		public void TaskExecutionDispatcher_Task_SetValue_InProcessChange()
+		public void TaskExecutionDispatcher_Task_SetValue_ProcessedChange_Values()
 		{
 			var task = new Mock<ITask>();
 			task.Setup(exp => exp.Id).Returns("TestTask");
@@ -143,7 +161,44 @@ namespace Broadcast.Test.Processing
 			dispatcher.Execute(ctx.Object);
 
 			var values = storage.Get<DataObject>(new StorageKey($"tasks:values:TestTask"));
-			Assert.Greater((DateTime)values["InProcessAt"], DateTime.MinValue);
+			Assert.Greater((DateTime)values["ProcessedAt"], DateTime.MinValue);
+		}
+
+		[Test]
+		public void TaskExecutionDispatcher_Task_SetValue_ProcessingChange()
+		{
+			var task = new Mock<ITask>();
+			task.Setup(exp => exp.Id).Returns("TestTask");
+			var dispatcher = new TaskExecutionDispatcher(task.Object);
+
+			var storage = new InmemoryStorage();
+			var store = new TaskStore(storage);
+
+			var ctx = new Mock<IProcessorContext>();
+			ctx.Setup(exp => exp.Store).Returns(() => store);
+
+			dispatcher.Execute(ctx.Object);
+
+			task.VerifySet(exp => exp.State = TaskState.Processing);
+		}
+
+		[Test]
+		public void TaskExecutionDispatcher_Task_SetValue_ProcessingChange_Values()
+		{
+			var task = new Mock<ITask>();
+			task.Setup(exp => exp.Id).Returns("TestTask");
+			var dispatcher = new TaskExecutionDispatcher(task.Object);
+
+			var storage = new InmemoryStorage();
+			var store = new TaskStore(storage);
+
+			var ctx = new Mock<IProcessorContext>();
+			ctx.Setup(exp => exp.Store).Returns(() => store);
+
+			dispatcher.Execute(ctx.Object);
+
+			var values = storage.Get<DataObject>(new StorageKey($"tasks:values:TestTask"));
+			Assert.Greater((DateTime)values["ProcessingAt"], DateTime.MinValue);
 		}
 
 		[Test]
@@ -207,7 +262,7 @@ namespace Broadcast.Test.Processing
 
 			dispatcher.Execute(ctx.Object);
 
-			storage.Verify(exp => exp.RemoveFromList<string>(It.Is<StorageKey>(k => k.Key == "tasks:dequeued"), task.Object.Id), Times.Once);
+			storage.Verify(exp => exp.RemoveFromList(It.Is<StorageKey>(k => k.Key == "tasks:dequeued"), task.Object.Id), Times.Once);
 		}
 	}
 }

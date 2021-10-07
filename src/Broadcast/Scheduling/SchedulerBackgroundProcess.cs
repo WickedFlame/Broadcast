@@ -7,7 +7,7 @@ namespace Broadcast.Scheduling
 	/// <summary>
 	/// Dispatcher for the <see cref="IScheduler"/> that executes the scheduled <see cref="SchedulerTask"/>
 	/// </summary>
-	public class SchedulerTaskDispatcher : IBackgroundDispatcher<ISchedulerContext>
+	public class SchedulerBackgroundProcess : IBackgroundDispatcher<ISchedulerContext>
 	{
 		private readonly IScheduleQueue _queue;
 
@@ -15,7 +15,7 @@ namespace Broadcast.Scheduling
 		/// Cretes a new instance of the SchedulerTaskDispatcher
 		/// </summary>
 		/// <param name="queue"></param>
-		public SchedulerTaskDispatcher(IScheduleQueue queue)
+		public SchedulerBackgroundProcess(IScheduleQueue queue)
 		{
 			_queue = queue ?? throw new ArgumentNullException(nameof(queue));
 		}
@@ -37,7 +37,7 @@ namespace Broadcast.Scheduling
 						_queue.Dequeue(task);
 
 						// execute task
-						task.Task.Invoke();
+						task.Task.Invoke(task.Id);
 					}
 				}
 

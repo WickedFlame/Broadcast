@@ -23,5 +23,10 @@ namespace Broadcast.EventSourcing
 		/// <param name="value"></param>
 		/// <returns></returns>
 		bool TryDequeue(out ITask value);
+
+		/// <summary>
+		/// Wait for all tasks in the queue to be processed
+		/// </summary>
+		void WaitAll();
 	}
 }

@@ -2,5 +2,9 @@
   {
     "outputFile": "Assets/css/broadcast-console.css",
     "inputFile": "Assets/css/broadcast-console.scss"
+  },
+  {
+    "outputFile": "Assets/css/broadcast-dashboard.css",
+    "inputFile": "Assets/css/broadcast-dashboard.scss"
   }
 ]

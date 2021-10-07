@@ -1,0 +1,14 @@
+---data
+Args:
+  test
+Id: 00000000-0000-0000-0000-000000000000
+IsRecurring: False
+Method: WriteLine(System.String)
+Name: Console.WriteLine
+State: New
+StateChanges:
+  Key: New
+  Value: 0000-00-00T00:00:00.0000
+Time:
+  00:00:20
+Type: System.Console

@@ -28,12 +28,13 @@ namespace Broadcast.Monitoring
 		/// <returns></returns>
 		public IEnumerable<ServerDescription> GetServers()
 		{
+			// ensure it is a copy with ToList()
 			return _store.Servers.Select(s => new ServerDescription
 			{
 				Id = s.Id,
 				Name = s.Name,
 				Heartbeat = s.Heartbeat
-			});
+			}).ToList();
 		}
 
 		/// <summary>
@@ -42,14 +43,45 @@ namespace Broadcast.Monitoring
 		/// <returns></returns>
 		public IEnumerable<TaskDescription> GetAllTasks()
 		{
-			return _store.Select(t => new TaskDescription
+			var tasks = _store.Select(t => new TaskDescription
 			{
 				Id = t.Id,
 				Name = t.Name,
 				IsRecurring = t.IsRecurring,
 				State = t.State,
-				Time = t.Time
-			});
+				Time = t.Time?.TotalMilliseconds
+			}).ToList();
+
+			var queued = _store.Storage(s => s.GetList(new StorageKey("tasks:enqueued")));
+			var fetched = _store.Storage(s => s.GetList(new StorageKey("tasks:dequeued")));
+			
+			foreach (var task in tasks)
+			{
+				task.Queued = queued.Any(t => t == task.Id);
+				task.Fetched = fetched.Any(t => t == task.Id);
+
+				var data = _store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:values:{task.Id}")));
+				if (data == null)
+				{
+					continue;
+				}
+
+				task.Server = data["Server"]?.ToString();
+				if(long.TryParse(data["ExecutionTime"]?.ToString(), out var duration))
+				{
+					task.Duration = duration;
+				}
+
+				if(DateTime.TryParse(data["ProcessingAt"]?.ToString(), out var start))
+				{
+					task.Start = start;
+				}
+
+				task.Queue = data["Queue"]?.ToString();
+			}
+
+			// ensure it is a copy with ToList()
+			return tasks.OrderBy(t => t.Start == null).ThenBy(t => t.Start);
 		}
 
 		/// <summary>
@@ -58,17 +90,20 @@ namespace Broadcast.Monitoring
 		/// <returns></returns>
 		public IEnumerable<RecurringTaskDescription> GetRecurringTasks()
 		{
-			IEnumerable<RecurringTaskDescription> recurring = null;
-			_store.Storage(s =>
+			var recurring = _store.Storage(s =>
 			{
-				var keys = s.GetKeys(new StorageKey($"tasks:recurring:"));
+				// ensure it is a copy with ToList()
+				var keys = s.GetKeys(new StorageKey($"tasks:recurring:")).ToList();
 
-				recurring = keys.Select(k => s.Get<RecurringTask>(new StorageKey(k)))
+				// ensure it is a copy with ToList()
+				return keys.Select(k => s.Get<RecurringTask>(new StorageKey(k)))
 					.Select(m => new RecurringTaskDescription
 					{
+						ReferenceId = m.ReferenceId,
 						Name = m.Name,
-						NextExecution = m.NextExecution
-					});
+						NextExecution = m.NextExecution,
+						Interval = m.Interval?.TotalMilliseconds
+					}).ToList();
 			});
 
 			return recurring;

@@ -1,5 +1,11 @@
 ---data
+Interval:
+  10000
 Name: test:1
 NextExecution: 0001-01-01T00:00:00.0000000
+ReferenceId: test:1
+Interval:
+  10000
 Name: test:2
 NextExecution: 0001-01-01T00:00:00.0000000
+ReferenceId: test:2

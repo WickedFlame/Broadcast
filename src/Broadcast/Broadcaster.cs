@@ -1,6 +1,7 @@
 ﻿using Broadcast.EventSourcing;
 using Broadcast.Processing;
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using Broadcast.Composition;
@@ -39,11 +40,22 @@ namespace Broadcast
 		{
 		}
 
+		/// <summary>
+		/// Creates a new Broadcaster
+		/// </summary>
+		/// <param name="store"></param>
+		/// <param name="options"></param>
 		public Broadcaster(ITaskStore store, Options options)
 			: this(store, new TaskProcessor(store, options), new Scheduler(), options)
 		{
 		}
 
+		/// <summary>
+		/// Creates a new Broadcaster
+		/// </summary>
+		/// <param name="store"></param>
+		/// <param name="processor"></param>
+		/// <param name="scheduler"></param>
 		public Broadcaster(ITaskStore store, ITaskProcessor processor, IScheduler scheduler)
 			: this(store, processor, scheduler, new Options())
 		{
@@ -69,8 +81,8 @@ namespace Broadcast
 			store.RegisterDispatchers(_id, new IDispatcher[]
 			{
 				new RecurringTaskDispatcher(this, store),
-				new ScheduleTaskDispatcher(this),
-				new ProcessTaskDispatcher(this)
+				new ScheduleTaskDispatcher(this, store),
+				new ProcessTaskDispatcher(this, store)
 			});
 
 			_context = new BroadcasterConterxt
@@ -87,24 +99,36 @@ namespace Broadcast
         /// </summary>
         public IScheduler Scheduler{ get; }
 
+		/// <summary>
+		/// Gets the <see cref="ITaskProcessor"/>
+		/// </summary>
         public ITaskProcessor Processor { get; }
 
+		/// <summary>
+		/// Gets the <see cref="ITaskStore"/>
+		/// </summary>
 		public ITaskStore Store { get; }
 
-        /// <summary>
-        /// Process the task
-        /// </summary>
-        /// <param name="task"></param>
-        public void Process(ITask task)
+		/// <summary>
+		/// Gets the name of the instance. This is equal to the <see cref="Options.ServerName"/>
+		/// </summary>
+		public string Name => _options.ServerName;
+
+		/// <summary>
+		/// Process the task
+		/// </summary>
+		/// <param name="task"></param>
+		public void Process(ITask task)
         {
 	        Processor.Process(task);
         }
 
         /// <summary>
-		/// Wait for all threads to end
+		/// Wait for all tasks to be processed and all threads end
 		/// </summary>
         public void WaitAll()
         {
+	        Store.WaitAll();
 	        Processor.WaitAll();
 		}
 		

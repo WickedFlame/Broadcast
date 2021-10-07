@@ -27,6 +27,12 @@ namespace Broadcast.Scheduling
 		{
 			lock (_lockHandle)
 			{
+				if (_queue.Any(t => t.Id == task.Id))
+				{
+					var original = _queue.First(t => t.Id == task.Id);
+					_queue.Remove(original);
+				}
+
 				_queue.Add(task);
 			}
 		}
