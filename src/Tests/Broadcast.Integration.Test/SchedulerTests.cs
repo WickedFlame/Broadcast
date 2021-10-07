@@ -32,9 +32,9 @@ namespace Broadcast.Integration.Test
         public void Scheduler_ExecutionCheck()
         {
             var scheduler = new Scheduler();
-            scheduler.Enqueue("id", id => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
-            scheduler.Enqueue("id", id => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
-            scheduler.Enqueue("id", id => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
+            scheduler.Enqueue("id1", id => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
+            scheduler.Enqueue("id2", id => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
+            scheduler.Enqueue("id3", id => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
 
             Task.Delay(1000).Wait();
 
