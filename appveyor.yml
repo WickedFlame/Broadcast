@@ -74,9 +74,17 @@ build:
 test:
   # assemblies to test - optional
   assemblies:
-    - '**\Broadcast.Test.dll'
-    - '**\Broadcast.Storage.Redis.Test.dll'
-    - '**\Broadcast.Dashboard.Test.dll'
+    only:
+      - '**\*.Test.dll'
+#    only:
+#      - '**\Broadcast.Test.dll'
+#      - '**\Broadcast.Storage.Redis.Test.dll'
+#      - '**\Broadcast.Dashboard.Test.dll'
+
+  categories:
+    except:
+      - Integration
+#      - E2E
 
 #  categories:
 #    - UI
