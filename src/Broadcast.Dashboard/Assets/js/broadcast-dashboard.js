@@ -349,7 +349,7 @@ if (dashboardConfig === undefined) {
 		pollUrl: "/broadcast/dashboard/metrics",
 		//TODO: /broadcast/ has to be able to be appended as configuration
 		dashboardUrl: "/broadcast/dashboard",
-		pollInterval: 2000
+		pollInterval: 1000
 	};
 }
 

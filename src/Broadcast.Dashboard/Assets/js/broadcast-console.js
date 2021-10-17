@@ -79,7 +79,7 @@ export class BroadcastConsole extends BroadcastBase {
 if (consoleConfig === undefined) {
 	consoleConfig = {
 		pollUrl: "/broadcast/dashboard/metrics",
-		pollInterval: 2000,
+		pollInterval: 1000,
 		position: "TopRight"
 	};
 }
