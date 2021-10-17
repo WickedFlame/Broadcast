@@ -47,6 +47,12 @@ main{
 			.broadcast-section {
 				padding-bottom: 30px;
 
+				.broadcast-info {
+					border-left: solid 3px #bbb;
+					font-size: 14px;
+					padding-left: 20px;
+				}
+
 				.broadcast-section-header {
 					display: grid;
 					grid-template-columns: auto 1fr;

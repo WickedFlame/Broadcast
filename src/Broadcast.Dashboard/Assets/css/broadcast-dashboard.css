@@ -33,6 +33,10 @@ main {
       padding: 20px 15%; }
       .broadcast-dashboard .broadcast-main-container .broadcast-main .broadcast-section {
         padding-bottom: 30px; }
+        .broadcast-dashboard .broadcast-main-container .broadcast-main .broadcast-section .broadcast-info {
+          border-left: solid 3px #bbb;
+          font-size: 14px;
+          padding-left: 20px; }
         .broadcast-dashboard .broadcast-main-container .broadcast-main .broadcast-section .broadcast-section-header {
           display: grid;
           grid-template-columns: auto 1fr;
