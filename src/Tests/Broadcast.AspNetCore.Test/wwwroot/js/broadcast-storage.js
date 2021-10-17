@@ -1,6 +1,10 @@
-﻿
-export class BroadcastStorage {
-	constructor() {
+﻿import { BroadcastBase } from './broadcast-base.js';
+
+export class BroadcastStorage extends BroadcastBase {
+	constructor(config) {
+		super();
+
+		this.config = config;
 		this.registerHandlers();
 	}
 
@@ -19,3 +23,13 @@ export class BroadcastStorage {
 			});
 	}
 }
+
+if (storageConfig === undefined) {
+	storageConfig = {
+		//TODO: /broadcast/ has to be able to be appended as configuration
+		pollUrl: "/broadcast/storage",
+		pollInterval: 2000
+	};
+}
+
+const storage = new BroadcastStorage(storageConfig);

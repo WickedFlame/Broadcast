@@ -196,5 +196,89 @@ namespace Broadcast.Dashboard.Dispatchers.Models
 		{
 			_store.Delete(id);
 		}
+
+		public IEnumerable<StorageType> GetKeys()
+		{
+			return _store.Storage(s =>
+			{
+				var items = new List<StorageType>();
+
+				items.Add(GetData("Servers", "server:", s));
+				var tasks = GetData("Tasks", "task:", s);
+				foreach (var task in tasks.Items)
+				{
+					var id = task.Values.FirstOrDefault(t => t.Key == "Id");
+					if (id == null)
+					{
+						continue;
+					}
+
+					var data = s.Get<DataObject>(new StorageKey($"tasks:values:{id.Value}"));
+					if (data == null)
+					{
+						continue;
+					}
+
+					var values = task.Values.ToList();
+					values.AddRange(data.Select(d => new StorageProperty(d.Key, d.Value)));
+					task.Values = values;
+				}
+
+				items.Add(tasks);
+				items.Add(GetData("Recurring", "tasks:recurring:", s));
+
+				var storageType = new StorageType
+				{
+					Key = "Queues"
+				};
+				storageType.Items.Add(GetList("tasks:dequeued", s));
+				storageType.Items.Add(GetList("tasks:enqueued", s));
+				var queues = s.GetKeys(new StorageKey("queue:"));
+				foreach (var queue in queues)
+				{
+					storageType.Items.Add(GetList(queue, s));
+				}
+
+				items.Add(storageType);
+
+				return items;
+			});
+		}
+
+		private StorageType GetData(string type, string storeKey, IStorage store)
+		{
+			var storageType = new StorageType
+			{
+				Key = type
+			};
+
+			foreach (var key in store.GetKeys(new Storage.StorageKey(storeKey)).ToList())
+			{
+				var data = store.Get<DataObject>(new StorageKey(key));
+
+				var item = new StorageItem
+				{
+					Key = key,
+					Values = data.Select(d => new StorageProperty(d.Key, d.Value))
+				};
+
+				storageType.Items.Add(item);
+			}
+
+			return storageType;
+		}
+
+		public StorageItem GetList(string storeKey, IStorage store)
+		{
+			var data = store.GetList(new StorageKey(storeKey));
+
+			var item = new StorageItem
+			{
+				Key = storeKey,
+				Values = data.Select(d => new StorageProperty("", d))
+			};
+
+			return item;
+		}
 	}
 }

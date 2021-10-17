@@ -41,8 +41,16 @@
 </div>
 
 @section scripts{
-	<script type='module'>
-		import { BroadcastStorage } from  '/js/broadcast-storage.js'
-		const storage = new BroadcastStorage();
+	<script>
+		var storageConfig = {
+			//TODO: /broadcast/ has to be able to be appended as configuration
+			pollUrl: "/broadcast/storage",
+			pollInterval: 2000
+		};
+	</script>
+
+	<script type='module' src="/js/broadcast-storage.js">
+		@*import { BroadcastStorage } from '/js/broadcast-storage.js'
+		const storage = new BroadcastStorage();*@
 	</script>
 }

@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Broadcast</title>
+	<!--TODO: /broadcast/ has to be able to be appended as configuration-->
+	<link href="/broadcast/css/broadcast-dashboard" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div class="broadcast-dashboard">
+		<div class="broadcast-main-container">
+			<div class="broadcast-main-header broadcast-header">
+				<span>Broadcast</span>
+			</div>
+			<div class="broadcast-main">
+				<main role="main">
+					<div class="broadcast-storage">
+						<div class="broadcast-section">
+							<div class="broadcast-section-header">
+								<div>
+									<h3>Servers</h3>
+								</div>
+							</div>
+							<div class="broadcast-table broadcast-storage-table" id="serverlist">
+								<div class="broadcast-storage-table-header">
+									Id
+								</div>
+
+							</div>
+						</div>
+
+						<div class="broadcast-section">
+							<div class="broadcast-section-header">
+								<div>
+									<h3>Recurring Tasks</h3>
+								</div>
+							</div>
+							<div class="broadcast-table broadcast-storage-table" id="recurringlist">
+								<div class="broadcast-storage-table-header">
+									Id
+								</div>
+
+							</div>
+						</div>
+
+						<div class="broadcast-section">
+							<div class="broadcast-section-header">
+								<div>
+									<h3>Tasks</h3>
+								</div>
+							</div>
+							<div class="broadcast-table broadcast-storage-table" id="tasklist">
+								<div class="broadcast-storage-table-header">
+									Id
+								</div>
+
+							</div>
+						</div>
+
+						<div class="broadcast-section">
+							<div class="broadcast-section-header">
+								<div>
+									<h3>Queues</h3>
+								</div>
+							</div>
+							<div class="broadcast-table broadcast-storage-table" id="queuelist">
+								<div class="broadcast-storage-table-header">
+									Id
+								</div>
+
+							</div>
+						</div>
+
+					</div>
+				</main>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		var storageConfig = {
+			//TODO: /broadcast/ has to be able to be appended as configuration
+			pollUrl: "/broadcast/storage/keys",
+			pollInterval: 2000
+		};
+	</script>
+	<!--TODO: /broadcast/ has to be able to be appended as configuration-->
+	<script src="/broadcast/js/broadcast-storage" type="module"></script>
+
+</body>
+</html>

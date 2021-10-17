@@ -68,11 +68,11 @@ namespace Broadcast.AspNetCore.Test.Controllers
 			var random = new Random();
 			if(random.Next(4) < 2)
 			{
-				BackgroundTaskClient.Recurring("recurring", () => service.Recurring(DateTime.Now.ToString("o")), TimeSpan.FromMinutes(1));
+				BackgroundTaskClient.Recurring("recurring", () => service.Recurring(DateTime.Now.ToString("o")), TimeSpan.FromSeconds(15));
 			}
 			else
 			{
-				BackgroundTaskClient.Recurring("recurring", () => service.Recurring2(DateTime.Now.ToString("o")), TimeSpan.FromMinutes(1));
+				BackgroundTaskClient.Recurring("recurring", () => service.Recurring2(DateTime.Now.ToString("o")), TimeSpan.FromSeconds(15));
 			}
 
 			return Redirect("Index");

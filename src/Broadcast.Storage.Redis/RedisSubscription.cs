@@ -14,8 +14,11 @@ namespace Broadcast.Storage.Redis
 		public RedisSubscription(ISubscriber subscriber)
 		{
 			_subscriptions = new List<ISubscription>();
-
+			
 			_subscriber = subscriber ?? throw new ArgumentNullException(nameof(subscriber));
+
+
+			//TODO: use _subscriber.Subscribe(Channel) instead
 			_subscriber.Subscribe(Channel, (channel, value) =>
 			{
 				var stringKey = value.ToString().ToLower();
@@ -24,6 +27,12 @@ namespace Broadcast.Storage.Redis
 					dispatcher.RaiseEvent();
 				}
 			});
+			//TODO: use the following instead of the one on top
+			//var sub = _subscriber.Subscribe(Channel);
+			//sub.OnMessage(cm =>
+			//{
+			//	cm.
+			//})
 		}
 
 		internal static string Channel => "BroadcastTaskFetchChannel";

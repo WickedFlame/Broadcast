@@ -17,11 +17,16 @@ namespace Broadcast.Dashboard
 			RouteCollection.Add("/dashboard/data/server/(?<id>.+)", new DashboardServerDataDispatcher());
 			RouteCollection.Add("/dashboard/data/recurringtask/(?<id>.+)", new DashboardRecurringTaskDataDispatcher());
 			RouteCollection.Add("/dashboard/task/(?<id>.+)/delete", new DeleteTaskDispatcher());
+
+			RouteCollection.Add("/storage/keys", new StorageKeysDispatcher());
+
 			RouteCollection.Add("/dashboard", new EmbeddedResourceDispatcher("text/html", GetExecutingAssembly(), GetContentResourceName("views", "dashboard.html")));
+			RouteCollection.Add("/storage", new EmbeddedResourceDispatcher("text/html", GetExecutingAssembly(), GetContentResourceName("views", "storage.html")));
 
 			RouteCollection.Add("/js/broadcast-base", new EmbeddedResourceDispatcher("application/javascript", GetExecutingAssembly(), GetContentResourceName("js", "broadcast-base.js")));
 			RouteCollection.Add("/js/broadcast-console", new EmbeddedResourceDispatcher("application/javascript", GetExecutingAssembly(), GetContentResourceName("js", "broadcast-console.js")));
 			RouteCollection.Add("/js/broadcast-dashboard", new EmbeddedResourceDispatcher("application/javascript", GetExecutingAssembly(), GetContentResourceName("js", "broadcast-dashboard.js")));
+			RouteCollection.Add("/js/broadcast-storage", new EmbeddedResourceDispatcher("application/javascript", GetExecutingAssembly(), GetContentResourceName("js", "broadcast-storage.js")));
 
 			//RouteCollection.Add("/js/broadcast-base.js", new EmbeddedResourceDispatcher("application/javascript", GetExecutingAssembly(), GetContentResourceName("js", "broadcast-base.js")));
 			//RouteCollection.Add("/js/broadcast-console.js", new EmbeddedResourceDispatcher("application/javascript", GetExecutingAssembly(), GetContentResourceName("js", "broadcast-console.js")));
