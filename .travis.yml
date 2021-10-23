@@ -3,7 +3,7 @@ language: csharp
 solution: Broadcast.sln
 mono: none
 #dist: xenial
-dotnet: 3.1
+dotnet: 3.1.414
 
 notifications:
   email:
