@@ -6,7 +6,8 @@ body * {
   box-sizing: border-box; }
 
 main {
-  height: 100%; }
+  height: 100%;
+  /*padding: 20px 15%;*/ }
 
 /*div{
 	height: inherit;
@@ -24,13 +25,36 @@ main {
     height: 100%; }
     .broadcast-dashboard .broadcast-main-container .broadcast-main-header {
       border-bottom: 1px solid #bbb;
-      padding: 10px 15%;
+      padding: 0 15%;
       font-size: 18px;
       font-weight: 500;
-      color: #777; }
+      color: #777;
+      display: flex; }
+      .broadcast-dashboard .broadcast-main-container .broadcast-main-header .broadcast-header-title {
+        height: 100%;
+        padding: 10px 0; }
+      .broadcast-dashboard .broadcast-main-container .broadcast-main-header .broadcast-navigation-container {
+        padding-left: 100px;
+        height: 100%;
+        display: flex; }
+        .broadcast-dashboard .broadcast-main-container .broadcast-main-header .broadcast-navigation-container .broadcast-navigation-item {
+          border-bottom: 2px solid transparent;
+          /*border-left: 1px solid transparent;
+					border-right: 1px solid transparent;*/
+          padding: 10px 10px; }
+          .broadcast-dashboard .broadcast-main-container .broadcast-main-header .broadcast-navigation-container .broadcast-navigation-item a {
+            text-decoration: none;
+            font-size: 14px;
+            /*color: #000;*/
+            color: inherit; }
+          .broadcast-dashboard .broadcast-main-container .broadcast-main-header .broadcast-navigation-container .broadcast-navigation-item.is-selected {
+            border-color: #ababab;
+            font-weight: 700; }
     .broadcast-dashboard .broadcast-main-container .broadcast-main {
       height: 100%;
-      padding: 20px 15%; }
+      padding: 20px 15%;
+      /*display: grid;
+			grid-template-columns: auto 1fr;*/ }
       .broadcast-dashboard .broadcast-main-container .broadcast-main .broadcast-section {
         padding-bottom: 30px; }
         .broadcast-dashboard .broadcast-main-container .broadcast-main .broadcast-section .broadcast-info {

@@ -8,8 +8,9 @@ body *{
 	box-sizing: border-box;
 }
 
-main{
+main {
 	height: 100%;
+	/*padding: 20px 15%;*/
 }
 
 /*div{
@@ -34,15 +35,51 @@ main{
 
 		.broadcast-main-header {
 			border-bottom: 1px solid #bbb;
-			padding: 10px 15%;
+			padding: 0 15%;
 			font-size: 18px;
 			font-weight: 500;
 			color: #777;
+			display: flex;
+
+			.broadcast-header-title {
+				height: 100%;
+				padding: 10px 0;
+			}
+
+			.broadcast-navigation-container {
+				padding-left: 100px;
+				height: 100%;
+				display: flex;
+
+				.broadcast-navigation-item {
+					border-bottom: 2px solid transparent;
+					/*border-left: 1px solid transparent;
+					border-right: 1px solid transparent;*/
+					padding: 10px 10px;
+
+					a {
+						text-decoration: none;
+						font-size: 14px;
+						/*color: #000;*/
+						color: inherit;
+					}
+
+					&.is-selected {
+						border-color: #ababab;
+						font-weight: 700;
+					}
+				}
+			}
 		}
 
 		.broadcast-main {
 			height: 100%;
 			padding: 20px 15%;
+			/*display: grid;
+			grid-template-columns: auto 1fr;*/
+
+
+
 
 			.broadcast-section {
 				padding-bottom: 30px;
