@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Broadcast.EventSourcing;
 using Broadcast.Storage;
 
@@ -67,7 +65,9 @@ namespace Broadcast.Dashboard.Dispatchers.Models
 						Values = new List<StorageProperty>
 						{
 							values.FirstOrDefault(v => v.Key == "State"),
-							new StorageProperty("Duration", values.FirstOrDefault(v => v.Key == "ExecutionTime")?.Value.ToDuration())
+							new StorageProperty("Duration", values.FirstOrDefault(v => v.Key == "ExecutionTime")?.Value.ToDuration()),
+							new StorageProperty("Error", values.FirstOrDefault(v => v.Key == "Error")?.Value),
+							new StorageProperty("StackTrace", values.FirstOrDefault(v => v.Key == "StackTrace")?.Value)
 						}.Where(t => t != null && !string.IsNullOrEmpty(t.Value))
 					},
 					new StoragePropertyGroup
