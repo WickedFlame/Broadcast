@@ -11,6 +11,7 @@ using Owin;
 
 namespace Broadcast.Dashboard
 {
+#if OWIN
 	/// <summary>
 	/// 
 	/// </summary>
@@ -84,4 +85,5 @@ namespace Broadcast.Dashboard
 			return app;
 		}
 	}
+#endif
 }

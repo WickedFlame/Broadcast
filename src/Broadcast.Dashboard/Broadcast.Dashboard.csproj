@@ -31,6 +31,10 @@
 		<DocumentationFile>bin\Release\netstandard2.0\Broadcast.Dashboard.xml</DocumentationFile>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(TargetFramework)'=='net48'">
+		<DefineConstants>$(DefineConstants);OWIN;</DefineConstants>
+	</PropertyGroup>
+
   <ItemGroup>
     <None Remove="Assets\css\broadcast-console.min.css" />
     <None Remove="Assets\css\broadcast-dashboard.css" />

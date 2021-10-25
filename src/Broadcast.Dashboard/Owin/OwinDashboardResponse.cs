@@ -1,11 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+#if OWIN
 using Microsoft.AspNetCore.Http;
 using Microsoft.Owin;
+#endif
 
 namespace Broadcast.Dashboard.Owin
 {
+#if OWIN
 	public class OwinDashboardResponse : IDashboardResponse
 	{
 		private readonly IOwinContext _context;
@@ -52,4 +55,5 @@ namespace Broadcast.Dashboard.Owin
 			return _context.Response.WriteAsync(text);
 		}
 	}
+#endif
 }

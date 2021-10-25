@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+#if OWIN
 using Microsoft.Owin;
+#endif
 
 namespace Broadcast.Dashboard.Owin
 {
+#if OWIN
 	//
 	// http://www.codedigest.com/posts/8/understanding-and-creating-owin-middlewares---part-1
 	//
@@ -61,4 +64,5 @@ namespace Broadcast.Dashboard.Owin
 			return findResult.Dispatcher.Dispatch(context);
 		}
 	}
+#endif
 }
