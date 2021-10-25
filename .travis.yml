@@ -17,6 +17,6 @@ install:
   - dotnet restore
 
 script:
-  - dotnet build
+  - dotnet build --configuration NetCore
 #  - dotnet test
 #  - dotnet test Tests/DataImporter.Tests/DataImporter.Tests.csproj

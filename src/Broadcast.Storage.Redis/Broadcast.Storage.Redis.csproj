@@ -5,6 +5,7 @@
 	  <TargetFrameworks Condition="'$(OS)' != 'Windows_NT'">netcoreapp2.0</TargetFrameworks>
 	  <SignAssembly>true</SignAssembly>
 	  <AssemblyOriginatorKeyFile>../Broadcast.snk</AssemblyOriginatorKeyFile>
+	  <Configurations>Debug;Release;NetCore</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

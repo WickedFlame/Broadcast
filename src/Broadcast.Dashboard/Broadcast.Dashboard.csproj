@@ -24,6 +24,7 @@
     <FileVersion>1.0.0.0</FileVersion>
     <PackageVersion>1.0.0.0</PackageVersion>
     <NeutralLanguage>en</NeutralLanguage>
+    <Configurations>Debug;Release;NetCore</Configurations>
   </PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
