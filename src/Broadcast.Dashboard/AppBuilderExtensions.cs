@@ -6,8 +6,10 @@ using Broadcast.Processing;
 using Broadcast.Scheduling;
 using Broadcast.Setup;
 using Broadcast.Storage;
+#if OWIN
 using Microsoft.Owin.Infrastructure;
 using Owin;
+#endif
 
 namespace Broadcast.Dashboard
 {
