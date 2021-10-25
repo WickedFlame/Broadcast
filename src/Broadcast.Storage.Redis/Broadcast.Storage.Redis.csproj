@@ -1,7 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+	  <TargetFrameworks>net48;netstandard2.0</TargetFrameworks>
+	  <TargetFrameworks Condition="'$(OS)' != 'Windows_NT'">netcoreapp2.0</TargetFrameworks>
+	  <SignAssembly>true</SignAssembly>
+	  <AssemblyOriginatorKeyFile>../Broadcast.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
