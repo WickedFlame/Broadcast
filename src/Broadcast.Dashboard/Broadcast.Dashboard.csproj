@@ -92,7 +92,7 @@
 		<PackageReference Include="Microsoft.Owin" Version="4.2.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='netcoreapp3.1'">
 		<Compile Remove="AppBuilderExtensions.cs" />
 		<Compile Remove="Owin/OwinDashboardResponse.cs" />
 		<Compile Remove="Owin/OwinDashboardMiddleware.cs" />
