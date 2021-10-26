@@ -76,7 +76,8 @@ namespace Broadcast.Dashboard
 			}
 
 			DashboardOptions.Default.RouteBasePath = pathMatch.EnsureLeadingSlash();
-			DashboardOptions.Default.RouteTemplate = pathMatch.RemoveLeadingSlash().EnsureTrailingSlash();
+			DashboardOptions.Default.TemplateParameters["%(RouteBasePath)"] = pathMatch.EnsureLeadingSlash();
+
 
 			var routes = Routes.RouteCollection;
 			var storage = TaskStore.Default;

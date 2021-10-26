@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Broadcast.Dashboard.Dispatchers
@@ -46,15 +49,33 @@ namespace Broadcast.Dashboard.Dispatchers
 
 		protected async Task WriteResource(IDashboardResponse response, Assembly assembly, string resourceName)
 		{
-			using (var inputStream = assembly.GetManifestResourceStream(resourceName))
+			using (var stream = assembly.GetManifestResourceStream(resourceName))
 			{
-				if (inputStream == null)
+				if (stream == null)
 				{
 					throw new ArgumentException($@"Resource with name {resourceName} not found in assembly {assembly}.");
 				}
 
-				await inputStream.CopyToAsync(response.Body).ConfigureAwait(false);
+				var templateParams = DashboardOptions.Default.TemplateParameters;
+
+				await stream.FindAndReplace(templateParams).CopyToAsync(response.Body).ConfigureAwait(false);
 			}
+		}
+	}
+
+	public static class StreamExtensions
+	{
+		public static Stream FindAndReplace(this Stream stream, IDictionary<string, string> replacements)
+		{
+			var originalText = new StreamReader(stream).ReadToEnd();
+			var outputBuilder = new StringBuilder(originalText);
+
+			foreach (var replacement in replacements)
+			{
+				outputBuilder.Replace(replacement.Key, replacement.Value);
+			}
+
+			return new MemoryStream(Encoding.UTF8.GetBytes(outputBuilder.ToString()));
 		}
 	}
 }

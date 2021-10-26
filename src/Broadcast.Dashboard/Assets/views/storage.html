@@ -4,8 +4,7 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Broadcast</title>
-	<!--TODO: /broadcast/ has to be able to be appended as configuration-->
-	<link href="/broadcast/css/broadcast-dashboard" rel="stylesheet" type="text/css" />
+	<link href="%(RouteBasePath)/css/broadcast-dashboard" rel="stylesheet" type="text/css" />
 </head>
 <body>
 	<div class="broadcast-dashboard">
@@ -17,10 +16,8 @@
 
 				<nav role="navigation" class="">
 					<div class="broadcast-navigation-container">
-						<!--TODO: /broadcast/ has to be able to be appended as configuration-->
-						<div class="broadcast-navigation-item"><a href="/broadcast/dashboard">Dashboard</a></div>
-						<!--TODO: /broadcast/ has to be able to be appended as configuration-->
-						<div class="broadcast-navigation-item is-selected"><a href="/broadcast/storage">Storage inspection</a></div>
+						<div class="broadcast-navigation-item"><a href="%(RouteBasePath)/dashboard">Dashboard</a></div>
+						<div class="broadcast-navigation-item is-selected"><a href="%(RouteBasePath)/storage">Storage inspection</a></div>
 					</div>
 				</nav>
 			</div>
@@ -100,13 +97,11 @@
 
 	<script>
 		var storageConfig = {
-			//TODO: /broadcast/ has to be able to be appended as configuration
-			pollUrl: "/broadcast/storage/keys",
+			pollUrl: "%(RouteBasePath)/storage/keys",
 			pollInterval: 2000
 		};
 	</script>
-	<!--TODO: /broadcast/ has to be able to be appended as configuration-->
-	<script src="/broadcast/js/broadcast-storage" type="module"></script>
+	<script src="%(RouteBasePath)/js/broadcast-storage" type="module"></script>
 
 </body>
 </html>

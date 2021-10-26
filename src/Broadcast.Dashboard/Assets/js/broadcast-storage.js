@@ -117,8 +117,7 @@ ${this.createStorageValues(values)}
 
 if (storageConfig === undefined) {
 	storageConfig = {
-		//TODO: /broadcast/ has to be able to be appended as configuration
-		pollUrl: "/broadcast/storage/keys",
+		pollUrl: "%(RouteBasePath)/storage/keys",
 		pollInterval: 2000
 	};
 }

@@ -345,10 +345,8 @@ export class BroadcastDashboard extends BroadcastBase {
 
 if (dashboardConfig === undefined) {
 	dashboardConfig = {
-		//TODO: /broadcast/ has to be able to be appended as configuration
-		pollUrl: "/broadcast/dashboard/metrics",
-		//TODO: /broadcast/ has to be able to be appended as configuration
-		dashboardUrl: "/broadcast/dashboard",
+		pollUrl: "%(RouteBasePath)/dashboard/metrics",
+		dashboardUrl: "%(RouteBasePath)/dashboard",
 		pollInterval: 1000
 	};
 }
