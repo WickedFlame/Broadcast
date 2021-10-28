@@ -37,9 +37,7 @@
 
   <ItemGroup>
     <None Remove="Assets\css\broadcast-console.min.css" />
-    <None Remove="Assets\css\broadcast-dashboard.css" />
     <None Remove="Assets\css\broadcast-dashboard.min.css" />
-    <None Remove="Assets\css\broadcast-dashboard.scss" />
     <None Remove="Assets\js\broadcast-base.js" />
     <None Remove="Assets\js\broadcast-console.js" />
     <None Remove="Assets\js\broadcast-dashboard.js" />
@@ -49,26 +47,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Assets\css\broadcast-dashboard.css">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
     <EmbeddedResource Include="Assets\js\broadcast-storage.js">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	    <Pack>false</Pack>
     </EmbeddedResource>
     <EmbeddedResource Include="Assets\js\broadcast-dashboard.js">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	    <Pack>false</Pack>
     </EmbeddedResource>
     <EmbeddedResource Include="Assets\css\broadcast-dashboard.min.css">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	    <Pack>false</Pack>
     </EmbeddedResource>
-    <Content Include="Assets\css\broadcast-dashboard.scss">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -101,6 +94,5 @@
   <ItemGroup>
     <ProjectReference Include="..\Broadcast\Broadcast.csproj" />
   </ItemGroup>
-
 
 </Project>
