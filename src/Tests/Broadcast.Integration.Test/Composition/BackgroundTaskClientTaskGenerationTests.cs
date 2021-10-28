@@ -13,7 +13,7 @@ namespace Broadcast.Integration.Test.Composition
 	[SingleThreaded]
 	[Explicit]
 	[Category("Integration")]
-	public class BackgroundTaskClientTaskGenerationTests
+	public class BackgroundTaskTaskGenerationTests
 	{
 		[SetUp]
 		public void Setup()
@@ -30,21 +30,21 @@ namespace Broadcast.Integration.Test.Composition
 		}
 
 		[Test]
-		public void BackgroundTaskClient_TaskGeneration_Send()
+		public void BackgroundTask_TaskGeneration_Send()
 		{
 			// execute a static method
 			// serializeable
-			BackgroundTaskClient.Send(() => Trace.WriteLine("test"));
+			BackgroundTask.Send(() => Trace.WriteLine("test"));
 
 			Assert.IsAssignableFrom<BroadcastTask>(BroadcastServer.Server.Store.Single());
 		}
 
 		[Test]
-		public void BackgroundTaskClient_TaskGeneration_Schedule()
+		public void BackgroundTask_TaskGeneration_Schedule()
 		{
 			// execute a static method
 			// serializeable
-			BackgroundTaskClient.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
+			BackgroundTask.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
 
 			Task.Delay(1000).Wait();
 
@@ -52,11 +52,11 @@ namespace Broadcast.Integration.Test.Composition
 		}
 
 		[Test]
-		public void BackgroundTaskClient_TaskGeneration_Recurring()
+		public void BackgroundTask_TaskGeneration_Recurring()
 		{
 			// execute a static method
 			// serializeable
-			BackgroundTaskClient.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
+			BackgroundTask.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
 
 			Task.Delay(1000).Wait();
 

@@ -34,7 +34,7 @@ namespace Broadcast.Integration.Test.Api
 		{
 			// execute a static method
 			// serializeable
-			BackgroundTaskClient.Send(() => Trace.WriteLine("test"));
+			BackgroundTask.Send(() => Trace.WriteLine("test"));
 
 			BroadcastServer.Server.WaitAll();
 			Assert.AreEqual(1, BroadcastServer.Server.GetProcessedTasks().Count());
@@ -45,7 +45,7 @@ namespace Broadcast.Integration.Test.Api
 		{
 			// execute a local method
 			// serializeable
-			BackgroundTaskClient.Send(() => TestMethod(1));
+			BackgroundTask.Send(() => TestMethod(1));
 
 			BroadcastServer.Server.WaitAll();
 			Assert.AreEqual(1, BroadcastServer.Server.GetProcessedTasks().Count());
@@ -56,7 +56,7 @@ namespace Broadcast.Integration.Test.Api
 		{
 			// execute a generic method
 			// serializeable
-			BackgroundTaskClient.Send(() => GenericMethod(1));
+			BackgroundTask.Send(() => GenericMethod(1));
 
 			BroadcastServer.Server.WaitAll();
 			Assert.AreEqual(1, BroadcastServer.Server.GetProcessedTasks().Count());
@@ -75,7 +75,7 @@ namespace Broadcast.Integration.Test.Api
 		{
 			// execute a static method
 			// serializeable
-			BackgroundTaskClient.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(1));
+			BackgroundTask.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(1));
 
 			Task.Delay(1500).Wait();
 
@@ -87,7 +87,7 @@ namespace Broadcast.Integration.Test.Api
 		{
 			// execute a local method
 			// serializeable
-			BackgroundTaskClient.Schedule(() => TestMethod(1), TimeSpan.FromSeconds(1));
+			BackgroundTask.Schedule(() => TestMethod(1), TimeSpan.FromSeconds(1));
 
 			Task.Delay(1500).Wait();
 
@@ -99,7 +99,7 @@ namespace Broadcast.Integration.Test.Api
 		{
 			// execute a generic method
 			// serializeable
-			BackgroundTaskClient.Schedule(() => GenericMethod(1), TimeSpan.FromSeconds(1));
+			BackgroundTask.Schedule(() => GenericMethod(1), TimeSpan.FromSeconds(1));
 
 			Task.Delay(1500).Wait();
 
@@ -113,7 +113,7 @@ namespace Broadcast.Integration.Test.Api
 		{
 			// execute a static method
 			// serializeable
-			BackgroundTaskClient.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
+			BackgroundTask.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
 
 			Task.Delay(2000).Wait();
 
@@ -125,7 +125,7 @@ namespace Broadcast.Integration.Test.Api
 		{
 			// execute a local method
 			// serializeable
-			BackgroundTaskClient.Recurring(() => TestMethod(1), TimeSpan.FromSeconds(0.5));
+			BackgroundTask.Recurring(() => TestMethod(1), TimeSpan.FromSeconds(0.5));
 
 			Task.Delay(2000).Wait();
 
@@ -137,7 +137,7 @@ namespace Broadcast.Integration.Test.Api
 		{
 			// execute a generic method
 			// serializeable
-			BackgroundTaskClient.Recurring(() => GenericMethod(1), TimeSpan.FromSeconds(0.5));
+			BackgroundTask.Recurring(() => GenericMethod(1), TimeSpan.FromSeconds(0.5));
 
 			Task.Delay(2000).Wait();
 
@@ -149,7 +149,7 @@ namespace Broadcast.Integration.Test.Api
 		{
 			// execute a generic method
 			// serializeable
-			BackgroundTaskClient.Recurring("TaskServerClient_Api_Recurring", () => GenericMethod(1), TimeSpan.FromSeconds(0.5));
+			BackgroundTask.Recurring("TaskServerClient_Api_Recurring", () => GenericMethod(1), TimeSpan.FromSeconds(0.5));
 
 			Task.Delay(2000).Wait();
 

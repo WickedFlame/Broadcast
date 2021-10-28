@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace Broadcast.Test.Clients
 {
-	public class TaskServerClientTests
+	public class BackgroundTaskTests
 	{
 		[SetUp]
 		public void Setup()
@@ -15,13 +15,13 @@ namespace Broadcast.Test.Clients
 		}
 
 		[Test]
-		public void TaskServerClient_BroadcastingClient_Default()
+		public void BackgroundTask_BroadcastingClient_Default()
 		{
 			Assert.IsNotNull(BackgroundTask.Client);
 		}
 
 		[Test]
-		public void TaskServerClient_BroadcastingClient_Default_Setup()
+		public void BackgroundTask_BroadcastingClient_Default_Setup()
 		{
 			var def = BackgroundTask.Client;
 			BackgroundTask.Setup(() => new BroadcastingClient());
@@ -30,7 +30,7 @@ namespace Broadcast.Test.Clients
 		}
 
 		[Test]
-		public void TaskServerClient_BroadcastingClient_Default_Setup_Reset()
+		public void BackgroundTask_BroadcastingClient_Default_Setup_Reset()
 		{
 			var def = BackgroundTask.Client;
 			BackgroundTask.Setup(() => new BroadcastingClient());
@@ -42,7 +42,7 @@ namespace Broadcast.Test.Clients
 		}
 
 		[Test]
-		public void TaskServerClient_BroadcastingClient_Default_Setup_Singleton()
+		public void BackgroundTask_BroadcastingClient_Default_Setup_Singleton()
 		{
 			BackgroundTask.Setup(() => new BroadcastingClient());
 

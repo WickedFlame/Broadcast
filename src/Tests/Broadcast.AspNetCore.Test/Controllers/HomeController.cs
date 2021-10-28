@@ -26,21 +26,21 @@ namespace Broadcast.AspNetCore.Test.Controllers
 
 		public IActionResult CreateLongTaskInvalidInvocation()
 		{
-			BackgroundTaskClient.Send(() => LongRunningMethod());
+			BackgroundTask.Send(() => LongRunningMethod());
 			return Redirect("Index");
 		}
 
 		public IActionResult CreateLongTask()
 		{
 			var service = new TaskService();
-			BackgroundTaskClient.Send(() => service.LongRunningMethod());
+			BackgroundTask.Send(() => service.LongRunningMethod());
 			return Redirect("Index");
 		}
 
 		public IActionResult CreateFailingTask()
 		{
 			var service = new TaskService();
-			BackgroundTaskClient.Send(() => service.FailingMethod());
+			BackgroundTask.Send(() => service.FailingMethod());
 			return Redirect("Index");
 		}
 
@@ -49,7 +49,7 @@ namespace Broadcast.AspNetCore.Test.Controllers
 			var service = new TaskService();
 			for(var i = 1;i<=10;i++)
 			{
-				BackgroundTaskClient.Send(() => service.OutputMethod(i));
+				BackgroundTask.Send(() => service.OutputMethod(i));
 			}
 			return Redirect("Index");
 		}
@@ -57,7 +57,7 @@ namespace Broadcast.AspNetCore.Test.Controllers
 		public IActionResult ScheduleTask()
 		{
 			var service = new TaskService();
-			BackgroundTaskClient.Schedule(() => service.Schedule(), TimeSpan.FromSeconds(15));
+			BackgroundTask.Schedule(() => service.Schedule(), TimeSpan.FromSeconds(15));
 
 			return Redirect("Index");
 		}
@@ -68,11 +68,11 @@ namespace Broadcast.AspNetCore.Test.Controllers
 			var random = new Random();
 			if(random.Next(4) < 2)
 			{
-				BackgroundTaskClient.Recurring("recurring", () => service.Recurring(DateTime.Now.ToString("o")), TimeSpan.FromSeconds(15));
+				BackgroundTask.Recurring("recurring", () => service.Recurring(DateTime.Now.ToString("o")), TimeSpan.FromSeconds(15));
 			}
 			else
 			{
-				BackgroundTaskClient.Recurring("recurring", () => service.Recurring2(DateTime.Now.ToString("o")), TimeSpan.FromSeconds(15));
+				BackgroundTask.Recurring("recurring", () => service.Recurring2(DateTime.Now.ToString("o")), TimeSpan.FromSeconds(15));
 			}
 
 			return Redirect("Index");
@@ -81,8 +81,8 @@ namespace Broadcast.AspNetCore.Test.Controllers
 		public IActionResult DeleteTask()
 		{
 			var service = new TaskService();
-			var taskId = BackgroundTaskClient.Schedule(() => service.Schedule(), TimeSpan.FromSeconds(15));
-			BackgroundTaskClient.DeleteTask(taskId);
+			var taskId = BackgroundTask.Schedule(() => service.Schedule(), TimeSpan.FromSeconds(15));
+			BackgroundTask.DeleteTask(taskId);
 
 			return Redirect("Index");
 		}

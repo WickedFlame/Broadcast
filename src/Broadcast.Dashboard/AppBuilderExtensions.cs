@@ -52,7 +52,7 @@ namespace Broadcast.Dashboard
 					.AddTaskStore(store)
 			);
 
-			BackgroundTaskClient.Setup(() => new BroadcastingClient(store));
+			BackgroundTask.Setup(() => new BroadcastingClient(store));
 			
 			return builder;
 		}

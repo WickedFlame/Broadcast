@@ -14,7 +14,7 @@ namespace Broadcast.Integration.Test.Api
 	[SingleThreaded]
 	[Explicit]
 	[Category("Integration")]
-	public class BackgroundTaskClientApiTests
+	public class BackgroundTaskApiTests
 	{
 		[SetUp]
 		public void Setup()
@@ -31,33 +31,33 @@ namespace Broadcast.Integration.Test.Api
 		}
 
 		[Test]
-		public void BackgroundTaskClient_Api_Send_StaticTrace()
+		public void BackgroundTask_Api_Send_StaticTrace()
 		{
 			// execute a static method
 			// serializeable
-			BackgroundTaskClient.Send(() => Trace.WriteLine("test"));
+			BackgroundTask.Send(() => Trace.WriteLine("test"));
 
 			BroadcastServer.Server.WaitAll();
 			Assert.AreEqual(1, BroadcastServer.Server.GetProcessedTasks().Count());
 		}
 
 		[Test]
-		public void BackgroundTaskClient_Api_Send_Method()
+		public void BackgroundTask_Api_Send_Method()
 		{
 			// execute a local method
 			// serializeable
-			BackgroundTaskClient.Send(() => TestMethod(1));
+			BackgroundTask.Send(() => TestMethod(1));
 
 			BroadcastServer.Server.WaitAll();
 			Assert.AreEqual(1, BroadcastServer.Server.GetProcessedTasks().Count());
 		}
 
 		[Test]
-		public void BackgroundTaskClient_Api_Send_GenericMethod()
+		public void BackgroundTask_Api_Send_GenericMethod()
 		{
 			// execute a generic method
 			// serializeable
-			BackgroundTaskClient.Send(() => GenericMethod(1));
+			BackgroundTask.Send(() => GenericMethod(1));
 
 			BroadcastServer.Server.WaitAll();
 			Assert.AreEqual(1, BroadcastServer.Server.GetProcessedTasks().Count());
@@ -67,11 +67,11 @@ namespace Broadcast.Integration.Test.Api
 
 
 		[Test]
-		public void BackgroundTaskClient_Api_Schedule_StaticTrace()
+		public void BackgroundTask_Api_Schedule_StaticTrace()
 		{
 			// execute a static method
 			// serializeable
-			BackgroundTaskClient.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(1));
+			BackgroundTask.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(1));
 
 			Task.Delay(1500).Wait();
 
@@ -79,11 +79,11 @@ namespace Broadcast.Integration.Test.Api
 		}
 
 		[Test]
-		public void BackgroundTaskClient_Api_Schedule_Method()
+		public void BackgroundTask_Api_Schedule_Method()
 		{
 			// execute a local method
 			// serializeable
-			BackgroundTaskClient.Schedule(() => TestMethod(1), TimeSpan.FromSeconds(1));
+			BackgroundTask.Schedule(() => TestMethod(1), TimeSpan.FromSeconds(1));
 
 			Task.Delay(1500).Wait();
 
@@ -91,11 +91,11 @@ namespace Broadcast.Integration.Test.Api
 		}
 
 		[Test]
-		public void BackgroundTaskClient_Api_Schedule_GenericMethod()
+		public void BackgroundTask_Api_Schedule_GenericMethod()
 		{
 			// execute a generic method
 			// serializeable
-			BackgroundTaskClient.Schedule(() => GenericMethod(1), TimeSpan.FromSeconds(1));
+			BackgroundTask.Schedule(() => GenericMethod(1), TimeSpan.FromSeconds(1));
 
 			Task.Delay(1500).Wait();
 
@@ -105,11 +105,11 @@ namespace Broadcast.Integration.Test.Api
 
 
 		[Test]
-		public void BackgroundTaskClient_Api_Recurring_StaticTrace()
+		public void BackgroundTask_Api_Recurring_StaticTrace()
 		{
 			// execute a static method
 			// serializeable
-			BackgroundTaskClient.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
+			BackgroundTask.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
 
 			Task.Delay(2000).Wait();
 
@@ -117,11 +117,11 @@ namespace Broadcast.Integration.Test.Api
 		}
 
 		[Test]
-		public void BackgroundTaskClient_Api_Recurring_Method()
+		public void BackgroundTask_Api_Recurring_Method()
 		{
 			// execute a local method
 			// serializeable
-			BackgroundTaskClient.Recurring(() => TestMethod(1), TimeSpan.FromSeconds(0.5));
+			BackgroundTask.Recurring(() => TestMethod(1), TimeSpan.FromSeconds(0.5));
 
 			Task.Delay(2000).Wait();
 
@@ -129,11 +129,11 @@ namespace Broadcast.Integration.Test.Api
 		}
 
 		[Test]
-		public void BackgroundTaskClient_Api_Recurring_GenericMethod()
+		public void BackgroundTask_Api_Recurring_GenericMethod()
 		{
 			// execute a generic method
 			// serializeable
-			BackgroundTaskClient.Recurring(() => GenericMethod(1), TimeSpan.FromSeconds(0.5));
+			BackgroundTask.Recurring(() => GenericMethod(1), TimeSpan.FromSeconds(0.5));
 
 			Task.Delay(2000).Wait();
 
@@ -141,29 +141,29 @@ namespace Broadcast.Integration.Test.Api
 		}
 		
 		[Test]
-		public void BackgroundTaskClient_Api_Recurring_Name()
+		public void BackgroundTask_Api_Recurring_Name()
 		{
 			// execute a static method
 			// serializeable
-			BackgroundTaskClient.Recurring("BackgroundTaskClient_Api_Recurring", () => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
+			BackgroundTask.Recurring("BackgroundTask_Api_Recurring", () => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
 
 			Task.Delay(2000).Wait();
 
-			Assert.IsTrue(BroadcastServer.Server.GetProcessedTasks().All(t => t.Name == "BackgroundTaskClient_Api_Recurring"));
+			Assert.IsTrue(BroadcastServer.Server.GetProcessedTasks().All(t => t.Name == "BackgroundTask_Api_Recurring"));
 		}
 
 		[Test]
-		public void BackgroundTaskClient_Api_Recurring_Update()
+		public void BackgroundTask_Api_Recurring_Update()
 		{
 			// execute a static method
 			// serializeable
-			BackgroundTaskClient.Recurring("Updateable", () => Trace.WriteLine("test"), TimeSpan.FromSeconds(30));
+			BackgroundTask.Recurring("Updateable", () => Trace.WriteLine("test"), TimeSpan.FromSeconds(30));
 			Task.Delay(1000).Wait();
 
 			var originalRecurring = BroadcastServer.Server.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
 			var originalTask = BroadcastServer.Server.Store.FirstOrDefault(t => t.Id == originalRecurring["ReferenceId"].ToString());
 
-			BackgroundTaskClient.Recurring("Updateable", () => Trace.WriteLine("succeeded"), TimeSpan.FromSeconds(30));
+			BackgroundTask.Recurring("Updateable", () => Trace.WriteLine("succeeded"), TimeSpan.FromSeconds(30));
 			Task.Delay(1000).Wait();
 
 			var updatedRecurring = BroadcastServer.Server.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
@@ -174,17 +174,17 @@ namespace Broadcast.Integration.Test.Api
 
 
 		[Test]
-		public void BackgroundTaskClient_Api_Recurring_Update_MethodChanged()
+		public void BackgroundTask_Api_Recurring_Update_MethodChanged()
 		{
 			// execute a static method
 			// serializeable
-			BackgroundTaskClient.Recurring("Updateable", () => Trace.WriteLine("test"), TimeSpan.FromSeconds(30));
+			BackgroundTask.Recurring("Updateable", () => Trace.WriteLine("test"), TimeSpan.FromSeconds(30));
 			Task.Delay(1000).Wait();
 
 			var originalRecurring = BroadcastServer.Server.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
 			var originalTask = BroadcastServer.Server.Store.FirstOrDefault(t => t.Id == originalRecurring["ReferenceId"].ToString()) as BroadcastTask;
 
-			BackgroundTaskClient.Recurring("Updateable", () => Trace.WriteLine("succeeded"), TimeSpan.FromSeconds(30));
+			BackgroundTask.Recurring("Updateable", () => Trace.WriteLine("succeeded"), TimeSpan.FromSeconds(30));
 			Task.Delay(1000).Wait();
 
 			var updatedRecurring = BroadcastServer.Server.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
@@ -194,17 +194,17 @@ namespace Broadcast.Integration.Test.Api
 		}
 
 		[Test]
-		public void BackgroundTaskClient_Api_Recurring_Update_SameId_Task()
+		public void BackgroundTask_Api_Recurring_Update_SameId_Task()
 		{
 			// execute a static method
 			// serializeable
-			BackgroundTaskClient.Recurring("Updateable", () => Trace.WriteLine("test"), TimeSpan.FromSeconds(30));
+			BackgroundTask.Recurring("Updateable", () => Trace.WriteLine("test"), TimeSpan.FromSeconds(30));
 			Task.Delay(1000).Wait();
 
 			var originalRecurring = BroadcastServer.Server.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
 			var originalTask = BroadcastServer.Server.Store.FirstOrDefault(t => t.Id == originalRecurring["ReferenceId"].ToString());
 
-			BackgroundTaskClient.Recurring("Updateable", () => Trace.WriteLine("succeeded"), TimeSpan.FromSeconds(30));
+			BackgroundTask.Recurring("Updateable", () => Trace.WriteLine("succeeded"), TimeSpan.FromSeconds(30));
 			Task.Delay(1000).Wait();
 
 			var updatedRecurring = BroadcastServer.Server.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
@@ -214,16 +214,16 @@ namespace Broadcast.Integration.Test.Api
 		}
 
 		[Test]
-		public void BackgroundTaskClient_Api_Recurring_Update_SameId_Reference()
+		public void BackgroundTask_Api_Recurring_Update_SameId_Reference()
 		{
 			// execute a static method
 			// serializeable
-			BackgroundTaskClient.Recurring("Updateable", () => Trace.WriteLine("test"), TimeSpan.FromSeconds(30));
+			BackgroundTask.Recurring("Updateable", () => Trace.WriteLine("test"), TimeSpan.FromSeconds(30));
 			Task.Delay(1000).Wait();
 
 			var originalRecurring = BroadcastServer.Server.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
 			
-			BackgroundTaskClient.Recurring("Updateable", () => Trace.WriteLine("succeeded"), TimeSpan.FromSeconds(30));
+			BackgroundTask.Recurring("Updateable", () => Trace.WriteLine("succeeded"), TimeSpan.FromSeconds(30));
 			Task.Delay(1000).Wait();
 
 			var updatedRecurring = BroadcastServer.Server.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:Updateable")));
@@ -233,37 +233,37 @@ namespace Broadcast.Integration.Test.Api
 
 
 		[Test]
-		public void BackgroundTaskClient_Api_Delete()
+		public void BackgroundTask_Api_Delete()
 		{
 			// execute a generic method
 			// serializeable
-			var id = BackgroundTaskClient.Schedule(() => GenericMethod(1), TimeSpan.FromSeconds(15));
-			BackgroundTaskClient.DeleteTask(id);
+			var id = BackgroundTask.Schedule(() => GenericMethod(1), TimeSpan.FromSeconds(15));
+			BackgroundTask.DeleteTask(id);
 
 			Assert.That(BroadcastServer.Server.Store.Count(t => t.State == TaskState.Deleted), Is.GreaterThan(0));
 			Assert.That(BroadcastServer.Server.Store.All(t => t.State == TaskState.Deleted));
 		}
 
 		[Test]
-		public void BackgroundTaskClient_Api_DeleteRecurring()
+		public void BackgroundTask_Api_DeleteRecurring()
 		{
 			// execute a generic method
 			// serializeable
-			BackgroundTaskClient.Recurring("recurring_delete", () => GenericMethod(1), TimeSpan.FromSeconds(15));
-			BackgroundTaskClient.DeleteRecurringTask("recurring_delete");
+			BackgroundTask.Recurring("recurring_delete", () => GenericMethod(1), TimeSpan.FromSeconds(15));
+			BackgroundTask.DeleteRecurringTask("recurring_delete");
 
 			Assert.IsNull(BroadcastServer.Server.Store.Storage(s => s.Get<DataObject>(new StorageKey($"tasks:recurring:recurring_delete"))));
 		}
 
 		[Test]
-		public void BackgroundTaskClient_Api_DeleteRecurring_ReferencedTask_Deleted()
+		public void BackgroundTask_Api_DeleteRecurring_ReferencedTask_Deleted()
 		{
 			// execute a generic method
 			// serializeable
-			BackgroundTaskClient.Recurring("recurring_delete", () => GenericMethod(1), TimeSpan.FromSeconds(0.5));
+			BackgroundTask.Recurring("recurring_delete", () => GenericMethod(1), TimeSpan.FromSeconds(0.5));
 			Task.Delay(2000).Wait();
 
-			BackgroundTaskClient.DeleteRecurringTask("recurring_delete");
+			BackgroundTask.DeleteRecurringTask("recurring_delete");
 
 			Assert.That(BroadcastServer.Server.Store.Count(t => t.State == TaskState.Deleted), Is.GreaterThanOrEqualTo(1));
 		}

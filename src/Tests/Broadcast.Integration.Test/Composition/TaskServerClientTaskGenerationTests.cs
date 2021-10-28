@@ -34,7 +34,7 @@ namespace Broadcast.Integration.Test.Composition
 		{
 			// execute a static method
 			// serializeable
-			BackgroundTaskClient.Send(() => Trace.WriteLine("test"));
+			BackgroundTask.Send(() => Trace.WriteLine("test"));
 
 			Assert.IsAssignableFrom<BroadcastTask>(BroadcastServer.Server.Store.Single());
 		}
@@ -44,7 +44,7 @@ namespace Broadcast.Integration.Test.Composition
 		{
 			// execute a static method
 			// serializeable
-			BackgroundTaskClient.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
+			BackgroundTask.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
 
 			//Thread.Sleep(TimeSpan.FromSeconds(1));
 			Task.Delay(1000).Wait();
@@ -57,7 +57,7 @@ namespace Broadcast.Integration.Test.Composition
 		{
 			// execute a static method
 			// serializeable
-			BackgroundTaskClient.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
+			BackgroundTask.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5));
 
 			//Thread.Sleep(TimeSpan.FromSeconds(1));
 			Task.Delay(1000).Wait();

@@ -10,36 +10,36 @@ using NUnit.Framework;
 
 namespace Broadcast.Test.Composition
 {
-	public class BackgroundTaskClientTaskGenerationTests
+	public class BackgroundTaskTaskGenerationTests
 	{
 		[Test]
-		public void BackgroundTaskClient_TaskGeneration_Recurring_Id()
+		public void BackgroundTask_TaskGeneration_Recurring_Id()
 		{
 			BroadcastServer.Setup(s => { });
 
 			// execute a static method
 			// serializeable
-			Assert.IsNotEmpty(BackgroundTaskClient.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5)));
+			Assert.IsNotEmpty(BackgroundTask.Recurring(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5)));
 		}
 
 		[Test]
-		public void BackgroundTaskClient_TaskGeneration_Schedule_Id()
+		public void BackgroundTask_TaskGeneration_Schedule_Id()
 		{
 			BroadcastServer.Setup(s => { });
 
 			// execute a static method
 			// serializeable
-			Assert.IsNotEmpty(BackgroundTaskClient.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5)));
+			Assert.IsNotEmpty(BackgroundTask.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.5)));
 		}
 
 		[Test]
-		public void BackgroundTaskClient_TaskGeneration_Send_Id()
+		public void BackgroundTask_TaskGeneration_Send_Id()
 		{
 			BroadcastServer.Setup(s => { });
 
 			// execute a static method
 			// serializeable
-			Assert.IsNotEmpty(BackgroundTaskClient.Send(() => Trace.WriteLine("test")));
+			Assert.IsNotEmpty(BackgroundTask.Send(() => Trace.WriteLine("test")));
 		}
 	}
 }
