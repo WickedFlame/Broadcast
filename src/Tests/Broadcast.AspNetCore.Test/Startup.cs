@@ -30,7 +30,8 @@ namespace Broadcast.AspNetCore.Test
 #if REDIS
 			services.AddBroadcast(c => c.UseRedisStorage("localhost:6379"));
 #else
-			services.AddBroadcast(c => c.UseTaskStore(new TaskStore()));
+			//services.AddBroadcast(c => c.UseTaskStore(new TaskStore()));
+			services.AddBroadcast();
 #endif
 		}
 
