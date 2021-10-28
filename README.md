@@ -14,6 +14,29 @@ Broadcast helps implement the Mediator or CQRS (Command- and Queryhandling) patt
   
 Visit [https://wickedflame.github.io/Broadcast/](https://wickedflame.github.io/Broadcast/) for the full documentation.
   
+## Installation
+Broadcast is available as a NuGet package
+```
+PM> Install-Package Broadcast
+```
+  
+After installation setup the Processingserver in Startup.cs with a dashboard if desired
+```
+public void ConfigureServices(IServiceCollection services)
+{
+	...
+	services.AddBroadcast();
+}
+
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+    ...
+	app.UseBroadcastServer();
+	app.UseBroadcastDashboard();
+}
+```
+  
+## Usage
 ### Background Task processing
 Processing a task in a async queue using the default Broadcaster
 ```csharp
