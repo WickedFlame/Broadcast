@@ -7,6 +7,7 @@ namespace Broadcast
 	/// <summary>
 	/// Executes Tasks in the background or on a TaskServer or cluster
 	/// </summary>
+	[Obsolete("Use BackgroundTask for simpler use")]
 	public class BackgroundTaskClient
 	{
 		/// <summary>

@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Broadcast.Configuration;
 using Broadcast.Dashboard;
+using Broadcast.EventSourcing;
 using Broadcast.Processing;
 using Broadcast.Scheduling;
 using Microsoft.AspNetCore.Builder;
@@ -26,7 +27,8 @@ namespace Broadcast
 #else
 			var lifetime = services.GetRequiredService<IApplicationLifetime>();
 #endif
-			var storage = services.GetRequiredService<ITaskStore>();
+			// use TaskStore.Default if the services.AddBroadcast() is not configured
+			var storage = services.GetService<ITaskStore>() ?? TaskStore.Default;
 			options ??= services.GetService<Options>() ?? new Options();
 
 			var processor = new TaskProcessor(storage, options);
@@ -58,7 +60,12 @@ namespace Broadcast
 			DashboardOptions.Default.TemplateParameters["%(RouteBasePath)"] = pathMatch.EnsureLeadingSlash();
 
 			var routes = app.ApplicationServices.GetService<RouteCollection>() ?? Routes.RouteCollection;
-			var storage = app.ApplicationServices.GetRequiredService<ITaskStore>();
+			var storage = app.ApplicationServices.GetService<ITaskStore>();
+			if (storage == null)
+			{
+				Console.WriteLine("Could not get registered ITaskStore. Using TaskStore.Default instead");
+				storage = TaskStore.Default;
+			}
 
 			app.Map(new PathString(pathMatch), x => x.UseMiddleware<DashboardMiddleware>(routes, storage));
 

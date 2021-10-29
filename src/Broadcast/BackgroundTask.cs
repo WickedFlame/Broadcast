@@ -9,7 +9,8 @@ using Broadcast.Storage;
 namespace Broadcast
 {
 	/// <summary>
-	/// Executes Tasks in the background or on a TaskServer or cluster
+	/// Executes Tasks in the background or on a TaskServer or cluster.
+	/// To use the BackgroundTask dispatching, there needs to be a registered Braodcaster
 	/// </summary>
 	public class BackgroundTask
 	{
