@@ -93,7 +93,16 @@ namespace Broadcast.EventSourcing
 		/// <summary>
 		/// Gets a enumeration of all registered <see cref="IBroadcaster"/> servers
 		/// </summary>
-		public IEnumerable<ServerModel> Servers => _registeredServers.Values;
+		public IEnumerable<ServerModel> Servers
+		{
+			get
+			{
+				lock (_registeredServers)
+				{
+					return _registeredServers.Values;
+				}
+			}
+		}
 
 		/// <summary>
 		/// Gets a <see cref="System.Threading.WaitHandle"/> that is used to wait for the event to be set.
@@ -252,7 +261,25 @@ namespace Broadcast.EventSourcing
 				foreach (var key in deadServers)
 				{
 					_registeredServers.Remove(key);
+					_storage.Delete(new StorageKey($"server:{server.Name}:{server.Id}"));
 				}
+			}
+		}
+
+		/// <summary>
+		/// Remove a server from the TaskStore.
+		/// </summary>
+		/// <param name="server"></param>
+		public void RemoveServer(ServerModel server)
+		{
+			lock (_registeredServers)
+			{
+				if (_registeredServers.ContainsKey(server.Id))
+				{
+					_registeredServers.Remove(server.Id);
+				}
+
+				_storage.Delete(new StorageKey($"server:{server.Name}:{server.Id}"));
 			}
 		}
 

@@ -152,11 +152,21 @@ namespace Broadcast
                 return;
             }
 
-			Scheduler.Dispose();
-			Processor.Dispose();
+			// dispatching of tasks to the servers is done anync
+			// if there are tasks in the storage that are not dispatched, they will not get dispatched at all
+			// wait for the items in the store to be dispatched all
+            Store.WaitAll();
+
+			// unregister dispatcher so the server will not get any more tasks to process
 			Store.UnregisterDispatchers(_id);
+			
+			Scheduler.Dispose();
+			Processor.WaitAll();
+			Processor.Dispose();
 
 			_context.IsRunning = false;
+
+			Store.RemoveServer(new ServerModel { Id = _id, Name = Name });
 
 			_logger.Write($"Disposed Broadcaster {_options.ServerName}:{_id}");
 		}

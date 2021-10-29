@@ -15,6 +15,8 @@ namespace Broadcast.AspNetCore.Test
 {
 	public class Startup
 	{
+		//static Broadcaster Server;
+
 		public Startup(IConfiguration configuration)
 		{
 			Configuration = configuration;
@@ -58,6 +60,7 @@ namespace Broadcast.AspNetCore.Test
 				ServerName = "test 1"
 			});
 
+			//Server = new Broadcaster(TaskStore.Default);
 			app.UseBroadcastDashboard();
 
 

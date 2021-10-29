@@ -41,7 +41,8 @@ namespace Broadcast
 		}
 
 		/// <summary>
-		/// Schedules a new task. The task will be executed at the time passed
+		/// Schedules a new task. The task will be executed at the time that is given as parameter.
+		/// Schedueld Tasks only get executed if the <see cref="Broadcaster"/> is still running. If a <see cref="Broadcaster"/> is disposed or closed, all scheduled tasks are lost.
 		/// </summary>
 		/// <param name="broadcaster"></param>
 		/// <param name="expression">The task to execute</param>

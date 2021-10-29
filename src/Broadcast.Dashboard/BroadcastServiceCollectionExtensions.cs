@@ -16,7 +16,7 @@ namespace Broadcast
 	public static class BroadcastServiceCollectionExtensions
 	{
 		/// <summary>
-		/// Add <see cref="Broadcaster"/> with a default <see cref="InmemoryStorage"/> for storing delayed tasks
+		/// Add <see cref="Broadcaster"/> with a default <see cref="InmemoryStorage"/> for managing tasks
 		/// </summary>
 		/// <param name="services"></param>
 		/// <returns></returns>

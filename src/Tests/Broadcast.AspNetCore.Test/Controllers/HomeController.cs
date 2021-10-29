@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Broadcast.AspNetCore.Test.Models;
+using Broadcast.EventSourcing;
 
 namespace Broadcast.AspNetCore.Test.Controllers
 {
