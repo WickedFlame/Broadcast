@@ -28,5 +28,8 @@ Broadcast helps implement patterns like Mediator and CQRS (Command- and Queryhan
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>bin\Release\netstandard2.0\Broadcast.xml</DocumentationFile>
   </PropertyGroup>
-  
+
+	<PropertyGroup>
+		<DebugType>Full</DebugType>
+	</PropertyGroup>
 </Project>
