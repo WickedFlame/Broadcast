@@ -114,7 +114,8 @@ test_script:
 
 # scripts to run after tests
 after_test:
-  - packages\codecov\tools\codecov -f "broadcaster_coverage.xml"
+  - packages\codecov\tools\codecov
+#  - packages\codecov\tools\codecov -f "broadcaster_coverage.xml"
 
 # to disable automatic tests 
 #test: off
