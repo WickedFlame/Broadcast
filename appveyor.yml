@@ -53,7 +53,7 @@ before_build:
   - nuget install NUnit.Console -OutputDirectory packages -ExcludeVersion
   - nuget install OpenCover -OutputDirectory packages -ExcludeVersion
 #  - nuget install OpenCover -OutputDirectory packages -Version 4.7.1221
-  - nuget install codecov -OutputDirectory packages
+  - nuget install codecov -OutputDirectory packages -ExcludeVersion
 
 build:
   parallel: true                  # enable MSBuild parallel builds
@@ -114,11 +114,11 @@ test_script:
 
 # scripts to run after tests
 after_test:
-  - ps: |
-      $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
-      Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
-      bash codecov.sh -f "broadcast_coverage.xml"
-#  - packages\codecov\tools\codecov -f "broadcaster_coverage.xml"
+#  - ps: |
+#      $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
+#      Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
+#      bash codecov.sh -f "broadcast_coverage.xml" -t '39773008-c39a-4103-b8ea-5cc9d2de3f01'
+  - packages\codecov\tools\codecov -f "broadcast_coverage.xml"
 
 # to disable automatic tests 
 #test: off
