@@ -110,11 +110,14 @@ before_test:
 test_script:
 #  - echo This is my custom test script
 #  - packages\OpenCover\tools\OpenCover.Console.exe -register:user -target:"packages\NUnit.ConsoleRunner\tools\nunit3-console.exe" -targetargs:"src\Tests\Broadcast.Test\bin\Release\netcoreapp3.1\Broadcast.Test.dll" -output:"broadcaster_coverage.xml" -filter:"+[Test*]*"
-  - packages\OpenCover\tools\OpenCover.Console -target:"c:\program files\dotnet\dotnet.exe" -targetargs:"test src\Tests\Broadcast.Test\bin\Release\netcoreapp3.1\Broadcast.Test.dll" -oldstyle -output:".\broadcaster_coverage.xml" -filter:"+[Broadcast*]*
+  - packages\OpenCover\tools\OpenCover.Console -target:"c:\program files\dotnet\dotnet.exe" -targetargs:"test src\Tests\Broadcast.Test\bin\Release\netcoreapp3.1\Broadcast.Test.dll" -oldstyle -output:".\broadcast_coverage.xml" -filter:"+[Broadcast*]*
 
 # scripts to run after tests
 after_test:
-  - packages\codecov\tools\codecov
+  - ps: |
+      $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
+      Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
+      bash codecov.sh -f "broadcast_coverage.xml"
 #  - packages\codecov\tools\codecov -f "broadcaster_coverage.xml"
 
 # to disable automatic tests 
@@ -132,4 +135,4 @@ artifacts:
 
   # pushing all *.nupkg files in directory
   - path: '.\*.nupkg'
-  - path: 'broadcaster_coverage.xml'
+  - path: 'broadcast_coverage.xml'
