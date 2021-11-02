@@ -50,10 +50,6 @@ configuration: Release
 
 before_build:
   - nuget restore
-  - nuget install NUnit.Console -OutputDirectory packages -ExcludeVersion
-  - nuget install OpenCover -OutputDirectory packages -ExcludeVersion
-#  - nuget install OpenCover -OutputDirectory packages -Version 4.7.1221
-  - nuget install codecov -OutputDirectory packages -ExcludeVersion -Framework netcoreapp3.1
 
 build:
   parallel: true                  # enable MSBuild parallel builds
@@ -102,23 +98,16 @@ test:
 #    - [DAL, BL]    # 2nd job
 
 # scripts to run before tests
-before_test:
+#before_test:
 #  - echo script1
 #  - ps: Write-Host "script1"
  
 # to run your custom scripts instead of automatic tests
-test_script:
+#test_script:
 #  - echo This is my custom test script
-#  - packages\OpenCover\tools\OpenCover.Console.exe -register:user -target:"packages\NUnit.ConsoleRunner\tools\nunit3-console.exe" -targetargs:"src\Tests\Broadcast.Test\bin\Release\netcoreapp3.1\Broadcast.Test.dll" -output:"broadcaster_coverage.xml" -filter:"+[Test*]*"
-  - packages\OpenCover\tools\OpenCover.Console -target:"c:\program files\dotnet\dotnet.exe" -targetargs:"test src\Tests\Broadcast.Test\bin\Release\netcoreapp3.1\Broadcast.Test.dll" -oldstyle -output:".\broadcast_coverage.xml" -filter:"+[Broadcast*]*
 
 # scripts to run after tests
-after_test:
-#  - ps: |
-#      $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
-#      Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
-#      bash codecov.sh -f "broadcast_coverage.xml" -t '39773008-c39a-4103-b8ea-5cc9d2de3f01'
-  - packages\codecov\tools\codecov -f "broadcast_coverage.xml"
+#after_test:
 
 # to disable automatic tests 
 #test: off
@@ -135,4 +124,3 @@ artifacts:
 
   # pushing all *.nupkg files in directory
   - path: '.\*.nupkg'
-  - path: 'broadcast_coverage.xml'
