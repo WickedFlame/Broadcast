@@ -117,7 +117,7 @@ after_test:
   - ps: |
       $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
       Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
-      bash codecov.sh -f "broadcast_coverage.xml"
+      bash codecov.sh -f "broadcast_coverage.xml" -t 39773008-c39a-4103-b8ea-5cc9d2de3f01
 #  - packages\codecov\tools\codecov -f "broadcaster_coverage.xml"
 
 # to disable automatic tests 
