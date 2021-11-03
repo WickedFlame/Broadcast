@@ -6,7 +6,9 @@
 [![NuGet Version](https://img.shields.io/nuget/v/broadcast.svg?style=for-the-badge&label=Latest)](https://www.nuget.org/packages/broadcast/)
 [![NuGet Version](https://img.shields.io/nuget/vpre/broadcast.svg?style=for-the-badge&label=RC)](https://www.nuget.org/packages/broadcast/)
 
-
+  
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=WickedFlame_Broadcast&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=WickedFlame_Broadcast)
+  
 Simple and easy to use background task processing and message queue for .NET  
   
 Broadcast is a simple implementation for processing and scheduling tasks in the background without blocking the main thread.  
