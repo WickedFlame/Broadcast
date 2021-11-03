@@ -19,19 +19,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7B8E8745-88B2-4319-884D-556F587570DC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.Console.Test", "src\Tests\Broadcast.Console.Test\Broadcast.Console.Test.csproj", "{D8F923B8-220A-41C1-9E5E-BDDEC71EA0BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.Console.TestApp", "src\Tests\Broadcast.Console.TestApp\Broadcast.Console.TestApp.csproj", "{D8F923B8-220A-41C1-9E5E-BDDEC71EA0BF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.Test", "src\Tests\Broadcast.Test\Broadcast.Test.csproj", "{5F4A862D-AD7C-4C5B-83FA-A920ACB8479A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.Integration.Test", "src\Tests\Broadcast.Integration.Test\Broadcast.Integration.Test.csproj", "{D3D96D6A-ED86-46B2-BB0A-7BAD8326DE7E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.AspNetCore.Test", "src\Tests\Broadcast.AspNetCore.Test\Broadcast.AspNetCore.Test.csproj", "{082D5010-3136-4500-AF51-79D3153044DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.AspNetCore.TestApp", "src\Tests\Broadcast.AspNetCore.TestApp\Broadcast.AspNetCore.TestApp.csproj", "{082D5010-3136-4500-AF51-79D3153044DF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.Dashboard", "src\Broadcast.Dashboard\Broadcast.Dashboard.csproj", "{FF470A41-7608-4E25-A298-8565E92C592A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.Dashboard.Test", "src\Tests\Broadcast.Dashboard.Test\Broadcast.Dashboard.Test.csproj", "{CBD5AFD6-5AFC-41E5-B112-00FF3BBB485E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Broadcast.AspNet.Test", "src\Tests\Broadcast.AspNet.Test\Broadcast.AspNet.Test.csproj", "{420C8308-7468-4553-A062-E082CDCB78DB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Broadcast.AspNet.TestApp", "src\Tests\Broadcast.AspNet.TestApp\Broadcast.AspNet.TestApp.csproj", "{420C8308-7468-4553-A062-E082CDCB78DB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{18910F76-F1A5-43F3-9284-EFEC491C8C52}"
 EndProject
