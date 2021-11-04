@@ -5,8 +5,9 @@
 [![Build status](https://img.shields.io/appveyor/build/chriswalpen/broadcast/dev?label=Dev&logo=appveyor&style=for-the-badge)](https://ci.appveyor.com/project/chriswalpen/broadcast/branch/dev)
 [![NuGet Version](https://img.shields.io/nuget/v/broadcast.svg?style=for-the-badge&label=Latest)](https://www.nuget.org/packages/broadcast/)
 [![NuGet Version](https://img.shields.io/nuget/vpre/broadcast.svg?style=for-the-badge&label=RC)](https://www.nuget.org/packages/broadcast/)
-
-
+  
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/9f04469804014684ac6c1e91bed72e5e)](https://www.codacy.com/gh/WickedFlame/Broadcast/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=WickedFlame/Broadcast&amp;utm_campaign=Badge_Grade)
+  
 Simple and easy to use background task processing and message queue for .NET  
   
 Broadcast is a simple implementation for processing and scheduling tasks in the background without blocking the main thread.  
