@@ -1,5 +1,6 @@
 # WickedFlame Broadcast
 ------------------------------
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/561e6cf2d1894cc492ed72c73312a5f3)](https://app.codacy.com/gh/WickedFlame/Broadcast?utm_source=github.com&utm_medium=referral&utm_content=WickedFlame/Broadcast&utm_campaign=Badge_Grade_Settings)
 [![Build Status](https://img.shields.io/travis/com/WickedFlame/broadcast/master.svg?label=Travis-CI&style=for-the-badge)](https://app.travis-ci.com/github/WickedFlame/Broadcast)
 [![Build status](https://img.shields.io/appveyor/build/chriswalpen/broadcast/master?label=Master&logo=appveyor&style=for-the-badge)](https://ci.appveyor.com/project/chriswalpen/broadcast/branch/master)
 [![Build status](https://img.shields.io/appveyor/build/chriswalpen/broadcast/dev?label=Dev&logo=appveyor&style=for-the-badge)](https://ci.appveyor.com/project/chriswalpen/broadcast/branch/dev)
