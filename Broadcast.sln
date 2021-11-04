@@ -33,7 +33,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.Dashboard.Test", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Broadcast.AspNet.TestApp", "src\Tests\Broadcast.AspNet.TestApp\Broadcast.AspNet.TestApp.csproj", "{420C8308-7468-4553-A062-E082CDCB78DB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{18910F76-F1A5-43F3-9284-EFEC491C8C52}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestApps", "TestApps", "{18910F76-F1A5-43F3-9284-EFEC491C8C52}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.Storage.Redis", "src\Broadcast.Storage.Redis\Broadcast.Storage.Redis.csproj", "{97B196E3-1A77-458F-80CD-AFA3A15E2652}"
 EndProject
@@ -42,6 +42,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.Storage.Integration.Test", "src\Tests\Broadcast.Storage.Integration.Test\Broadcast.Storage.Integration.Test.csproj", "{831A9033-7FD4-4472-B098-3652C28235A9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.Storage.Redis.Integration.Test", "src\Tests\Broadcast.Storage.Redis.Integration.Test\Broadcast.Storage.Redis.Integration.Test.csproj", "{DFEA45A8-0EB6-4E76-9CC8-59E954390253}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{D5390125-30DE-4D90-AFF2-36A3470C1462}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Broadcast.Sample.AspNetCore", "src\Samples\Broadcast.Sample.AspNetCore\Broadcast.Sample.AspNetCore.csproj", "{14FBBCB5-5F42-4C9E-A231-DAD241173EDE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -121,6 +125,12 @@ Global
 		{DFEA45A8-0EB6-4E76-9CC8-59E954390253}.NetCore|Any CPU.Build.0 = NetCore|Any CPU
 		{DFEA45A8-0EB6-4E76-9CC8-59E954390253}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DFEA45A8-0EB6-4E76-9CC8-59E954390253}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14FBBCB5-5F42-4C9E-A231-DAD241173EDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14FBBCB5-5F42-4C9E-A231-DAD241173EDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14FBBCB5-5F42-4C9E-A231-DAD241173EDE}.NetCore|Any CPU.ActiveCfg = NetCore|Any CPU
+		{14FBBCB5-5F42-4C9E-A231-DAD241173EDE}.NetCore|Any CPU.Build.0 = NetCore|Any CPU
+		{14FBBCB5-5F42-4C9E-A231-DAD241173EDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14FBBCB5-5F42-4C9E-A231-DAD241173EDE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -135,6 +145,7 @@ Global
 		{CBD66964-A05E-4FFF-8BC7-7874DC4EA865} = {7B8E8745-88B2-4319-884D-556F587570DC}
 		{831A9033-7FD4-4472-B098-3652C28235A9} = {7B8E8745-88B2-4319-884D-556F587570DC}
 		{DFEA45A8-0EB6-4E76-9CC8-59E954390253} = {7B8E8745-88B2-4319-884D-556F587570DC}
+		{14FBBCB5-5F42-4C9E-A231-DAD241173EDE} = {D5390125-30DE-4D90-AFF2-36A3470C1462}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D51F4967-993D-46CE-9ABE-2E6FBFF95E80}
