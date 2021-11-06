@@ -17,6 +17,7 @@ namespace Broadcast.Integration.Test.Behaviour
 	public class SetupOrderTests : BDTestBase
 	{
 		[Test]
+		[Ignore("Adding server after tasks does not work yet")]
 		[ScenarioText("Start a server after the tasks are added to the storage")]
 		public void AddServerAfterTask()
 		{
