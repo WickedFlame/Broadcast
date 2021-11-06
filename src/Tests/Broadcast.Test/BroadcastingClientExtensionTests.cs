@@ -18,7 +18,7 @@ namespace Broadcast.Test
 			var store = new Mock<ITaskStore>();
 			var client = new BroadcastingClient(store.Object);
 
-			client.Recurring("Id", () => System.Diagnostics.Debug.WriteLine("Test"), TimeSpan.FromSeconds(5));
+			client.Recurring("Id", () => System.Diagnostics.Trace.WriteLine("Test"), TimeSpan.FromSeconds(5));
 
 			store.Verify(exp => exp.Add(It.Is<ITask>(t => t.Name == "Id" && t.State == TaskState.New && t.Time.Value.Seconds == 5)), Times.Once);
 		}
@@ -29,7 +29,7 @@ namespace Broadcast.Test
 			var store = new Mock<ITaskStore>();
 			var client = new BroadcastingClient(store.Object);
 
-			client.Recurring("Id", () => System.Diagnostics.Debug.WriteLine("Test"), TimeSpan.FromSeconds(5));
+			client.Recurring("Id", () => System.Diagnostics.Trace.WriteLine("Test"), TimeSpan.FromSeconds(5));
 
 			store.Verify(exp => exp.Add(It.Is<ITask>(t => t.IsRecurring)), Times.Once);
 		}
@@ -40,7 +40,7 @@ namespace Broadcast.Test
 			var store = new Mock<ITaskStore>();
 			var client = new BroadcastingClient(store.Object);
 
-			client.Recurring(null, () => System.Diagnostics.Debug.WriteLine("Test"), TimeSpan.FromSeconds(5));
+			client.Recurring(null, () => System.Diagnostics.Trace.WriteLine("Test"), TimeSpan.FromSeconds(5));
 
 			store.Verify(exp => exp.Add(It.Is<ITask>(t => t.IsRecurring && t.Name == "Debug.WriteLine")), Times.Once);
 		}
@@ -51,7 +51,7 @@ namespace Broadcast.Test
 			var store = new Mock<ITaskStore>();
 			var client = new BroadcastingClient(store.Object);
 
-			var id = client.Recurring(null, () => System.Diagnostics.Debug.WriteLine("Test"), TimeSpan.FromSeconds(5));
+			var id = client.Recurring(null, () => System.Diagnostics.Trace.WriteLine("Test"), TimeSpan.FromSeconds(5));
 
 			store.Verify(exp => exp.Add(It.Is<ITask>(t => t.Id == id)), Times.Once);
 		}
@@ -64,7 +64,7 @@ namespace Broadcast.Test
 			store.Setup(x => x.Storage(It.IsAny<Func<IStorage, RecurringTask>>())).Returns(() => existing);
 			var client = new BroadcastingClient(store.Object);
 
-			var id = client.Recurring(null, () => System.Diagnostics.Debug.WriteLine("Test"), TimeSpan.FromSeconds(5));
+			var id = client.Recurring(null, () => System.Diagnostics.Trace.WriteLine("Test"), TimeSpan.FromSeconds(5));
 
 			store.Verify(exp => exp.Add(It.Is<ITask>(t => t.Id == id && t.Id == existing.ReferenceId)), Times.Once);
 		}
@@ -75,7 +75,7 @@ namespace Broadcast.Test
 			var store = new Mock<ITaskStore>();
 			var client = new BroadcastingClient(store.Object);
 
-			var id = client.Schedule(() => System.Diagnostics.Debug.WriteLine("Test"), TimeSpan.FromSeconds(5));
+			var id = client.Schedule(() => System.Diagnostics.Trace.WriteLine("Test"), TimeSpan.FromSeconds(5));
 
 			store.Verify(exp => exp.Add(It.Is<ITask>(t => t.Id == id)), Times.Once);
 		}
@@ -86,7 +86,7 @@ namespace Broadcast.Test
 			var store = new Mock<ITaskStore>();
 			var client = new BroadcastingClient(store.Object);
 
-			client.Schedule(() => System.Diagnostics.Debug.WriteLine("Test"), TimeSpan.FromSeconds(5));
+			client.Schedule(() => System.Diagnostics.Trace.WriteLine("Test"), TimeSpan.FromSeconds(5));
 
 			store.Verify(exp => exp.Add(It.Is<ITask>(t => t.Time.Value.Seconds == 5)), Times.Once);
 		}
@@ -97,7 +97,7 @@ namespace Broadcast.Test
 			var store = new Mock<ITaskStore>();
 			var client = new BroadcastingClient(store.Object);
 
-			client.Schedule(() => System.Diagnostics.Debug.WriteLine("Test"), TimeSpan.FromSeconds(5));
+			client.Schedule(() => System.Diagnostics.Trace.WriteLine("Test"), TimeSpan.FromSeconds(5));
 
 			store.Verify(exp => exp.Add(It.Is<ITask>(t => !t.IsRecurring)), Times.Once);
 		}
@@ -108,7 +108,7 @@ namespace Broadcast.Test
 			var store = new Mock<ITaskStore>();
 			var client = new BroadcastingClient(store.Object);
 
-			var id = client.Send(() => System.Diagnostics.Debug.WriteLine("Test"));
+			var id = client.Send(() => System.Diagnostics.Trace.WriteLine("Test"));
 
 			store.Verify(exp => exp.Add(It.Is<ITask>(t => t.Id == id)), Times.Once);
 		}
@@ -119,7 +119,7 @@ namespace Broadcast.Test
 			var store = new Mock<ITaskStore>();
 			var client = new BroadcastingClient(store.Object);
 
-			client.Send(() => System.Diagnostics.Debug.WriteLine("Test"));
+			client.Send(() => System.Diagnostics.Trace.WriteLine("Test"));
 
 			store.Verify(exp => exp.Add(It.Is<ITask>(t => t.Time == null)), Times.Once);
 		}
@@ -130,7 +130,7 @@ namespace Broadcast.Test
 			var store = new Mock<ITaskStore>();
 			var client = new BroadcastingClient(store.Object);
 
-			client.Send(() => System.Diagnostics.Debug.WriteLine("Test"));
+			client.Send(() => System.Diagnostics.Trace.WriteLine("Test"));
 
 			store.Verify(exp => exp.Add(It.Is<ITask>(t => !t.IsRecurring)), Times.Once);
 		}
