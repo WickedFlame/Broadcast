@@ -53,7 +53,7 @@ namespace Broadcast.Integration.Test.Behaviour
 			var client = new BroadcastingClient(context.Store);
 			for (var i = 0; i < 10; i++)
 			{
-				client.Send(() => System.Diagnostics.Debug.WriteLine($"Executed task {i + 1}"));
+				client.Send(() => System.Diagnostics.Trace.WriteLine($"Executed task {i + 1}"));
 			}
 
 			return context;
