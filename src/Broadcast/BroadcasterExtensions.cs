@@ -27,17 +27,23 @@ namespace Broadcast
 		}
 
 		/// <summary>
+		/// Gets all Tasks that have been processed
+		/// </summary>
+		/// <param name="broadcaster"></param>
+		public static IEnumerable<ITask> GetProcessedTasks(this IBroadcaster broadcaster)
+		{
+			return broadcaster.Store.Where(s => s.State == TaskState.Processed);
+		}
+
+		/// <summary>
 		/// Send a delegate to the task processor server
 		/// </summary>
 		/// <param name="broadcaster"></param>
 		/// <param name="action">The Task to process</param>
 		public static string Send(this IBroadcaster broadcaster, Expression<Action> action)
 		{
-			var task = TaskFactory.CreateTask(action);
-
-			broadcaster.Store.Add(task);
-
-			return task.Id;
+			var client = new BroadcastingClient(broadcaster.Store);
+			return client.Send(action);
 		}
 
 		/// <summary>
@@ -49,12 +55,8 @@ namespace Broadcast
 		/// <param name="time">The time to execute the task at</param>
 		public static string Schedule(this IBroadcaster broadcaster, Expression<Action> expression, TimeSpan time)
 		{
-			var task = TaskFactory.CreateTask(expression);
-			task.Time = time;
-
-			broadcaster.Store.Add(task);
-
-			return task.Id;
+			var client = new BroadcastingClient(broadcaster.Store);
+			return client.Schedule(expression, time);
 		}
 
 		/// <summary>
@@ -78,36 +80,8 @@ namespace Broadcast
 		/// <param name="time">The interval time to execute the task at</param>
 		public static void Recurring(this IBroadcaster broadcaster, string name, Expression<Action> expression, TimeSpan time)
 		{
-			var task = TaskFactory.CreateTask(expression);
-			task.Time = time;
-			task.IsRecurring = true;
-
-			if (!string.IsNullOrEmpty(name))
-			{
-				task.Name = name;
-			}
-
-			// check if the recurring task is already registered
-			var existing = broadcaster.Store.Storage(s => s.Get<RecurringTask>(new Storage.StorageKey($"tasks:recurring:{task.Name}")));
-			if (existing != null)
-			{
-				// update the existing recurring and the task by setting the id of the old task to the new task
-				// this way all properties get overridden with the new values
-				task.Id = existing.ReferenceId;
-			}
-
-			// add the task to the store
-			// the store will propagate the task to the registered servers
-			broadcaster.Store.Add(task);
-		}
-		
-		/// <summary>
-		/// Gets all Tasks that have been processed
-		/// </summary>
-		/// <param name="broadcaster"></param>
-		public static IEnumerable<ITask> GetProcessedTasks(this IBroadcaster broadcaster)
-		{
-			return broadcaster.Store.Where(s => s.State == TaskState.Processed);
+			var client = new BroadcastingClient(broadcaster.Store);
+			client.Recurring(name, expression, time);
 		}
 
 		/// <summary>
@@ -118,7 +92,8 @@ namespace Broadcast
 		/// <param name="taskId"></param>
 		public static void DeleteTask(this IBroadcaster broadcaster, string taskId)
 		{
-			broadcaster.Store.Delete(taskId);
+			var client = new BroadcastingClient(broadcaster.Store);
+			client.DeleteTask(taskId);
 		}
 
 		/// <summary>
@@ -128,11 +103,8 @@ namespace Broadcast
 		/// <param name="name">The name of the recurring Task</param>
 		public static void DeleteRecurringTask(this IBroadcaster broadcaster, string name)
 		{
-			var recurring = broadcaster.Store.Storage(s => s.Get<RecurringTask>(new Storage.StorageKey($"tasks:recurring:{name}")));
-			if (recurring != null)
-			{
-				broadcaster.Store.Delete(recurring.ReferenceId);
-			}
+			var client = new BroadcastingClient(broadcaster.Store);
+			client.DeleteRecurringTask(name);
 		}
 	}
 }

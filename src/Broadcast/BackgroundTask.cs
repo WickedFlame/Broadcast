@@ -52,29 +52,7 @@ namespace Broadcast
 		/// <returns>The Id of the task. This is not the same as the name of the RecurringTask</returns>
 		public static string Recurring(string name, Expression<Action> expression, TimeSpan time)
 		{
-			var task = TaskFactory.CreateTask(expression);
-			task.Time = time;
-			task.IsRecurring = true;
-
-			if (!string.IsNullOrEmpty(name))
-			{
-				task.Name = name;
-			}
-
-			// check if the recurring task is already registered
-			var existing = Client.Store.Storage(s => s.Get<RecurringTask>(new Storage.StorageKey($"tasks:recurring:{task.Name}")));
-			if (existing != null)
-			{
-				// update the existing recurring and the task by setting the id of the old task
-				// this way all properties get overridden with th enew values
-				task.Id = existing.ReferenceId;
-			}
-
-			// add the task to the store
-			// the store will propagate the task to the registered servers
-			Client.Enqueue(task);
-
-			return task.Id;
+			return Client.Recurring(name, expression, time);
 		}
 
 		/// <summary>
@@ -85,12 +63,7 @@ namespace Broadcast
 		/// <returns>The Id of the task</returns>
 		public static string Schedule(Expression<Action> expression, TimeSpan time)
 		{
-			var task = TaskFactory.CreateTask(expression);
-			task.Time = time;
-
-			Client.Enqueue(task);
-
-			return task.Id;
+			return Client.Schedule(expression, time);
 		}
 
 		/// <summary>
@@ -100,11 +73,7 @@ namespace Broadcast
 		/// <returns>The Id of the task</returns>
 		public static string Send(Expression<Action> expression)
 		{
-			var task = TaskFactory.CreateTask(expression);
-
-			Client.Enqueue(task);
-
-			return task.Id;
+			return Client.Send(expression);
 		}
 
 		/// <summary>
@@ -114,7 +83,7 @@ namespace Broadcast
 		/// <param name="taskId"></param>
 		public static void DeleteTask(string taskId)
 		{
-			Client.Store.Delete(taskId);
+			Client.DeleteTask(taskId);
 		}
 
 		/// <summary>
@@ -123,11 +92,7 @@ namespace Broadcast
 		/// <param name="name">The name of the recurring Task</param>
 		public static void DeleteRecurringTask(string name)
 		{
-			var recurring = Client.Store.Storage(s => s.Get<RecurringTask>(new Storage.StorageKey($"tasks:recurring:{name}")));
-			if (recurring != null)
-			{
-				Client.Store.Delete(recurring.ReferenceId);
-			}
+			Client.DeleteRecurringTask(name);
 		}
 	}
 }

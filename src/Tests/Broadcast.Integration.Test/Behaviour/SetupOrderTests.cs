@@ -46,14 +46,14 @@ namespace Broadcast.Integration.Test.Behaviour
 		public void CreateStore(BdContext context)
 		{
 			context.Store = new TaskStore(new InmemoryStorage());
-			BackgroundTask.Setup(() => new BroadcastingClient(context.Store));
 		}
 
 		private BdContext StartTasks(BdContext context)
 		{
+			var client = new BroadcastingClient(context.Store);
 			for (var i = 0; i < 10; i++)
 			{
-				BackgroundTask.Send(() => System.Diagnostics.Debug.WriteLine($"Executed task {i + 1}"));
+				client.Send(() => System.Diagnostics.Debug.WriteLine($"Executed task {i + 1}"));
 			}
 
 			return context;
