@@ -42,7 +42,7 @@ namespace Broadcast.Test
 
 			client.Recurring(null, () => System.Diagnostics.Trace.WriteLine("Test"), TimeSpan.FromSeconds(5));
 
-			store.Verify(exp => exp.Add(It.Is<ITask>(t => t.IsRecurring && t.Name == "Debug.WriteLine")), Times.Once);
+			store.Verify(exp => exp.Add(It.Is<ITask>(t => t.IsRecurring && t.Name == "Trace.WriteLine")), Times.Once);
 		}
 
 		[Test]
