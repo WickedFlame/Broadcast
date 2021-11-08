@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Broadcast.EventSourcing;
 using Broadcast.Processing;
+using Broadcast.Storage;
 using Moq;
 using NUnit.Framework;
 
@@ -17,25 +18,34 @@ namespace Broadcast.Test.Api
 	{
 		private Mock<ITaskProcessor> _processor;
 		private Mock<IScheduler> _scheduler;
-		private Mock<ITaskStore> _store;
 
-		[SetUp]
-		public void Setup()
+		[OneTimeSetUp]
+		public void OneTimeSetup()
 		{
 			_processor = new Mock<ITaskProcessor>();
 			_scheduler = new Mock<IScheduler>();
-			_store = new Mock<ITaskStore>();
+			var store = new TaskStore();
 
 			BroadcastServer.Setup(s =>
 				s.AddScheduler(_scheduler.Object)
 					.AddProcessor(_processor.Object)
+					.AddTaskStore(store)
 			);
+
+			BackgroundTask.Setup(() => new BroadcastingClient(store));
 		}
 
-		[TearDown]
-		public void Teardown()
+		[OneTimeTearDown]
+		public void OneTimeTeardown()
 		{
-			BackgroundTask.Setup(null);
+			BackgroundTask.Setup(() => new BroadcastingClient());
+		}
+
+		[SetUp]
+		public void Setup()
+		{
+			_processor.Reset();
+			_scheduler.Reset();
 		}
 
 		[Test]
@@ -49,19 +59,7 @@ namespace Broadcast.Test.Api
 
 			_processor.Verify(exp => exp.Process(It.IsAny<ITask>()), Times.Once);
 		}
-
-		[Test]
-		public void BackgroundTask_Api_Send_StaticTrace_StoreAdd()
-		{
-			BackgroundTask.Setup(() => new BroadcastingClient(_store.Object));
-
-			// execute a static method
-			// serializeable
-			BackgroundTask.Send(() => Trace.WriteLine("test"));
-
-			_store.Verify(exp => exp.Add(It.IsAny<ITask>()), Times.Once);
-		}
-
+		
 		[Test]
 		public void BackgroundTask_Api_Send_Method_Process()
 		{
@@ -75,18 +73,6 @@ namespace Broadcast.Test.Api
 		}
 
 		[Test]
-		public void BackgroundTask_Api_Send_Method_StoreAdd()
-		{
-			BackgroundTask.Setup(() => new BroadcastingClient(_store.Object));
-
-			// execute a local method
-			// serializeable
-			BackgroundTask.Send(() => TestMethod(1));
-
-			_store.Verify(exp => exp.Add(It.IsAny<ITask>()), Times.Once);
-		}
-
-		[Test]
 		public void BackgroundTask_Api_Send_GenericMethod_Process()
 		{
 			// execute a generic method
@@ -97,19 +83,6 @@ namespace Broadcast.Test.Api
 
 			_processor.Verify(exp => exp.Process(It.IsAny<ITask>()), Times.Once);
 		}
-
-		[Test]
-		public void BackgroundTask_Api_Send_GenericMethod_StoreAdd()
-		{
-			BackgroundTask.Setup(() => new BroadcastingClient(_store.Object));
-
-			// execute a generic method
-			// serializeable
-			BackgroundTask.Send(() => GenericMethod(1));
-
-			_store.Verify(exp => exp.Add(It.IsAny<ITask>()), Times.Once);
-		}
-
 
 		[Test]
 		public void BackgroundTask_Api_Schedule_StaticTrace()
@@ -179,20 +152,6 @@ namespace Broadcast.Test.Api
 
 			_scheduler.Verify(exp => exp.Enqueue(It.IsAny<string>(), It.IsAny<Action<string>>(), It.IsAny<TimeSpan>()), Times.Once);
 		}
-
-		[Test]
-		public void BackgroundTask_Api_Recurring_Name()
-		{
-			BackgroundTask.Setup(() => new BroadcastingClient(_store.Object));
-			// execute a local method
-			// serializeable
-			BackgroundTask.Recurring("BackgroundTask_Api_Recurring", () => TestMethod(1), TimeSpan.FromSeconds(0.5));
-
-			Task.Delay(1000).Wait();
-
-			_store.Verify(exp => exp.Add(It.Is<ITask>(t => t.Name == "BackgroundTask_Api_Recurring")), Times.Once);
-		}
-
 
 
 		public void TestMethod(int i) { }
