@@ -79,7 +79,7 @@ namespace Broadcast.Storage.Serialization
 				Type = TypeConverter.Convert<Type>(hashEntries.FirstOrDefault(h => h.Name == "Type")?.Value),
 				IsRecurring = TypeConverter.Convert<bool>(hashEntries.FirstOrDefault(h => h.Name == "IsRecurring")?.Value),
 				Time = TypeConverter.Convert<TimeSpan?>(hashEntries.FirstOrDefault(h => h.Name == "Time")?.Value),
-				CreatedAt = TypeConverter.Convert<DateTime>(hashEntries.FirstOrDefault(h => h.Name == "CreatedAt").Value)
+				CreatedAt = TypeConverter.Convert<DateTime>(hashEntries.FirstOrDefault(h => h.Name == "CreatedAt")?.Value ?? DateTime.MinValue.ToString())
 			};
 
 			foreach (var state in hashEntries.Where(h => h.Name.StartsWith("StateChanges:")))
