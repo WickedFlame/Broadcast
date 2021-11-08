@@ -27,7 +27,8 @@ namespace Broadcast.Storage.Serialization
 					new HashValue("State", task.State.ToString()),
 					new HashValue("Type", $"{task.Type.FullName}, {task.Type.Assembly.GetName().Name}"),
 					new HashValue("IsRecurring", task.IsRecurring.ToString()),
-					new HashValue("Time", task.Time?.ToString())
+					new HashValue("Time", task.Time?.ToString()),
+					new HashValue("CreatedAt", task.CreatedAt.ToString("o"))
 				};
 
 				foreach (var state in task.StateChanges)
@@ -77,7 +78,8 @@ namespace Broadcast.Storage.Serialization
 				State = TypeConverter.Convert<TaskState>(hashEntries.FirstOrDefault(h => h.Name == "State")?.Value),
 				Type = TypeConverter.Convert<Type>(hashEntries.FirstOrDefault(h => h.Name == "Type")?.Value),
 				IsRecurring = TypeConverter.Convert<bool>(hashEntries.FirstOrDefault(h => h.Name == "IsRecurring")?.Value),
-				Time = TypeConverter.Convert<TimeSpan?>(hashEntries.FirstOrDefault(h => h.Name == "Time")?.Value)
+				Time = TypeConverter.Convert<TimeSpan?>(hashEntries.FirstOrDefault(h => h.Name == "Time")?.Value),
+				CreatedAt = TypeConverter.Convert<DateTime>(hashEntries.FirstOrDefault(h => h.Name == "CreatedAt").Value)
 			};
 
 			foreach (var state in hashEntries.Where(h => h.Name.StartsWith("StateChanges:")))
