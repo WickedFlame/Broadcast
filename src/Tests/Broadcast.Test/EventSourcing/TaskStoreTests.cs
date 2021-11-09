@@ -458,7 +458,7 @@ namespace Broadcast.Test.EventSourcing
 			{
 				Id = "1",
 				Name = "server",
-				Heartbeat = DateTime.Now.AddMinutes(-1)
+				Heartbeat = DateTime.Now.AddMinutes(-2)
 			};
 
 			var store = new TaskStore();
