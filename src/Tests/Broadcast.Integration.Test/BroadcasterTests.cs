@@ -295,22 +295,6 @@ namespace Broadcast.Integration.Test
             Assert.IsTrue(broadcaster.Store.Count(t => t.State == TaskState.Processed) == 3);
         }
 
-        //[Test]
-        //public void Broadcaster_Scheduler_Delegate()
-        //{
-        //    TaskStoreFactory.StoreFactory = () => new TaskStore();
-        //    var store = TaskStoreFactory.GetStore();
-
-        //    var broadcaster = new Broadcaster(new TaskStore());
-        //    broadcaster.Schedule(SomeDelegateMethod, TimeSpan.FromSeconds(0.005));
-        //    broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
-        //    broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
-
-        //    Task.Delay(1000).Wait();
-
-        //    Assert.IsTrue(store.Count(t => t.State == TaskState.Processed) == 3);
-        //}
-
         private class AsyncReturner
         {
             public int GetValue(int index)

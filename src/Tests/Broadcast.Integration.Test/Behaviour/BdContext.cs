@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Broadcast.Integration.Test.Behaviour
 {
 	public class BdContext
 	{
+		public Dictionary<string, object> Context = new Dictionary<string, object>();
+
 		public ITaskStore Store { get; set; }
 
 		public Broadcaster Server { get; set; }

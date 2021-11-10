@@ -27,7 +27,7 @@ namespace Broadcast.EventSourcing
         private readonly ManualResetEventSlim _event;
         private readonly BackgroundServerProcess<IStorageContext> _process;
         private readonly DispatcherLock _dispatcherLock;
-        private readonly object _processorLock = new object();
+		private readonly StorageObserver _storageObserver;
 
 		/// <summary>
 		/// Gets the default instance of the <see cref="ITaskStore"/>
@@ -88,6 +88,8 @@ namespace Broadcast.EventSourcing
 				ResetEvent = _event
 			};
 			_process = new BackgroundServerProcess<IStorageContext>(context);
+
+			_storageObserver = new StorageObserver(this);
         }
 
 		/// <summary>
@@ -174,16 +176,13 @@ namespace Broadcast.EventSourcing
 		public void DispatchTasks()
 		{
 			// check if a thread is allready processing the queue
-			lock (_processorLock)
+			if (_dispatcherLock.IsLocked())
 			{
-				if (_dispatcherLock.IsLocked())
-				{
-					return;
-				}
-
-				// start new background thread to process all queued tasks
-				_process.StartNew(new TaskStoreDispatcher(_dispatcherLock, _storage));
+				return;
 			}
+
+			// start new background thread to process all queued tasks
+			_process.StartNew(new TaskStoreDispatcher(_dispatcherLock, _storage));
 		}
 		
 		/// <summary>
@@ -194,8 +193,10 @@ namespace Broadcast.EventSourcing
 		/// <param name="dispatchers"></param>
 		public void RegisterDispatchers(string id, IEnumerable<IDispatcher> dispatchers)
         {
-	        _logger.Write($"Register a new set of dispatchers to storage for {id}");
+	        _logger.Write($"Register a new set of	dispatchers to storage for {id}");
 			_dispatchers.Add(id, dispatchers);
+
+			_storageObserver.Start(new ReschedulingDispatcher());
         }
 
 		/// <summary>
