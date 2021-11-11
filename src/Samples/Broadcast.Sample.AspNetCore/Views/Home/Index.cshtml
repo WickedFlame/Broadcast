@@ -3,18 +3,43 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    <h1 class="display-4">Welcome to Broadcast</h1>
 	<p>ASP.NET Core sample</p>
+
+	<h2>Start tasks</h2>
 	<ul>
-		<li><a class="text-dark" asp-area="" asp-controller="Home" asp-action="CreateLongTaskInvalidInvocation">Create long task invalid invocation</a></li>
-		<li><a class="text-dark" asp-area="" asp-controller="Home" asp-action="CreateLongTask">Create long task</a></li>
-		<li><a class="text-dark" asp-area="" asp-controller="Home" asp-action="CreateFailingTask">Create failing task</a></li>
-		<li><a class="text-dark" asp-area="" asp-controller="Home" asp-action="MultipleTask">Multiple tasks</a></li>
-
-		<li><a class="text-dark" asp-area="" asp-controller="Home" asp-action="ScheduleTask">Schedule tasks in 15 seconds</a></li>
-
-		<li><a class="text-dark" asp-area="" asp-controller="Home" asp-action="RcurringTask">Add a recurring Tasks in 15 seconds</a></li>
-		<li></li>
-		<li><a class="text-dark" asp-area="" asp-controller="Home" asp-action="DeleteTask">Create and automatically delete a Task</a></li>
+		<li><a asp-area="" asp-controller="Home" asp-action="StartTask">Start a background task</a></li>
+		<li><a asp-area="" asp-controller="Home" asp-action="ScheduleTask">Schedule tasks in 15 seconds</a></li>
+		<li><a asp-area="" asp-controller="Home" asp-action="RcurringTask">Add a tasks that recures all 15 seconds</a></li>
 	</ul>
+	<h2>Start the server</h2>
+	<p>
+		To start a server add the following to the Startup.cs
+		<pre>
+			<code class="">
+		public void ConfigureServices(IServiceCollection services)
+		{
+			...
+
+			//
+			// configure the storage
+			services.AddBroadcast();
+		}
+
+		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+		{
+			...
+
+			//
+			// start a broadcast server
+			app.UseBroadcastServer();
+
+			//
+			// add the broadcast dashboard if desired
+			app.UseBroadcastDashboard();
+		}
+			</code>
+		</pre>
+	</p>
 </div>

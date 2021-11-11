@@ -25,65 +25,22 @@ namespace Broadcast.Sample.AspNetCore.Controllers
 			return View();
 		}
 
-		public IActionResult CreateLongTaskInvalidInvocation()
+		public IActionResult StartTask()
 		{
 			BackgroundTask.Send(() => LongRunningMethod());
 			return Redirect("Index");
 		}
 
-		public IActionResult CreateLongTask()
-		{
-			var service = new TaskService();
-			BackgroundTask.Send(() => service.LongRunningMethod());
-			return Redirect("Index");
-		}
-
-		public IActionResult CreateFailingTask()
-		{
-			var service = new TaskService();
-			BackgroundTask.Send(() => service.FailingMethod());
-			return Redirect("Index");
-		}
-
-		public IActionResult MultipleTask()
-		{
-			var service = new TaskService();
-			for(var i = 1;i<=10;i++)
-			{
-				BackgroundTask.Send(() => service.OutputMethod(i));
-			}
-			return Redirect("Index");
-		}
-
 		public IActionResult ScheduleTask()
 		{
-			var service = new TaskService();
-			BackgroundTask.Schedule(() => service.Schedule(), TimeSpan.FromSeconds(15));
+			BackgroundTask.Schedule(() => Schedule(), TimeSpan.FromSeconds(15));
 
 			return Redirect("Index");
 		}
 
 		public IActionResult RcurringTask()
 		{
-			var service = new TaskService();
-			var random = new Random();
-			if(random.Next(4) < 2)
-			{
-				BackgroundTask.Recurring("recurring", () => service.Recurring(DateTime.Now.ToString("o")), TimeSpan.FromSeconds(15));
-			}
-			else
-			{
-				BackgroundTask.Recurring("recurring", () => service.Recurring2(DateTime.Now.ToString("o")), TimeSpan.FromSeconds(15));
-			}
-
-			return Redirect("Index");
-		}
-
-		public IActionResult DeleteTask()
-		{
-			var service = new TaskService();
-			var taskId = BackgroundTask.Schedule(() => service.Schedule(), TimeSpan.FromSeconds(15));
-			BackgroundTask.DeleteTask(taskId);
+			BackgroundTask.Recurring("recurring", () => Recurring(DateTime.Now.ToString("o")), TimeSpan.FromSeconds(15));
 
 			return Redirect("Index");
 		}
@@ -100,29 +57,6 @@ namespace Broadcast.Sample.AspNetCore.Controllers
 			Thread.Sleep(TimeSpan.FromSeconds(4));
 			Console.WriteLine("Long Task ended");
 		}
-	}
-
-	public class TaskService
-	{
-		public void LongRunningMethod()
-		{
-			Console.WriteLine("Long Task started");
-			Thread.Sleep(TimeSpan.FromSeconds(4));
-			Console.WriteLine("Long Task ended");
-		}
-
-		public void OutputMethod(int number)
-		{
-			Console.WriteLine("Long Task started");
-			Thread.Sleep(TimeSpan.FromSeconds(2));
-			Trace.WriteLine($"Task number {number}");
-			Console.WriteLine("Long Task ended");
-		}
-
-		public void FailingMethod()
-		{
-			throw new Exception("This is a failing task");
-		}
 
 		public void Schedule()
 		{
@@ -132,11 +66,6 @@ namespace Broadcast.Sample.AspNetCore.Controllers
 		}
 
 		public void Recurring(string sceduleTime)
-		{
-			Console.WriteLine($"Recurring Task from {sceduleTime}");
-		}
-
-		public void Recurring2(string sceduleTime)
 		{
 			Console.WriteLine($"Recurring Task from {sceduleTime}");
 		}
