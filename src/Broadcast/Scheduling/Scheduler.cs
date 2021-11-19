@@ -37,7 +37,7 @@ namespace Broadcast.Scheduling
 		{
 			_logger = LoggerFactory.Create();
 
-			_scheduleQueue = queue ?? throw new ArgumentNullException();
+			_scheduleQueue = queue ?? throw new ArgumentNullException(nameof(queue));
 			_context = new SchedulerContext
 			{
 				IsRunning = true

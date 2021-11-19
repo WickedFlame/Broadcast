@@ -10,14 +10,17 @@ namespace Broadcast.Scheduling
 	public class SchedulerBackgroundProcess : IBackgroundDispatcher<ISchedulerContext>
 	{
 		private readonly IScheduleQueue _queue;
+        private readonly Semaphore _semaphore;
 
-		/// <summary>
+        /// <summary>
 		/// Cretes a new instance of the SchedulerTaskDispatcher
 		/// </summary>
 		/// <param name="queue"></param>
 		public SchedulerBackgroundProcess(IScheduleQueue queue)
 		{
 			_queue = queue ?? throw new ArgumentNullException(nameof(queue));
+
+            _semaphore = new Semaphore(0, Int32.MaxValue);
 		}
 
 		/// <summary>
@@ -42,8 +45,8 @@ namespace Broadcast.Scheduling
 				}
 
 				// Delay the thread to avoid high CPU usage with the infinite loop
-				System.Threading.Tasks.Task.Delay(50).Wait();
-			}
+                _semaphore.WaitOne(50, true);
+            }
 		}
 	}
 }
