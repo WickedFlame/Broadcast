@@ -15,7 +15,7 @@ namespace Broadcast.EventSourcing
     public class StorageObserver : IDisposable
     {
         private readonly BackgroundServerProcess<ObserverContext> _process;
-        private readonly WaitHandle _waitHandle;
+        private readonly Semaphore _waitHandle;
 
         /// <summary>
         /// Creates a new instance of the StorageObserver
@@ -33,28 +33,36 @@ namespace Broadcast.EventSourcing
             var context = new ObserverContext(new DispatcherLock(), store);
             _process = new BackgroundServerProcess<ObserverContext>(context);
 
-            _waitHandle = new Semaphore(0, Int32.MaxValue);
-            StartScheduler(this, options, _waitHandle);
+            //_waitHandle = new Semaphore(0, Int32.MaxValue);
+            StartScheduler(_process, options);
         }
 
-        private void StartScheduler(StorageObserver observer, Options options, WaitHandle waitHandle)
+        private void StartScheduler(BackgroundServerProcess<ObserverContext> process, Options options)
         {
-            Task.Factory.StartNew(() => ExecuteScheduler(observer, options, waitHandle),
-                CancellationToken.None,
-                TaskCreationOptions.None,
-                TaskScheduler.Default);
+            //Task.Factory.StartNew(() => ExecuteScheduler(process, options),
+            //    CancellationToken.None,
+            //    TaskCreationOptions.LongRunning| TaskCreationOptions.RunContinuationsAsynchronously,
+            //    TaskScheduler.Default);
+            var thread = new Thread(() => ExecuteScheduler(process, options))
+            {
+                IsBackground = true,
+                Name = $"{nameof(StorageObserver)}",
+            };
+            thread.Start();
         }
 
-        private void ExecuteScheduler(StorageObserver observer, Options options, WaitHandle waitHandle)
+        private void ExecuteScheduler(BackgroundServerProcess<ObserverContext> process, Options options)
         {
             // loop until the waithandle is disposed
-            while (!waitHandle.SafeWaitHandle.IsClosed)
+            //while (!waitHandle.SafeWaitHandle.IsClosed)
+            while(true)
             {
                 // start a new dispatcher to cleanup the storage
-                observer.Start(new StorageCleanupDispatcher(options));
+                process.StartNew(new StorageCleanupDispatcher(options));
 
                 // Delay the thread to avoid high CPU usage with the infinite loop
-                waitHandle.WaitOne(TimeSpan.FromSeconds(options.StorageCleanupInterval), true);
+                //waitHandle.WaitOne(TimeSpan.FromMilliseconds(options.StorageCleanupInterval), true);
+                Task.Delay(TimeSpan.FromSeconds(60)).Wait();
             }
         }
 
@@ -72,6 +80,7 @@ namespace Broadcast.EventSourcing
         /// </summary>
         public void Dispose()
         {
+            _waitHandle.Release();
             _waitHandle.Dispose();
         }
     }

@@ -89,7 +89,7 @@ namespace Broadcast.EventSourcing
 			};
 			_process = new BackgroundServerProcess<IStorageContext>(context);
 
-			//_storageObserver = new StorageObserver(this, _options);
+			_storageObserver = new StorageObserver(this, _options);
         }
 
 		/// <summary>
@@ -196,7 +196,7 @@ namespace Broadcast.EventSourcing
 	        _logger.Write($"Register a new set of dispatchers to storage for {id}");
 			_dispatchers.Add(id, dispatchers);
 
-			//_storageObserver.Start(new ReschedulingDispatcher());
+			_storageObserver.Start(new ReschedulingDispatcher());
         }
 
 		/// <summary>
@@ -298,6 +298,8 @@ namespace Broadcast.EventSourcing
 				System.Diagnostics.Trace.WriteLine("Wait for TaskStore");
 				WaitHandle.WaitOne(50);
 			}
+
+            _storageObserver.Dispose();
 
 			// then we wait for all dequeued tasks to be dispatched to all dispatchers
 			// all tasks are passed to the dispatchers in a own thread
