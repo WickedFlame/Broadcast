@@ -89,7 +89,7 @@ namespace Broadcast.EventSourcing
 			};
 			_process = new BackgroundServerProcess<IStorageContext>(context);
 
-			_storageObserver = new StorageObserver(this);
+			//_storageObserver = new StorageObserver(this, _options);
         }
 
 		/// <summary>
@@ -193,10 +193,10 @@ namespace Broadcast.EventSourcing
 		/// <param name="dispatchers"></param>
 		public void RegisterDispatchers(string id, IEnumerable<IDispatcher> dispatchers)
         {
-	        _logger.Write($"Register a new set of	dispatchers to storage for {id}");
+	        _logger.Write($"Register a new set of dispatchers to storage for {id}");
 			_dispatchers.Add(id, dispatchers);
 
-			_storageObserver.Start(new ReschedulingDispatcher());
+			//_storageObserver.Start(new ReschedulingDispatcher());
         }
 
 		/// <summary>

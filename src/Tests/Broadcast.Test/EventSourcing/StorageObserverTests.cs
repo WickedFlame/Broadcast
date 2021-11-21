@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
+using Broadcast.Configuration;
 using Broadcast.EventSourcing;
 using Moq;
 using NUnit.Framework;
@@ -12,13 +14,38 @@ namespace Broadcast.Test.EventSourcing
         [Test]
         public void StorageObserver_ctor()
         {
-            Assert.DoesNotThrow(() => new StorageObserver(new Mock<ITaskStore>().Object));
+            Assert.DoesNotThrow(() => new StorageObserver(new Mock<ITaskStore>().Object, new Options()));
         }
 
         [Test]
         public void StorageObserver_ctor_NoStore()
         {
-            Assert.Throws<ArgumentNullException>(() => new StorageObserver(null));
+            Assert.Throws<ArgumentNullException>(() => new StorageObserver(null, new Options()));
+        }
+
+        [Test]
+        public void StorageObserver_StartNew()
+        {
+            var store = new Mock<ITaskStore>();
+            store.Setup(x => x.GetEnumerator()).Returns(new List<ITask>().GetEnumerator());
+            var task = new TestObserver();
+
+            var observer = new StorageObserver(store.Object, new Options());
+            observer.Start(task);
+
+            Task.Delay(50).Wait();
+
+            Assert.IsTrue(task.Executed);
+        }
+
+        public class TestObserver : IStorageObserver
+        {
+            public void Execute(ObserverContext context)
+            {
+                Executed = true;
+            }
+
+            public bool Executed { get; private set; }
         }
     }
 }
