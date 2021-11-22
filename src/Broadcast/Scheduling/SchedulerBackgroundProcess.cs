@@ -10,7 +10,7 @@ namespace Broadcast.Scheduling
 	public class SchedulerBackgroundProcess : IBackgroundDispatcher<ISchedulerContext>
 	{
 		private readonly IScheduleQueue _queue;
-        private readonly Semaphore _waitHandle;
+        private readonly AutoResetEvent _waitHandle;
 
         /// <summary>
 		/// Cretes a new instance of the SchedulerTaskDispatcher
@@ -20,7 +20,7 @@ namespace Broadcast.Scheduling
 		{
 			_queue = queue ?? throw new ArgumentNullException(nameof(queue));
 
-            _waitHandle = new Semaphore(0, Int32.MaxValue);
+            _waitHandle = new AutoResetEvent(false);
 		}
 
 		/// <summary>

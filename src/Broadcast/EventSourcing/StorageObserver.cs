@@ -15,7 +15,7 @@ namespace Broadcast.EventSourcing
     public class StorageObserver : IDisposable
     {
         private readonly BackgroundServerProcess<ObserverContext> _process;
-        private readonly Semaphore _waitHandle;
+        private readonly WaitHandle _waitHandle;
 
         /// <summary>
         /// Creates a new instance of the StorageObserver
@@ -33,36 +33,41 @@ namespace Broadcast.EventSourcing
             var context = new ObserverContext(new DispatcherLock(), store);
             _process = new BackgroundServerProcess<ObserverContext>(context);
 
-            //_waitHandle = new Semaphore(0, Int32.MaxValue);
-            StartScheduler(_process, options);
+            _waitHandle = new AutoResetEvent(false);
+            StartScheduler(_process, options, _waitHandle);
         }
 
-        private void StartScheduler(BackgroundServerProcess<ObserverContext> process, Options options)
+        private void StartScheduler(BackgroundServerProcess<ObserverContext> process, Options options, WaitHandle waitHandle)
         {
-            //Task.Factory.StartNew(() => ExecuteScheduler(process, options),
-            //    CancellationToken.None,
-            //    TaskCreationOptions.LongRunning| TaskCreationOptions.RunContinuationsAsynchronously,
-            //    TaskScheduler.Default);
-            var thread = new Thread(() => ExecuteScheduler(process, options))
+            // Task.Factory.StartNew : Starts a new task that will run in a thread pool thread or may run in the same thread.
+            // If it is ran in a thread pool thread, the thread is returned to the pool when done.
+            // Thread creation/destruction is an expensive process.
+            //
+            // new Thread().Start() : Will always run in a new thread
+            //
+            // Here we use a Thread instead of a task.
+            // This way we can ensure that the thread is a backgroundthread
+            // Because it is only a cleanup process, it is run with the lowest ThreadPriority
+            //
+            var thread = new Thread(() => ExecuteScheduler(process, options, waitHandle))
             {
                 IsBackground = true,
                 Name = $"{nameof(StorageObserver)}",
+                Priority = ThreadPriority.Lowest
             };
             thread.Start();
         }
 
-        private void ExecuteScheduler(BackgroundServerProcess<ObserverContext> process, Options options)
+        private void ExecuteScheduler(BackgroundServerProcess<ObserverContext> process, Options options, WaitHandle waitHandle)
         {
             // loop until the waithandle is disposed
-            //while (!waitHandle.SafeWaitHandle.IsClosed)
-            while(true)
+            while (!waitHandle.SafeWaitHandle.IsClosed)
             {
+                // Delay the thread to avoid high CPU usage with the infinite loop
+                waitHandle.WaitOne(TimeSpan.FromMilliseconds(options.StorageCleanupInterval), true);
+
                 // start a new dispatcher to cleanup the storage
                 process.StartNew(new StorageCleanupDispatcher(options));
-
-                // Delay the thread to avoid high CPU usage with the infinite loop
-                //waitHandle.WaitOne(TimeSpan.FromMilliseconds(options.StorageCleanupInterval), true);
-                Task.Delay(TimeSpan.FromSeconds(60)).Wait();
             }
         }
 
@@ -80,7 +85,6 @@ namespace Broadcast.EventSourcing
         /// </summary>
         public void Dispose()
         {
-            _waitHandle.Release();
             _waitHandle.Dispose();
         }
     }
