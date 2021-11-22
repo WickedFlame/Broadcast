@@ -1,10 +1,7 @@
 ﻿using Broadcast.Processing;
 using Broadcast.Server;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Broadcast.Configuration;
 
 namespace Broadcast.EventSourcing
@@ -86,35 +83,6 @@ namespace Broadcast.EventSourcing
         public void Dispose()
         {
             _waitHandle.Dispose();
-        }
-    }
-
-    public class StorageCleanupDispatcher : IStorageObserver
-    {
-        private readonly Options _options;
-
-        public StorageCleanupDispatcher(Options options)
-        {
-            _options = options;
-        }
-
-        public void Execute(ObserverContext context)
-        {
-            var tasks = GetTasks(context.Store).ToList();
-            foreach (var task in tasks)
-            {
-                context.Store.Storage(s => s.Delete(new Storage.StorageKey($"task:{task.Id}")));
-            }
-
-            //TODO: delete servers
-        }
-
-        private IEnumerable<ITask> GetTasks(ITaskStore store)
-        {
-            return store.Where(t => (t.State == TaskState.Processed ||
-                                     t.State == TaskState.Faulted ||
-                                     t.State == TaskState.Deleted) && 
-                                    t.StateChanges[t.State] < DateTime.Now.Subtract(TimeSpan.FromMilliseconds(_options.StorageLifetimeDuration)));
         }
     }
 }
