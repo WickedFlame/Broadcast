@@ -17,12 +17,14 @@ namespace Broadcast.Scheduling
 		{
 			_timer = new Stopwatch();
 			_timer.Start();
-		}
 
-		/// <summary>
-		/// Get a boolien indicating if the <see cref="IScheduler"/> is running
-		/// </summary>
-		public bool IsRunning{ get; set; }
+            ThreadWait = new ThreadWait();
+        }
+
+        /// <summary>
+        /// Get a <see cref="ThreadWait"/> indicating if the <see cref="IScheduler"/> is running
+        /// </summary>
+		public ThreadWait ThreadWait{ get; }
 
 		/// <summary>
 		/// Gets the elapsed time since the Scheduler has been started

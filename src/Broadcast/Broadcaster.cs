@@ -87,8 +87,7 @@ namespace Broadcast
 
 			_context = new BroadcasterConterxt
 			{
-				Id = _id,
-				IsRunning = true
+				Id = _id
 			};
 			_server = new BackgroundServerProcess<IBroadcasterConterxt>(_context);
 			_server.StartNew(new BroadcasterHeartbeatDispatcher(store, _options));
@@ -164,7 +163,7 @@ namespace Broadcast
 			Processor.WaitAll();
 			Processor.Dispose();
 
-			_context.IsRunning = false;
+            _context.Stop();
 
 			Store.RemoveServer(new ServerModel { Id = _id, Name = Name });
 

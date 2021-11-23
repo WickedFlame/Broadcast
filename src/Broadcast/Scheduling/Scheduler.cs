@@ -38,10 +38,7 @@ namespace Broadcast.Scheduling
 			_logger = LoggerFactory.Create();
 
 			_scheduleQueue = queue ?? throw new ArgumentNullException(nameof(queue));
-			_context = new SchedulerContext
-			{
-				IsRunning = true
-			};
+            _context = new SchedulerContext();
 
 			_backgroundProcess = new BackgroundServerProcess<ISchedulerContext>(_context);
 			_backgroundProcess.StartNew(new SchedulerBackgroundProcess(_scheduleQueue));
@@ -96,7 +93,7 @@ namespace Broadcast.Scheduling
                 return;
             }
 
-            _context.IsRunning = false;
+            _context.ThreadWait.Dispose();
 
             _backgroundProcess.WaitAll();
             _schedulerCount--;

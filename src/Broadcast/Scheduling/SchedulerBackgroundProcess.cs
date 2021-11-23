@@ -10,7 +10,6 @@ namespace Broadcast.Scheduling
 	public class SchedulerBackgroundProcess : IBackgroundDispatcher<ISchedulerContext>
 	{
 		private readonly IScheduleQueue _queue;
-        private readonly AutoResetEvent _waitHandle;
 
         /// <summary>
 		/// Cretes a new instance of the SchedulerTaskDispatcher
@@ -19,17 +18,15 @@ namespace Broadcast.Scheduling
 		public SchedulerBackgroundProcess(IScheduleQueue queue)
 		{
 			_queue = queue ?? throw new ArgumentNullException(nameof(queue));
-
-            _waitHandle = new AutoResetEvent(false);
 		}
 
 		/// <summary>
 		/// Execute the Dispatcher to processes the scheduled tasks
 		/// </summary>
 		/// <param name="context"></param>
-		public void Execute(ISchedulerContext context)
+		public async void Execute(ISchedulerContext context)
 		{
-			while (context.IsRunning)
+			while (context.ThreadWait.IsOpen)
 			{
 				var time = context.Elapsed;
 				foreach (var task in _queue.ToList())
@@ -45,7 +42,7 @@ namespace Broadcast.Scheduling
 				}
 
 				// Delay the thread to avoid high CPU usage with the infinite loop
-                _waitHandle.WaitOne(50, true);
+                await context.ThreadWait.WaitOne(50);
             }
 		}
 	}

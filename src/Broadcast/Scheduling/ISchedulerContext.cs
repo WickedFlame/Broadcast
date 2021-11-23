@@ -9,9 +9,9 @@ namespace Broadcast.Scheduling
 	public interface ISchedulerContext : IServerContext
 	{
 		/// <summary>
-		/// Get a boolien indicating if the <see cref="IScheduler"/> is running
+		/// Get a <see cref="ThreadWait"/> indicating if the <see cref="IScheduler"/> is running
 		/// </summary>
-		bool IsRunning { get; set; }
+		ThreadWait ThreadWait { get; }
 
 		/// <summary>
 		/// Gets the elapsed time since the Scheduler has been started

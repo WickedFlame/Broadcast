@@ -1,4 +1,5 @@
-﻿
+﻿using System.Threading;
+
 namespace Broadcast.Server
 {
 	/// <summary>
@@ -7,10 +8,10 @@ namespace Broadcast.Server
 	public interface IBroadcasterConterxt : IServerContext
 	{
 		/// <summary>
-		/// Gets a boolean indicating if the <see cref="IBroadcaster"/> is running
+		/// Gets the <see cref="ThreadWait"/> that stops the broadcaster
 		/// </summary>
-		bool IsRunning { get; }
-
+		ThreadWait ThreadWait { get; }
+		
 		/// <summary>
 		/// Gets the Id of the <see cref="IBroadcaster"/>
 		/// </summary>

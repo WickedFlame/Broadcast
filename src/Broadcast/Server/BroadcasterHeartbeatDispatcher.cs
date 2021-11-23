@@ -32,8 +32,7 @@ namespace Broadcast.Server
 		public async void Execute(IBroadcasterConterxt context)
 		{
 			// the dispatcher is created per running broadcaster
-
-			while (context.IsRunning)
+			while(context.ThreadWait.IsOpen)
 			{
 				var model = new ServerModel
 				{
@@ -47,8 +46,8 @@ namespace Broadcast.Server
 					s.PropagateEvent(new StorageKey($"server:{_options.ServerName}:{context.Id}"));
 				});
 
-				// don't run again for at least 
-				await Task.Delay(_options.HeartbeatInterval);
+                // don't run again for at least 
+                await context.ThreadWait.WaitOne(_options.HeartbeatInterval);
 			}
 		}
 	}

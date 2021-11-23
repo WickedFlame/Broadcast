@@ -42,11 +42,10 @@ namespace Broadcast.Test.Server
 			};
 			var context = new BroadcasterConterxt
 			{
-				IsRunning = true,
 				Id = "1"
 			};
 			var storage = new Mock<ITaskStore>();
-			storage.Setup(exp => exp.Storage(It.IsAny<Action<IStorage>>())).Callback(() => context.IsRunning = false);
+			storage.Setup(exp => exp.Storage(It.IsAny<Action<IStorage>>())).Callback(() => context.Stop());
 			
 			var dispatcher = new BroadcasterHeartbeatDispatcher(storage.Object, options);
 			dispatcher.Execute(context);
@@ -64,13 +63,12 @@ namespace Broadcast.Test.Server
 			};
 			var context = new BroadcasterConterxt
 			{
-				IsRunning = true,
 				Id = "1"
 			};
 			var storage = new Mock<IStorage>();
 
 			var store = new TaskStore(storage.Object);
-			storage.Setup(exp => exp.Set(It.IsAny<StorageKey>(), It.IsAny<ServerModel>())).Callback(() => context.IsRunning = false);
+			storage.Setup(exp => exp.Set(It.IsAny<StorageKey>(), It.IsAny<ServerModel>())).Callback(() => context.Stop());
 
 			var dispatcher = new BroadcasterHeartbeatDispatcher(store, options);
 			dispatcher.Execute(context);
@@ -88,13 +86,12 @@ namespace Broadcast.Test.Server
 			};
 			var context = new BroadcasterConterxt
 			{
-				IsRunning = true,
 				Id = "1"
 			};
 			var storage = new Mock<IStorage>();
 
 			var store = new TaskStore(storage.Object);
-			storage.Setup(exp => exp.Set(It.IsAny<StorageKey>(), It.IsAny<ServerModel>())).Callback(() => context.IsRunning = false);
+			storage.Setup(exp => exp.Set(It.IsAny<StorageKey>(), It.IsAny<ServerModel>())).Callback(() => context.Stop());
 
 			var dispatcher = new BroadcasterHeartbeatDispatcher(store, options);
 			dispatcher.Execute(context);
