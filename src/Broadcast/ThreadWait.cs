@@ -28,7 +28,7 @@ namespace Broadcast
         /// <returns></returns>
         public async Task WaitOne(int delay)
         {
-            await Task.Delay(delay);
+            await Task.Delay(delay).ConfigureAwait(false);
         }
 
         /// <summary>
