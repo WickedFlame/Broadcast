@@ -45,5 +45,7 @@ jobs:
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"WickedFlame_Broadcast" /o:"wickedflame" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
           dotnet build
-          dotnet test --collect:"XPlat Code Coverage" -r:TestResults
+          dotnet test src/Tests/Broadcast.Test/Broadcast.Test.csproj --collect:"XPlat Code Coverage" -r:TestResults
+          dotnet test src/Tests/Broadcast.Dashboard.Test/Broadcast.Dashboard.Test.csproj --collect:"XPlat Code Coverage" -r:TestResults
+          dotnet test src/Tests/Broadcast.Storage.Redis.Test/Broadcast.Storage.Redis.Test.csproj --collect:"XPlat Code Coverage" -r:TestResults
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
