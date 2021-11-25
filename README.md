@@ -8,6 +8,10 @@
 
   
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=WickedFlame_Broadcast&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=WickedFlame_Broadcast)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=WickedFlame_Broadcast&metric=coverage)](https://sonarcloud.io/summary/new_code?id=WickedFlame_Broadcast)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=WickedFlame_Broadcast&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=WickedFlame_Broadcast)
+  
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/9f04469804014684ac6c1e91bed72e5e)](https://www.codacy.com/gh/WickedFlame/Broadcast/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=WickedFlame/Broadcast&amp;utm_campaign=Badge_Grade)
   
 Simple and easy to use background task processing and message queue for .NET  
   
