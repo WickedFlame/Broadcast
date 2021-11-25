@@ -9,32 +9,84 @@ using NUnit.Framework;
 
 namespace Broadcast.Integration.Test.Behaviour
 {
-    public class SetupMultipleServersTests : BDTestBase
+    [SingleThreaded]
+    [Category("Integration")]
+	public class SetupMultipleServersTests : BDTestBase
     {
+        [SetUp]
+        public void Setup()
+        {
+            TestTask.Count = 0;
+        }
+
         [Test]
-        public void SetupMultipleServers_ExecuteTasksOnce()
+        public void AddTask_SetupMultipleServers_ExecuteTasksOnce()
         {
             WithContext<BdContext>(context =>
                 Given(() => CreateStore(context))
-                    .And(() => ScheduleTasks(context).Wait())
+                    .And(() => AddTask(context).Wait())
                     .When(() => StartMultipleServers(context).Wait())
                     .Then(() => TaskIsProcessedOnce())
                     .BDTest()
             );
         }
 
-		public void CreateStore(BdContext context)
+        [Test]
+        public void ScheduleTask_SetupMultipleServers_ExecuteTasksOnce()
+        {
+            WithContext<BdContext>(context =>
+                Given(() => CreateStore(context))
+                    .And(() => ScheduleTask(context).Wait())
+                    .When(() => StartMultipleServers(context).Wait())
+                    .Then(() => TaskIsProcessedOnce())
+                    .BDTest()
+            );
+        }
+
+        [Test]
+        public void SetupMultipleServers_AddTask_ExecuteTasksOnce()
+        {
+            WithContext<BdContext>(context =>
+                Given(() => CreateStore(context))
+                    .And(() => StartMultipleServers(context).Wait())
+                    .When(() => AddTask(context).Wait())
+                    .Then(() => TaskIsProcessedOnce())
+                    .BDTest()
+            );
+        }
+
+        [Test]
+        public void SetupMultipleServers_ScheduleTask_ExecuteTasksOnce()
+        {
+            WithContext<BdContext>(context =>
+                Given(() => CreateStore(context))
+                    .And(() => StartMultipleServers(context).Wait())
+                    .When(() => ScheduleTask(context).Wait())
+                    .Then(() => TaskIsProcessedOnce())
+                    .BDTest()
+            );
+        }
+
+        public void CreateStore(BdContext context)
 		{
 			context.Store = new TaskStore(new InmemoryStorage());
 		}
 
-		private BdContext ScheduleTasks(BdContext context)
+		private BdContext ScheduleTask(BdContext context)
 		{
 			var client = new BroadcastingClient(context.Store);
-			client.Send(() => TestTask.Add());
+			client.Schedule(() => TestTask.Add(), TimeSpan.FromMilliseconds(50));
 
 			return context;
 		}
+
+        private BdContext AddTask(BdContext context)
+        {
+            var client = new BroadcastingClient(context.Store);
+            client.Send(() => TestTask.Add());
+
+            return context;
+        }
 
 		public BdContext StartMultipleServers(BdContext context)
 		{
