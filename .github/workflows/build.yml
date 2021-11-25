@@ -43,9 +43,9 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"WickedFlame_Broadcast" /o:"wickedflame" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths="TestResults/*/coverage.cobertura.xml"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"WickedFlame_Broadcast" /o:"wickedflame" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths="src/Tests/*/coverage.opencover.xml"
           dotnet build
-          dotnet test src/Tests/Broadcast.Test/Broadcast.Test.csproj --collect:"XPlat Code Coverage" -r:TestResults
-          dotnet test src/Tests/Broadcast.Dashboard.Test/Broadcast.Dashboard.Test.csproj --collect:"XPlat Code Coverage" -r:TestResults
-          dotnet test src/Tests/Broadcast.Storage.Redis.Test/Broadcast.Storage.Redis.Test.csproj --collect:"XPlat Code Coverage" -r:TestResults
+          dotnet test src/Tests/Broadcast.Test/Broadcast.Test.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+          dotnet test src/Tests/Broadcast.Dashboard.Test/Broadcast.Dashboard.Test.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+          dotnet test src/Tests/Broadcast.Storage.Redis.Test/Broadcast.Storage.Redis.Test.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
