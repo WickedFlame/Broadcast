@@ -259,8 +259,7 @@ namespace Broadcast.EventSourcing
 				// cleanup dead servers
 				// servers are propagated each HeartbeatInterval
 				// we remove servers that are not propagated at the double time
-				var expiration = DateTime.Now.Subtract(TimeSpan.FromMilliseconds(_options.HeartbeatInterval * 2));
-				var deadServers = _registeredServers.Where(item => item.Value.Heartbeat < expiration).Select(item => item.Key).ToList();
+				var deadServers = _registeredServers.Where(item => item.Value.Expiration < DateTime.Now).Select(item => item.Key).ToList();
 				foreach (var key in deadServers)
 				{
 					_registeredServers.Remove(key);

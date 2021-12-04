@@ -17,7 +17,7 @@ namespace Broadcast.AspNet.Test
 		{
 			app.UseBroadcastServer(c =>
 			{
-				c.UseOptions(new Broadcast.Configuration.Options
+				c.UseOptions(new Broadcast.Configuration.ProcessorOptions
 				{
 					ServerName = "Asp.Net"
 				});

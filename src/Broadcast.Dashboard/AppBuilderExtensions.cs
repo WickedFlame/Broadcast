@@ -40,13 +40,14 @@ namespace Broadcast.Dashboard
 			var storage = serverSetup.Resolve<IStorage>() ?? new InmemoryStorage();
 			var store = serverSetup.Resolve<ITaskStore>() ?? new TaskStore(options, storage);
 
-			var processor = new TaskProcessor(store, options);
+            var processorOptions = serverSetup.Resolve<ProcessorOptions>() ?? new ProcessorOptions();
+			var processor = new TaskProcessor(store, processorOptions);
 			var scheduler = new Scheduler();
 
 			TaskStore.Setup(() => store);
 
 			BroadcastServer.Setup(c =>
-				c.AddOptions(options)
+				c.AddOptions(processorOptions)
 					.AddProcessor(processor)
 					.AddScheduler(scheduler)
 					.AddTaskStore(store)

@@ -24,7 +24,7 @@ namespace Broadcast.Processing
 		/// </summary>
 		/// <param name="store"></param>
 		/// <param name="options"></param>
-		public TaskProcessor(ITaskStore store, Options options)
+		public TaskProcessor(ITaskStore store, ProcessorOptions options)
 		{
 			if (store == null)
 			{

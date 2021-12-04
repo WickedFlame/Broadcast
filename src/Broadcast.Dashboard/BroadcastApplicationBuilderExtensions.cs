@@ -14,7 +14,7 @@ namespace Broadcast
 {
 	public static class BroadcastApplicationBuilderExtensions
 	{
-		public static IApplicationBuilder UseBroadcastServer(this IApplicationBuilder app, Options options = null)
+		public static IApplicationBuilder UseBroadcastServer(this IApplicationBuilder app, ProcessorOptions options = null)
 		{
 			if (app == null)
 			{
@@ -29,7 +29,7 @@ namespace Broadcast
 #endif
 			// use TaskStore.Default if the services.AddBroadcast() is not configured
 			var storage = services.GetService<ITaskStore>() ?? TaskStore.Default;
-			options ??= services.GetService<Options>() ?? new Options();
+			options ??= services.GetService<ProcessorOptions>() ?? new ProcessorOptions();
 
 			var processor = new TaskProcessor(storage, options);
 			var scheduler = new Scheduler();

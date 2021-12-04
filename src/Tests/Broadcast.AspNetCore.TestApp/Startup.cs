@@ -33,7 +33,10 @@ namespace Broadcast.AspNetCore.Test
 			services.AddBroadcast(c => c.UseRedisStorage("localhost:6379"));
 #else
 			//services.AddBroadcast(c => c.UseTaskStore(new TaskStore()));
-			services.AddBroadcast();
+			services.AddBroadcast(c => c.UseOptions(new Broadcast.Configuration.Options
+			{
+				StorageLifetimeDuration = (int)TimeSpan.FromMinutes(2).TotalMilliseconds
+            }));
 #endif
 		}
 
@@ -55,9 +58,10 @@ namespace Broadcast.AspNetCore.Test
 
 			//app.UseBroadcastServer(new Broadcast.Configuration.Options(), new TaskStore());
 			app.UseBroadcastServer();
-			app.UseBroadcastServer(new Broadcast.Configuration.Options
+			app.UseBroadcastServer(new Broadcast.Configuration.ProcessorOptions
 			{
-				ServerName = "test 1"
+				ServerName = "test 1",
+				
 			});
 
 			//Server = new Broadcaster(TaskStore.Default);

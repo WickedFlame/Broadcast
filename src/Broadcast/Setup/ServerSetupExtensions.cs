@@ -21,7 +21,7 @@ namespace Broadcast
 		}
 
 		/// <summary>
-		/// Set the options that are used for the Server
+		/// Set the options that are used for the Storage
 		/// </summary>
 		/// <param name="setup"></param>
 		/// <param name="options"></param>
@@ -31,6 +31,18 @@ namespace Broadcast
 			setup.Register(options);
 			return setup;
 		}
+
+        /// <summary>
+        /// Set the options that are used for the Server
+        /// </summary>
+        /// <param name="setup"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public static IServerSetup UseOptions(this IServerSetup setup, ProcessorOptions options)
+        {
+            setup.Register(options);
+            return setup;
+        }
 
 		/// <summary>
 		/// Register a item in the <see cref="IServerSetup"/> Context

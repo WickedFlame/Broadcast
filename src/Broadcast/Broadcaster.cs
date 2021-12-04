@@ -18,7 +18,7 @@ namespace Broadcast
 	/// </summary>
     public class Broadcaster : IBroadcaster
     {
-	    private readonly Options _options;
+	    private readonly ProcessorOptions _options;
 	    private readonly ILogger _logger;
 	    private readonly string _id = Guid.NewGuid().ToString();
 	    private readonly BroadcasterConterxt _context;
@@ -36,7 +36,7 @@ namespace Broadcast
 		/// </summary>
 		/// <param name="store"></param>
 		public Broadcaster(ITaskStore store)
-			: this(store, new Options())
+			: this(store, new ProcessorOptions())
 		{
 		}
 
@@ -45,7 +45,7 @@ namespace Broadcast
 		/// </summary>
 		/// <param name="store"></param>
 		/// <param name="options"></param>
-		public Broadcaster(ITaskStore store, Options options)
+		public Broadcaster(ITaskStore store, ProcessorOptions options)
 			: this(store, new TaskProcessor(store, options), new Scheduler(), options)
 		{
 		}
@@ -57,7 +57,7 @@ namespace Broadcast
 		/// <param name="processor"></param>
 		/// <param name="scheduler"></param>
 		public Broadcaster(ITaskStore store, ITaskProcessor processor, IScheduler scheduler)
-			: this(store, processor, scheduler, new Options())
+			: this(store, processor, scheduler, new ProcessorOptions())
 		{
 		}
 
@@ -68,7 +68,7 @@ namespace Broadcast
 		/// <param name="processor"></param>
 		/// <param name="scheduler"></param>
 		/// <param name="options"></param>
-		public Broadcaster(ITaskStore store, ITaskProcessor processor, IScheduler scheduler, Options options)
+		public Broadcaster(ITaskStore store, ITaskProcessor processor, IScheduler scheduler, ProcessorOptions options)
 		{
 			_logger = LoggerFactory.Create();
 			_logger.Write($"Starting new Broadcaster {options.ServerName}:{_id}");

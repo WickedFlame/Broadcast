@@ -33,21 +33,21 @@ namespace Broadcast.Test.Setup
 		[Test]
 		public void ServerSetup_UseOptions()
 		{
-			var options = new Options();
+			var options = new ProcessorOptions();
 
 			var setup = new ServerSetup();
 			setup.UseOptions(options);
 
-			Assert.AreSame(options, setup.Context[nameof(Options)]);
+			Assert.AreSame(options, setup.Context[nameof(ProcessorOptions)]);
 		}
 
 		[Test]
 		public void ServerSetup_UseOptions_ContainsKey()
 		{
 			var setup = new ServerSetup();
-			setup.UseOptions(new Options());
+			setup.UseOptions(new ProcessorOptions());
 
-			Assert.IsTrue(setup.Context.ContainsKey(nameof(Options)));
+			Assert.IsTrue(setup.Context.ContainsKey(nameof(ProcessorOptions)));
 		}
 
 		[Test]

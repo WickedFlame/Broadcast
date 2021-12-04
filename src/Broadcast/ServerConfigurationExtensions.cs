@@ -50,7 +50,7 @@ namespace Broadcast
 		/// <param name="setup"></param>
 		/// <param name="options"></param>
 		/// <returns></returns>
-		public static ServerConfiguration AddOptions(this ServerConfiguration setup, Options options)
+		public static ServerConfiguration AddOptions(this ServerConfiguration setup, ProcessorOptions options)
 		{
 			setup.Add(options);
 			return setup;

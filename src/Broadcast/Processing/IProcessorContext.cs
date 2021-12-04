@@ -12,7 +12,7 @@ namespace Broadcast.Processing
 		/// <summary>
 		/// Gets the <see cref="Options"/>
 		/// </summary>
-	    Options Options { get; set; }
+        ProcessorOptions Options { get; set; }
 
 		/// <summary>
 		/// Gets the <see cref="ITaskStore"/> associated with the <see cref="ITaskProcessor"/>

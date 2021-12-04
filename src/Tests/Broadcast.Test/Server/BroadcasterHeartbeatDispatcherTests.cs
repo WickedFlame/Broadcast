@@ -16,13 +16,13 @@ namespace Broadcast.Test.Server
 		public void BroadcasterHeartbeatDispatcher_ctor()
 		{
 			var storage = new Mock<ITaskStore>();
-			Assert.DoesNotThrow(() => new BroadcasterHeartbeatDispatcher(storage.Object, new Options()));
+			Assert.DoesNotThrow(() => new BroadcasterHeartbeatDispatcher(storage.Object, new ProcessorOptions()));
 		}
 
 		[Test]
 		public void BroadcasterHeartbeatDispatcher_ctor_Null_Storage()
 		{
-			Assert.Throws<ArgumentNullException>(() => new BroadcasterHeartbeatDispatcher(null, new Options()));
+			Assert.Throws<ArgumentNullException>(() => new BroadcasterHeartbeatDispatcher(null, new ProcessorOptions()));
 		}
 
 		[Test]
@@ -35,7 +35,7 @@ namespace Broadcast.Test.Server
 		[Test]
 		public void BroadcasterHeartbeatDispatcher_Execute()
 		{
-			var options = new Options
+			var options = new ProcessorOptions
 			{
 				ServerName = "BroadcasterHeartbeatDispatcher",
 				HeartbeatInterval = 1
@@ -56,7 +56,7 @@ namespace Broadcast.Test.Server
 		[Test]
 		public void BroadcasterHeartbeatDispatcher_Execute_SetStorage()
 		{
-			var options = new Options
+			var options = new ProcessorOptions
 			{
 				ServerName = "BroadcasterHeartbeatDispatcher",
 				HeartbeatInterval = 1
@@ -79,7 +79,7 @@ namespace Broadcast.Test.Server
 		[Test]
 		public void BroadcasterHeartbeatDispatcher_Execute_PropagateEvent()
 		{
-			var options = new Options
+			var options = new ProcessorOptions
 			{
 				ServerName = "BroadcasterHeartbeatDispatcher",
 				HeartbeatInterval = 1
