@@ -58,7 +58,7 @@ namespace Broadcast.EventSourcing
         private async void ExecuteScheduler(BackgroundServerProcess<ObserverContext> process, Options options, ThreadWait threadWait)
         {
             // loop until the waithandle is disposed
-            while (!threadWait.IsOpen)
+            while (threadWait.IsOpen)
             {
                 // Delay the thread to avoid high CPU usage with the infinite loop
                 await threadWait.WaitOne(options.StorageCleanupInterval);
