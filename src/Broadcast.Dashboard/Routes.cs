@@ -13,6 +13,7 @@ namespace Broadcast.Dashboard
 			RouteCollection = new RouteCollection();
 
 			RouteCollection.Add("/dashboard/metrics", new ConsoleMetricsDispatcher());
+            RouteCollection.Add("/dashboard/data", new DashboardMetricsDispatcher());
 			RouteCollection.Add("/dashboard/data/task/(?<id>.+)", new DashboardTaskDataDispatcher());
 			RouteCollection.Add("/dashboard/data/server/(?<id>.+)", new DashboardServerDataDispatcher());
 			RouteCollection.Add("/dashboard/data/recurringtask/(?<id>.+)", new DashboardRecurringTaskDataDispatcher());

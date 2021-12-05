@@ -5,9 +5,6 @@ export class BroadcastDashboard extends BroadcastBase {
 		super();
 
 		this.config = config;
-		//setTimeout(() => {
-		//	this.startPolling(config, (data) => this.updateDashboard(data, this));
-		//}, 3000);
 		this.startPolling(config, (data) => this.updateDashboard(data, this));
 
 		document.querySelector('#tasklist').addEventListener('click',
@@ -55,6 +52,7 @@ export class BroadcastDashboard extends BroadcastBase {
 	updateDashboard(data, dashboard) {
 		// servers
 		this.updateElement(document.querySelector('#broadcast-servers-count'), data.servers.length);
+		this.updateElement(document.querySelector('#broadcast-threads-count'), data.metrics[0].value);
 		var serverList = document.querySelector('#serverlist');
 		data.servers.forEach(s => {
 			var serverElem = serverList.querySelector(`#serverheartbeat_${s.id}`);
@@ -345,7 +343,7 @@ export class BroadcastDashboard extends BroadcastBase {
 
 if (dashboardConfig === undefined) {
 	dashboardConfig = {
-		pollUrl: "%(RouteBasePath)/dashboard/metrics",
+		pollUrl: "%(RouteBasePath)/dashboard/data",
 		dashboardUrl: "%(RouteBasePath)/dashboard",
 		pollInterval: 1000
 	};
