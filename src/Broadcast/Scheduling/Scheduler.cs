@@ -14,8 +14,6 @@ namespace Broadcast.Scheduling
 	/// </summary>
     public class Scheduler : IScheduler
     {
-        private static int _schedulerCount;
-
 		private readonly ISchedulerContext _context;
 		private readonly IScheduleQueue _scheduleQueue;
 		private readonly IBackgroundServerProcess<ISchedulerContext> _backgroundProcess;
@@ -42,16 +40,7 @@ namespace Broadcast.Scheduling
 
 			_backgroundProcess = new BackgroundServerProcess<ISchedulerContext>(_context);
 			_backgroundProcess.StartNew(new SchedulerBackgroundProcess(_scheduleQueue));
-
-			_schedulerCount++;
-
-			_logger.Write($"Started new Scheduler. New SchedulerCount: {_schedulerCount}");
 		}
-
-        /// <summary>
-        /// Gets the total count of Schedulers that are alive
-        /// </summary>
-        public static int SchedulerCount => _schedulerCount;
 
         /// <summary>
         /// Enqueues and schedules a new task
@@ -96,8 +85,6 @@ namespace Broadcast.Scheduling
             _context.ThreadWait.Dispose();
 
             _backgroundProcess.WaitAll();
-            _schedulerCount--;
-            _logger.Write($"Disposed Scheduler. New SchedulerCount: {_schedulerCount}");
 		}
     }
 }

@@ -33,11 +33,6 @@ namespace Broadcast.Console.Test
                         format = "Test Background {0}";
                         break;
 
-                    //case "async":
-                    //    broadcaster = new Broadcaster(ProcessorMode.Async);
-                    //    format = "Test Async {0}";
-                    //    break;
-
                     case "exit":
                         return;
 
@@ -51,7 +46,6 @@ namespace Broadcast.Console.Test
                             scheduler.Schedule(() => System.Console.WriteLine("   Scheduled message 5 sec"), TimeSpan.FromSeconds(5));
                             scheduler.Schedule(() => System.Console.WriteLine("   Scheduled message 3 sec"), TimeSpan.FromSeconds(3));
 
-                            System.Console.WriteLine($"Starting scheduler with {Scheduler.SchedulerCount} schedulers");
                             scheduler.Send(() => System.Console.WriteLine("Direct message"));
 
                             System.Console.ReadLine();
@@ -64,42 +58,20 @@ namespace Broadcast.Console.Test
                             scheduler.Recurring(() => System.Console.WriteLine("   Recurring Expression 5 sec"), TimeSpan.FromSeconds(5));
                             scheduler.Recurring(() => System.Console.WriteLine("   Recurring Expression 3 sec"), TimeSpan.FromSeconds(3));
 
-                            System.Console.WriteLine($"Starting recurring with {Scheduler.SchedulerCount} schedulers");
                             scheduler.Send(() => System.Console.WriteLine("Direct message"));
 
                             System.Console.ReadLine();
                         }
                         break;
-       //             case "recurring2":
-	      //              using (var scheduler = new Broadcaster())
-	      //              {
-		     //               Action exp1 = () => System.Console.WriteLine("   Recurring Action 5 sec");
-		     //               Action exp2 = () => System.Console.WriteLine("   Recurring Action 3 sec");
-							//scheduler.Recurring(exp1, TimeSpan.FromSeconds(5));
-							//scheduler.Recurring(exp2, TimeSpan.FromSeconds(3));
-
-							//System.Console.WriteLine($"Starting recurring with {Scheduler.SchedulerCount} schedulers");
-
-		     //               System.Console.ReadLine();
-	      //              }
-
-	      //              break;
-
 					case "multy":
                         using (var scheduler = new Broadcaster())
                         {
                             scheduler.Recurring(() => System.Console.WriteLine("   Recurring outer 5 sec"), TimeSpan.FromSeconds(5));
-                            //scheduler.Recurring(() => System.Console.WriteLine("   Recurring outer 3 sec"), TimeSpan.FromSeconds(3));
-
-                            System.Console.WriteLine($"Starting recurring with {Scheduler.SchedulerCount} schedulers");
                             scheduler.Send(() => System.Console.WriteLine("Direct message"));
 
                             using (var scheduler2 = new Broadcaster())
                             {
                                 scheduler2.Recurring(() => System.Console.WriteLine("   Recurring inner 2 5 sec"), TimeSpan.FromSeconds(6));
-                                //scheduler2.Recurring(() => System.Console.WriteLine("   Recurring inner 2 3 sec"), TimeSpan.FromSeconds(12));
-
-                                System.Console.WriteLine($"Starting recurring with {Scheduler.SchedulerCount} schedulers");
                                 scheduler2.Send(() => System.Console.WriteLine("Direct 2 message"));
 
                                 System.Console.ReadLine();
