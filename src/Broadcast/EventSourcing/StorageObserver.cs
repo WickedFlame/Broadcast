@@ -2,6 +2,7 @@
 using Broadcast.Server;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Broadcast.Configuration;
 
 namespace Broadcast.EventSourcing
@@ -55,7 +56,9 @@ namespace Broadcast.EventSourcing
             thread.Start();
         }
 
+#pragma warning disable S3168 // "async" methods should not return "void"
         private async void ExecuteScheduler(BackgroundServerProcess<ObserverContext> process, Options options, ThreadWait threadWait)
+#pragma warning restore S3168 // "async" methods should not return "void"
         {
             // loop until the waithandle is disposed
             while (threadWait.IsOpen)

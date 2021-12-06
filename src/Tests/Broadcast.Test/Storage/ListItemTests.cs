@@ -20,6 +20,8 @@ namespace Broadcast.Test.Storage
 		{
 			var item = new ListItem();
 			item.SetValue("value");
+
+            Assert.That(item.Count, Is.EqualTo(1));
 		}
 
 		[Test]
@@ -37,6 +39,8 @@ namespace Broadcast.Test.Storage
 		{
 			var item = new ListItem();
 			item.SetValue("value");
+
+			Assert.That(item.GetValue(), Is.EquivalentTo(new []{"value"}));
 		}
 
 		[Test]

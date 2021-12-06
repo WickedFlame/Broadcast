@@ -38,7 +38,9 @@ namespace Broadcast.Storage.Integration.Test
 		{
 			var storage = BuildStorage();
 			storage.Set(new StorageKey("storage", "set"), "value");
-		}
+
+            Assert.IsNotNull(storage.Get<string>(new StorageKey("storage", "set")));
+        }
 
 		[Test]
 		public void Storage_Set_Object()
@@ -96,6 +98,8 @@ namespace Broadcast.Storage.Integration.Test
 		{
 			var storage = BuildStorage();
 			storage.AddToList(new StorageKey("storage", "addtolist"), "value");
+
+            Assert.AreEqual(1, storage.GetList(new StorageKey("storage", "addtolist")).Count());
 		}
 
 		[Test]
@@ -104,7 +108,9 @@ namespace Broadcast.Storage.Integration.Test
 			var storage = BuildStorage();
 			storage.AddToList(new StorageKey("storage", "addtolist_multy"), "one");
 			storage.AddToList(new StorageKey("storage", "addtolist_multy"), "two");
-		}
+
+            Assert.AreEqual(2, storage.GetList(new StorageKey("storage", "addtolist_multy")).Count());
+        }
 
 		[Test]
 		public void Storage_Get()
