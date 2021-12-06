@@ -235,7 +235,14 @@ export class BroadcastDashboard extends BroadcastBase {
 			return response.json();
 		}).then(function(response) {
 			var rows = '';
-			
+			if (response === null) {
+				response = {
+					groups: [],
+					title: 'task',
+					key: `No taskdata availiable for ${id}`
+				}
+			}
+
 			response.groups.forEach(g => {
 				if (g.values.length > 0) {
 					rows = rows + `<div class="broadcast-storage-type-row"><span></span><h4>${g.title}</h4></div>`;
