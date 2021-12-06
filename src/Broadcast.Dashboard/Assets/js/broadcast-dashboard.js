@@ -349,7 +349,7 @@ export class BroadcastDashboard extends BroadcastBase {
 }
 
 if (dashboardConfig === undefined) {
-	dashboardConfig = {
+	var dashboardConfig = {
 		pollUrl: "%(RouteBasePath)/dashboard/data",
 		dashboardUrl: "%(RouteBasePath)/dashboard",
 		pollInterval: 1000

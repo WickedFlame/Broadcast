@@ -77,7 +77,7 @@ export class BroadcastConsole extends BroadcastBase {
 }
 
 if (consoleConfig === undefined) {
-	consoleConfig = {
+	var consoleConfig = {
 		pollUrl: "%(RouteBasePath)/dashboard/metrics",
 		pollInterval: 1000,
 		position: "TopRight"
