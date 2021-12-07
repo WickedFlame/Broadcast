@@ -63,12 +63,11 @@ namespace Broadcast.Processing
 				if (_taskList.Contains(task))
 				{
 					Trace.WriteLine($"Remove Thread with state: {task.Status}");
-                    if (task.Status == TaskStatus.Running)
+                    if (task.Status != TaskStatus.Running)
                     {
-                        task.Wait();
-                    }
+                        task.Dispose();
+					}
 
-					task.Dispose();
 					_taskList.Remove(task);
                 }
 
