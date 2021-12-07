@@ -63,12 +63,7 @@ namespace Broadcast.Processing
 				if (_taskList.Contains(task))
 				{
 					Trace.WriteLine($"Remove Thread with state: {task.Status}");
-                    if (task.Status != TaskStatus.Running)
-                    {
-                        task.Dispose();
-					}
-
-					_taskList.Remove(task);
+                    _taskList.Remove(task);
                 }
 
                 _threadCountHandler?.Invoke(this, new ThreadHandlerEventArgs { Name = _name, Count = _taskList.Count });
