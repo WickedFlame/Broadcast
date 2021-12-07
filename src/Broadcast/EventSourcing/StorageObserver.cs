@@ -86,6 +86,7 @@ namespace Broadcast.EventSourcing
         public void Dispose()
         {
             _threadWait.Dispose();
+            _process.WaitAll();
         }
     }
 }

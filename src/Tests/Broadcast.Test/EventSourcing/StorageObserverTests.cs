@@ -30,10 +30,10 @@ namespace Broadcast.Test.EventSourcing
             store.Setup(x => x.GetEnumerator()).Returns(new List<ITask>().GetEnumerator());
             var task = new TestObserver();
 
-            var observer = new StorageObserver(store.Object, new Options());
-            observer.Start(task);
-
-            Task.Delay(50).Wait();
+            using (var observer = new StorageObserver(store.Object, new Options()))
+            {
+                observer.Start(task);
+            }
 
             Assert.IsTrue(task.Executed);
         }
