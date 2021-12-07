@@ -15,7 +15,7 @@ namespace Broadcast.Integration.Test.Behaviour
         [TearDown]
         public void Teardown()
         {
-            Task.Delay(700).Wait();
+            Task.Delay(800).Wait();
         }
 
         [Test]

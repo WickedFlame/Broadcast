@@ -196,6 +196,7 @@ namespace Broadcast.EventSourcing
 	        _logger.Write($"Register a new set of dispatchers to storage for {id}");
 			_dispatchers.Add(id, dispatchers);
 
+			// start a ReschedulingDispatcher to check if there are tasks that are not processed yet
 			_storageObserver.Start(new ReschedulingDispatcher());
         }
 

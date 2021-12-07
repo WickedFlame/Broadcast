@@ -9,16 +9,13 @@ namespace Broadcast.EventSourcing
 	/// </summary>
 	public class ReschedulingDispatcher : IStorageObserver
 	{
-		private readonly ILogger _logger;
-
 		/// <summary>
 		/// Creates a new instance of a ReschedulingDispatcher
 		/// </summary>
-		/// <param name="storage"></param>
 		public ReschedulingDispatcher()
 		{
-			_logger = LoggerFactory.Create();
-			_logger.Write($"Starting new ReschedulingDispatcher");
+			var logger = LoggerFactory.Create();
+			logger.Write($"Starting new ReschedulingDispatcher");
 		}
 
 		/// <summary>
@@ -57,10 +54,17 @@ namespace Broadcast.EventSourcing
 
 					// move task to enqued list
 					context.Store.Storage(s =>
-					{
-						s.RemoveFromList(new StorageKey("tasks:dequeued"), disp);
-						s.AddToList(new StorageKey("tasks:enqueued"), disp);
-					});
+                    {
+                        if (!s.RemoveFromList(new StorageKey("tasks:dequeued"), disp))
+                        {
+                            return;
+                        }
+
+                        // delay rescheduling to prevent 2 servers that start the same time
+                        // to process the task as soon as it is enqueued again
+                        System.Threading.Tasks.Task.Delay(50).Wait();
+                        s.AddToList(new StorageKey("tasks:enqueued"), disp);
+                    });
 
 					dispatch = true;
 
