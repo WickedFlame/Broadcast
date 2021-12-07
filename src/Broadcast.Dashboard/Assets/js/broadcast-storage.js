@@ -120,7 +120,7 @@ ${this.createStorageValues(values)}
 }
 
 if (storageConfig === undefined) {
-	var storageConfig = {
+	storageConfig = {
 		pollUrl: "%(RouteBasePath)/storage/keys",
 		pollInterval: 2000
 	};
