@@ -27,7 +27,8 @@ namespace Broadcast
 	    /// <summary>
 		/// Creates a new Broadcaster
 		/// </summary>
-        public Broadcaster() : this(TaskStore.Default)
+        public Broadcaster() 
+            : this(new TaskStore())
         {
         }
 
