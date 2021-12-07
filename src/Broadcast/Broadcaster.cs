@@ -18,7 +18,7 @@ namespace Broadcast
 	/// </summary>
     public class Broadcaster : IBroadcaster
     {
-	    private readonly Options _options;
+	    private readonly ProcessorOptions _options;
 	    private readonly ILogger _logger;
 	    private readonly string _id = Guid.NewGuid().ToString();
 	    private readonly BroadcasterConterxt _context;
@@ -27,7 +27,8 @@ namespace Broadcast
 	    /// <summary>
 		/// Creates a new Broadcaster
 		/// </summary>
-        public Broadcaster() : this(TaskStore.Default)
+        public Broadcaster() 
+            : this(new TaskStore())
         {
         }
 
@@ -36,7 +37,7 @@ namespace Broadcast
 		/// </summary>
 		/// <param name="store"></param>
 		public Broadcaster(ITaskStore store)
-			: this(store, new Options())
+			: this(store, new ProcessorOptions())
 		{
 		}
 
@@ -45,7 +46,7 @@ namespace Broadcast
 		/// </summary>
 		/// <param name="store"></param>
 		/// <param name="options"></param>
-		public Broadcaster(ITaskStore store, Options options)
+		public Broadcaster(ITaskStore store, ProcessorOptions options)
 			: this(store, new TaskProcessor(store, options), new Scheduler(), options)
 		{
 		}
@@ -57,7 +58,7 @@ namespace Broadcast
 		/// <param name="processor"></param>
 		/// <param name="scheduler"></param>
 		public Broadcaster(ITaskStore store, ITaskProcessor processor, IScheduler scheduler)
-			: this(store, processor, scheduler, new Options())
+			: this(store, processor, scheduler, new ProcessorOptions())
 		{
 		}
 
@@ -68,7 +69,7 @@ namespace Broadcast
 		/// <param name="processor"></param>
 		/// <param name="scheduler"></param>
 		/// <param name="options"></param>
-		public Broadcaster(ITaskStore store, ITaskProcessor processor, IScheduler scheduler, Options options)
+		public Broadcaster(ITaskStore store, ITaskProcessor processor, IScheduler scheduler, ProcessorOptions options)
 		{
 			_logger = LoggerFactory.Create();
 			_logger.Write($"Starting new Broadcaster {options.ServerName}:{_id}");
@@ -87,8 +88,7 @@ namespace Broadcast
 
 			_context = new BroadcasterConterxt
 			{
-				Id = _id,
-				IsRunning = true
+				Id = _id
 			};
 			_server = new BackgroundServerProcess<IBroadcasterConterxt>(_context);
 			_server.StartNew(new BroadcasterHeartbeatDispatcher(store, _options));
@@ -152,11 +152,21 @@ namespace Broadcast
                 return;
             }
 
-			Scheduler.Dispose();
-			Processor.Dispose();
-			Store.UnregisterDispatchers(_id);
+			// dispatching of tasks to the servers is done anync
+			// if there are tasks in the storage that are not dispatched, they will not get dispatched at all
+			// wait for the items in the store to be dispatched all
+            Store.WaitAll();
 
-			_context.IsRunning = false;
+			// unregister dispatcher so the server will not get any more tasks to process
+			Store.UnregisterDispatchers(_id);
+			
+			Scheduler.Dispose();
+			Processor.WaitAll();
+			Processor.Dispose();
+
+            _context.Stop();
+
+			Store.RemoveServer(new ServerModel { Id = _id, Name = Name });
 
 			_logger.Write($"Disposed Broadcaster {_options.ServerName}:{_id}");
 		}

@@ -11,42 +11,42 @@ namespace Broadcast.Test.Clients
 		public void Setup()
 		{
 			// set to null to reset
-			BackgroundTaskClient.Setup(null);
+			BackgroundTask.Setup(null);
 		}
 
 		[Test]
 		public void TaskServerClient_BroadcastingClient_Default()
 		{
-			Assert.IsNotNull(BackgroundTaskClient.Client);
+			Assert.IsNotNull(BackgroundTask.Client);
 		}
 
 		[Test]
 		public void TaskServerClient_BroadcastingClient_Default_Setup()
 		{
-			var def = BackgroundTaskClient.Client;
-			BackgroundTaskClient.Setup(() => new BroadcastingClient());
+			var def = BackgroundTask.Client;
+			BackgroundTask.Setup(() => new BroadcastingClient());
 
-			Assert.AreNotSame(def, BackgroundTaskClient.Client);
+			Assert.AreNotSame(def, BackgroundTask.Client);
 		}
 
 		[Test]
 		public void TaskServerClient_BroadcastingClient_Default_Setup_Reset()
 		{
-			var def = BackgroundTaskClient.Client;
-			BackgroundTaskClient.Setup(() => new BroadcastingClient());
+			var def = BackgroundTask.Client;
+			BackgroundTask.Setup(() => new BroadcastingClient());
 
 			// set to null to reset
-			BackgroundTaskClient.Setup(null);
+			BackgroundTask.Setup(null);
 
-			Assert.AreSame(def, BackgroundTaskClient.Client);
+			Assert.AreSame(def, BackgroundTask.Client);
 		}
 
 		[Test]
 		public void TaskServerClient_BroadcastingClient_Default_Setup_Singleton()
 		{
-			BackgroundTaskClient.Setup(() => new BroadcastingClient());
+			BackgroundTask.Setup(() => new BroadcastingClient());
 
-			Assert.AreSame(BackgroundTaskClient.Client, BackgroundTaskClient.Client);
+			Assert.AreSame(BackgroundTask.Client, BackgroundTask.Client);
 		}
 	}
 }

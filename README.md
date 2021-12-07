@@ -5,6 +5,11 @@
 [![Build status](https://img.shields.io/appveyor/build/chriswalpen/broadcast/dev?label=Dev&logo=appveyor&style=for-the-badge)](https://ci.appveyor.com/project/chriswalpen/broadcast/branch/dev)
 [![NuGet Version](https://img.shields.io/nuget/v/broadcast.svg?style=for-the-badge&label=Latest)](https://www.nuget.org/packages/broadcast/)
 [![NuGet Version](https://img.shields.io/nuget/vpre/broadcast.svg?style=for-the-badge&label=RC)](https://www.nuget.org/packages/broadcast/)
+
+  
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=WickedFlame_Broadcast&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=WickedFlame_Broadcast)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=WickedFlame_Broadcast&metric=coverage)](https://sonarcloud.io/summary/new_code?id=WickedFlame_Broadcast)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=WickedFlame_Broadcast&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=WickedFlame_Broadcast)
   
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/9f04469804014684ac6c1e91bed72e5e)](https://www.codacy.com/gh/WickedFlame/Broadcast/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=WickedFlame/Broadcast&amp;utm_campaign=Badge_Grade)
   

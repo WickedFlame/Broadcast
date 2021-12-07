@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Broadcast.Processing;
 using Broadcast.Server;
 using Broadcast.Storage;
 
@@ -108,5 +109,21 @@ namespace Broadcast.Monitoring
 
 			return recurring;
 		}
-	}
+
+		/// <summary>
+		/// Get a list of <see cref="Metric"/> that show the state of the application
+		/// </summary>
+		/// <returns></returns>
+        public IEnumerable<Metric> GetMetrics()
+        {
+            return new List<Metric>
+            {
+                new Metric
+                {
+                    Name = "Open Threads",
+                    Value = ThreadCounter.GetTotalThreadCount().ToString()
+                }
+            };
+        }
+    }
 }

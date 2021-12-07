@@ -21,11 +21,18 @@ namespace Broadcast.Test.Scheduling
 			Assert.Greater(ctx.Elapsed, TimeSpan.Zero);
 		}
 
+        [Test]
+        public void SchedulerContext_ThreadWait()
+        {
+            var ctx = new SchedulerContext();
+            Assert.IsNotNull(ctx.ThreadWait);
+        }
+
 		[Test]
-		public void SchedulerContext_IsRunning()
+		public void SchedulerContext_ThreadWait_IsOpen()
 		{
 			var ctx = new SchedulerContext();
-			Assert.IsFalse(ctx.IsRunning);
+			Assert.IsTrue(ctx.ThreadWait.IsOpen);
 		}
 	}
 }

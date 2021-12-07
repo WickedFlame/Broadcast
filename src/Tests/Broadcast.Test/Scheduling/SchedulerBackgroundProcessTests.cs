@@ -27,15 +27,12 @@ namespace Broadcast.Test.Scheduling
 			var queue = new ScheduleQueue();
 			var dispatcher = new SchedulerBackgroundProcess(queue);
 
-			var ctx = new SchedulerContext
-			{
-				IsRunning = true
-			};
-			queue.Enqueue(new SchedulerTask("id", id => { ctx.IsRunning = false; }, TimeSpan.Zero));
+            var ctx = new SchedulerContext();
+			queue.Enqueue(new SchedulerTask("id", id => { ctx.ThreadWait.Close(); }, TimeSpan.Zero));
 
 			dispatcher.Execute(ctx);
 
-			Assert.IsFalse(ctx.IsRunning);
+			Assert.IsFalse(ctx.ThreadWait.IsOpen);
 		}
 
 		[Test]
@@ -44,11 +41,9 @@ namespace Broadcast.Test.Scheduling
 			var queue = new ScheduleQueue();
 			var dispatcher = new SchedulerBackgroundProcess(queue);
 
-			var ctx = new SchedulerContext
-			{
-				IsRunning = true
-			};
-			queue.Enqueue(new SchedulerTask("id", id => { ctx.IsRunning = false; }, TimeSpan.Zero));
+            var ctx = new SchedulerContext();
+
+			queue.Enqueue(new SchedulerTask("id", id => { ctx.ThreadWait.Close(); }, TimeSpan.Zero));
 
 			dispatcher.Execute(ctx);
 
@@ -61,14 +56,12 @@ namespace Broadcast.Test.Scheduling
 			var queue = new ScheduleQueue();
 			var dispatcher = new SchedulerBackgroundProcess(queue);
 
-			var ctx = new SchedulerContext
-			{
-				IsRunning = true
-			};
+            var ctx = new SchedulerContext();
+
 			queue.Enqueue(new SchedulerTask("id1", id => { }, TimeSpan.FromMinutes(10)));
 			queue.Enqueue(new SchedulerTask("id2", id => { }, TimeSpan.Zero));
 			queue.Enqueue(new SchedulerTask("id3", id => { }, TimeSpan.Zero));
-			queue.Enqueue(new SchedulerTask("id4", id => { ctx.IsRunning = false; }, TimeSpan.Zero));
+			queue.Enqueue(new SchedulerTask("id4", id => { ctx.ThreadWait.Close(); }, TimeSpan.Zero));
 
 			dispatcher.Execute(ctx);
 

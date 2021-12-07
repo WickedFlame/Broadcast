@@ -13,7 +13,7 @@ namespace Broadcast.Processing
 		/// </summary>
 		/// <param name="store"></param>
 		public ProcessorContext(ITaskStore store)
-		    : this(store, new Options())
+		    : this(store, new ProcessorOptions())
 	    {
 	    }
 
@@ -22,7 +22,7 @@ namespace Broadcast.Processing
 		/// </summary>
 		/// <param name="store"></param>
 		/// <param name="options"></param>
-		public ProcessorContext(ITaskStore store, Options options)
+		public ProcessorContext(ITaskStore store, ProcessorOptions options)
         {
             Options = options;
 			Store = store;
@@ -31,7 +31,7 @@ namespace Broadcast.Processing
 		/// <summary>
 		/// Gets or sets the <see cref="Options"/>
 		/// </summary>
-        public Options Options { get; set; }
+        public ProcessorOptions Options { get; set; }
 
 		/// <summary>
 		/// Gets the <see cref="ITaskStore"/> associated with the <see cref="ITaskProcessor"/>

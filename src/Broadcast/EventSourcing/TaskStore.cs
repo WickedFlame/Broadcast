@@ -27,7 +27,7 @@ namespace Broadcast.EventSourcing
         private readonly ManualResetEventSlim _event;
         private readonly BackgroundServerProcess<IStorageContext> _process;
         private readonly DispatcherLock _dispatcherLock;
-        private readonly object _processorLock = new object();
+		private readonly StorageObserver _storageObserver;
 
 		/// <summary>
 		/// Gets the default instance of the <see cref="ITaskStore"/>
@@ -88,12 +88,23 @@ namespace Broadcast.EventSourcing
 				ResetEvent = _event
 			};
 			_process = new BackgroundServerProcess<IStorageContext>(context);
+
+			_storageObserver = new StorageObserver(this, _options);
         }
 
 		/// <summary>
 		/// Gets a enumeration of all registered <see cref="IBroadcaster"/> servers
 		/// </summary>
-		public IEnumerable<ServerModel> Servers => _registeredServers.Values;
+		public IEnumerable<ServerModel> Servers
+		{
+			get
+			{
+				lock (_registeredServers)
+				{
+					return _registeredServers.Values;
+				}
+			}
+		}
 
 		/// <summary>
 		/// Gets a <see cref="System.Threading.WaitHandle"/> that is used to wait for the event to be set.
@@ -165,16 +176,13 @@ namespace Broadcast.EventSourcing
 		public void DispatchTasks()
 		{
 			// check if a thread is allready processing the queue
-			lock (_processorLock)
+			if (_dispatcherLock.IsLocked())
 			{
-				if (_dispatcherLock.IsLocked())
-				{
-					return;
-				}
-
-				// start new background thread to process all queued tasks
-				_process.StartNew(new TaskStoreDispatcher(_dispatcherLock, _storage));
+				return;
 			}
+
+			// start new background thread to process all queued tasks
+			_process.StartNew(new TaskStoreDispatcher(_dispatcherLock, _storage));
 		}
 		
 		/// <summary>
@@ -187,6 +195,9 @@ namespace Broadcast.EventSourcing
         {
 	        _logger.Write($"Register a new set of dispatchers to storage for {id}");
 			_dispatchers.Add(id, dispatchers);
+
+			// start a ReschedulingDispatcher to check if there are tasks that are not processed yet
+			_storageObserver.Start(new ReschedulingDispatcher());
         }
 
 		/// <summary>
@@ -247,12 +258,31 @@ namespace Broadcast.EventSourcing
 				_registeredServers[server.Id] = server;
 
 				// cleanup dead servers
-				var expiration = DateTime.Now.Subtract(TimeSpan.FromMilliseconds(_options.HeartbeatInterval));
-				var deadServers = _registeredServers.Where(item => item.Value.Heartbeat < expiration).Select(item => item.Key).ToList();
+				// servers are propagated each HeartbeatInterval
+				// we remove servers that are not propagated at the double time
+				var deadServers = _registeredServers.Where(item => item.Value.Expiration < DateTime.Now).Select(item => item.Key).ToList();
 				foreach (var key in deadServers)
 				{
 					_registeredServers.Remove(key);
+					_storage.Delete(new StorageKey($"server:{server.Name}:{server.Id}"));
 				}
+			}
+		}
+
+		/// <summary>
+		/// Remove a server from the TaskStore.
+		/// </summary>
+		/// <param name="server"></param>
+		public void RemoveServer(ServerModel server)
+		{
+			lock (_registeredServers)
+			{
+				if (_registeredServers.ContainsKey(server.Id))
+				{
+					_registeredServers.Remove(server.Id);
+				}
+
+				_storage.Delete(new StorageKey($"server:{server.Name}:{server.Id}"));
 			}
 		}
 
@@ -268,6 +298,8 @@ namespace Broadcast.EventSourcing
 				System.Diagnostics.Trace.WriteLine("Wait for TaskStore");
 				WaitHandle.WaitOne(50);
 			}
+
+            _storageObserver.Dispose();
 
 			// then we wait for all dequeued tasks to be dispatched to all dispatchers
 			// all tasks are passed to the dispatchers in a own thread

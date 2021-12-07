@@ -442,7 +442,8 @@ namespace Broadcast.Test.EventSourcing
 			{
 				Id = "1",
 				Name = "server",
-				Heartbeat = DateTime.Now
+				Heartbeat = DateTime.Now,
+				Expiration = DateTime.Now.AddMilliseconds(1000)
 			};
 
 			var store = new TaskStore();
@@ -458,7 +459,7 @@ namespace Broadcast.Test.EventSourcing
 			{
 				Id = "1",
 				Name = "server",
-				Heartbeat = DateTime.Now.AddMinutes(-1)
+				Heartbeat = DateTime.Now.AddMinutes(-2)
 			};
 
 			var store = new TaskStore();
@@ -467,22 +468,51 @@ namespace Broadcast.Test.EventSourcing
 			Assert.IsEmpty(store.Servers);
 		}
 
+		[Test]
+		public void TaskStore_RemoveServer()
+		{
+			var server = new ServerModel
+			{
+				Id = "1",
+				Name = "server",
+				Heartbeat = DateTime.Now
+			};
 
+			var store = new TaskStore();
+			store.PropagateServer(server);
 
+			// act
+			store.RemoveServer(new ServerModel
+			{
+				Id = "1",
+				Name = "server"
+			});
 
+			Assert.IsEmpty(store.Servers);
+		}
 
+		[Test]
+		public void TaskStore_RemoveServer_DeleteFromStorage()
+		{
+			var server = new ServerModel
+			{
+				Id = "1",
+				Name = "server",
+				Heartbeat = DateTime.Now
+			};
 
+			var store = new TaskStore();
+			store.PropagateServer(server);
 
+			// act
+			store.RemoveServer(new ServerModel
+			{
+				Id = "1",
+				Name = "server"
+			});
 
-
-
-
-
-
-
-
-
-
+			Assert.IsNull(store.Storage(s => s.Get<DataObject>(new StorageKey("server:1:server"))));
+		}
 
 
 		[Test]

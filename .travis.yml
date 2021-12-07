@@ -5,6 +5,9 @@ mono: none
 #dist: xenial
 dotnet: 3.1.414
 
+#node_js:
+#  - "10"
+
 notifications:
   email:
 #    recipients:
@@ -13,10 +16,28 @@ notifications:
     on_success: never #[always|never|change] # default: change
     on_failure: always #[always|never|change] # default: always
     
+before_script:
+  - export PATH="$PATH:$HOME/.dotnet/tools"
+
 install:
+  - dotnet tool install --global dotnet-sonarscanner
   - dotnet restore
+  - nvm install 10.0.0
+  - nvm use 10.0.0
 
 script:
+  - dotnet sonarscanner begin /k:"WickedFlame_Broadcast" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$SONAR_KEY" /d:sonar.language="cs" /d:sonar.exclusions="**/bin/**/*,**/obj/**/*" /d:sonar.cs.opencover.reportsPaths="lcov.opencover.xml" || true
   - dotnet build --configuration NetCore
 #  - dotnet test
 #  - dotnet test Tests/DataImporter.Tests/DataImporter.Tests.csproj
+  - dotnet sonarscanner end /d:sonar.login="$SONAR_KEY" || true
+
+#addons:
+#  sonarcloud:
+#    organization: "wickedflame"
+#    token:
+#      secure: "" # encrypted value of your token
+
+#script:
+  # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
+#  - sonar-scanner

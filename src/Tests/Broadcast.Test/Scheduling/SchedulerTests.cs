@@ -94,28 +94,5 @@ namespace Broadcast.Test.Scheduling
 
 			Assert.AreEqual(1, scheduler.ScheduledTasks().Count());
         }
-
-		[Test]
-        public void Scheduler_ThreadsCount()
-        {
-            var activeSchedulers = Scheduler.SchedulerCount;
-
-            var scheduler1 = new Scheduler();
-            var scheduler2 = new Scheduler();
-            var scheduler3 = new Scheduler();
-
-
-
-            Assert.IsTrue(Scheduler.SchedulerCount == activeSchedulers + 3, $"3 {Scheduler.SchedulerCount}");
-
-            scheduler1.Dispose();
-            Assert.AreEqual(Scheduler.SchedulerCount, activeSchedulers + 2, "2");
-
-            scheduler2.Dispose();
-            Assert.IsTrue(Scheduler.SchedulerCount == activeSchedulers + 1, "1");
-
-            scheduler3.Dispose();
-            Assert.IsTrue(Scheduler.SchedulerCount == activeSchedulers, "0");
-        }
     }
 }

@@ -26,12 +26,22 @@
 					<div class="">
 						<div class="broadcast-section">
 							<div class="broadcast-recap-section">
+                                <div class="broadcast-recap-section-item">
+                                    <div>
+                                        <h4>Servers</h4>
+                                    </div>
+                                    <div>
+                                        <span id="broadcast-servers-count">
+                                            -
+                                        </span>
+                                    </div>
+                                </div>
 								<div class="broadcast-recap-section-item">
 									<div>
-										<h4>Servers</h4>
+										<h4>Open Threads</h4>
 									</div>
 									<div>
-										<span id="broadcast-servers-count">
+										<span id="broadcast-threads-count">
 											-
 										</span>
 									</div>
@@ -177,7 +187,7 @@
 
 	<script>
 		var dashboardConfig = {
-			pollUrl: "%(RouteBasePath)/dashboard/metrics",
+            pollUrl: "%(RouteBasePath)/dashboard/data",
 			dashboardUrl: "%(RouteBasePath)/dashboard",
 			pollInterval: 1000
 		}

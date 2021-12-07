@@ -14,16 +14,22 @@ namespace Broadcast.Test.Configuration
 			Assert.DoesNotThrow(() => new Options());
 		}
 
+        [Test]
+        public void ProcessorOptions_ctor()
+        {
+            Assert.DoesNotThrow(() => new ProcessorOptions());
+        }
+
 		[Test]
-		public void Options_Property_ServerName_Default()
+		public void ProcessorOptions_Property_ServerName_Default()
 		{
-			Assert.AreEqual(Environment.MachineName, new Options().ServerName);
+			Assert.AreEqual(Environment.MachineName, new ProcessorOptions().ServerName);
 		}
 
 		[Test]
-		public void Options_Property_HeartbeatInterval_Default()
+		public void ProcessorOptions_Property_HeartbeatInterval_Default()
 		{
-			Assert.AreEqual(60000, new Options().HeartbeatInterval);
+			Assert.AreEqual(60000, new ProcessorOptions().HeartbeatInterval);
 		}
 	}
 }

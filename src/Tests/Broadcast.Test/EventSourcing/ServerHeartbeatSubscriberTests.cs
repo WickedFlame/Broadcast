@@ -64,7 +64,8 @@ namespace Broadcast.Test.EventSourcing
 			{
 				Id = "1", 
 				Heartbeat = DateTime.Now, 
-				Name = "test"
+				Name = "test",
+				Expiration = DateTime.Now.AddMilliseconds(1000)
 			};
 
 			var storage = new Mock<IStorage>();

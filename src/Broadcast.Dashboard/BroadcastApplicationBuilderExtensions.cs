@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Broadcast.Configuration;
 using Broadcast.Dashboard;
+using Broadcast.EventSourcing;
 using Broadcast.Processing;
 using Broadcast.Scheduling;
 using Microsoft.AspNetCore.Builder;
@@ -13,7 +14,7 @@ namespace Broadcast
 {
 	public static class BroadcastApplicationBuilderExtensions
 	{
-		public static IApplicationBuilder UseBroadcastServer(this IApplicationBuilder app, Options options = null)
+		public static IApplicationBuilder UseBroadcastServer(this IApplicationBuilder app, ProcessorOptions options = null)
 		{
 			if (app == null)
 			{
@@ -26,15 +27,16 @@ namespace Broadcast
 #else
 			var lifetime = services.GetRequiredService<IApplicationLifetime>();
 #endif
-			var storage = services.GetRequiredService<ITaskStore>();
-			options ??= services.GetService<Options>() ?? new Options();
+			// use TaskStore.Default if the services.AddBroadcast() is not configured
+			var storage = services.GetService<ITaskStore>() ?? TaskStore.Default;
+			options ??= services.GetService<ProcessorOptions>() ?? new ProcessorOptions();
 
 			var processor = new TaskProcessor(storage, options);
 			var scheduler = new Scheduler();
 
 			var server = new Broadcaster(storage, processor, scheduler, options);
 
-			BackgroundTaskClient.Setup(() => new BroadcastingClient(storage));
+			BackgroundTask.Setup(() => new BroadcastingClient(storage));
 
 			//lifetime.ApplicationStopping.Register(() => server.SendStop());
 			lifetime.ApplicationStopped.Register(() => server.Dispose());
@@ -58,7 +60,12 @@ namespace Broadcast
 			DashboardOptions.Default.TemplateParameters["%(RouteBasePath)"] = pathMatch.EnsureLeadingSlash();
 
 			var routes = app.ApplicationServices.GetService<RouteCollection>() ?? Routes.RouteCollection;
-			var storage = app.ApplicationServices.GetRequiredService<ITaskStore>();
+			var storage = app.ApplicationServices.GetService<ITaskStore>();
+			if (storage == null)
+			{
+				Console.WriteLine("Could not get registered ITaskStore. Using TaskStore.Default instead");
+				storage = TaskStore.Default;
+			}
 
 			app.Map(new PathString(pathMatch), x => x.UseMiddleware<DashboardMiddleware>(routes, storage));
 

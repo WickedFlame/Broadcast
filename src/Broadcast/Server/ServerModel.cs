@@ -21,5 +21,7 @@ namespace Broadcast.Server
 		/// Gets or sets the Heartbeat timestamp
 		/// </summary>
 		public DateTime Heartbeat { get; set; }
+
+		public DateTime Expiration { get; set; }
 	}
 }

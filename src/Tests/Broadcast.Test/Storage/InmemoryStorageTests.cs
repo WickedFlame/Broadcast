@@ -13,15 +13,17 @@ namespace Broadcast.Test.Storage
 	{
 		[Test]
 		public void InmemoryStorage_Ctor()
-		{
-			var storage = new InmemoryStorage();
-		}
+        {
+            Assert.DoesNotThrow(() => new InmemoryStorage());
+        }
 
 		[Test]
 		public void InmemoryStorage_Set()
 		{
 			var storage = new InmemoryStorage();
 			storage.Set(new StorageKey("storage", "key"), "value");
+
+            Assert.IsNotNull(storage.Get<string>(new StorageKey("storage", "key")));
 		}
 
 		[Test]
@@ -80,6 +82,8 @@ namespace Broadcast.Test.Storage
 		{
 			var storage = new InmemoryStorage();
 			storage.AddToList(new StorageKey("storage", "key"), "value");
+
+            Assert.AreEqual(1, storage.GetList(new StorageKey("storage", "key")).Count());
 		}
 
 		[Test]
@@ -88,6 +92,8 @@ namespace Broadcast.Test.Storage
 			var storage = new InmemoryStorage();
 			storage.AddToList(new StorageKey("storage", "key"), "one");
 			storage.AddToList(new StorageKey("storage", "key"), "two");
+
+            Assert.AreEqual(2, storage.GetList(new StorageKey("storage", "key")).Count());
 		}
 
 		[Test]

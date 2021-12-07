@@ -11,7 +11,7 @@ namespace Broadcast.Scheduling
 	{
 		private readonly IScheduleQueue _queue;
 
-		/// <summary>
+        /// <summary>
 		/// Cretes a new instance of the SchedulerTaskDispatcher
 		/// </summary>
 		/// <param name="queue"></param>
@@ -24,9 +24,9 @@ namespace Broadcast.Scheduling
 		/// Execute the Dispatcher to processes the scheduled tasks
 		/// </summary>
 		/// <param name="context"></param>
-		public void Execute(ISchedulerContext context)
+		public async void Execute(ISchedulerContext context)
 		{
-			while (context.IsRunning)
+			while (context.ThreadWait.IsOpen)
 			{
 				var time = context.Elapsed;
 				foreach (var task in _queue.ToList())
@@ -42,8 +42,8 @@ namespace Broadcast.Scheduling
 				}
 
 				// Delay the thread to avoid high CPU usage with the infinite loop
-				System.Threading.Tasks.Task.Delay(50).Wait();
-			}
+                await context.ThreadWait.WaitOne(50);
+            }
 		}
 	}
 }

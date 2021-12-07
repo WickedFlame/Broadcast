@@ -79,6 +79,12 @@ namespace Broadcast
 		void PropagateServer(ServerModel server);
 
 		/// <summary>
+		/// Remove a server from the TaskStore.
+		/// </summary>
+		/// <param name="server"></param>
+		void RemoveServer(ServerModel server);
+
+		/// <summary>
 		/// Wait for all enqueued Tasks to be passed to the dispatchers
 		/// </summary>
 		/// <returns></returns>

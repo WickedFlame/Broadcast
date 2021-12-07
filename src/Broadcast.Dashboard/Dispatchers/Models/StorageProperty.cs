@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace Broadcast.Dashboard.Dispatchers.Models
 {
 	/// <summary>
@@ -12,7 +14,7 @@ namespace Broadcast.Dashboard.Dispatchers.Models
 		/// <param name="key"></param>
 		/// <param name="value"></param>
 		public StorageProperty(string key, object value)
-			: this(key, value?.ToString())
+			: this(key, Convert(value))
 		{
 		}
 
@@ -44,6 +46,16 @@ namespace Broadcast.Dashboard.Dispatchers.Models
 		public override string ToString()
 		{
 			return $"{Key}: {Value}";
+		}
+
+		private static string Convert(object value)
+		{
+			if (value is DateTime dte)
+			{
+				return dte.ToString("o");
+			}
+
+			return value?.ToString();
 		}
 	}
 }

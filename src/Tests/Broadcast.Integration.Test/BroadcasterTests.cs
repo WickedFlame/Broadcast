@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System;
 using System.Linq.Expressions;
+using FluentAssertions;
 
 namespace Broadcast.Integration.Test
 {
@@ -272,14 +273,19 @@ namespace Broadcast.Integration.Test
         public void Broadcaster_Schedule()
         {
             var broadcaster = new Broadcaster(new TaskStore());
-            broadcaster.Schedule(() => Console.WriteLine("test"), TimeSpan.FromMinutes(1));
+            var id = broadcaster.Schedule(() => Console.WriteLine("test"), TimeSpan.FromMinutes(1));
+
+            id.Should().NotBeNull();
         }
 
         [Test]
         public void Broadcaster_Recurring()
         {
-            var broadcaster = new Broadcaster(new TaskStore());
+            var store = new TaskStore();
+            var broadcaster = new Broadcaster(store);
             broadcaster.Recurring(() => Console.WriteLine("test"), TimeSpan.FromMinutes(1));
+
+            store.Should().HaveCount(1);
         }
 
         [Test]
@@ -294,22 +300,6 @@ namespace Broadcast.Integration.Test
 
             Assert.IsTrue(broadcaster.Store.Count(t => t.State == TaskState.Processed) == 3);
         }
-
-        //[Test]
-        //public void Broadcaster_Scheduler_Delegate()
-        //{
-        //    TaskStoreFactory.StoreFactory = () => new TaskStore();
-        //    var store = TaskStoreFactory.GetStore();
-
-        //    var broadcaster = new Broadcaster(new TaskStore());
-        //    broadcaster.Schedule(SomeDelegateMethod, TimeSpan.FromSeconds(0.005));
-        //    broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
-        //    broadcaster.Schedule(() => Trace.WriteLine("test"), TimeSpan.FromSeconds(0.005));
-
-        //    Task.Delay(1000).Wait();
-
-        //    Assert.IsTrue(store.Count(t => t.State == TaskState.Processed) == 3);
-        //}
 
         private class AsyncReturner
         {

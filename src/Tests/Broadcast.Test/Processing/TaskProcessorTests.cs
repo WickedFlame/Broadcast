@@ -17,7 +17,7 @@ namespace Broadcast.Test.Processing
 		public void TaskProcessor_ctor()
 		{
 			var store = new Mock<ITaskStore>();
-			Assert.DoesNotThrow(() => new TaskProcessor(store.Object, new Options()));
+			Assert.DoesNotThrow(() => new TaskProcessor(store.Object, new ProcessorOptions()));
 		}
 
 		[Test]
@@ -30,14 +30,14 @@ namespace Broadcast.Test.Processing
 		[Test]
 		public void TaskProcessor_ctor_Null_Store()
 		{
-			Assert.Throws<ArgumentNullException>(() => new TaskProcessor(null, new Options()));
+			Assert.Throws<ArgumentNullException>(() => new TaskProcessor(null, new ProcessorOptions()));
 		}
 
 		[Test]
 		public void TaskProcessor_Queue()
 		{
 			var store = new Mock<ITaskStore>();
-			var processor = new TaskProcessor(store.Object, new Options());
+			var processor = new TaskProcessor(store.Object, new ProcessorOptions());
 
 			Assert.IsNotNull(processor.Queue);
 		}
@@ -46,7 +46,7 @@ namespace Broadcast.Test.Processing
 		public void TaskProcessor_Process_SetState()
 		{
 			var store = new Mock<ITaskStore>();
-			var processor = new TaskProcessor(store.Object, new Options());
+			var processor = new TaskProcessor(store.Object, new ProcessorOptions());
 
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("TaskProcessor"));
 			processor.Process(task);
@@ -58,7 +58,7 @@ namespace Broadcast.Test.Processing
 		public void TaskProcessor_Process_SetState_Storage()
 		{
 			var store = new Mock<ITaskStore>();
-			var processor = new TaskProcessor(store.Object, new Options());
+			var processor = new TaskProcessor(store.Object, new ProcessorOptions());
 
 			processor.Process(TaskFactory.CreateTask(() => Console.WriteLine("TaskProcessor")));
 
@@ -69,7 +69,7 @@ namespace Broadcast.Test.Processing
 		public void TaskProcessor_Process_ValidateState_Queued()
 		{
 			var store = new Mock<ITaskStore>();
-			var processor = new TaskProcessor(store.Object, new Options());
+			var processor = new TaskProcessor(store.Object, new ProcessorOptions());
 
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("TaskProcessor"));
 			processor.Process(task);

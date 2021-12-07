@@ -30,7 +30,11 @@ namespace Broadcast.Server
 		/// <param name="dispatcher"></param>
 		public void StartNew(IBackgroundDispatcher<T> dispatcher)
 		{
-			var thread = Task.Factory.StartNew(() => dispatcher.Execute(_context), CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
+			var thread = Task.Factory.StartNew(() => dispatcher.Execute(_context), 
+                CancellationToken.None, 
+                TaskCreationOptions.None, 
+                TaskScheduler.Default);
+
 			_threadList.Add(thread);
 		}
 

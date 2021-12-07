@@ -102,6 +102,10 @@ ${this.createStorageValues(values)}
 
 	updateStorageElement(elem, values) {
 		elem.querySelector('.broadcast-storage-content').innerHTML = this.createStorageValues(values);
+		var state = values.find(i => i.key === 'State');
+		if (state) {
+			elem.setAttribute('data-state', state.value);
+		}
 	}
 
 	appendChild(list, child) {

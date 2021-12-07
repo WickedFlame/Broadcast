@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Broadcast.Configuration;
 using Broadcast.Storage;
 
@@ -12,14 +11,14 @@ namespace Broadcast.Server
 	public class BroadcasterHeartbeatDispatcher : IBackgroundDispatcher<IBroadcasterConterxt>
 	{
 		private readonly ITaskStore _store;
-		private readonly Options _options;
+		private readonly ProcessorOptions _options;
 
 		/// <summary>
 		/// Creates a new instance of the BroadcasterHeartbeatDispatcher
 		/// </summary>
 		/// <param name="store"></param>
 		/// <param name="options"></param>
-		public BroadcasterHeartbeatDispatcher(ITaskStore store, Options options)
+		public BroadcasterHeartbeatDispatcher(ITaskStore store, ProcessorOptions options)
 		{
 			_store = store ?? throw new ArgumentNullException(nameof(store));
 			_options = options ?? throw new ArgumentNullException(nameof(options));
@@ -32,14 +31,14 @@ namespace Broadcast.Server
 		public async void Execute(IBroadcasterConterxt context)
 		{
 			// the dispatcher is created per running broadcaster
-
-			while (context.IsRunning)
+			while(context.ThreadWait.IsOpen)
 			{
 				var model = new ServerModel
 				{
 					Name = _options.ServerName, 
 					Id = context.Id,
-					Heartbeat = DateTime.Now
+					Heartbeat = DateTime.Now,
+					Expiration = DateTime.Now.Add(TimeSpan.FromMilliseconds(_options.HeartbeatInterval * 2))
 				};
 				_store.Storage(s =>
 				{
@@ -47,8 +46,8 @@ namespace Broadcast.Server
 					s.PropagateEvent(new StorageKey($"server:{_options.ServerName}:{context.Id}"));
 				});
 
-				// don't run again for at least 
-				await Task.Delay(_options.HeartbeatInterval);
+                // don't run again for at least 
+                await context.ThreadWait.WaitOne(_options.HeartbeatInterval);
 			}
 		}
 	}

@@ -34,6 +34,11 @@ namespace Broadcast.EventSourcing
 		TimeSpan? Time { get; set; }
 
 		/// <summary>
+		/// Gets the timestamp of creation of the task
+		/// </summary>
+		DateTime CreatedAt { get; set; }
+
+		/// <summary>
 		/// Gets if a task is recurring
 		/// </summary>
 		bool IsRecurring { get; set; }
@@ -103,9 +108,11 @@ namespace Broadcast.EventSourcing
 		    StateChanges = new Dictionary<TaskState, DateTime>();
 		    Id = Guid.NewGuid().ToString();
 			Name = Guid.NewGuid().ToString();
+
+			CreatedAt = DateTime.Now;
 		}
 
-	    /// <inheritdoc/>
+		/// <inheritdoc/>
 		public string Id { get; set; }
 
 	    /// <inheritdoc/>
@@ -147,6 +154,11 @@ namespace Broadcast.EventSourcing
 		/// Gets the arguments of the Method
 		/// </summary>
 		public IReadOnlyList<object> Args { get; set; }
+
+		/// <summary>
+		/// Gets the timestamp of creation of the task
+		/// </summary>
+		public DateTime CreatedAt { get; set; }
 
 		/// <inheritdoc/>
 		public override string ToString()

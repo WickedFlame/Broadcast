@@ -1,4 +1,5 @@
-﻿
+﻿using System.Threading;
+
 namespace Broadcast.Server
 {
 	/// <summary>
@@ -7,13 +8,29 @@ namespace Broadcast.Server
 	public class BroadcasterConterxt : IBroadcasterConterxt
 	{
 		/// <summary>
-		/// Gets a boolean indicating if the <see cref="IBroadcaster"/> is running
+		/// Create a new context
 		/// </summary>
-		public bool IsRunning { get; set; }
+        public BroadcasterConterxt()
+        {
+            ThreadWait = new ThreadWait();
+        }
+
+		/// <summary>
+		/// Gets the <see cref="ThreadWait"/> that stops the broadcaster
+		/// </summary>
+		public ThreadWait ThreadWait { get; }
 
 		/// <summary>
 		/// Gets the Id of the <see cref="IBroadcaster"/>
 		/// </summary>
 		public string Id { get; set; }
-	}
+
+		/// <summary>
+		/// End the processing thread
+		/// </summary>
+        public void Stop()
+        {
+            ThreadWait.Close();
+        }
+    }
 }
