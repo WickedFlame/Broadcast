@@ -43,7 +43,7 @@ namespace Broadcast.Storage.Serialization
 				foreach (var paramType in parameterTypes)
 				{
 					hashes.Add(new HashValue($"ArgsType:{cnt}", paramType));
-					hashes.Add(new HashValue($"ArgsValue:{cnt}", task.Args[cnt].ToString()));
+					hashes.Add(new HashValue($"ArgsValue:{cnt}", task.Args[cnt]?.ToString()));
 					cnt = cnt + 1;
 				}
 

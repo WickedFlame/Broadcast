@@ -38,6 +38,11 @@ namespace Broadcast.Storage.Serialization
 		/// <returns></returns>
 		public static object Convert(Type type, string value)
 		{
+            if (value == null)
+            {
+				return null;
+            }
+
 			if (type == typeof(string) || type == typeof(object))
 			{
 				return value.Trim();
