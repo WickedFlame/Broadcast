@@ -53,8 +53,8 @@ namespace Broadcast.Processing
 				context.SetState(_task, TaskState.Faulted);
 				context.Store.Storage(s => s.SetValues(new StorageKey($"tasks:values:{_task.Id}"), new DataObject
 				{
-					{"Error", e.InnerException.Message},
-					{"StackTrace", e.InnerException.StackTrace}
+					{"Error", e.InnerException != null ? e.InnerException.Message : e.Message},
+					{"StackTrace", e.InnerException != null ? e.InnerException.StackTrace : e.StackTrace}
 				}));
 				_logger.Write($"Task execution failed for {_task.Id}", e);
 			}
