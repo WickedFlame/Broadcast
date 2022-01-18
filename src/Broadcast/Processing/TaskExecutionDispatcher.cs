@@ -41,9 +41,9 @@ namespace Broadcast.Processing
 			{
 				_logger.Write($"Start processing task {_task.Id}");
 				context.SetState(_task, TaskState.Processing);
-
-				//TODO: INotification is bad design. any object should be useable
-				var invocation = new TaskInvocation();
+				
+				var activationContext = context.Options?.ActivationContext ?? new ActivationContext();
+				var invocation = new TaskInvocation(activationContext);
 				var output = _task.Invoke(invocation);
 
 				context.SetState(_task, TaskState.Processed);

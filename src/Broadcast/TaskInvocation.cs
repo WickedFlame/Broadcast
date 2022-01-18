@@ -12,9 +12,9 @@ namespace Broadcast
 	{
 		private readonly IActivationContext _activationContext;
 
-		public TaskInvocation()
+		public TaskInvocation(IActivationContext activationContext)
 		{
-			_activationContext = new ActivationContext();
+			_activationContext = activationContext;
 		}
 
 		public object InvokeTask(BroadcastTask task)
