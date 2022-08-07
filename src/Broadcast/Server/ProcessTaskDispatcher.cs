@@ -12,7 +12,7 @@ namespace Broadcast.Server
 	{
 		private readonly IBroadcaster _broadcaster;
 		private readonly ILogger _logger;
-		private ITaskStore _store;
+		private readonly ITaskStore _store;
 
 		/// <summary>
 		/// Creates a new instance of the ProcessTaskDispatcher
@@ -33,7 +33,7 @@ namespace Broadcast.Server
 		/// <param name="task"></param>
 		public void Execute(ITask task)
 		{
-			if(task.Time == null && !task.IsRecurring)
+			if(task.TaskType == TaskType.Simple && task.Time == null && !task.IsRecurring)
 			{
 				if (task.State == TaskState.Deleted)
 				{
@@ -55,7 +55,14 @@ namespace Broadcast.Server
 		/// Dispose the Dispatcher
 		/// </summary>
 		public void Dispose()
-		{
-		}
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+			// clear all references here
+        }
 	}
 }

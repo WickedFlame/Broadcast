@@ -6,6 +6,7 @@ Type: System.Console, System.Console
 IsRecurring: False
 Time: 00:00:20
 CreatedAt: 0000-00-00T00:00:00.0000
+TaskType: Simple
 StateChanges:New: 0000-00-00T00:00:00.0000
 Method: WriteLine
 ArgsType:0: System.String, System.Private.CoreLib

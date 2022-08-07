@@ -33,7 +33,7 @@ namespace Broadcast.Server
 		/// <param name="task"></param>
 		public void Execute(ITask task)
 		{
-			if (task.Time != null && !task.IsRecurring)
+			if (task.TaskType == TaskType.Scheduled && task.Time != null && !task.IsRecurring)
 			{
 				if (task.State == TaskState.Deleted)
 				{

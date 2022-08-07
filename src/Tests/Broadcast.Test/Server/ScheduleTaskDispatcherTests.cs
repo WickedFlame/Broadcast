@@ -44,6 +44,7 @@ namespace Broadcast.Test.Server
 			var dispatcher = new ScheduleTaskDispatcher(_broadcaster.Object, _store.Object);
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("ScheduleTaskDispatcher"));
 			task.Time = TimeSpan.Zero;
+            task.TaskType = TaskType.Scheduled;
 
 			dispatcher.Execute(task);
 
@@ -56,6 +57,7 @@ namespace Broadcast.Test.Server
 			var dispatcher = new ScheduleTaskDispatcher(_broadcaster.Object, _store.Object);
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("ScheduleTaskDispatcher"));
 			task.Time = TimeSpan.Zero;
+            task.TaskType = TaskType.Scheduled;
 			task.State = TaskState.Deleted;
 
 			dispatcher.Execute(task);
@@ -70,6 +72,7 @@ namespace Broadcast.Test.Server
 			var dispatcher = new ScheduleTaskDispatcher(_broadcaster.Object, _store.Object);
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("ScheduleTaskDispatcher"));
 			task.Time = TimeSpan.Zero;
+            task.TaskType = TaskType.Scheduled;
 
 			_store.Setup(exp => exp.Storage<BroadcastTask>(It.IsAny<Func<IStorage, BroadcastTask>>())).Returns(() => (BroadcastTask)task);
 
@@ -84,6 +87,7 @@ namespace Broadcast.Test.Server
 			var dispatcher = new ScheduleTaskDispatcher(_broadcaster.Object, _store.Object);
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("ScheduleTaskDispatcher"));
 			task.Time = TimeSpan.Zero;
+            task.TaskType = TaskType.Scheduled;
 
 			_store.Setup(exp => exp.Storage<BroadcastTask>(It.IsAny<Func<IStorage, BroadcastTask>>())).Returns(() => (BroadcastTask)null);
 
@@ -98,6 +102,7 @@ namespace Broadcast.Test.Server
 			var dispatcher = new ScheduleTaskDispatcher(_broadcaster.Object, _store.Object);
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("ScheduleTaskDispatcher"));
 			task.Time = TimeSpan.Zero;
+            task.TaskType = TaskType.Scheduled;
 
 			var t2 = task.Clone();
 			t2.State = TaskState.Deleted;
@@ -116,6 +121,7 @@ namespace Broadcast.Test.Server
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("ScheduleTaskDispatcher"));
 			task.IsRecurring = true;
 			task.Time = TimeSpan.Zero;
+            task.TaskType = TaskType.Scheduled;
 
 			dispatcher.Execute(task);
 
@@ -127,6 +133,7 @@ namespace Broadcast.Test.Server
 		{
 			var dispatcher = new ScheduleTaskDispatcher(_broadcaster.Object, _store.Object);
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("ScheduleTaskDispatcher"));
+            task.TaskType = TaskType.Scheduled;
 
 			dispatcher.Execute(task);
 
@@ -141,6 +148,7 @@ namespace Broadcast.Test.Server
 			var dispatcher = new ScheduleTaskDispatcher(_broadcaster.Object, new TaskStore(storage.Object));
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("ScheduleTaskDispatcher"));
 			task.Time = TimeSpan.Zero;
+            task.TaskType = TaskType.Scheduled;
 
 			dispatcher.Execute(task);
 
@@ -155,6 +163,7 @@ namespace Broadcast.Test.Server
 			var dispatcher = new ScheduleTaskDispatcher(_broadcaster.Object, new TaskStore(storage.Object));
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("ScheduleTaskDispatcher"));
 			task.Time = TimeSpan.Zero;
+            task.TaskType = TaskType.Scheduled;
 
 			dispatcher.Execute(task);
 

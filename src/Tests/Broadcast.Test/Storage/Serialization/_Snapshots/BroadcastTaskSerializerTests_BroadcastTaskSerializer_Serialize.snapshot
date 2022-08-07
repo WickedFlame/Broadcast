@@ -13,6 +13,8 @@ Name: Time
 Value: null
 Name: CreatedAt
 Value: 0000-00-00T00:00:00.0000
+Name: TaskType
+Value: Simple
 Name: StateChanges:New
 Value: 0000-00-00T00:00:00.0000
 Name: Method

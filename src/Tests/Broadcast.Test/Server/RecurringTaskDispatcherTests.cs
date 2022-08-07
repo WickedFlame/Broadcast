@@ -52,6 +52,7 @@ namespace Broadcast.Test.Server
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("RecurringTaskDispatcher"));
 			task.IsRecurring = true;
 			task.Time = TimeSpan.Zero;
+            task.TaskType = TaskType.Recurring;
 
 			_store.Setup(exp => exp.Storage<BroadcastTask>(It.IsAny<Func<IStorage, BroadcastTask>>())).Returns(() => (BroadcastTask)task);
 
@@ -67,6 +68,7 @@ namespace Broadcast.Test.Server
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("RecurringTaskDispatcher"));
 			task.IsRecurring = true;
 			task.Time = TimeSpan.Zero;
+            task.TaskType = TaskType.Recurring;
 			task.State = TaskState.Deleted;
 			
 			dispatcher.Execute(task);
@@ -81,6 +83,7 @@ namespace Broadcast.Test.Server
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("RecurringTaskDispatcher"));
 			task.IsRecurring = true;
 			task.Time = TimeSpan.Zero;
+            task.TaskType = TaskType.Recurring;
 
 			_store.Setup(exp => exp.Storage<BroadcastTask>(It.IsAny<Func<IStorage, BroadcastTask>>())).Returns(() => (BroadcastTask)task);
 
@@ -96,6 +99,7 @@ namespace Broadcast.Test.Server
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("RecurringTaskDispatcher"));
 			task.IsRecurring = true;
 			task.Time = TimeSpan.Zero;
+            task.TaskType = TaskType.Recurring;
 
 			_store.Setup(exp => exp.Storage<BroadcastTask>(It.IsAny<Func<IStorage, BroadcastTask>>())).Returns(() => (BroadcastTask)null);
 
@@ -111,6 +115,7 @@ namespace Broadcast.Test.Server
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("RecurringTaskDispatcher"));
 			task.IsRecurring = true;
 			task.Time = TimeSpan.Zero;
+            task.TaskType = TaskType.Recurring;
 
 			var t2 = task.Clone();
 			t2.State = TaskState.Deleted;
@@ -129,6 +134,7 @@ namespace Broadcast.Test.Server
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("RecurringTaskDispatcher"));
 			task.IsRecurring = true;
 			task.Time = TimeSpan.Zero;
+            task.TaskType = TaskType.Recurring;
 
 			_store.Setup(exp => exp.Storage<BroadcastTask>(It.IsAny<Func<IStorage, BroadcastTask>>())).Returns(() => (BroadcastTask)task);
 
@@ -143,6 +149,7 @@ namespace Broadcast.Test.Server
 			var dispatcher = new RecurringTaskDispatcher(_broadcaster.Object, _store.Object);
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("RecurringTaskDispatcher"));
 			task.Time = TimeSpan.Zero;
+            task.TaskType = TaskType.Recurring;
 
 			dispatcher.Execute(task);
 
@@ -155,6 +162,7 @@ namespace Broadcast.Test.Server
 			var dispatcher = new RecurringTaskDispatcher(_broadcaster.Object, _store.Object);
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("RecurringTaskDispatcher"));
 			task.IsRecurring = true;
+            task.TaskType = TaskType.Recurring;
 
 			dispatcher.Execute(task);
 
@@ -168,6 +176,7 @@ namespace Broadcast.Test.Server
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("RecurringTaskDispatcher"));
 			task.IsRecurring = true;
 			task.Time = TimeSpan.Zero;
+            task.TaskType = TaskType.Recurring;
 
 			_store.Setup(exp => exp.Storage<BroadcastTask>(It.IsAny<Func<IStorage, BroadcastTask>>())).Returns(() => (BroadcastTask)task);
 
@@ -185,6 +194,7 @@ namespace Broadcast.Test.Server
 			task.Name = "testTask";
 			task.IsRecurring = true;
 			task.Time = TimeSpan.Zero;
+            task.TaskType = TaskType.Recurring;
 
 			storage.Setup(exp => exp.Get<BroadcastTask>(It.IsAny<StorageKey>())).Returns(() => (BroadcastTask)task);
 
@@ -206,6 +216,7 @@ namespace Broadcast.Test.Server
 			task.Name = "testTask";
 			task.IsRecurring = true;
 			task.Time = TimeSpan.Zero;
+            task.TaskType = TaskType.Recurring;
 
 			storage.Setup(exp => exp.Get<BroadcastTask>(It.IsAny<StorageKey>())).Returns(() => (BroadcastTask)task);
 
@@ -224,6 +235,7 @@ namespace Broadcast.Test.Server
 			task.Name = "testTask";
 			task.IsRecurring = true;
 			task.Time = TimeSpan.Zero;
+            task.TaskType = TaskType.Recurring;
 
 			storage.Setup(exp => exp.Get<BroadcastTask>(It.IsAny<StorageKey>())).Returns(() => (BroadcastTask)task);
 
@@ -242,6 +254,7 @@ namespace Broadcast.Test.Server
 			task.Name = "testTask";
 			task.IsRecurring = true;
 			task.Time = TimeSpan.Zero;
+            task.TaskType = TaskType.Recurring;
 
 			storage.Setup(exp => exp.Get<BroadcastTask>(It.IsAny<StorageKey>())).Returns(() => (BroadcastTask)task);
 

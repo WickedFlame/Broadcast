@@ -57,7 +57,6 @@ namespace Broadcast.Storage.Redis.Test
 		}
 
 		[Test]
-		//[UpdateSnapshot]
 		public void SerializerExtensions_Serialize_Task()
 		{
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("test"));
@@ -74,7 +73,6 @@ namespace Broadcast.Storage.Redis.Test
 		}
 
 		[Test]
-		//[UpdateSnapshot]
 		public void SerializerExtensions_Deserialize_Task()
 		{
 			var task = TaskFactory.CreateTask(() => Console.WriteLine("test"));

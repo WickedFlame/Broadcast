@@ -49,7 +49,12 @@ namespace Broadcast.EventSourcing
 		/// Recurring Tasks keep the name for each recurrence contrary to the Id
 		/// </summary>
 		string Name { get; set; }
-		
+
+		/// <summary>
+		/// Gets the TaskType of this task
+		/// </summary>
+		TaskType TaskType{ get; set; }
+
 		/// <summary>
 		/// Invoke the task
 		/// </summary>
@@ -108,6 +113,7 @@ namespace Broadcast.EventSourcing
 		    StateChanges = new Dictionary<TaskState, DateTime>();
 		    Id = Guid.NewGuid().ToString();
 			Name = Guid.NewGuid().ToString();
+            TaskType = TaskType.Simple;
 
 			CreatedAt = DateTime.Now;
 		}
@@ -136,6 +142,9 @@ namespace Broadcast.EventSourcing
 
 	    /// <inheritdoc/>
 		public bool IsRecurring { get; set; }
+
+		/// <inheritdoc/>
+		public TaskType TaskType { get; set; }
 
 		/// <inheritdoc/>
 		public string Name { get; set; }
@@ -179,6 +188,7 @@ namespace Broadcast.EventSourcing
 			{
 				State = TaskState.New,
 				IsRecurring = IsRecurring,
+				TaskType = TaskType,
 				Time = Time,
 				Name = Name
 			};

@@ -10,6 +10,7 @@ State: New
 StateChanges:
   Key: New
   Value: 0000-00-00T00:00:00.0000
+TaskType:
 Time:
   00:00:01
 Type: System.Diagnostics.Trace

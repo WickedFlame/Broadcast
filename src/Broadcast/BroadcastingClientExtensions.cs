@@ -24,6 +24,7 @@ namespace Broadcast
 			var task = TaskFactory.CreateTask(expression);
 			task.Time = time;
 			task.IsRecurring = true;
+            task.TaskType = TaskType.Recurring;
 
 			if (!string.IsNullOrEmpty(name))
 			{
@@ -57,6 +58,7 @@ namespace Broadcast
 		{
 			var task = TaskFactory.CreateTask(expression);
 			task.Time = time;
+            task.TaskType = TaskType.Scheduled;
 
 			client.Enqueue(task);
 
@@ -72,6 +74,7 @@ namespace Broadcast
 		public static string Send(this IBroadcastingClient client, Expression<Action> expression)
 		{
 			var task = TaskFactory.CreateTask(expression);
+            task.TaskType = TaskType.Simple;
 
 			client.Enqueue(task);
 
