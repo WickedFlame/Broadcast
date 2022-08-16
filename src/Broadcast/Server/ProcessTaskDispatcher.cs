@@ -1,7 +1,6 @@
 ﻿using System;
 using Broadcast.Diagnostics;
 using Broadcast.EventSourcing;
-using Broadcast.Storage;
 
 namespace Broadcast.Server
 {
