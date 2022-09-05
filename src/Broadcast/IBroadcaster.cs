@@ -30,7 +30,9 @@ namespace Broadcast
 		/// </summary>
 		string Name { get; }
 
-		/// <summary>
+        IEventHandlerContext EventHandlers { get; }
+
+        /// <summary>
 		/// Process the task
 		/// </summary>
 		/// <param name="task"></param>

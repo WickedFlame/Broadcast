@@ -69,6 +69,7 @@ namespace Broadcast
 			_logger = LoggerFactory.Create();
 			_logger.Write($"Starting new Broadcaster {options.ServerName}:{_id}");
 
+            EventHandlers = new EventHandlerContext(options.ActivationContext);
 			Processor = processor;
 			Scheduler = scheduler;
 			Store = store;
@@ -103,6 +104,8 @@ namespace Broadcast
 		/// Gets the <see cref="ITaskStore"/>
 		/// </summary>
 		public ITaskStore Store { get; }
+
+		public IEventHandlerContext EventHandlers { get; }
 
 		/// <summary>
 		/// Gets the name of the instance. This is equal to the <see cref="Options.ServerName"/>

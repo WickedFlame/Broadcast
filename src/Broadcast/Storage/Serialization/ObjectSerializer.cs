@@ -23,12 +23,16 @@ namespace Broadcast.Storage.Serialization
 				return new[] { new HashValue(obj.GetType().Name, obj.ToString()) };
 			}
 
-			var hashset = properties
-				.Where(x => x.GetValue(obj) != null) // <-- PREVENT NullReferenceException
-				.Select(property => new HashValue(property.Name, property.GetValue(obj)
-					.ToString())).ToArray();
+            var hashset = properties
+                .Where(x => x.GetValue(obj) != null) // <-- PREVENT NullReferenceException
+                .Select(property => new HashValue(property.Name, property.GetValue(obj)
+                    .ToString())).ToArray();
 
-			return hashset;
+            //var hashset = properties
+            //    .Where(x => x.GetValue(obj) != null) // <-- PREVENT NullReferenceException
+            //    .Select(property => new HashValue(property.Name, Newtonsoft.Json.JsonConvert.SerializeObject(property.GetValue(obj)))).ToArray();
+
+            return hashset;
 		}
 
 		/// <summary>
@@ -49,7 +53,8 @@ namespace Broadcast.Storage.Serialization
 					continue;
 				}
 
-				property.SetValue(obj, TypeConverter.Convert(property.PropertyType, entry.Value.ToString()));
+                property.SetValue(obj, TypeConverter.Convert(property.PropertyType, entry.Value.ToString()));
+                //property.SetValue(obj, Newtonsoft.Json.JsonConvert.DeserializeObject(entry.Value, property.PropertyType));
 			}
 
 			return obj;

@@ -106,5 +106,27 @@ namespace Broadcast
 			var client = new BroadcastingClient(broadcaster.Store);
 			client.DeleteRecurringTask(name);
 		}
-	}
+
+        public static void Publish<T>(this IBroadcaster broadcaster, T @event)
+        {
+			// Message Queue
+			var handlers = broadcaster.EventHandlers.Resolve<T>();
+			foreach (var handler in handlers)
+            {
+                broadcaster.Send(() => handler.Handle(@event));
+            }
+        }
+
+		/// <summary>
+		/// Subscrib a <see cref="IEventHandler{T}"/> to the Broadcaster. Multiple <see cref="IEventHandler{T}"/> can be registered to the same event.
+		/// </summary>
+		/// <typeparam name="TEvent"></typeparam>
+		/// <typeparam name="THandler"></typeparam>
+		/// <param name="broadcaster"></param>
+        public static void Subscribe<TEvent, THandler>(this IBroadcaster broadcaster) where THandler : IEventHandler<TEvent>
+        {
+            // Message Queue
+            broadcaster.EventHandlers.Register<TEvent, THandler>();
+        }
+    }
 }

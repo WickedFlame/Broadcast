@@ -44,8 +44,9 @@ namespace Broadcast.Storage.Serialization
 				foreach (var paramType in parameterTypes)
 				{
 					hashes.Add(new HashValue($"ArgsType:{cnt}", paramType));
-					hashes.Add(new HashValue($"ArgsValue:{cnt}", task.Args[cnt]?.ToString()));
-					cnt = cnt + 1;
+                    //hashes.Add(new HashValue($"ArgsValue:{cnt}", task.Args[cnt]?.ToString()));
+                    hashes.Add(new HashValue($"ArgsValue:{cnt}", SerializeInternal(task.Args[cnt])));
+                    cnt = cnt + 1;
 				}
 
 				return hashes.ToArray();
@@ -54,7 +55,7 @@ namespace Broadcast.Storage.Serialization
 			return null;
 		}
 
-		/// <summary>
+        /// <summary>
 		/// Deserialize a list of <see cref="HashValue"/> to a <see cref="BroadcastTask"/>
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
@@ -97,8 +98,10 @@ namespace Broadcast.Storage.Serialization
 			{
 				var type = TypeConverter.Convert<Type>(hashEntries.FirstOrDefault(h => h.Name == $"ArgsType:{i}")?.Value);
 				argumentTypes.Add(type);
-				arguments.Add(TypeConverter.Convert(type, hashEntries.FirstOrDefault(h => h.Name == $"ArgsValue:{i}")?.Value));
-			}
+				//arguments.Add(TypeConverter.Convert(type, hashEntries.FirstOrDefault(h => h.Name == $"ArgsValue:{i}")?.Value));
+				var arg = hashEntries.FirstOrDefault(h => h.Name == $"ArgsValue:{i}")?.Value;
+                arguments.Add(DeserializeInternal(arg, type));
+            }
 
 			if (task.Type == null || string.IsNullOrEmpty(method))
 			{
@@ -110,5 +113,36 @@ namespace Broadcast.Storage.Serialization
 
 			return task;
 		}
+
+        private string SerializeInternal<T>(T args)
+        {
+            if (args == null)
+            {
+                return string.Empty;
+            }
+
+            if (args is string)
+            {
+                return args?.ToString();
+            }
+
+            return YamlMap.Serializer.Serialize(args);
+            //return Newtonsoft.Json.JsonConvert.SerializeObject(args);
+        }
+
+		private object DeserializeInternal(string value, Type type)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+				return null;
+            }
+
+            if (type == typeof(string))
+            {
+				return value;
+            }
+
+            return YamlMap.Serializer.Deserialize(type, value);
+        }
 	}
 }

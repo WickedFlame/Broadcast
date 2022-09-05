@@ -361,11 +361,7 @@ namespace Broadcast.Test.Api
 
 			Assert.That(originalRecurring["ReferenceId"].ToString(), Is.EqualTo(updatedRecurring["ReferenceId"].ToString()));
 		}
-
-
-
-
-
+		
 		public void TestMethod(int i) { }
 
 		public void GenericMethod<T>(T value) { }

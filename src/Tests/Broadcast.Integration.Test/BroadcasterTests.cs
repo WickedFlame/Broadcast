@@ -301,6 +301,60 @@ namespace Broadcast.Integration.Test
             Assert.IsTrue(broadcaster.Store.Count(t => t.State == TaskState.Processed) == 3);
         }
 
+        [Test]
+        public void Broadcaster_Api_Publish()
+        {
+            var broadcaster = new Broadcaster(new TaskStore());
+            broadcaster.Subscribe<Request, RequestHandler>();
+
+            broadcaster.Publish(new Request(1));
+
+            broadcaster.WaitAll();
+
+            Assert.AreEqual(1, broadcaster.GetProcessedTasks().Count(), $"Expected: {1}{Environment.NewLine}  Actual: {broadcaster.GetProcessedTasks().Count()}{Environment.NewLine}  Total: {broadcaster.Store.Count()}{Environment.NewLine}  States: {string.Join(',', broadcaster.Store.Select(s => s.State.ToString()))}{Environment.NewLine}  Queue: {string.Join(',', broadcaster.Store.GetEnqueuedTasks())}{Environment.NewLine}  Dequeue: {string.Join(',', broadcaster.Store.GetFetchedTasks())}");
+        }
+
+        [Test]
+        public void Broadcaster_Api_Publish_HandlerInstance()
+        {
+            var broadcaster = new Broadcaster(new TaskStore());
+            broadcaster.Subscribe<Request, RequestHandler>();
+
+            broadcaster.Publish(new Request(1));
+
+            broadcaster.WaitAll();
+
+            RequestHandler.StaticId.Should().Be(1);
+        }
+
+        public class Request
+        {
+            public Request(int id)
+            {
+                ID = id;
+            }
+
+            public int ID { get; set; }
+        }
+
+        class RequestHandler : IEventHandler<Request>
+        {
+            public static int StaticId { get; set; }
+
+            public int Id { get; private set; }
+
+            public void Handle(Request request)
+            {
+                Id = request.ID;
+                StaticId = Id;
+            }
+
+            public void Handle(object request)
+            {
+                Handle(request as Request);
+            }
+        }
+
         private class AsyncReturner
         {
             public int GetValue(int index)
