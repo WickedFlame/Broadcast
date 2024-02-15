@@ -37,6 +37,6 @@
 
     <ItemGroup>
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-      <PackageReference Include="YamlMap" Version="1.2.4-RC02" />
+      <PackageReference Include="YamlMap" Version="1.2.4" />
     </ItemGroup>
 </Project>

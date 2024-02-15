@@ -126,9 +126,9 @@ namespace Broadcast.Storage.Serialization
                 return args?.ToString();
             }
 
-            return YamlMap.Serializer.Serialize(args);
-            //return Newtonsoft.Json.JsonConvert.SerializeObject(args);
-        }
+			return YamlMap.Serializer.Serialize(args);
+			//return Newtonsoft.Json.JsonConvert.SerializeObject(args);
+		}
 
 		private object DeserializeInternal(string value, Type type)
         {
@@ -142,7 +142,8 @@ namespace Broadcast.Storage.Serialization
 				return value;
             }
 
-            return YamlMap.Serializer.Deserialize(type, value);
-        }
+			return YamlMap.Serializer.Deserialize(type, value);
+			//return Newtonsoft.Json.JsonConvert.DeserializeObject(value, type);
+		}
 	}
 }
