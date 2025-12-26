@@ -17,6 +17,13 @@ namespace Broadcast
             _eventStore = eventStore ?? throw new ArgumentNullException("eventStore");
         }
 
+        /// <summary>
+        /// Registers the specified message handler to receive events of the given type.
+        /// </summary>
+        /// <remarks>Multiple handlers can be registered for the same event type. Handlers will be invoked
+        /// when events of the subscribed type are published.</remarks>
+        /// <typeparam name="Tevent">The type of event messages to subscribe to.</typeparam>
+        /// <param name="handler">The message handler that will process incoming events of type <typeparamref name="Tevent"/>. Cannot be null.</param>
         public void Subscribe<Tevent>(IMessageHandler<Tevent> handler)
         {
             _handlers.Add(new MessageHandlerRegistration(typeof(Tevent), handler));

@@ -7,13 +7,36 @@ namespace Broadcast.Integration.Test
     public class DispatcherWorkflowTests
     {
         [Test]
-        public void Workflow_Dispatcher()
+        public void Workflow_Dispatcher_Direct()
         {
             var dispatcher = new Dispatcher<IWorkflowEvent>();
 
             var handler = new WorkflowModelHandler();
             dispatcher.Register<FirstWorkflowEvent>(handler);
             dispatcher.Register<SecondWorkflowEvent>(handler);
+
+            dispatcher.Send(new FirstWorkflowEvent());
+
+            handler.First.Should().Be(1);
+            handler.Second.Should().Be(0);
+
+            dispatcher.Send(new SecondWorkflowEvent());
+
+            handler.First.Should().Be(1);
+            handler.Second.Should().Be(1);
+        }
+
+        [Test]
+        public void Workflow_Dispatcher_EventBus()
+        {
+            var eventBus = new EventBus();
+            var handler = new WorkflowModelHandler();
+            eventBus.Subscribe<FirstWorkflowEvent>(handler);
+            eventBus.Subscribe<SecondWorkflowEvent>(handler);
+
+            var dispatcher = new Dispatcher<IWorkflowEvent>(eventBus);
+
+            
 
             dispatcher.Send(new FirstWorkflowEvent());
 

@@ -11,10 +11,18 @@
 
         private readonly Dictionary<Type, IMessageHandler> _handlers = [];
         private readonly Queue<T> _queue = new();
+        private readonly IEventBus _eventBus;
         private readonly TimedDispatcher _dispatcher;
 
         public Dispatcher()
+            : this(new EventBus())
         {
+        }
+
+        public Dispatcher(IEventBus eventBus)
+        {
+            _eventBus = eventBus ?? throw new ArgumentNullException("eventBus");
+
             _dispatcher = new(5000, () => DispatcherTask());
             _dispatcher.StartDispatcher();
         }
@@ -64,9 +72,15 @@
 
         public void Send<Tevent>(Tevent @event)
         {
-            var handler = _handlers[@event.GetType()] as IMessageHandler<Tevent>;
+            var key = @event.GetType();
+            var handler = _handlers.ContainsKey(key) ? _handlers[key] as IMessageHandler<Tevent> : default(IMessageHandler<Tevent>);
             if (handler == null)
             {
+                if (@event is IEvent evt)
+                {
+                    _eventBus.Publish(Guid.NewGuid().ToString(), DateTime.UtcNow, evt);
+                }
+
                 return;
             }
 
