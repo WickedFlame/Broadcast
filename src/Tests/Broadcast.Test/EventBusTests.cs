@@ -1,6 +1,6 @@
 ﻿using Broadcast.Test;
 
-namespace Broadcast.Integration.Test
+namespace Broadcast.Test
 {
     public class EventBusTests
     {
