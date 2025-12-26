@@ -7,9 +7,14 @@ namespace Broadcast
         private readonly List<MessageHandlerRegistration> _handlers = [];
         private readonly IEventStore _eventStore;
 
+        public EventBus() 
+            : this(new InMemoryEventStore())
+        {
+        }
+
         public EventBus(IEventStore eventStore)
         {
-            _eventStore = eventStore;
+            _eventStore = eventStore ?? throw new ArgumentNullException("eventStore");
         }
 
         public void Subscribe<Tevent>(IMessageHandler<Tevent> handler)
@@ -18,7 +23,8 @@ namespace Broadcast
         }
 
         /// <summary>
-        /// Send the <see cref="IEvent"/> to the <see cref="IMessageHandler{T}"/>
+        /// Send the <see cref="IEvent"/> to the <see cref="IMessageHandler{T}"/> without publishing to the EventStore.
+        /// This is used when a Event has to be processed but not habe the ability to be recreated from the EventStore.
         /// </summary>
         /// <typeparam name="Tevent"></typeparam>
         /// <param name="event"></param>
@@ -68,36 +74,6 @@ namespace Broadcast
             if (disposing)
             {
                 // dispose here
-            }
-        }
-    }
-
-    public class MessageHandlerRegistration
-    {
-        private readonly Func<object, object> _handle;
-
-        public MessageHandlerRegistration(Type eventType, IMessageHandler handler)
-        {
-            EventType = eventType;
-            Handler = handler;
-
-            var meth = Handler.GetType().GetMethod("Handle", [eventType]);
-            _handle = o => meth.Invoke(Handler, [o]);
-        }
-
-        public Type EventType { get; }
-
-        public IMessageHandler Handler { get; }
-
-        public void TryHandle<T>(T @event)
-        {
-            try
-            {
-                _handle(@event);
-            }
-            catch
-            {
-                // do nothing
             }
         }
     }

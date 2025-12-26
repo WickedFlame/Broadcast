@@ -5,7 +5,7 @@
     // This allows the dispatcher to process big amounts of data
     //
 
-    public class Dispatcher<T> : IDispatcher<T>, IDisposable
+    public class Dispatcher<T> : IDispatcher<T>
     {
         private readonly object _lock = new object();
 
@@ -19,7 +19,7 @@
             _dispatcher.StartDispatcher();
         }
 
-        public void Register<Tc>(IMessageHandler<T> handler) where Tc : class, T
+        public void Register<Tc>(IMessageHandler<Tc> handler) where Tc : class, T
         {
             _handlers[typeof(Tc)] = handler;
         }

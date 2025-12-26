@@ -2,7 +2,7 @@
 {
     public interface IDispatcher<T> : IDisposable
     {
-        void Register<Tc>(IMessageHandler<T> handler) where Tc : class, T;
+        void Register<Tc>(IMessageHandler<Tc> handler) where Tc : class, T;
 
         void Send<Tevent>(Tevent @event);
 
