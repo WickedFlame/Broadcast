@@ -28,6 +28,7 @@
   <ItemGroup>
 	<Using Include="NUnit.Framework" />
 	<Using Include="AwesomeAssertions" />
+	<Using Include="Moq" />
   </ItemGroup>
 
 </Project>

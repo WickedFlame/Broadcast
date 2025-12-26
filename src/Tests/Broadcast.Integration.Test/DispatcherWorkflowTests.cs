@@ -48,6 +48,24 @@ namespace Broadcast.Integration.Test
             handler.First.Should().Be(1);
             handler.Second.Should().Be(1);
         }
+
+        [Test]
+        public void Workflow_Dispatcher_EventBus_MultipleHandlers()
+        {
+            var eventBus = new EventBus();
+            var one = new CountMessageHandler();
+            eventBus.Subscribe<CountEvent>(one);
+
+            var two = new CountMessageHandlerTwo();
+            eventBus.Subscribe<CountEvent>(two);
+
+            var dispatcher = new Dispatcher<IEvent>(eventBus);
+
+            dispatcher.Send(new CountEvent());
+
+            one.Count.Should().Be(1);
+            two.Count.Should().Be(1);
+        }
     }
 
     public interface IWorkflowEvent

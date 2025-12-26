@@ -50,7 +50,7 @@ namespace Broadcast
                 if (handler == null)
                 {
                     registration.TryHandle(@event);
-                    return;
+                    continue;
                 }
 
                 handler.Handle(@event);
