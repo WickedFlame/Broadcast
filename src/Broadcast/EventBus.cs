@@ -2,20 +2,36 @@
 
 namespace Broadcast
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class EventBus : IEventBus
     {
         private readonly List<MessageHandlerRegistration> _handlers = [];
         private readonly IEventStore _eventStore;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public EventBus() 
             : this(new InMemoryEventStore())
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventStore"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public EventBus(IEventStore eventStore)
         {
             _eventStore = eventStore ?? throw new ArgumentNullException("eventStore");
         }
+
+        /// <summary>
+        /// Gets a enumeration of all registered message handlers.
+        /// </summary>
+        public IEnumerable<IMessageHandler> Handlers => _handlers.Select(h => h.Handler);
 
         /// <summary>
         /// Registers the specified message handler to receive events of the given type.

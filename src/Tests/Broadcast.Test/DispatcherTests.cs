@@ -7,6 +7,13 @@ namespace Broadcast.Test
     public class DispatcherTests
     {
         [Test]
+        public void Dispatcher_Null_EventBus()
+        {
+            var act = () => new Dispatcher<IEvent>(null);
+            act.Should().Throw<ArgumentNullException>();
+        }
+
+        [Test]
         public void Dispatcher_Register()
         {
             var dispatcher = new Dispatcher<IEvent>();

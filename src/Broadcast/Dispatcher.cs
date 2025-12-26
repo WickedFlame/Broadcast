@@ -39,8 +39,14 @@
             _dispatcher.StartDispatcher();
         }
 
+        /// <summary>
+        /// Gets a enumeration of all registered message handlers.
+        /// </summary>
         public IEnumerable<IMessageHandler> Handlers => _handlers.Select(h => h.Handler);
 
+        /// <summary>
+        /// Gets the current queue of events to be processed.
+        /// </summary>
         public IEnumerable<T> Queue => _queue;
 
         /// <summary>
