@@ -13,10 +13,12 @@
     {
         private readonly object _lock = new object();
 
-        private readonly List<MessageHandlerRegistration> _handlers = [];
+        private readonly HandlerSubscriptionCollection _handlers = [];
         private readonly Queue<T> _queue = new();
         private readonly IEventBus _eventBus;
         private readonly TimedDispatcher _dispatcher;
+
+        private readonly EventPublisher _publisher;
 
         /// <summary>
         /// 
@@ -37,6 +39,8 @@
 
             _dispatcher = new(5000, () => DispatcherTask());
             _dispatcher.StartDispatcher();
+
+            _publisher = new EventPublisher(_handlers);
         }
 
         /// <summary>
@@ -58,7 +62,7 @@
         /// <param name="handler">The message handler to register for messages of type Tc. Cannot be null.</param>
         public void Register<Tc>(IMessageHandler<Tc> handler) where Tc : class, T
         {
-            _handlers.Add(new MessageHandlerRegistration(typeof(Tc), handler));
+            _handlers.Add(typeof(Tc), handler);
         }
 
 
@@ -116,28 +120,14 @@
         /// <param name="event">The event instance to publish. Cannot be null.</param>
         public void Send<Tevent>(Tevent @event)
         {
-            var key = @event.GetType();
-
-            if (!_handlers.Any(h => h.EventType == key))
+            if(_publisher.Publish(@event))
             {
-                if (@event is IEvent evt)
-                {
-                    _eventBus.Publish(Guid.NewGuid().ToString(), DateTime.UtcNow, evt);
-                }
-
                 return;
             }
 
-            foreach (var registration in _handlers.Where(h => h.EventType == key))
+            if (@event is IEvent evt)
             {
-                var handler = registration.Handler as IMessageHandler<Tevent>;
-                if (handler == null)
-                {
-                    registration.TryHandle(@event);
-                    continue;
-                }
-
-                handler.Handle(@event);
+                _eventBus.Publish(Guid.NewGuid().ToString(), DateTime.UtcNow, evt);
             }
         }
 

@@ -7,8 +7,9 @@ namespace Broadcast
     /// </summary>
     public class EventBus : IEventBus
     {
-        private readonly List<MessageHandlerRegistration> _handlers = [];
+        private readonly HandlerSubscriptionCollection _handlers = [];
         private readonly IEventStore _eventStore;
+        private readonly EventPublisher _publisher;
 
         /// <summary>
         /// 
@@ -26,6 +27,7 @@ namespace Broadcast
         public EventBus(IEventStore eventStore)
         {
             _eventStore = eventStore ?? throw new ArgumentNullException("eventStore");
+            _publisher = new EventPublisher(_handlers);
         }
 
         /// <summary>
@@ -42,7 +44,7 @@ namespace Broadcast
         /// <param name="handler">The message handler that will process incoming events of type <typeparamref name="Tevent"/>. Cannot be null.</param>
         public void Subscribe<Tevent>(IMessageHandler<Tevent> handler)
         {
-            _handlers.Add(new MessageHandlerRegistration(typeof(Tevent), handler));
+            _handlers.Add(typeof(Tevent), handler);
         }
 
         /// <summary>
@@ -53,24 +55,7 @@ namespace Broadcast
         /// <param name="event"></param>
         public virtual void Send<Tevent>(Tevent @event)
         {
-            var key = @event.GetType();
-            if (!_handlers.Any(h => h.EventType == key))
-            {
-                Console.WriteLine($"No handler for event type {key}");
-                return;
-            }
-
-            foreach (var registration in _handlers.Where(h => h.EventType == key))
-            {
-                var handler = registration.Handler as IMessageHandler<Tevent>;
-                if (handler == null)
-                {
-                    registration.TryHandle(@event);
-                    continue;
-                }
-
-                handler.Handle(@event);
-            }
+            _publisher.Publish(@event);
         }
 
         /// <summary>
@@ -86,6 +71,9 @@ namespace Broadcast
             Send(@event);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
