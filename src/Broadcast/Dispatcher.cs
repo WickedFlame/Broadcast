@@ -71,7 +71,7 @@
             var entry = GetNext();
             while (entry != null)
             {
-                Send(entry);
+                Publish(entry);
 
                 entry = GetNext();
 
@@ -92,18 +92,12 @@
             }
         }
 
-        [Obsolete("Use Enqueue instead", false)]
-        public void SendAsync<Tc>(Tc @event) where Tc : class, T
-        {
-            Enqueue(@event);
-        }
-
         /// <summary>
         /// Enqueue the event to be processed by the dispatcher in the background in a async dispatcher.
         /// </summary>
-        /// <typeparam name="Tc"></typeparam>
+        /// <typeparam name="Tevent"></typeparam>
         /// <param name="event"></param>
-        public void Enqueue<Tc>(Tc @event) where Tc : class, T
+        public void Enqueue<Tevent>(Tevent @event) where Tevent : class, T
         {
             lock (_lock)
             {
@@ -114,7 +108,35 @@
         }
 
         /// <summary>
-        /// Publishes the specified event to all registered subscribers.
+        /// Publishes the specified event to all registered subscribers. The Event is also added to the EventStore.
+        /// </summary>
+        /// <typeparam name="Tevent">The type of the event to send.</typeparam>
+        /// <param name="event">The event instance to publish. Cannot be null.</param>
+        public void Publish<Tevent>(Tevent @event)
+        {
+            if (_publisher.Publish(@event))
+            {
+                return;
+            }
+
+            if (@event is IEvent evt)
+            {
+                _eventBus.Publish(Guid.NewGuid().ToString(), DateTime.UtcNow, evt);
+            }
+        }
+
+        /// <summary>
+        /// Publishes the specified event to all registered subscribers. The Event is also added to the EventStore.
+        /// </summary>
+        /// <typeparam name="Tevent">The type of the event to send.</typeparam>
+        /// <param name="event">The event instance to publish. Cannot be null.</param>
+        public Task PublishAsync<Tevent>(Tevent @event)
+        {
+            return Task.Factory.StartNew(() => Publish(@event));
+        }
+
+        /// <summary>
+        /// Send the specified event to all registered subscribers whithout adding to the EventStore.
         /// </summary>
         /// <typeparam name="Tevent">The type of the event to send.</typeparam>
         /// <param name="event">The event instance to publish. Cannot be null.</param>
@@ -127,8 +149,18 @@
 
             if (@event is IEvent evt)
             {
-                _eventBus.Publish(Guid.NewGuid().ToString(), DateTime.UtcNow, evt);
+                _eventBus.Send(evt);
             }
+        }
+
+        /// <summary>
+        /// Send the specified event to all registered subscribers whithout adding to the EventStore.
+        /// </summary>
+        /// <typeparam name="Tevent">The type of the event to send.</typeparam>
+        /// <param name="event">The event instance to publish. Cannot be null.</param>
+        public Task SendAsync<Tevent>(Tevent @event)
+        {
+            return Task.Factory.StartNew(() => Send(@event));
         }
 
         /// <summary>

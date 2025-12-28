@@ -34,7 +34,7 @@ namespace Broadcast.Benchmarks
         {
             for (int i = 0; i < 10; i++)
             {
-                _dispatcher.Send(new BenchmarkEvent());
+                _dispatcher.Publish(new BenchmarkEvent());
             }
         }
 
@@ -43,7 +43,7 @@ namespace Broadcast.Benchmarks
         {
             for (int i = 0; i < 100; i++)
             {
-                _dispatcher.Send(new BenchmarkEvent());
+                _dispatcher.Publish(new BenchmarkEvent());
             }
         }
 
@@ -52,7 +52,7 @@ namespace Broadcast.Benchmarks
         {
             for (int i = 0; i < 1000; i++)
             {
-                _dispatcher.Send(new BenchmarkEvent());
+                _dispatcher.Publish(new BenchmarkEvent());
             }
         }
     }

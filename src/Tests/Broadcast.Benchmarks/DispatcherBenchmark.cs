@@ -27,11 +27,38 @@ namespace Broadcast.Benchmarks
         }
 
         [Benchmark]
+        public void Publish()
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                _dispatcher.Publish(new BenchmarkEvent());
+            }
+        }
+
+        [Benchmark]
+        public async void PublishAsync()
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                await _dispatcher.PublishAsync(new BenchmarkEvent());
+            }
+        }
+
+        [Benchmark]
         public void Send()
         {
             for (int i = 0; i < 100; i++)
             {
                 _dispatcher.Send(new BenchmarkEvent());
+            }
+        }
+
+        [Benchmark]
+        public async void SendAsync()
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                await _dispatcher.SendAsync(new BenchmarkEvent());
             }
         }
 

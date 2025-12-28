@@ -15,12 +15,12 @@ namespace Broadcast.Integration.Test
             dispatcher.Register<FirstWorkflowEvent>(handler);
             dispatcher.Register<SecondWorkflowEvent>(handler);
 
-            dispatcher.Send(new FirstWorkflowEvent());
+            dispatcher.Publish(new FirstWorkflowEvent());
 
             handler.First.Should().Be(1);
             handler.Second.Should().Be(0);
 
-            dispatcher.Send(new SecondWorkflowEvent());
+            dispatcher.Publish(new SecondWorkflowEvent());
 
             handler.First.Should().Be(1);
             handler.Second.Should().Be(1);
@@ -38,12 +38,12 @@ namespace Broadcast.Integration.Test
 
             
 
-            dispatcher.Send(new FirstWorkflowEvent());
+            dispatcher.Publish(new FirstWorkflowEvent());
 
             handler.First.Should().Be(1);
             handler.Second.Should().Be(0);
 
-            dispatcher.Send(new SecondWorkflowEvent());
+            dispatcher.Publish(new SecondWorkflowEvent());
 
             handler.First.Should().Be(1);
             handler.Second.Should().Be(1);
@@ -61,7 +61,7 @@ namespace Broadcast.Integration.Test
 
             var dispatcher = new Dispatcher<IEvent>(eventBus);
 
-            dispatcher.Send(new CountEvent());
+            dispatcher.Publish(new CountEvent());
 
             one.Count.Should().Be(1);
             two.Count.Should().Be(1);

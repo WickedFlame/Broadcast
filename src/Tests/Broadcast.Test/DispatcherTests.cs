@@ -38,32 +38,32 @@ namespace Broadcast.Test
         }
 
         [Test]
-        public void Dispatcher_Send()
+        public void Dispatcher_Publish()
         {
             var dispatcher = new Dispatcher<IEvent>();
             var handler = new CountMessageHandler();
             dispatcher.Register<CountEvent>(handler);
 
             // Act
-            dispatcher.Send(new CountEvent());
+            dispatcher.Publish(new CountEvent());
 
             handler.Count.Should().Be(1);
         }
 
         [Test]
-        public void Dispatcher_EventBus_Send()
+        public void Dispatcher_EventBus_Publish()
         {
             var eventBus = new Mock<IEventBus>();
             var dispatcher = new Dispatcher<IEvent>(eventBus.Object);
 
             // Act
-            dispatcher.Send(new CountEvent());
+            dispatcher.Publish(new CountEvent());
 
             eventBus.Verify(eb => eb.Publish(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<IEvent>()), Times.Once);
         }
 
         [Test]
-        public void Dispatcher_Send_Multiple()
+        public void Dispatcher_Publish_Multiple()
         {
             var dispatcher = new Dispatcher<IEvent>();
             var handler = new CountMessageHandler();
@@ -72,14 +72,14 @@ namespace Broadcast.Test
             // Act
             for (var i = 1; i < 100; i++)
             {
-                dispatcher.Send(new CountEvent());
+                dispatcher.Publish(new CountEvent());
 
                 handler.Count.Should().Be(i);
             }
         }
 
         [Test]
-        public void Dispatcher_Send_Multiple_Handlers()
+        public void Dispatcher_Publish_Multiple_Handlers()
         {
             var dispatcher = new Dispatcher<IEvent>();
             var one = new CountMessageHandler();
@@ -89,7 +89,7 @@ namespace Broadcast.Test
             dispatcher.Register<CountEvent>(two);
 
             // Act
-            dispatcher.Send(new CountEvent());
+            dispatcher.Publish(new CountEvent());
 
             one.Count.Should().Be(1);
             two.Count.Should().Be(1);

@@ -13,7 +13,7 @@ namespace Broadcast.Integration.Test
             var dispatcher = new Dispatcher<IWorkflowEvent>(eventBus);
 
             // Act
-            var act = () => dispatcher.Send(new FirstWorkflowEvent());
+            var act = () => dispatcher.Publish(new FirstWorkflowEvent());
 
             // No exception should be thrown
             act.Should().NotThrow();
