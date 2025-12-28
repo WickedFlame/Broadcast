@@ -99,7 +99,7 @@
         }
 
         /// <summary>
-        /// Enqueue the event to be processed by the dispatcher in a async dispatcher.
+        /// Enqueue the event to be processed by the dispatcher in the background in a async dispatcher.
         /// </summary>
         /// <typeparam name="Tc"></typeparam>
         /// <param name="event"></param>
@@ -120,7 +120,7 @@
         /// <param name="event">The event instance to publish. Cannot be null.</param>
         public void Send<Tevent>(Tevent @event)
         {
-            if(_publisher.Publish(@event))
+            if (_publisher.Publish(@event))
             {
                 return;
             }

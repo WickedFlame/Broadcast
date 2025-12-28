@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 
 namespace Broadcast
 {
@@ -58,15 +56,6 @@ namespace Broadcast
                     yield return subscription;
                 }
             }
-        }
-
-        /// <summary>
-        /// Gets all <see cref="HandlerSubscription"/> instances in this collection.
-        /// </summary>
-        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="HandlerSubscription"/>.</returns>
-        public IEnumerable<HandlerSubscription> GetAll()
-        {
-            return _subscriptions;
         }
 
         /// <summary>
