@@ -13,3 +13,4 @@ _ReSharper.*
 .JustCode/PersistanceMap.solution-user.settings.xml
 .vs
 .idea
+.nuke/temp
