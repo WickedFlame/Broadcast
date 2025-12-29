@@ -13,7 +13,7 @@
         /// replace or ignore the existing handler depending on the implementation.</remarks>
         /// <typeparam name="Tc">The type of message to handle. Must be a reference type that implements or derives from T.</typeparam>
         /// <param name="handler">The message handler to register for messages of type Tc. Cannot be null.</param>
-        void Register<Tc>(IMessageHandler<Tc> handler) where Tc : class, T;
+        void Register<Tc>(IEventHandler<Tc> handler) where Tc : class, T;
 
         /// <summary>
         /// Publishes the specified event to all registered subscribers. The Event is also added to the EventStore.

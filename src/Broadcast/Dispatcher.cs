@@ -46,7 +46,7 @@
         /// <summary>
         /// Gets a enumeration of all registered message handlers.
         /// </summary>
-        public IEnumerable<IMessageHandler> Handlers => _handlers.Select(h => h.Handler);
+        public IEnumerable<IEventHandler> Handlers => _handlers.Select(h => h.Handler);
 
         /// <summary>
         /// Gets the current queue of events to be processed.
@@ -60,7 +60,7 @@
         /// replace or ignore the existing handler depending on the implementation.</remarks>
         /// <typeparam name="Tc">The type of message to handle. Must be a reference type that implements or derives from T.</typeparam>
         /// <param name="handler">The message handler to register for messages of type Tc. Cannot be null.</param>
-        public void Register<Tc>(IMessageHandler<Tc> handler) where Tc : class, T
+        public void Register<Tc>(IEventHandler<Tc> handler) where Tc : class, T
         {
             _handlers.Add(typeof(Tc), handler);
         }

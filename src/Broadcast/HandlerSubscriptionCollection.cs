@@ -16,7 +16,7 @@ namespace Broadcast
         /// handler processes.</param>
         /// <param name="handler">The handler instance that will process messages of the specified type. Cannot be null.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="handler"/> is null.</exception>
-        public void Add(Type type, IMessageHandler handler)
+        public void Add(Type type, IEventHandler handler)
         {
             if (handler == null)
             {

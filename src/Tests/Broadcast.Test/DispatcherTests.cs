@@ -17,7 +17,7 @@ namespace Broadcast.Test
         public void Dispatcher_Register()
         {
             var dispatcher = new Dispatcher<IEvent>();
-            var handler = new CountMessageHandler();
+            var handler = new CountEventHandler();
 
             // Act
             dispatcher.Register<CountEvent>(handler);
@@ -31,7 +31,7 @@ namespace Broadcast.Test
             var dispatcher = new Dispatcher<IEvent>();
 
             // Act
-            dispatcher.Register<CountEvent>(new CountMessageHandler());
+            dispatcher.Register<CountEvent>(new CountEventHandler());
             dispatcher.Register<CountEvent>(new CountMessageHandlerTwo());
 
             dispatcher.Handlers.Should().HaveCount(2);
@@ -41,7 +41,7 @@ namespace Broadcast.Test
         public void Dispatcher_Publish()
         {
             var dispatcher = new Dispatcher<IEvent>();
-            var handler = new CountMessageHandler();
+            var handler = new CountEventHandler();
             dispatcher.Register<CountEvent>(handler);
 
             // Act
@@ -66,7 +66,7 @@ namespace Broadcast.Test
         public void Dispatcher_Publish_Multiple()
         {
             var dispatcher = new Dispatcher<IEvent>();
-            var handler = new CountMessageHandler();
+            var handler = new CountEventHandler();
             dispatcher.Register<CountEvent>(handler);
 
             // Act
@@ -82,7 +82,7 @@ namespace Broadcast.Test
         public void Dispatcher_Publish_Multiple_Handlers()
         {
             var dispatcher = new Dispatcher<IEvent>();
-            var one = new CountMessageHandler();
+            var one = new CountEventHandler();
             dispatcher.Register<CountEvent>(one);
 
             var two = new CountMessageHandlerTwo();
@@ -99,7 +99,7 @@ namespace Broadcast.Test
         public void Dispatcher_Enqueue()
         {
             var dispatcher = new Dispatcher<IEvent>();
-            var handler = new CountMessageHandler();
+            var handler = new CountEventHandler();
             dispatcher.Register<CountEvent>(handler);
 
             // Act
@@ -117,7 +117,7 @@ namespace Broadcast.Test
         public void Dispatcher_Enqueue_Multiple_Handlers()
         {
             var dispatcher = new Dispatcher<IEvent>();
-            var one = new CountMessageHandler();
+            var one = new CountEventHandler();
             dispatcher.Register<CountEvent>(one);
 
             var two = new CountMessageHandlerTwo();

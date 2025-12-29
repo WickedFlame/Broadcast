@@ -3,7 +3,7 @@
     public static class EventBusExtensions
     {
         /// <summary>
-        /// Publish the <see cref="IEvent"/> to the EventStore and send the <see cref="IEvent"/> to the <see cref="IMessageHandler{T}"/>
+        /// Publish the <see cref="IEvent"/> to the EventStore and send the <see cref="IEvent"/> to the <see cref="IEventHandler{T}"/>
         /// </summary>
         /// <typeparam name="Tevent"></typeparam>
         /// <param name="event"></param>

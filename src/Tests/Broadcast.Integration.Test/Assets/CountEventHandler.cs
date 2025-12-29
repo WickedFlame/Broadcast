@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Broadcast.Integration.Test
 {
-    public class CountMessageHandler
-        : IMessageHandler<CountEvent>
+    public class CountEventHandler
+        : IEventHandler<CountEvent>
     {
         public int Count { get; private set; }
 
@@ -20,7 +20,7 @@ namespace Broadcast.Integration.Test
     }
 
     public class CountMessageHandlerTwo
-        : IMessageHandler<CountEvent>
+        : IEventHandler<CountEvent>
     {
         public int Count { get; private set; }
 

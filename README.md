@@ -1,8 +1,7 @@
 # WickedFlame Broadcast
 ------------------------------
-[![Build Status](https://img.shields.io/travis/com/WickedFlame/broadcast/master.svg?label=Travis-CI&style=for-the-badge)](https://app.travis-ci.com/github/WickedFlame/Broadcast)
 [![Build status](https://img.shields.io/appveyor/build/chriswalpen/broadcast/master?label=Master&logo=appveyor&style=for-the-badge)](https://ci.appveyor.com/project/chriswalpen/broadcast/branch/master)
-[![Build status](https://img.shields.io/appveyor/build/chriswalpen/broadcast/dev?label=Dev&logo=appveyor&style=for-the-badge)](https://ci.appveyor.com/project/chriswalpen/broadcast/branch/dev)
+[![Build status](https://img.shields.io/appveyor/build/chriswalpen/broadcast/dev?label=Dev&logo=appveyor&style=for-the-badge)](https://ci.appveyor.com/project/chriswalpen/broadcast/branch/dev)  
 [![NuGet Version](https://img.shields.io/nuget/v/broadcast.svg?style=for-the-badge&label=Latest)](https://www.nuget.org/packages/broadcast/)
 [![NuGet Version](https://img.shields.io/nuget/vpre/broadcast.svg?style=for-the-badge&label=RC)](https://www.nuget.org/packages/broadcast/)
 

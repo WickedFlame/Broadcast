@@ -33,7 +33,7 @@ namespace Broadcast
         /// <summary>
         /// Gets a enumeration of all registered message handlers.
         /// </summary>
-        public IEnumerable<IMessageHandler> Handlers => _handlers.Select(h => h.Handler);
+        public IEnumerable<IEventHandler> Handlers => _handlers.Select(h => h.Handler);
 
         /// <summary>
         /// Registers the specified message handler to receive events of the given type.
@@ -42,13 +42,13 @@ namespace Broadcast
         /// when events of the subscribed type are published.</remarks>
         /// <typeparam name="Tevent">The type of event messages to subscribe to.</typeparam>
         /// <param name="handler">The message handler that will process incoming events of type <typeparamref name="Tevent"/>. Cannot be null.</param>
-        public void Subscribe<Tevent>(IMessageHandler<Tevent> handler)
+        public void Subscribe<Tevent>(IEventHandler<Tevent> handler)
         {
             _handlers.Add(typeof(Tevent), handler);
         }
 
         /// <summary>
-        /// Send the <see cref="IEvent"/> to the <see cref="IMessageHandler{T}"/> without publishing to the EventStore.
+        /// Send the <see cref="IEvent"/> to the <see cref="IEventHandler{T}"/> without publishing to the EventStore.
         /// This is used when a Event has to be processed but not habe the ability to be recreated from the EventStore.
         /// </summary>
         /// <typeparam name="Tevent"></typeparam>
@@ -59,7 +59,7 @@ namespace Broadcast
         }
 
         /// <summary>
-        /// Publish the <see cref="IEvent"/> to the EventStore and send the <see cref="IEvent"/> to the <see cref="IMessageHandler{T}"/>
+        /// Publish the <see cref="IEvent"/> to the EventStore and send the <see cref="IEvent"/> to the <see cref="IEventHandler{T}"/>
         /// </summary>
         /// <typeparam name="Tevent"></typeparam>
         /// <param name="id"></param>

@@ -17,7 +17,7 @@ namespace Broadcast.Test
         {
             var eventBus = new EventBus();
 
-            var handler = new CountMessageHandler();
+            var handler = new CountEventHandler();
             eventBus.Subscribe<CountEvent>(handler);
 
             eventBus.Handlers.Single().Should().Be(handler);
@@ -28,7 +28,7 @@ namespace Broadcast.Test
         {
             var eventBus = new EventBus();
 
-            var firstHandler = new CountMessageHandler();
+            var firstHandler = new CountEventHandler();
             eventBus.Subscribe<CountEvent>(firstHandler);
 
             var secondHandler = new CountMessageHandlerTwo();
@@ -49,7 +49,7 @@ namespace Broadcast.Test
 
             var eventBus = new EventBus();
 
-            var firstHandler = new CountMessageHandler();
+            var firstHandler = new CountEventHandler();
             eventBus.Subscribe<CountEvent>(firstHandler);
 
             var secondHandler = new CountMessageHandlerTwo();
@@ -78,7 +78,7 @@ namespace Broadcast.Test
         {
             var eventBus = new EventBus();
 
-            var firstHandler = new CountMessageHandler();
+            var firstHandler = new CountEventHandler();
             eventBus.Subscribe<CountEvent>(firstHandler);
 
             var secondHandler = new CountMessageHandlerTwo();
@@ -97,7 +97,7 @@ namespace Broadcast.Test
             var eventStore = new Mock<IEventStore>();
             var eventBus = new EventBus(eventStore.Object);
 
-            eventBus.Subscribe<CountEvent>(new CountMessageHandler());
+            eventBus.Subscribe<CountEvent>(new CountEventHandler());
 
             // Act
             eventBus.Publish("one", DateTime.UtcNow, new CountEvent());

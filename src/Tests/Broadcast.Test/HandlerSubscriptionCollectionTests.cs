@@ -18,7 +18,7 @@ namespace Broadcast.Test
         [Test]
         public void HandlerSubscriptionCollection_Add()
         {
-            var handler = new CountMessageHandler();
+            var handler = new CountEventHandler();
 
             _subscriptions.Add(typeof(CountEvent), handler);
 
@@ -41,7 +41,7 @@ namespace Broadcast.Test
         [Test]
         public void HandlerSubscriptionCollection_Add_Subscription()
         {
-            var handler = new CountMessageHandler();
+            var handler = new CountEventHandler();
 
             var subscription = new HandlerSubscription(typeof(CountEvent), handler);
 
@@ -62,8 +62,8 @@ namespace Broadcast.Test
         [Test]
         public void HandlerSubscriptionCollection_Add_MultipleSame()
         {
-            var sub1 = new HandlerSubscription(typeof(CountEvent), Mock.Of<IMessageHandler>());
-            var sub2 = new HandlerSubscription(typeof(CountEvent), Mock.Of<IMessageHandler>());
+            var sub1 = new HandlerSubscription(typeof(CountEvent), Mock.Of<IEventHandler>());
+            var sub2 = new HandlerSubscription(typeof(CountEvent), Mock.Of<IEventHandler>());
 
             _subscriptions.Add(sub1);
             _subscriptions.Add(sub2);
@@ -75,9 +75,9 @@ namespace Broadcast.Test
         [Test]
         public void HandlerSubscriptionCollection_Get_Multiple()
         {
-            var sub1 = new HandlerSubscription(typeof(CountEvent), Mock.Of<IMessageHandler>());
-            var sub2 = new HandlerSubscription(typeof(CountEvent), Mock.Of<IMessageHandler>());
-            var sub3 = new HandlerSubscription(typeof(string), Mock.Of<IMessageHandler>());
+            var sub1 = new HandlerSubscription(typeof(CountEvent), Mock.Of<IEventHandler>());
+            var sub2 = new HandlerSubscription(typeof(CountEvent), Mock.Of<IEventHandler>());
+            var sub3 = new HandlerSubscription(typeof(string), Mock.Of<IEventHandler>());
 
             _subscriptions.Add(sub1);
             _subscriptions.Add(sub2);
@@ -90,9 +90,9 @@ namespace Broadcast.Test
         [Test]
         public void HandlerSubscriptionCollection_Get_Multiple_Count()
         {
-            var sub1 = new HandlerSubscription(typeof(CountEvent), Mock.Of<IMessageHandler>());
-            var sub2 = new HandlerSubscription(typeof(CountEvent), Mock.Of<IMessageHandler>());
-            var sub3 = new HandlerSubscription(typeof(string), Mock.Of<IMessageHandler>());
+            var sub1 = new HandlerSubscription(typeof(CountEvent), Mock.Of<IEventHandler>());
+            var sub2 = new HandlerSubscription(typeof(CountEvent), Mock.Of<IEventHandler>());
+            var sub3 = new HandlerSubscription(typeof(string), Mock.Of<IEventHandler>());
 
             _subscriptions.Add(sub1);
             _subscriptions.Add(sub2);

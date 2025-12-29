@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Broadcast.Benchmarks.Assets
 {
-    public class BenchmarkEventHandler : IMessageHandler<BenchmarkEvent>
+    public class BenchmarkEventHandler : IEventHandler<BenchmarkEvent>
     {
         public void Handle(BenchmarkEvent @event)
         {

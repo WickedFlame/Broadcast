@@ -35,7 +35,7 @@
 
             foreach (var registration in _subscriptions.Where(h => h.EventType == key))
             {
-                var handler = registration.Handler as IMessageHandler<Tevent>;
+                var handler = registration.Handler as IEventHandler<Tevent>;
                 if (handler == null)
                 {
                     registration.TryHandle(@event);

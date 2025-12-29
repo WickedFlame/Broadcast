@@ -19,7 +19,7 @@ namespace Broadcast.Test
         [Test]
         public void EventPublisher_Publish()
         {
-            var handler = new CountMessageHandler();
+            var handler = new CountEventHandler();
             _subscriptions.Add(typeof(CountEvent), handler);
             
             _publisher.Publish(new CountEvent());
@@ -49,7 +49,7 @@ namespace Broadcast.Test
             //
             // This should trigger the TryHandle because the event is sent as the base interface type instead of the registered type
 
-            var handler = new CountMessageHandler();
+            var handler = new CountEventHandler();
             _subscriptions.Add(typeof(CountEvent), handler);
 
             _publisher.Publish(new CountEvent() as IEvent);
@@ -60,10 +60,10 @@ namespace Broadcast.Test
         [Test]
         public void EventPublisher_Publish_Multiple_Handlers()
         {
-            var one = new CountMessageHandler();
+            var one = new CountEventHandler();
             _subscriptions.Add(typeof(CountEvent), one);
 
-            var two = new CountMessageHandler();
+            var two = new CountEventHandler();
             _subscriptions.Add(typeof(CountEvent), two);
 
             _publisher.Publish(new CountEvent());

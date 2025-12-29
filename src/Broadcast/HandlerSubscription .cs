@@ -12,7 +12,7 @@
         /// </summary>
         /// <param name="eventType"></param>
         /// <param name="handler"></param>
-        public HandlerSubscription(Type eventType, IMessageHandler handler)
+        public HandlerSubscription(Type eventType, IEventHandler handler)
         {
             EventType = eventType;
             Handler = handler;
@@ -29,7 +29,7 @@
         /// <summary>
         /// Gets the message handler used to process incoming messages.
         /// </summary>
-        public IMessageHandler Handler { get; }
+        public IEventHandler Handler { get; }
 
         /// <summary>
         /// Attempts to handle the specified event, suppressing any exceptions that occur during handling.

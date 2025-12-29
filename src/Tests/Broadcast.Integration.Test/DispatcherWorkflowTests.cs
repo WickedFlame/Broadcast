@@ -53,7 +53,7 @@ namespace Broadcast.Integration.Test
         public void Workflow_Dispatcher_EventBus_MultipleHandlers()
         {
             var eventBus = new EventBus();
-            var one = new CountMessageHandler();
+            var one = new CountEventHandler();
             eventBus.Subscribe<CountEvent>(one);
 
             var two = new CountMessageHandlerTwo();
@@ -81,8 +81,8 @@ namespace Broadcast.Integration.Test
     }
 
     public class WorkflowModelHandler : 
-        IMessageHandler<FirstWorkflowEvent>,
-        IMessageHandler<SecondWorkflowEvent>
+        IEventHandler<FirstWorkflowEvent>,
+        IEventHandler<SecondWorkflowEvent>
     {
         public int First { get; private set; }
         
