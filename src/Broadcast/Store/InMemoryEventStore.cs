@@ -6,7 +6,7 @@ namespace Broadcast
     {
         private readonly List<EventStoreItem> _events = [];
 
-        public string Add<T>(string testId, DateTime time, T model) where T : IEvent
+        public string Add<T>(string testId, DateTime time, T model) where T : class
         {
             var id = Guid.NewGuid().ToString();
 

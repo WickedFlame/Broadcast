@@ -8,6 +8,6 @@
 
         public DateTime Time { get; set; }
 
-        public IEvent Model { get; set; }
+        public object Model { get; set; }
     }
 }

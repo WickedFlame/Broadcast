@@ -9,7 +9,7 @@ namespace Broadcast.Integration.Test
         [Test]
         public void Workflow_Dispatcher_Direct()
         {
-            var dispatcher = new Dispatcher<IWorkflowEvent>();
+            var dispatcher = new Dispatcher();
 
             var handler = new WorkflowModelHandler();
             dispatcher.Register<FirstWorkflowEvent>(handler);
@@ -34,7 +34,7 @@ namespace Broadcast.Integration.Test
             eventBus.Subscribe<FirstWorkflowEvent>(handler);
             eventBus.Subscribe<SecondWorkflowEvent>(handler);
 
-            var dispatcher = new Dispatcher<IWorkflowEvent>(eventBus);
+            var dispatcher = new Dispatcher(eventBus);
 
             
 
@@ -59,7 +59,7 @@ namespace Broadcast.Integration.Test
             var two = new CountMessageHandlerTwo();
             eventBus.Subscribe<CountEvent>(two);
 
-            var dispatcher = new Dispatcher<IEvent>(eventBus);
+            var dispatcher = new Dispatcher(eventBus);
 
             dispatcher.Publish(new CountEvent());
 
@@ -72,11 +72,11 @@ namespace Broadcast.Integration.Test
     {
     }
 
-    public class FirstWorkflowEvent : IWorkflowEvent, IEvent
+    public class FirstWorkflowEvent : IWorkflowEvent
     {
     }
 
-    public class SecondWorkflowEvent : IWorkflowEvent, IEvent
+    public class SecondWorkflowEvent : IWorkflowEvent
     {
     }
 

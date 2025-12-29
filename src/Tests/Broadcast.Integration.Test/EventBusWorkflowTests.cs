@@ -49,7 +49,7 @@ namespace Broadcast.Integration.Test
             handler.First.Should().Be(1);
             handler.Second.Should().Be(1);
 
-            eventStore.Verify(es => es.Add(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<IEvent>()), Times.Exactly(2));
+            eventStore.Verify(es => es.Add(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<object>()), Times.Exactly(2));
         }
 
 

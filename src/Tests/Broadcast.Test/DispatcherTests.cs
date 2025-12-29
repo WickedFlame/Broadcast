@@ -9,14 +9,14 @@ namespace Broadcast.Test
         [Test]
         public void Dispatcher_Null_EventBus()
         {
-            var act = () => new Dispatcher<IEvent>(null);
+            var act = () => new Dispatcher(null);
             act.Should().Throw<ArgumentNullException>();
         }
 
         [Test]
         public void Dispatcher_Register()
         {
-            var dispatcher = new Dispatcher<IEvent>();
+            var dispatcher = new Dispatcher();
             var handler = new CountEventHandler();
 
             // Act
@@ -28,7 +28,7 @@ namespace Broadcast.Test
         [Test]
         public void Dispatcher_Register_Multiple()
         {
-            var dispatcher = new Dispatcher<IEvent>();
+            var dispatcher = new Dispatcher();
 
             // Act
             dispatcher.Register<CountEvent>(new CountEventHandler());
@@ -40,7 +40,7 @@ namespace Broadcast.Test
         [Test]
         public void Dispatcher_Publish()
         {
-            var dispatcher = new Dispatcher<IEvent>();
+            var dispatcher = new Dispatcher();
             var handler = new CountEventHandler();
             dispatcher.Register<CountEvent>(handler);
 
@@ -54,18 +54,18 @@ namespace Broadcast.Test
         public void Dispatcher_EventBus_Publish()
         {
             var eventBus = new Mock<IEventBus>();
-            var dispatcher = new Dispatcher<IEvent>(eventBus.Object);
+            var dispatcher = new Dispatcher(eventBus.Object);
 
             // Act
             dispatcher.Publish(new CountEvent());
 
-            eventBus.Verify(eb => eb.Publish(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<IEvent>()), Times.Once);
+            eventBus.Verify(eb => eb.Publish(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<object>()), Times.Once);
         }
 
         [Test]
         public void Dispatcher_Publish_Multiple()
         {
-            var dispatcher = new Dispatcher<IEvent>();
+            var dispatcher = new Dispatcher();
             var handler = new CountEventHandler();
             dispatcher.Register<CountEvent>(handler);
 
@@ -81,7 +81,7 @@ namespace Broadcast.Test
         [Test]
         public void Dispatcher_Publish_Multiple_Handlers()
         {
-            var dispatcher = new Dispatcher<IEvent>();
+            var dispatcher = new Dispatcher();
             var one = new CountEventHandler();
             dispatcher.Register<CountEvent>(one);
 
@@ -98,7 +98,7 @@ namespace Broadcast.Test
         [Test]
         public void Dispatcher_Enqueue()
         {
-            var dispatcher = new Dispatcher<IEvent>();
+            var dispatcher = new Dispatcher();
             var handler = new CountEventHandler();
             dispatcher.Register<CountEvent>(handler);
 
@@ -116,7 +116,7 @@ namespace Broadcast.Test
         [Test]
         public void Dispatcher_Enqueue_Multiple_Handlers()
         {
-            var dispatcher = new Dispatcher<IEvent>();
+            var dispatcher = new Dispatcher();
             var one = new CountEventHandler();
             dispatcher.Register<CountEvent>(one);
 

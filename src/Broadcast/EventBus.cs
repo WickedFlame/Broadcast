@@ -48,7 +48,7 @@ namespace Broadcast
         }
 
         /// <summary>
-        /// Send the <see cref="IEvent"/> to the <see cref="IEventHandler{T}"/> without publishing to the EventStore.
+        /// Send the event to the <see cref="IEventHandler{T}"/> without publishing to the EventStore.
         /// This is used when a Event has to be processed but not habe the ability to be recreated from the EventStore.
         /// </summary>
         /// <typeparam name="Tevent"></typeparam>
@@ -59,13 +59,13 @@ namespace Broadcast
         }
 
         /// <summary>
-        /// Publish the <see cref="IEvent"/> to the EventStore and send the <see cref="IEvent"/> to the <see cref="IEventHandler{T}"/>
+        /// Publish the event to the EventStore and send the event to the <see cref="IEventHandler{T}"/>
         /// </summary>
         /// <typeparam name="Tevent"></typeparam>
         /// <param name="id"></param>
         /// <param name="time"></param>
         /// <param name="event"></param>
-        public void Publish<Tevent>(string id, DateTime time, Tevent @event) where Tevent : IEvent
+        public void Publish<Tevent>(string id, DateTime time, Tevent @event) where Tevent : class
         {
             _eventStore.Add(id, time, @event);
             Send(@event);

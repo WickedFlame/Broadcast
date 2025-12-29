@@ -17,13 +17,13 @@ namespace Broadcast.Benchmarks
     [Iterations(10)]
     public class DispatcherBenchmark
     {
-        private readonly IDispatcher<IEvent> _dispatcher;
+        private readonly IDispatcher _dispatcher;
 
         public DispatcherBenchmark()
         {
             var eventBus = new EventBus();
             eventBus.Subscribe<BenchmarkEvent>(new BenchmarkEventHandler());
-            _dispatcher = new Dispatcher<IEvent>(eventBus);
+            _dispatcher = new Dispatcher(eventBus);
         }
 
         [Benchmark]

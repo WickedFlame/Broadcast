@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Broadcast.Integration.Test
+﻿namespace Broadcast.Integration.Test
 {
+    public interface IEvent
+    {
+    }
+
     public class CountEvent : IEvent
     {
     }

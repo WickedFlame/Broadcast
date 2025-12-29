@@ -3,11 +3,11 @@
     public static class EventBusExtensions
     {
         /// <summary>
-        /// Publish the <see cref="IEvent"/> to the EventStore and send the <see cref="IEvent"/> to the <see cref="IEventHandler{T}"/>
+        /// Publish the event to the EventStore and send the event to the <see cref="IEventHandler{T}"/>
         /// </summary>
         /// <typeparam name="Tevent"></typeparam>
         /// <param name="event"></param>
-        public static void Publish<Tevent>(this IEventBus eventBus, Tevent @event) where Tevent : IEvent
+        public static void Publish<Tevent>(this IEventBus eventBus, Tevent @event) where Tevent : class
         {
             eventBus.Publish(Guid.NewGuid().ToString(), DateTime.Now, @event);
         }
