@@ -8,6 +8,7 @@ namespace Broadcast
     public class EventBus : IEventBus
     {
         private readonly HandlerSubscriptionCollection _handlers = [];
+        private readonly EventStoreOptions _options;
         private readonly IEventStore _eventStore;
         private readonly EventPublisher _publisher;
 
@@ -25,7 +26,19 @@ namespace Broadcast
         /// <param name="eventStore"></param>
         /// <exception cref="ArgumentNullException"></exception>
         public EventBus(IEventStore eventStore)
+            : this(eventStore, new EventStoreOptions())
         {
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventStore"></param>
+        /// <param name="options"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public EventBus(IEventStore eventStore, EventStoreOptions options)
+        {
+            _options = options ?? throw new ArgumentNullException("options");
             _eventStore = eventStore ?? throw new ArgumentNullException("eventStore");
             _publisher = new EventPublisher(_handlers);
         }
@@ -67,7 +80,7 @@ namespace Broadcast
         /// <param name="event"></param>
         public void Publish<Tevent>(string id, DateTime time, Tevent @event) where Tevent : class
         {
-            _eventStore.Add(id, time, @event);
+            _eventStore.Add(Guid.NewGuid().ToString(), id, _options.StreamVersion, _options.TypeNameFactory(@event), time, @event);
             Send(@event);
         }
 
