@@ -1,11 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-
-    <IsPackable>false</IsPackable>
-
-    <Configurations>Debug;Release;NetCore</Configurations>
+	<TargetFramework>net10.0</TargetFramework>
+	<ImplicitUsings>enable</ImplicitUsings>
+	<IsPackable>false</IsPackable>
+	<IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,7 +27,7 @@
   <ItemGroup>
 	<Using Include="NUnit.Framework" />
 	<Using Include="AwesomeAssertions" />
-	<Using Include="Moq"/>
+	<Using Include="Moq" />
   </ItemGroup>
 
 </Project>

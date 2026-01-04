@@ -80,7 +80,7 @@ namespace Broadcast
         /// <param name="event"></param>
         public void Publish<Tevent>(string id, DateTime time, Tevent @event) where Tevent : class
         {
-            _eventStore.Add(Guid.NewGuid().ToString(), id, _options.StreamVersion, _options.TypeNameFactory(@event), time, @event);
+            _eventStore.AddAsync(Guid.NewGuid().ToString(), id, _options.StreamVersion, _options.TypeNameFactory(@event), time, @event);
             Send(@event);
         }
 

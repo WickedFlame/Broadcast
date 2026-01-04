@@ -27,10 +27,10 @@ class Build : NukeBuild
     [Solution] readonly Solution Solution;
 
     [Parameter("Version to be injected in the Build")]
-    public string Version { get; set; } = $"3.0.1";
+    public string Version { get; set; } = $"2.0.0";
 
     [Parameter("The Buildnumber provided by the CI")]
-    public int BuildNo = 16;
+    public int BuildNo = 30;
 
     [Parameter("Is RC Version")]
     public bool IsRc = false;
@@ -112,13 +112,34 @@ class Build : NukeBuild
             foreach (var file in Directory.GetFiles(RootDirectory, $"*.{PackageVersion}.nupkg", SearchOption.AllDirectories))
             {
                 ((AbsolutePath)file).CopyToDirectory(ArtifactsDirectory, ExistsPolicy.FileOverwrite);
+                Serilog.Log.Write(Serilog.Events.LogEventLevel.Information, "Deployed {0} to {1}", file, RootDirectory);
             }
 
             foreach (var file in Directory.GetFiles(RootDirectory, $"*.{PackageVersion}.snupkg", SearchOption.AllDirectories))
             {
                 ((AbsolutePath)file).CopyToDirectory(ArtifactsDirectory, ExistsPolicy.FileOverwrite);
+                Serilog.Log.Write(Serilog.Events.LogEventLevel.Information, "Deployed {0} to {1}", file, RootDirectory);
             }
         });
+
+    Target Deploy => _ => _
+        .DependsOn(Release)
+        .Executes(() =>
+        {
+            // copy to local store
+            foreach (var file in Directory.GetFiles(RootDirectory, $"*.{PackageVersion}.nupkg", SearchOption.AllDirectories))
+            {
+                ((AbsolutePath)file).CopyToDirectory(DeployPath, ExistsPolicy.FileOverwrite);
+                Serilog.Log.Write(Serilog.Events.LogEventLevel.Information, "Deployed {0} to {1}", file, DeployPath);
+            }
+
+            foreach (var file in Directory.GetFiles(RootDirectory, $"*.{PackageVersion}.snupkg", SearchOption.AllDirectories))
+            {
+                ((AbsolutePath)file).CopyToDirectory(DeployPath, ExistsPolicy.FileOverwrite);
+                Serilog.Log.Write(Serilog.Events.LogEventLevel.Information, "Deployed {0} to {1}", file, DeployPath);
+            }
+        }
+        );
 
     string PackageVersion
         => IsRc ? BuildNo < 10 ? $"{Version}-RC0{BuildNo}" : $"{Version}-RC{BuildNo}" : Version;

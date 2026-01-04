@@ -102,7 +102,7 @@ namespace Broadcast.Test
             // Act
             eventBus.Publish("one", DateTime.UtcNow, new CountEvent());
 
-            eventStore.Verify(es => es.Add(It.IsAny<string>(), "one", 1, It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<IEvent>()), Times.Once);
+            eventStore.Verify(es => es.AddAsync(It.IsAny<string>(), "one", 1, It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<IEvent>()), Times.Once);
         }
     }
 }

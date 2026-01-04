@@ -1,0 +1,8 @@
+---data
+Data:
+  Name: Test Event
+Id: event-1
+StreamtId: stream-1
+StreamVersion: 1
+Time: 0000-00-00T00:00:00.0000
+Type: TestType
