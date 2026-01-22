@@ -2,16 +2,16 @@
 {
     public class EventEnvelope
     {
-        public string Id { get; internal set; }
+        public string Id { get; set; }
         
         public string StreamId { get; set; }
 
-        public int StreamVersion { get; internal set; }
+        public int StreamVersion { get; set; }
 
-        public DateTime Time { get; internal set; }
+        public DateTime Time { get; set; }
 
-        public string Type { get; internal set; }
+        public string Type { get; set; }
 
-        public object Data { get; internal set; }
+        public object Data { get; set; }
     }
 }

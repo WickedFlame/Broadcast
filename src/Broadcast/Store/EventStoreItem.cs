@@ -6,12 +6,12 @@
 
         public string StreamtId { get; set; }
 
+        public int StreamVersion { get; set; }
+
+        public string Type { get; set; }
+
         public DateTime Time { get; set; }
 
         public object Data { get; set; }
-
-        public int StreamVersion { get; internal set; }
-
-        public string Type { get; internal set; }
     }
 }
