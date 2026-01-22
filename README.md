@@ -19,6 +19,9 @@ Broadcast helps implement the Mediator or CQRS (Command- and Queryhandling) patt
   
 Visit [https://wickedflame.github.io/Broadcast/](https://wickedflame.github.io/Broadcast/) for the full documentation.
   
+V2.0.0 is a complete rewrite of the library. 
+It is no longer compatible with V1.x.x
+  
 ## Installation
 Broadcast is available as a NuGet package
 ```
